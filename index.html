@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bright Pearl Academy — Chinese Dance</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'media',
+      theme: {
+        extend: {
+          colors: {
+            // All three read from CSS vars so they auto-flip in dark mode
+            cream:    'rgb(var(--cream-rgb) / <alpha-value>)',
+            ink:      'rgb(var(--ink-rgb) / <alpha-value>)',
+            imperial: 'rgb(var(--imperial-rgb) / <alpha-value>)',
+            surface:  'rgb(var(--surface-rgb) / <alpha-value>)',
+          },
+          fontFamily: {
+            display: ['Playfair Display', 'serif'],
+            body:    ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ── CSS Color Variables ──────────────────────── */
+    :root {
+      --cream-rgb:           249 247 242;   /* #f9f7f2  warm cream        */
+      --ink-rgb:             26  26  26;    /* #1a1a1a  near-black         */
+      --imperial-rgb:        91  79  207;   /* #5b4fcf  blue-purple        */
+      --imperial-hover-rgb:  74  61  191;   /* #4a3dbf  darker hover       */
+      --surface-rgb:         255 255 255;   /* white cards                 */
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --cream-rgb:           12  11  24;   /* #0c0b18  deep dark          */
+        --ink-rgb:             232 228 245;  /* #e8e4f5  light lavender     */
+        --imperial-rgb:        139 128 248;  /* #8b80f8  lighter purple     */
+        --imperial-hover-rgb:  160 151 252;  /* #a097fc  light hover        */
+        --surface-rgb:         28  25  52;   /* #1c1934  dark card surface  */
+      }
+    }
+
+    /* ── Base ─────────────────────────────────────── */
+    body { font-family: 'Inter', sans-serif; }
+
+    /* ── Fixed Geometric Lotus Background ────────── */
+    .lotus-bg {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; overflow: hidden;
+    }
+    .lotus-bg::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      width: 420px; height: 420px;
+      transform: translate(-50%, -50%);
+      background:
+        radial-gradient(ellipse 35% 70% at 50% 15%, rgb(var(--imperial-rgb) / 0.045) 0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 85% 30%, rgb(var(--imperial-rgb) / 0.04)  0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 97% 60%, rgb(var(--imperial-rgb) / 0.035) 0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 85% 85%, rgb(var(--imperial-rgb) / 0.04)  0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 50% 97%, rgb(var(--imperial-rgb) / 0.045) 0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 15% 85%, rgb(var(--imperial-rgb) / 0.04)  0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 3%  60%, rgb(var(--imperial-rgb) / 0.035) 0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 15% 30%, rgb(var(--imperial-rgb) / 0.04)  0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .lotus-bg::after {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      width: 600px; height: 600px;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgb(var(--imperial-rgb) / 0.06);
+      border-radius: 50%;
+    }
+    .lotus-petal {
+      position: absolute; top: 50%; left: 50%;
+      width: 80px; height: 200px;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.05);
+      border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+      transform-origin: center bottom;
+    }
+    .lotus-petal:nth-child(1)  { transform: translate(-50%, -100%) rotate(0deg);   }
+    .lotus-petal:nth-child(2)  { transform: translate(-50%, -100%) rotate(45deg);  }
+    .lotus-petal:nth-child(3)  { transform: translate(-50%, -100%) rotate(90deg);  }
+    .lotus-petal:nth-child(4)  { transform: translate(-50%, -100%) rotate(135deg); }
+    .lotus-petal:nth-child(5)  { transform: translate(-50%, -100%) rotate(180deg); }
+    .lotus-petal:nth-child(6)  { transform: translate(-50%, -100%) rotate(225deg); }
+    .lotus-petal:nth-child(7)  { transform: translate(-50%, -100%) rotate(270deg); }
+    .lotus-petal:nth-child(8)  { transform: translate(-50%, -100%) rotate(315deg); }
+
+    /* ── Ink-brush Divider ───────────────────────── */
+    .ink-divider {
+      display: block; margin: 3rem auto; width: 120px; height: 2px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgb(var(--imperial-rgb) / 0.35) 20%,
+        rgb(var(--imperial-rgb) / 0.6)  50%,
+        rgb(var(--imperial-rgb) / 0.35) 80%,
+        transparent 100%);
+      border-radius: 1px;
+    }
+
+    /* ── View Transitions ────────────────────────── */
+    .view-hidden { display: none !important; }
+
+    /* ── Card Accent ─────────────────────────────── */
+    .card-accent {
+      border-left: 3px solid rgb(var(--imperial-rgb));
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-accent:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgb(var(--ink-rgb) / 0.08);
+    }
+
+    /* ── Gallery ─────────────────────────────────── */
+    .gallery-cell {
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, #ece8df 0%, #e2ddd3 100%);
+      border: 1px solid rgb(var(--imperial-rgb) / 0.12);
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.2s, transform 0.2s;
+      overflow: hidden; cursor: pointer;
+    }
+    @media (prefers-color-scheme: dark) {
+      .gallery-cell { background: linear-gradient(135deg, #1a1832 0%, #131128 100%); }
+    }
+    .gallery-cell:hover { border-color: rgb(var(--imperial-rgb) / 0.4); transform: scale(1.02); }
+    .gallery-cell img   { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ── Admin Table ─────────────────────────────── */
+    .admin-table th {
+      background-color: rgb(var(--imperial-rgb));
+      color: rgb(var(--cream-rgb));
+      font-weight: 500;
+    }
+    .admin-table td { border-bottom: 1px solid rgb(var(--imperial-rgb) / 0.1); }
+    @media (prefers-color-scheme: dark) {
+      .admin-table th { background-color: rgb(var(--imperial-rgb) / 0.35); color: rgb(var(--ink-rgb)); }
+    }
+
+    /* ── Buttons ─────────────────────────────────── */
+    .btn-imperial {
+      background-color: rgb(var(--imperial-rgb));
+      color: rgb(var(--cream-rgb));
+      transition: background-color 0.2s;
+    }
+    .btn-imperial:hover    { background-color: rgb(var(--imperial-hover-rgb)); }
+    .btn-imperial:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-outline {
+      border: 1px solid rgb(var(--imperial-rgb));
+      color: rgb(var(--imperial-rgb));
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { background-color: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); }
+
+    /* ── Scrollbar ────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgb(var(--cream-rgb)); }
+    ::-webkit-scrollbar-thumb { background: rgb(var(--imperial-rgb) / 0.25); border-radius: 3px; }
+
+    /* ── Lightbox ─────────────────────────────────── */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgb(var(--ink-rgb) / 0.85);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .lightbox.active { opacity: 1; pointer-events: auto; }
+    .lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 8px; box-shadow: 0 20px 60px rgb(0 0 0 / 0.4); }
+    .lightbox-caption {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      color: rgb(var(--cream-rgb)); font-size: 0.875rem; text-align: center;
+      background: rgb(0 0 0 / 0.4); padding: 0.5rem 1.5rem; border-radius: 2rem;
+    }
+    .lightbox-close {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      color: rgb(var(--cream-rgb)); font-size: 1.5rem; cursor: pointer;
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; background: rgb(255 255 255 / 0.1); transition: background 0.2s;
+    }
+    .lightbox-close:hover { background: rgb(255 255 255 / 0.25); }
+
+    /* ── Upload Drop Zone ─────────────────────────── */
+    .drop-zone {
+      border: 2px dashed rgb(var(--imperial-rgb) / 0.25);
+      border-radius: 0.75rem; padding: 2rem; text-align: center;
+      transition: border-color 0.2s, background 0.2s; cursor: pointer;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: rgb(var(--imperial-rgb));
+      background: rgb(var(--imperial-rgb) / 0.04);
+    }
+    .upload-progress {
+      height: 4px; background: rgb(var(--imperial-rgb) / 0.1);
+      border-radius: 2px; overflow: hidden;
+    }
+    .upload-progress-bar {
+      height: 100%; background: rgb(var(--imperial-rgb));
+      border-radius: 2px; transition: width 0.3s;
+    }
+
+    /* ── Chat Widget ──────────────────────────────── */
+    .chat-fab {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 4px 20px rgb(var(--imperial-rgb) / 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .chat-fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgb(var(--imperial-rgb) / 0.45); }
+    .chat-fab svg { width: 24px; height: 24px; }
+
+    .chat-panel {
+      position: fixed; bottom: 5.5rem; right: 1.5rem; z-index: 100;
+      width: 380px; height: 520px;
+      background: rgb(var(--cream-rgb));
+      border: 1px solid rgb(var(--imperial-rgb) / 0.15);
+      border-radius: 1rem;
+      box-shadow: 0 12px 48px rgb(var(--ink-rgb) / 0.15);
+      display: flex; flex-direction: column;
+      opacity: 0; pointer-events: none;
+      transform: translateY(12px) scale(0.95);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    .chat-panel.active { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
+
+    .chat-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgb(var(--imperial-rgb) / 0.1);
+      display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0;
+    }
+    .chat-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.8rem;
+    }
+
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 1rem 1.25rem;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgb(var(--imperial-rgb) / 0.15); border-radius: 2px; }
+
+    .chat-bubble {
+      max-width: 85%; padding: 0.625rem 0.875rem;
+      border-radius: 1rem; font-size: 0.8125rem; line-height: 1.5; word-wrap: break-word;
+    }
+    .chat-bubble.assistant {
+      align-self: flex-start;
+      background: rgb(var(--surface-rgb)); color: rgb(var(--ink-rgb));
+      border: 1px solid rgb(var(--imperial-rgb) / 0.08);
+      border-bottom-left-radius: 0.25rem;
+    }
+    .chat-bubble.user {
+      align-self: flex-end;
+      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
+      border-bottom-right-radius: 0.25rem;
+    }
+
+    .chat-typing {
+      align-self: flex-start; padding: 0.625rem 0.875rem;
+      background: rgb(var(--surface-rgb)); border: 1px solid rgb(var(--imperial-rgb) / 0.08);
+      border-radius: 1rem; border-bottom-left-radius: 0.25rem;
+      display: flex; gap: 4px; align-items: center;
+    }
+    .chat-typing span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgb(var(--imperial-rgb) / 0.4);
+      animation: typingDot 1.2s infinite;
+    }
+    .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingDot {
+      0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+      30%            { opacity: 1;   transform: translateY(-3px); }
+    }
+
+    .chat-quick-actions {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      padding: 0 1.25rem 0.5rem; flex-shrink: 0;
+    }
+    .chat-quick-btn {
+      font-size: 0.6875rem; padding: 0.3rem 0.65rem;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.2); border-radius: 2rem;
+      color: rgb(var(--imperial-rgb)); background: transparent;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .chat-quick-btn:hover { background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); }
+
+    .chat-input-area {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid rgb(var(--imperial-rgb) / 0.1);
+      display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0;
+    }
+    .chat-input-area input {
+      flex: 1; padding: 0.5rem 0.75rem; border-radius: 2rem;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.15);
+      background: rgb(var(--surface-rgb)); color: rgb(var(--ink-rgb));
+      font-size: 0.8125rem; outline: none;
+    }
+    .chat-input-area input:focus { border-color: rgb(var(--imperial-rgb)); }
+    .chat-send-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+    }
+    .chat-send-btn:hover    { background: rgb(var(--imperial-hover-rgb)); }
+    .chat-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Tour highlight pulse ────────────────────── */
+    @keyframes tourPulse {
+      0%   { box-shadow: 0 0 0 0    rgb(var(--imperial-rgb) / 0.25); }
+      70%  { box-shadow: 0 0 0 12px rgb(var(--imperial-rgb) / 0); }
+      100% { box-shadow: 0 0 0 0    rgb(var(--imperial-rgb) / 0); }
+    }
+    .tour-highlight { animation: tourPulse 1.5s ease-out 2; border-radius: 0.5rem; }
+
+    /* ── PDF card icon ────────────────────────────── */
+    .pdf-icon-bg {
+      width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+      background: rgb(var(--imperial-rgb) / 0.1);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── Mobile chat ──────────────────────────────── */
+    @media (max-width: 440px) {
+      .chat-panel { width: calc(100vw - 1.5rem); right: 0.75rem; bottom: 5rem; height: 60vh; }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen font-body relative bg-cream text-ink">
+
+  <!-- ═══ Fixed Lotus Background ═══ -->
+  <div class="lotus-bg" aria-hidden="true">
+    <div class="lotus-petal"></div><div class="lotus-petal"></div>
+    <div class="lotus-petal"></div><div class="lotus-petal"></div>
+    <div class="lotus-petal"></div><div class="lotus-petal"></div>
+    <div class="lotus-petal"></div><div class="lotus-petal"></div>
+  </div>
+
+  <!-- ═══ Navigation ═══ -->
+  <nav class="sticky top-0 z-50 bg-cream/90 backdrop-blur-md border-b border-imperial/10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+      <button id="nav-brand" class="flex items-center gap-3 group" aria-label="Home">
+        <div class="w-9 h-9 rounded-full border-2 border-imperial flex items-center justify-center text-imperial font-display font-bold text-sm group-hover:bg-imperial group-hover:text-cream transition-colors">BP</div>
+        <span class="font-display text-lg sm:text-xl text-ink tracking-wide">Bright Pearl <span class="text-imperial">Academy</span></span>
+      </button>
+      <div class="flex items-center gap-1 sm:gap-2">
+        <button id="nav-home"     class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors">Home</button>
+        <button id="nav-about"    class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors">About</button>
+        <button id="nav-register" class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors">Register</button>
+        <button id="nav-admin"    class="btn-outline px-3 py-1.5 rounded text-sm font-medium">Admin</button>
+        <button id="nav-logout"   class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--  HOME VIEW                                      -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <main id="home-view" class="relative z-10">
+
+    <!-- Hero -->
+    <section id="section-hero" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center">
+      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-4">Est. 2018</p>
+      <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl text-ink leading-tight mb-6">
+        Where Tradition Meets<br/><em class="text-imperial">Graceful Expression</em>
+      </h1>
+      <p class="max-w-2xl mx-auto text-ink/60 text-base sm:text-lg leading-relaxed">
+        Bright Pearl Academy nurtures the art of Chinese dance, cultivating discipline, cultural pride, and artistic excellence in every student. From classical forms to contemporary fusion, we carry the beauty of heritage into the future.
+      </p>
+      <div class="mt-8 flex items-center justify-center gap-4 flex-wrap">
+        <button id="hero-cta-register" class="btn-imperial px-7 py-3 rounded-lg text-sm font-medium">Enroll Now</button>
+        <button id="hero-cta-about"    class="btn-outline  px-7 py-3 rounded-lg text-sm font-medium">Our Story</button>
+      </div>
+      <div class="ink-divider mt-10"></div>
+    </section>
+
+    <!-- Awards -->
+    <section id="section-awards" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Awards &amp; Honors</h2>
+      <p class="text-center text-ink/50 text-sm mb-10">Recognition earned through dedication and artistry</p>
+      <div id="awards-list" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <p id="awards-empty" class="view-hidden text-center text-ink/40 italic py-8">No awards to display yet.</p>
+    </section>
+
+    <div class="ink-divider"></div>
+
+    <!-- Photo Gallery -->
+    <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
+      <p class="text-center text-ink/50 text-sm mb-10">Moments captured in motion</p>
+      <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-imperial/10 mt-12">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
+        &copy; 2026 Bright Pearl Academy. All rights reserved.
+      </div>
+    </footer>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--  ABOUT VIEW                                     -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <main id="about-view" class="view-hidden relative z-10">
+
+    <!-- Header -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
+      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Who We Are</p>
+      <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4">Our Story</h1>
+      <p class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed">
+        A decade of artistry, culture, and community — rooted in tradition, reaching for excellence.
+      </p>
+      <div class="ink-divider mt-8"></div>
+    </div>
+
+    <!-- About Sections -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 space-y-6" id="about-sections-container"></div>
+    <p id="about-sections-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Our story is coming soon — check back shortly.</p>
+
+    <div class="ink-divider"></div>
+
+    <!-- PDF Downloads -->
+    <section id="section-pdfs" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Downloads &amp; Resources</h2>
+      <p class="text-center text-ink/50 text-sm mb-10">Schedules, forms, and academy documents</p>
+      <div id="pdf-grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <p id="pdf-empty" class="view-hidden text-center text-ink/40 italic py-8">No documents available yet.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-imperial/10 mt-6">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
+        &copy; 2026 Bright Pearl Academy. All rights reserved.
+      </div>
+    </footer>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--  REGISTER VIEW                                  -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <main id="register-view" class="view-hidden relative z-10">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+
+      <div class="text-center mb-10">
+        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Join Us</p>
+        <h1 class="font-display text-3xl sm:text-4xl text-ink mb-3">Enroll at Bright Pearl</h1>
+        <div class="ink-divider mt-6"></div>
+      </div>
+
+      <!-- Step Indicator -->
+      <div id="reg-step-indicator" class="flex items-center justify-center gap-3 mb-10">
+        <div id="step-1-dot" class="flex items-center gap-2 transition-opacity">
+          <div class="w-7 h-7 rounded-full bg-imperial text-cream flex items-center justify-center text-xs font-semibold">1</div>
+          <span class="text-sm font-medium text-ink hidden sm:inline">Your Details</span>
+        </div>
+        <div class="w-10 sm:w-16 h-px bg-imperial/25"></div>
+        <div id="step-2-dot" class="flex items-center gap-2 opacity-35 transition-opacity">
+          <div id="step-2-num" class="w-7 h-7 rounded-full border-2 border-imperial/40 text-ink/40 flex items-center justify-center text-xs font-semibold">2</div>
+          <span class="text-sm font-medium text-ink/40 hidden sm:inline">Payment</span>
+        </div>
+      </div>
+
+      <!-- Success State (Step 3) -->
+      <div id="reg-success" class="view-hidden text-center py-16">
+        <div class="w-16 h-16 rounded-full bg-imperial/10 flex items-center justify-center mx-auto mb-5">
+          <svg class="w-7 h-7 text-imperial" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h2 class="font-display text-2xl text-ink mb-2">You're All Set!</h2>
+        <p class="text-ink/55 text-sm mb-2">Payment submitted. We'll verify and confirm your enrollment within 1–2 business days.</p>
+        <p class="text-ink/40 text-xs mb-6">Check your email for updates.</p>
+        <button id="reg-another" class="btn-outline px-6 py-2.5 rounded-lg text-sm font-medium">Submit Another</button>
+      </div>
+
+      <!-- Step 2: Payment -->
+      <div id="reg-payment-step" class="view-hidden space-y-6">
+        <div class="text-center mb-2">
+          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-2">Step 2 of 2</p>
+          <h2 class="font-display text-2xl sm:text-3xl text-ink mb-2">Complete Your Payment</h2>
+          <p class="text-ink/55 text-sm max-w-sm mx-auto">Your spot has been reserved. Send the enrollment fee using the method below.</p>
+        </div>
+        <!-- Payment content injected by JS -->
+        <div id="reg-payment-content" class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 space-y-5"></div>
+        <div class="flex flex-col items-center gap-3">
+          <button id="reg-payment-sent-btn" class="btn-imperial px-10 py-3 rounded-lg text-sm font-medium min-w-[220px]">
+            I Have Sent the Payment
+          </button>
+          <p class="text-ink/35 text-xs text-center max-w-xs">We'll verify your payment and confirm enrollment within 1–2 business days.</p>
+        </div>
+      </div>
+
+      <form id="reg-form" class="space-y-8">
+        <!-- Student Info -->
+        <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
+          <h3 class="font-display text-lg text-ink mb-5 flex items-center gap-2">
+            <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Student Information
+          </h3>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Student Full Name <span class="text-imperial">*</span></label>
+              <input id="reg-student-name" type="text" required placeholder="e.g. Lin Mei"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Date of Birth</label>
+              <input id="reg-dob" type="date"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Parent / Contact -->
+        <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
+          <h3 class="font-display text-lg text-ink mb-5 flex items-center gap-2">
+            <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Parent / Guardian
+          </h3>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Parent / Guardian Name <span class="text-imperial">*</span></label>
+              <input id="reg-parent-name" type="text" required placeholder="e.g. Zhang Wei"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Email <span class="text-imperial">*</span></label>
+              <input id="reg-email" type="email" required placeholder="contact@email.com"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Phone Number <span class="text-imperial">*</span></label>
+              <input id="reg-phone" type="tel" required placeholder="(555) 000-0000"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Class & Experience -->
+        <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
+          <h3 class="font-display text-lg text-ink mb-5 flex items-center gap-2">
+            <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Class Preference
+          </h3>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Interested Class</label>
+              <select id="reg-class" class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20 appearance-none">
+                <option value="">— Select a class —</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Prior Dance Experience</label>
+              <select id="reg-experience" class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20 appearance-none">
+                <option value="">— Select level —</option>
+                <option value="none">No experience</option>
+                <option value="beginner">Beginner (0–1 yr)</option>
+                <option value="intermediate">Intermediate (2–4 yrs)</option>
+                <option value="advanced">Advanced (5+ yrs)</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Additional Notes</label>
+              <textarea id="reg-notes" rows="3" placeholder="Any health considerations, schedule preferences, or questions…"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20 resize-none"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <p id="reg-error" class="view-hidden text-imperial text-sm text-center"></p>
+        <div class="flex justify-center">
+          <button type="submit" id="reg-submit" class="btn-imperial px-10 py-3 rounded-lg text-sm font-medium min-w-[180px]">Submit Application</button>
+        </div>
+        <p class="text-center text-ink/35 text-xs">After submitting, you'll be guided through a quick payment step to secure your spot.</p>
+      </form>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--  ADMIN VIEW                                     -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <main id="admin-view" class="view-hidden relative z-10">
+
+    <!-- Login Form -->
+    <section id="admin-login" class="max-w-md mx-auto px-4 py-20">
+      <div class="bg-surface/70 backdrop-blur rounded-xl shadow-sm border border-imperial/10 p-8">
+        <h2 class="font-display text-2xl text-ink text-center mb-1">Admin Login</h2>
+        <p class="text-center text-ink/50 text-sm mb-6">Sign in to manage academy data</p>
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-ink/70 mb-1">Email</label>
+            <input id="login-email" type="email" value="admin@brightpearl.academy"
+              class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-ink/70 mb-1">Password</label>
+            <input id="login-password" type="password" placeholder="Enter password"
+              class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
+          </div>
+          <p id="login-error" class="view-hidden text-imperial text-xs"></p>
+          <button type="submit" class="btn-imperial w-full py-2.5 rounded-lg text-sm font-medium">Sign In</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Admin Dashboard -->
+    <section id="admin-dashboard" class="view-hidden max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="flex items-center justify-between mb-10">
+        <div>
+          <h2 class="font-display text-2xl sm:text-3xl text-ink">Dashboard</h2>
+          <p class="text-ink/50 text-sm">Manage content, classes, gallery &amp; registrations</p>
+        </div>
+        <span id="admin-email-badge" class="text-xs bg-imperial/10 text-imperial px-3 py-1 rounded-full"></span>
+      </div>
+
+      <!-- ── Pending Registrations ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Pending Registrations
+          <span id="pending-reg-badge" class="view-hidden text-xs bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium ml-1"></span>
+        </h3>
+        <div class="overflow-x-auto rounded-lg border border-imperial/10">
+          <table class="admin-table w-full text-sm">
+            <thead><tr>
+              <th class="text-left px-4 py-3 rounded-tl-lg">Student</th>
+              <th class="text-left px-4 py-3">Parent</th>
+              <th class="text-left px-4 py-3">Contact</th>
+              <th class="text-left px-4 py-3">Class</th>
+              <th class="text-left px-4 py-3">Status</th>
+              <th class="text-left px-4 py-3">Submitted</th>
+              <th class="px-4 py-3 rounded-tr-lg">Actions</th>
+            </tr></thead>
+            <tbody id="admin-pending-tbody" class="bg-surface/40"></tbody>
+          </table>
+        </div>
+        <p id="admin-pending-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No pending registrations.</p>
+      </div>
+
+      <!-- ── Payment Settings ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Payment Settings
+        </h3>
+        <form id="payment-settings-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Payment Method</label>
+              <select id="ps-method" class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial appearance-none">
+                <option value="Venmo">Venmo</option>
+                <option value="Zelle">Zelle</option>
+                <option value="Cash">Cash</option>
+                <option value="Check">Check</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Handle / Phone Number</label>
+              <input id="ps-handle" type="text" placeholder="@username or phone number"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-ink/70 mb-1.5">Instructions (shown to registrant)</label>
+            <textarea id="ps-instructions" rows="3" placeholder="e.g. Send payment via Venmo with student name in memo…"
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-ink/70 mb-1.5">QR Code Image URL <span class="text-ink/35">(optional)</span></label>
+            <input id="ps-qr-url" type="url" placeholder="https://…"
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          </div>
+          <div class="flex items-center gap-2.5">
+            <input id="ps-active" type="checkbox" checked class="w-4 h-4 accent-imperial rounded" />
+            <label for="ps-active" class="text-sm text-ink/70">Set as active payment method</label>
+          </div>
+          <div class="flex items-center gap-4">
+            <button type="submit" class="btn-imperial px-6 py-2 rounded text-sm font-medium">Save Settings</button>
+            <p id="ps-status" class="view-hidden text-sm text-imperial font-medium"></p>
+          </div>
+        </form>
+      </div>
+
+      <!-- ── Awards ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Awards
+        </h3>
+        <form id="add-award-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 grid sm:grid-cols-4 gap-3">
+          <input id="award-title" type="text" placeholder="Title *" required class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="award-year"  type="text" placeholder="Year" maxlength="4" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="award-desc"  type="text" placeholder="Description" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Award</button>
+        </form>
+        <div class="overflow-x-auto rounded-lg border border-imperial/10">
+          <table class="admin-table w-full text-sm">
+            <thead><tr>
+              <th class="text-left px-4 py-3 rounded-tl-lg">Title</th>
+              <th class="text-left px-4 py-3">Year</th>
+              <th class="text-left px-4 py-3">Description</th>
+              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+            </tr></thead>
+            <tbody id="admin-awards-tbody" class="bg-surface/40"></tbody>
+          </table>
+        </div>
+        <p id="admin-awards-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No awards yet.</p>
+      </div>
+
+      <!-- ── Classes ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Classes
+        </h3>
+        <form id="add-class-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 grid sm:grid-cols-5 gap-3">
+          <input id="class-name"  type="text" placeholder="Class Name *" required class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="class-time"  type="text" placeholder="Schedule" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="class-level" type="text" placeholder="Level" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="class-desc"  type="text" placeholder="Description" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Class</button>
+        </form>
+        <div class="overflow-x-auto rounded-lg border border-imperial/10">
+          <table class="admin-table w-full text-sm">
+            <thead><tr>
+              <th class="text-left px-4 py-3 rounded-tl-lg">Name</th>
+              <th class="text-left px-4 py-3">Schedule</th>
+              <th class="text-left px-4 py-3">Level</th>
+              <th class="text-left px-4 py-3">Description</th>
+              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+            </tr></thead>
+            <tbody id="admin-classes-tbody" class="bg-surface/40"></tbody>
+          </table>
+        </div>
+        <p id="admin-classes-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No classes yet.</p>
+      </div>
+
+      <!-- ── About Sections ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>About Page Sections
+        </h3>
+        <form id="add-about-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
+          <div class="grid sm:grid-cols-4 gap-3">
+            <input id="about-title-input" type="text" placeholder="Section Title *" required
+              class="sm:col-span-3 px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="about-order-input" type="number" placeholder="Order (0, 1, 2…)" min="0"
+              class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          </div>
+          <textarea id="about-body-input" rows="4" placeholder="Section body text…" required
+            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Section</button>
+        </form>
+        <div class="overflow-x-auto rounded-lg border border-imperial/10">
+          <table class="admin-table w-full text-sm">
+            <thead><tr>
+              <th class="text-left px-4 py-3 rounded-tl-lg">Title</th>
+              <th class="text-left px-4 py-3">Preview</th>
+              <th class="text-center px-4 py-3 w-20">Order</th>
+              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+            </tr></thead>
+            <tbody id="admin-about-tbody" class="bg-surface/40"></tbody>
+          </table>
+        </div>
+        <p id="admin-about-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No about sections yet.</p>
+      </div>
+
+      <!-- ── PDF Downloads ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>PDF Downloads
+        </h3>
+        <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5">
+          <div id="pdf-drop-zone" class="drop-zone mb-4">
+            <svg class="mx-auto mb-2 w-8 h-8 text-imperial/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+            </svg>
+            <p class="text-ink/50 text-sm">Drop a PDF here or <span class="text-imperial font-medium">click to browse</span></p>
+            <p class="text-ink/30 text-xs mt-1">PDF only &middot; Max 20 MB</p>
+            <input id="pdf-file-input" type="file" accept="application/pdf" class="hidden" />
+          </div>
+          <div class="grid sm:grid-cols-3 gap-3 mb-3">
+            <input id="pdf-title-input" type="text" placeholder="Document Title *"
+              class="sm:col-span-2 px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="pdf-order-input" type="number" placeholder="Order (0, 1, 2…)" min="0"
+              class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          </div>
+          <div class="flex gap-3 items-end">
+            <div class="flex-1">
+              <input id="pdf-desc-input" type="text" placeholder="Description (optional)"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+            <button id="pdf-upload-btn" disabled class="btn-imperial px-5 py-2 rounded text-sm font-medium whitespace-nowrap">Upload PDF</button>
+          </div>
+          <p id="pdf-upload-filename" class="view-hidden text-xs text-imperial mt-2"></p>
+          <div id="pdf-upload-status" class="mt-3 view-hidden">
+            <div class="upload-progress"><div id="pdf-upload-progress-bar" class="upload-progress-bar" style="width:0%"></div></div>
+            <p id="pdf-upload-status-text" class="text-xs text-ink/50 mt-1"></p>
+          </div>
+        </div>
+        <div class="overflow-x-auto rounded-lg border border-imperial/10">
+          <table class="admin-table w-full text-sm">
+            <thead><tr>
+              <th class="text-left px-4 py-3 rounded-tl-lg">Title</th>
+              <th class="text-left px-4 py-3">Description</th>
+              <th class="text-center px-4 py-3 w-16">Order</th>
+              <th class="text-left px-4 py-3">Uploaded</th>
+              <th class="px-4 py-3 rounded-tr-lg w-28">Actions</th>
+            </tr></thead>
+            <tbody id="admin-pdf-tbody" class="bg-surface/40"></tbody>
+          </table>
+        </div>
+        <p id="admin-pdf-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No PDFs uploaded yet.</p>
+      </div>
+
+      <!-- ── Gallery Photos ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Gallery Photos
+        </h3>
+        <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5">
+          <div id="upload-drop-zone" class="drop-zone mb-4">
+            <svg class="mx-auto mb-2 w-8 h-8 text-imperial/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <p class="text-ink/50 text-sm">Drop an image here or <span class="text-imperial font-medium">click to browse</span></p>
+            <p class="text-ink/30 text-xs mt-1">JPEG, PNG, WebP, GIF &middot; Max 5 MB</p>
+            <input id="upload-file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" />
+          </div>
+          <div class="flex gap-3 items-end">
+            <div class="flex-1">
+              <label class="block text-xs font-medium text-ink/70 mb-1">Caption (optional)</label>
+              <input id="upload-caption" type="text" placeholder="Describe this photo…"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+            <button id="upload-btn" disabled class="btn-imperial px-5 py-2 rounded text-sm font-medium">Upload</button>
+          </div>
+          <div id="upload-status" class="mt-3 view-hidden">
+            <div class="upload-progress"><div id="upload-progress-bar" class="upload-progress-bar" style="width:0%"></div></div>
+            <p id="upload-status-text" class="text-xs text-ink/50 mt-1"></p>
+          </div>
+          <p id="upload-filename" class="view-hidden text-xs text-imperial mt-2"></p>
+        </div>
+        <div class="overflow-x-auto rounded-lg border border-imperial/10">
+          <table class="admin-table w-full text-sm">
+            <thead><tr>
+              <th class="text-left px-4 py-3 rounded-tl-lg w-20">Preview</th>
+              <th class="text-left px-4 py-3">Caption</th>
+              <th class="text-left px-4 py-3">Uploaded</th>
+              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+            </tr></thead>
+            <tbody id="admin-gallery-tbody" class="bg-surface/40"></tbody>
+          </table>
+        </div>
+        <p id="admin-gallery-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No photos yet.</p>
+      </div>
+
+      <!-- ── Registrations ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Registrations
+          <span id="reg-count-badge" class="view-hidden text-xs bg-imperial/10 text-imperial px-2 py-0.5 rounded-full font-medium ml-1"></span>
+        </h3>
+        <div class="overflow-x-auto rounded-lg border border-imperial/10">
+          <table class="admin-table w-full text-sm">
+            <thead><tr>
+              <th class="text-left px-4 py-3 rounded-tl-lg">Student</th>
+              <th class="text-left px-4 py-3">Parent</th>
+              <th class="text-left px-4 py-3">Contact</th>
+              <th class="text-left px-4 py-3">Class</th>
+              <th class="text-left px-4 py-3">Exp.</th>
+              <th class="text-left px-4 py-3">Submitted</th>
+              <th class="text-left px-4 py-3">Status</th>
+              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+            </tr></thead>
+            <tbody id="admin-reg-tbody" class="bg-surface/40"></tbody>
+          </table>
+        </div>
+        <p id="admin-reg-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No registrations yet.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══ Lightbox ═══ -->
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightbox-close">&times;</button>
+    <img id="lightbox-img" src="" alt="" />
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+
+  <!-- ═══ Chat Widget ═══ -->
+  <div id="chat-fab" class="chat-fab" title="Chat with Pearl">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+    </svg>
+  </div>
+
+  <div id="chat-panel" class="chat-panel">
+    <div class="chat-header">
+      <div class="chat-avatar">P</div>
+      <div>
+        <div class="font-display text-sm font-semibold text-ink">Pearl</div>
+        <div class="text-[0.65rem] text-ink/45">Academy AI Assistant</div>
+      </div>
+    </div>
+    <div id="chat-messages" class="chat-messages"></div>
+    <div id="chat-quick-actions" class="chat-quick-actions">
+      <button class="chat-quick-btn" data-quick="What classes do you offer?">Classes</button>
+      <button class="chat-quick-btn" data-quick="Tell me about your awards">Awards</button>
+      <button class="chat-quick-btn" data-quick="What are the schedules?">Schedules</button>
+      <button class="chat-quick-btn" data-tour="true">Site Tour</button>
+    </div>
+    <div class="chat-input-area">
+      <input id="chat-input" type="text" placeholder="Ask Pearl anything…" autocomplete="off" />
+      <button id="chat-send" class="chat-send-btn" title="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ JavaScript (ES Module) ═══ -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const SUPABASE_URL      = 'https://vsjlvkivsvrjplkscgrz.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzamx2a2l2c3ZyanBsa3NjZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MTAyNzcsImV4cCI6MjA4Nzk4NjI3N30.x3M7efiCkyuJakCsytKxdZp7RnDGdtJDKQZzM5WdaUo';
+    const GROQ_API_KEY      = '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';
+    const GROQ_MODEL        = 'llama-3.3-70b-versatile';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ── State ──────────────────────────────────────
+    let currentView  = 'home';
+    let session      = null;
+    let chatOpen     = false;
+    let chatHistory  = [];
+    let chatContext  = null;
+    let isSending    = false;
+    let tourActive   = false;
+    let selectedFile = null;
+    let selectedPdf  = null;
+
+    // ── DOM refs ───────────────────────────────────
+    const $homeView       = document.getElementById('home-view');
+    const $aboutView      = document.getElementById('about-view');
+    const $registerView   = document.getElementById('register-view');
+    const $adminView      = document.getElementById('admin-view');
+    const $adminLogin     = document.getElementById('admin-login');
+    const $adminDashboard = document.getElementById('admin-dashboard');
+    const $navLogout      = document.getElementById('nav-logout');
+    const $navAdmin       = document.getElementById('nav-admin');
+
+    // ════════════════════════════════════════════════
+    //  VIEW SWITCHING
+    // ════════════════════════════════════════════════
+    function showView(view) {
+      currentView = view;
+      $homeView.classList.toggle('view-hidden',     view !== 'home');
+      $aboutView.classList.toggle('view-hidden',    view !== 'about');
+      $registerView.classList.toggle('view-hidden', view !== 'register');
+      $adminView.classList.toggle('view-hidden',    view !== 'admin');
+
+      if (view === 'admin') {
+        const loggedIn = !!session;
+        $adminLogin.classList.toggle('view-hidden',     loggedIn);
+        $adminDashboard.classList.toggle('view-hidden', !loggedIn);
+        $navLogout.classList.toggle('view-hidden', !loggedIn);
+        $navAdmin.classList.toggle('view-hidden',   loggedIn);
+        if (loggedIn) {
+          document.getElementById('admin-email-badge').textContent = session.user.email;
+          renderAdminPendingRegistrations();
+          renderAdminPaymentSettings();
+          renderAdminAwards();
+          renderAdminClasses();
+          renderAdminAbout();
+          renderAdminPdfs();
+          renderAdminGallery();
+          renderAdminRegistrations();
+        }
+      } else if (view === 'about') {
+        $navLogout.classList.add('view-hidden');
+        $navAdmin.classList.remove('view-hidden');
+        renderHomeAbout();
+        renderAboutPdfs();
+      } else if (view === 'register') {
+        $navLogout.classList.add('view-hidden');
+        $navAdmin.classList.remove('view-hidden');
+        populateClassDropdown();
+      } else {
+        $navLogout.classList.add('view-hidden');
+        $navAdmin.classList.remove('view-hidden');
+      }
+    }
+
+    // ── Navigation ─────────────────────────────────
+    document.getElementById('nav-brand').addEventListener('click',         () => showView('home'));
+    document.getElementById('nav-home').addEventListener('click',          () => showView('home'));
+    document.getElementById('nav-about').addEventListener('click',         () => showView('about'));
+    document.getElementById('nav-register').addEventListener('click',      () => showView('register'));
+    document.getElementById('nav-admin').addEventListener('click',         () => showView('admin'));
+    document.getElementById('hero-cta-register').addEventListener('click', () => showView('register'));
+    document.getElementById('hero-cta-about').addEventListener('click',    () => showView('about'));
+    document.getElementById('nav-logout').addEventListener('click', async () => {
+      await supabase.auth.signOut(); session = null; showView('home');
+    });
+
+    // ── Auth ───────────────────────────────────────
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const $error   = document.getElementById('login-error');
+      $error.classList.add('view-hidden');
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) { $error.textContent = error.message; $error.classList.remove('view-hidden'); return; }
+      session = data.session;
+      showView('admin');
+    });
+
+    const { data: { session: existingSession } } = await supabase.auth.getSession();
+    if (existingSession) session = existingSession;
+    supabase.auth.onAuthStateChange((_e, s) => { session = s; });
+
+    // ════════════════════════════════════════════════
+    //  DATA FUNCTIONS
+    // ════════════════════════════════════════════════
+    async function fetchAwards() {
+      const { data, error } = await supabase.from('awards').select('*').order('created_at', { ascending: false });
+      if (error) { console.error(error); return []; } return data || [];
+    }
+    async function fetchClasses() {
+      const { data, error } = await supabase.from('classes').select('*').order('created_at', { ascending: false });
+      if (error) { console.error(error); return []; } return data || [];
+    }
+    async function fetchGallery() {
+      const { data, error } = await supabase.from('gallery').select('*').order('created_at', { ascending: false });
+      if (error) { console.error(error); return []; } return data || [];
+    }
+    async function fetchAboutSections() {
+      const { data, error } = await supabase.from('about_sections').select('*').order('display_order', { ascending: true });
+      if (error) { console.error(error); return []; } return data || [];
+    }
+    async function fetchPdfs() {
+      const { data, error } = await supabase.from('pdfs').select('*').order('display_order', { ascending: true });
+      if (error) { console.error(error); return []; } return data || [];
+    }
+    async function fetchRegistrations() {
+      const { data, error } = await supabase.from('registrations').select('*').order('created_at', { ascending: false });
+      if (error) { console.error(error); return []; } return data || [];
+    }
+
+    async function addAward(title, year, description) {
+      const { error } = await supabase.from('awards').insert({ title, year, description });
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function deleteAward(id) {
+      const { error } = await supabase.from('awards').delete().eq('id', id);
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function addClass(name, schedule_time, level, description) {
+      const { error } = await supabase.from('classes').insert({ name, schedule_time, level, description });
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function deleteClass(id) {
+      const { error } = await supabase.from('classes').delete().eq('id', id);
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function addAboutSection(title, body, display_order) {
+      const { error } = await supabase.from('about_sections').insert({ title, body, display_order });
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function deleteAboutSection(id) {
+      const { error } = await supabase.from('about_sections').delete().eq('id', id);
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function deletePdf(id, fileUrl) {
+      const parts = fileUrl.split('/pdfs/');
+      if (parts.length > 1) await supabase.storage.from('pdfs').remove([decodeURIComponent(parts[1])]);
+      const { error } = await supabase.from('pdfs').delete().eq('id', id);
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function submitRegistration(payload) {
+      const { data, error } = await supabase.from('registrations').insert(payload).select('id').single();
+      if (error) throw new Error(error.message);
+      return data.id;
+    }
+    async function updateRegStatus(id, status) {
+      const { error } = await supabase.from('registrations').update({ status }).eq('id', id);
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function deleteRegistration(id) {
+      const { error } = await supabase.from('registrations').delete().eq('id', id);
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+
+    // ════════════════════════════════════════════════
+    //  FILE UPLOAD
+    // ════════════════════════════════════════════════
+    async function uploadPhoto(file, caption) {
+      const ext = file.name.split('.').pop();
+      const filename = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+      const { error: ue } = await supabase.storage.from('gallery').upload(filename, file, { contentType: file.type });
+      if (ue) throw new Error(ue.message);
+      const { data: { publicUrl } } = supabase.storage.from('gallery').getPublicUrl(filename);
+      const { error: de } = await supabase.from('gallery').insert({ image_url: publicUrl, caption: caption || null });
+      if (de) throw new Error(de.message);
+      return publicUrl;
+    }
+    async function deleteGalleryItem(id, imageUrl) {
+      const parts = imageUrl.split('/gallery/');
+      if (parts.length > 1) await supabase.storage.from('gallery').remove([decodeURIComponent(parts[1])]);
+      const { error } = await supabase.from('gallery').delete().eq('id', id);
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function uploadPdfFile(file, title, description, display_order) {
+      const ext = file.name.split('.').pop();
+      const filename = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+      const { error: ue } = await supabase.storage.from('pdfs').upload(filename, file, { contentType: 'application/pdf' });
+      if (ue) throw new Error(ue.message);
+      const { data: { publicUrl } } = supabase.storage.from('pdfs').getPublicUrl(filename);
+      const { error: de } = await supabase.from('pdfs').insert({
+        title, description: description || null, file_url: publicUrl, file_name: filename, display_order: display_order || 0,
+      });
+      if (de) throw new Error(de.message);
+      return publicUrl;
+    }
+
+    // Gallery drop zone
+    const $dz  = document.getElementById('upload-drop-zone');
+    const $fi  = document.getElementById('upload-file-input');
+    const $ub  = document.getElementById('upload-btn');
+    const $fn  = document.getElementById('upload-filename');
+    $dz.addEventListener('click',     () => $fi.click());
+    $dz.addEventListener('dragover',  e => { e.preventDefault(); $dz.classList.add('dragover'); });
+    $dz.addEventListener('dragleave', () => $dz.classList.remove('dragover'));
+    $dz.addEventListener('drop',      e => { e.preventDefault(); $dz.classList.remove('dragover'); if (e.dataTransfer.files.length) pickFile(e.dataTransfer.files[0]); });
+    $fi.addEventListener('change',    () => { if ($fi.files.length) pickFile($fi.files[0]); });
+    function pickFile(file) {
+      if (file.size > 5*1024*1024) { alert('File too large (max 5 MB)'); return; }
+      selectedFile = file; $fn.textContent = `Selected: ${file.name}`; $fn.classList.remove('view-hidden'); $ub.disabled = false;
+    }
+    $ub.addEventListener('click', async () => {
+      if (!selectedFile) return;
+      const $st = document.getElementById('upload-status');
+      const $br = document.getElementById('upload-progress-bar');
+      const $tx = document.getElementById('upload-status-text');
+      const cap = document.getElementById('upload-caption').value.trim();
+      $ub.disabled = true; $st.classList.remove('view-hidden'); $br.style.width = '30%'; $tx.textContent = 'Uploading…';
+      try {
+        $br.style.width = '60%';
+        await uploadPhoto(selectedFile, cap);
+        $br.style.width = '100%'; $tx.textContent = 'Upload complete!';
+        selectedFile = null; $fi.value = ''; $fn.classList.add('view-hidden'); document.getElementById('upload-caption').value = '';
+        setTimeout(() => { $st.classList.add('view-hidden'); $br.style.width = '0%'; $ub.disabled = true; }, 1500);
+        await renderAdminGallery(); await renderHomeGallery();
+      } catch (err) { $tx.textContent = 'Error: ' + err.message; $br.style.width = '0%'; $ub.disabled = false; }
+    });
+
+    // PDF drop zone
+    const $pdz = document.getElementById('pdf-drop-zone');
+    const $pfi = document.getElementById('pdf-file-input');
+    const $pub = document.getElementById('pdf-upload-btn');
+    $pdz.addEventListener('click',     () => $pfi.click());
+    $pdz.addEventListener('dragover',  e => { e.preventDefault(); $pdz.classList.add('dragover'); });
+    $pdz.addEventListener('dragleave', () => $pdz.classList.remove('dragover'));
+    $pdz.addEventListener('drop',      e => { e.preventDefault(); $pdz.classList.remove('dragover'); if (e.dataTransfer.files.length) pickPdf(e.dataTransfer.files[0]); });
+    $pfi.addEventListener('change',    () => { if ($pfi.files.length) pickPdf($pfi.files[0]); });
+    function pickPdf(file) {
+      if (file.type !== 'application/pdf')  { alert('Please select a PDF file'); return; }
+      if (file.size > 20*1024*1024)         { alert('File too large (max 20 MB)'); return; }
+      selectedPdf = file;
+      document.getElementById('pdf-upload-filename').textContent = `Selected: ${file.name}`;
+      document.getElementById('pdf-upload-filename').classList.remove('view-hidden');
+      $pub.disabled = false;
+    }
+    $pub.addEventListener('click', async () => {
+      if (!selectedPdf) return;
+      const title = document.getElementById('pdf-title-input').value.trim();
+      if (!title) { alert('Please enter a document title'); return; }
+      const desc  = document.getElementById('pdf-desc-input').value.trim();
+      const order = parseInt(document.getElementById('pdf-order-input').value) || 0;
+      const $st = document.getElementById('pdf-upload-status');
+      const $br = document.getElementById('pdf-upload-progress-bar');
+      const $tx = document.getElementById('pdf-upload-status-text');
+      $pub.disabled = true; $st.classList.remove('view-hidden'); $br.style.width = '30%'; $tx.textContent = 'Uploading…';
+      try {
+        $br.style.width = '60%';
+        await uploadPdfFile(selectedPdf, title, desc, order);
+        $br.style.width = '100%'; $tx.textContent = 'Upload complete!';
+        selectedPdf = null; $pfi.value = '';
+        document.getElementById('pdf-upload-filename').classList.add('view-hidden');
+        document.getElementById('pdf-title-input').value = '';
+        document.getElementById('pdf-desc-input').value  = '';
+        document.getElementById('pdf-order-input').value = '';
+        setTimeout(() => { $st.classList.add('view-hidden'); $br.style.width = '0%'; $pub.disabled = true; }, 1500);
+        await renderAdminPdfs();
+        if (currentView === 'about') await renderAboutPdfs();
+      } catch (err) { $tx.textContent = 'Error: ' + err.message; $br.style.width = '0%'; $pub.disabled = false; }
+    });
+
+    // ════════════════════════════════════════════════
+    //  RENDER — HOME
+    // ════════════════════════════════════════════════
+    async function renderHomeAwards() {
+      const awards = await fetchAwards();
+      const $list  = document.getElementById('awards-list');
+      const $empty = document.getElementById('awards-empty');
+      if (!awards.length) { $list.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $list.innerHTML = awards.map(a => `
+        <div class="card-accent bg-surface/60 backdrop-blur rounded-lg p-5">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="font-display text-base font-semibold text-ink leading-snug pr-2">${esc(a.title)}</h3>
+            ${a.year ? `<span class="shrink-0 text-xs bg-imperial/10 text-imperial px-2 py-0.5 rounded-full font-medium">${esc(a.year)}</span>` : ''}
+          </div>
+          ${a.description ? `<p class="text-ink/55 text-sm leading-relaxed">${esc(a.description)}</p>` : ''}
+        </div>`).join('');
+    }
+
+    async function renderHomeGallery() {
+      const photos = await fetchGallery();
+      const $grid  = document.getElementById('gallery-grid');
+      if (!photos.length) {
+        $grid.innerHTML = Array.from({length:6},(_,i)=>`<div class="gallery-cell rounded-lg"><span class="text-ink/20 text-xs font-medium">Photo ${i+1}</span></div>`).join('');
+        return;
+      }
+      $grid.innerHTML = photos.map(p => `
+        <div class="gallery-cell rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
+          <img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />
+        </div>`).join('');
+      $grid.querySelectorAll('[data-lburl]').forEach(c => {
+        c.addEventListener('click', () => openLightbox(c.dataset.lburl, c.dataset.lbcap));
+      });
+    }
+
+    // ════════════════════════════════════════════════
+    //  RENDER — ABOUT
+    // ════════════════════════════════════════════════
+    async function renderHomeAbout() {
+      const sections   = await fetchAboutSections();
+      const $container = document.getElementById('about-sections-container');
+      const $empty     = document.getElementById('about-sections-empty');
+      if (!sections.length) { $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $container.innerHTML = sections.map(s => `
+        <div class="card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
+          <h3 class="font-display text-xl text-ink mb-3">${esc(s.title)}</h3>
+          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base">${esc(s.body)}</p>
+        </div>`).join('');
+    }
+
+    async function renderAboutPdfs() {
+      const pdfs   = await fetchPdfs();
+      const $grid  = document.getElementById('pdf-grid');
+      const $empty = document.getElementById('pdf-empty');
+      if (!pdfs.length) { $grid.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $grid.innerHTML = pdfs.map(p => `
+        <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-5 flex flex-col gap-3">
+          <div class="flex items-start gap-3">
+            <div class="pdf-icon-bg">
+              <svg class="w-5 h-5 text-imperial" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-display text-sm font-semibold text-ink leading-snug">${esc(p.title)}</h3>
+              ${p.description ? `<p class="text-ink/50 text-xs mt-0.5 leading-relaxed">${esc(p.description)}</p>` : ''}
+            </div>
+          </div>
+          <a href="${esc(p.file_url)}" target="_blank" rel="noopener noreferrer"
+            class="btn-outline text-xs font-medium px-4 py-2 rounded-lg text-center inline-flex items-center justify-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+            </svg>
+            Download PDF
+          </a>
+        </div>`).join('');
+    }
+
+    // ════════════════════════════════════════════════
+    //  RENDER — ADMIN
+    // ════════════════════════════════════════════════
+    async function renderAdminAwards() {
+      const awards = await fetchAwards();
+      const $tbody = document.getElementById('admin-awards-tbody');
+      const $empty = document.getElementById('admin-awards-empty');
+      if (!awards.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $tbody.innerHTML = awards.map(a => `<tr>
+        <td class="px-4 py-3 font-medium">${esc(a.title)}</td>
+        <td class="px-4 py-3 text-ink/60">${esc(a.year||'')}</td>
+        <td class="px-4 py-3 text-ink/60">${esc(a.description||'')}</td>
+        <td class="px-4 py-3 text-center"><button data-del-award="${a.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+      </tr>`).join('');
+      $tbody.querySelectorAll('[data-del-award]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this award?')) return;
+        if (await deleteAward(b.dataset.delAward)) { await renderAdminAwards(); await renderHomeAwards(); }
+      }));
+    }
+
+    async function renderAdminClasses() {
+      const classes = await fetchClasses();
+      const $tbody  = document.getElementById('admin-classes-tbody');
+      const $empty  = document.getElementById('admin-classes-empty');
+      if (!classes.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $tbody.innerHTML = classes.map(c => `<tr>
+        <td class="px-4 py-3 font-medium">${esc(c.name)}</td>
+        <td class="px-4 py-3 text-ink/60">${esc(c.schedule_time||'')}</td>
+        <td class="px-4 py-3 text-ink/60">${esc(c.level||'')}</td>
+        <td class="px-4 py-3 text-ink/60">${esc(c.description||'')}</td>
+        <td class="px-4 py-3 text-center"><button data-del-class="${c.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+      </tr>`).join('');
+      $tbody.querySelectorAll('[data-del-class]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this class?')) return;
+        if (await deleteClass(b.dataset.delClass)) await renderAdminClasses();
+      }));
+    }
+
+    async function renderAdminAbout() {
+      const sections = await fetchAboutSections();
+      const $tbody   = document.getElementById('admin-about-tbody');
+      const $empty   = document.getElementById('admin-about-empty');
+      if (!sections.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $tbody.innerHTML = sections.map(s => `<tr>
+        <td class="px-4 py-3 font-medium">${esc(s.title)}</td>
+        <td class="px-4 py-3 text-ink/60 text-xs">${esc(s.body.substring(0,90))}${s.body.length>90?'…':''}</td>
+        <td class="px-4 py-3 text-ink/50 text-center">${s.display_order}</td>
+        <td class="px-4 py-3 text-center"><button data-del-about="${s.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+      </tr>`).join('');
+      $tbody.querySelectorAll('[data-del-about]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this section?')) return;
+        if (await deleteAboutSection(b.dataset.delAbout)) {
+          await renderAdminAbout();
+          if (currentView === 'about') await renderHomeAbout();
+        }
+      }));
+    }
+
+    async function renderAdminPdfs() {
+      const pdfs   = await fetchPdfs();
+      const $tbody = document.getElementById('admin-pdf-tbody');
+      const $empty = document.getElementById('admin-pdf-empty');
+      if (!pdfs.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $tbody.innerHTML = pdfs.map(p => `<tr>
+        <td class="px-4 py-3 font-medium">${esc(p.title)}</td>
+        <td class="px-4 py-3 text-ink/60 text-xs">${esc(p.description||'—')}</td>
+        <td class="px-4 py-3 text-ink/50 text-center text-xs">${p.display_order}</td>
+        <td class="px-4 py-3 text-ink/40 text-xs">${new Date(p.created_at).toLocaleDateString()}</td>
+        <td class="px-4 py-3 text-center text-xs">
+          <a href="${esc(p.file_url)}" target="_blank" class="text-imperial hover:underline mr-3">View</a>
+          <button data-del-pdf="${p.id}" data-pdf-url="${esc(p.file_url)}" class="text-imperial hover:underline font-medium">Delete</button>
+        </td>
+      </tr>`).join('');
+      $tbody.querySelectorAll('[data-del-pdf]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this PDF?')) return;
+        if (await deletePdf(b.dataset.delPdf, b.dataset.pdfUrl)) {
+          await renderAdminPdfs();
+          if (currentView === 'about') await renderAboutPdfs();
+        }
+      }));
+    }
+
+    async function renderAdminGallery() {
+      const photos = await fetchGallery();
+      const $tbody = document.getElementById('admin-gallery-tbody');
+      const $empty = document.getElementById('admin-gallery-empty');
+      if (!photos.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $tbody.innerHTML = photos.map(p => `<tr>
+        <td class="px-4 py-3"><img src="${esc(p.image_url)}" class="w-14 h-10 object-cover rounded border border-imperial/10"/></td>
+        <td class="px-4 py-3 text-ink/60">${esc(p.caption||'—')}</td>
+        <td class="px-4 py-3 text-ink/40 text-xs">${new Date(p.created_at).toLocaleDateString()}</td>
+        <td class="px-4 py-3 text-center"><button data-del-gal="${p.id}" data-gal-url="${esc(p.image_url)}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+      </tr>`).join('');
+      $tbody.querySelectorAll('[data-del-gal]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this photo?')) return;
+        if (await deleteGalleryItem(b.dataset.delGal, b.dataset.galUrl)) { await renderAdminGallery(); await renderHomeGallery(); }
+      }));
+    }
+
+    const STATUS_STYLES = {
+      pending:                'bg-amber-50  text-amber-700  border border-amber-200',
+      awaiting_verification:  'bg-blue-50   text-blue-700   border border-blue-200',
+      confirmed:              'bg-green-50  text-green-700  border border-green-200',
+      cancelled:              'bg-red-50    text-red-700    border border-red-200',
+    };
+    const STATUS_LABELS = {
+      pending:               'Pending',
+      awaiting_verification: 'Awaiting Verification',
+      confirmed:             'Confirmed',
+      cancelled:             'Cancelled',
+    };
+
+    async function renderAdminRegistrations() {
+      const regs   = await fetchRegistrations();
+      const $tbody = document.getElementById('admin-reg-tbody');
+      const $empty = document.getElementById('admin-reg-empty');
+      const $badge = document.getElementById('reg-count-badge');
+      const pending = regs.filter(r => r.status === 'pending').length;
+      if (pending > 0) { $badge.textContent = `${pending} pending`; $badge.classList.remove('view-hidden'); }
+      else             { $badge.classList.add('view-hidden'); }
+      if (!regs.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $tbody.innerHTML = regs.map(r => `<tr>
+        <td class="px-4 py-3 font-medium">${esc(r.student_name)}${r.date_of_birth?`<div class="text-xs text-ink/40">${new Date(r.date_of_birth).toLocaleDateString()}</div>`:''}</td>
+        <td class="px-4 py-3 text-ink/70">${esc(r.parent_name)}</td>
+        <td class="px-4 py-3 text-ink/60 text-xs"><div>${esc(r.email)}</div><div>${esc(r.phone)}</div></td>
+        <td class="px-4 py-3 text-ink/60">${esc(r.class_name||'—')}</td>
+        <td class="px-4 py-3 text-ink/60 capitalize">${esc(r.experience_level||'—')}</td>
+        <td class="px-4 py-3 text-ink/40 text-xs whitespace-nowrap">${new Date(r.created_at).toLocaleDateString()}</td>
+        <td class="px-4 py-3">
+          <select data-status-reg="${r.id}" class="text-xs px-2 py-1 rounded-full font-medium focus:outline-none ${STATUS_STYLES[r.status]||''}">
+            <option value="pending"                ${r.status==='pending'               ?'selected':''}>Pending</option>
+            <option value="awaiting_verification"  ${r.status==='awaiting_verification' ?'selected':''}>Awaiting Verification</option>
+            <option value="confirmed"              ${r.status==='confirmed'             ?'selected':''}>Confirmed</option>
+            <option value="cancelled"              ${r.status==='cancelled'             ?'selected':''}>Cancelled</option>
+          </select>
+        </td>
+        <td class="px-4 py-3 text-center"><button data-del-reg="${r.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+      </tr>`).join('');
+      $tbody.querySelectorAll('[data-status-reg]').forEach(sel => sel.addEventListener('change', async () => {
+        if (await updateRegStatus(sel.dataset.statusReg, sel.value))
+          sel.className = `text-xs px-2 py-1 rounded-full font-medium focus:outline-none ${STATUS_STYLES[sel.value]||''}`;
+      }));
+      $tbody.querySelectorAll('[data-del-reg]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this registration?')) return;
+        if (await deleteRegistration(b.dataset.delReg)) await renderAdminRegistrations();
+      }));
+    }
+
+    // ── Class dropdown ─────────────────────────────
+    async function populateClassDropdown() {
+      const classes = await fetchClasses();
+      const $sel    = document.getElementById('reg-class');
+      $sel.innerHTML = '<option value="">— Select a class —</option>' +
+        classes.map(c => `<option value="${esc(c.id)}" data-name="${esc(c.name)}">${esc(c.name)}${c.schedule_time?' — '+esc(c.schedule_time):''}</option>`).join('');
+    }
+
+    // ── Form handlers ──────────────────────────────
+    document.getElementById('reg-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const $btn = document.getElementById('reg-submit');
+      const $err = document.getElementById('reg-error');
+      $err.classList.add('view-hidden'); $btn.disabled = true; $btn.textContent = 'Submitting…';
+      const sel = document.getElementById('reg-class');
+      try {
+        const regId = await submitRegistration({
+          student_name:     document.getElementById('reg-student-name').value.trim(),
+          parent_name:      document.getElementById('reg-parent-name').value.trim(),
+          email:            document.getElementById('reg-email').value.trim(),
+          phone:            document.getElementById('reg-phone').value.trim(),
+          date_of_birth:    document.getElementById('reg-dob').value || null,
+          class_id:         sel.value || null,
+          class_name:       sel.value ? sel.options[sel.selectedIndex].dataset.name : null,
+          experience_level: document.getElementById('reg-experience').value || null,
+          notes:            document.getElementById('reg-notes').value.trim() || null,
+        });
+        e.target.reset();
+        // Activate step-2 indicator
+        document.getElementById('step-1-dot').classList.add('opacity-35');
+        document.getElementById('step-2-dot').classList.remove('opacity-35');
+        document.getElementById('step-2-num').className = 'w-7 h-7 rounded-full bg-imperial text-cream flex items-center justify-center text-xs font-semibold';
+        // Show payment step
+        document.getElementById('reg-form').classList.add('view-hidden');
+        await renderPaymentStep(regId);
+        document.getElementById('reg-payment-step').classList.remove('view-hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) { $err.textContent = 'Submission failed: ' + err.message; $err.classList.remove('view-hidden'); }
+      $btn.disabled = false; $btn.textContent = 'Submit Application';
+    });
+
+    document.getElementById('reg-another').addEventListener('click', () => {
+      document.getElementById('reg-success').classList.add('view-hidden');
+      document.getElementById('reg-payment-step').classList.add('view-hidden');
+      document.getElementById('reg-form').classList.remove('view-hidden');
+      // Reset step indicator
+      document.getElementById('step-1-dot').classList.remove('opacity-35');
+      document.getElementById('step-2-dot').classList.add('opacity-35');
+      document.getElementById('step-2-num').className = 'w-7 h-7 rounded-full border-2 border-imperial/40 text-ink/40 flex items-center justify-center text-xs font-semibold';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.getElementById('add-award-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const title = document.getElementById('award-title').value.trim();
+      const year  = document.getElementById('award-year').value.trim();
+      const desc  = document.getElementById('award-desc').value.trim();
+      if (!title) return;
+      if (await addAward(title, year||null, desc||null)) {
+        ['award-title','award-year','award-desc'].forEach(id => document.getElementById(id).value = '');
+        await renderAdminAwards(); await renderHomeAwards();
+      }
+    });
+
+    document.getElementById('add-class-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const name  = document.getElementById('class-name').value.trim();
+      const time  = document.getElementById('class-time').value.trim();
+      const level = document.getElementById('class-level').value.trim();
+      const desc  = document.getElementById('class-desc').value.trim();
+      if (!name) return;
+      if (await addClass(name, time||null, level||null, desc||null)) {
+        ['class-name','class-time','class-level','class-desc'].forEach(id => document.getElementById(id).value = '');
+        await renderAdminClasses();
+      }
+    });
+
+    document.getElementById('add-about-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const title = document.getElementById('about-title-input').value.trim();
+      const body  = document.getElementById('about-body-input').value.trim();
+      const order = parseInt(document.getElementById('about-order-input').value) || 0;
+      if (!title || !body) return;
+      if (await addAboutSection(title, body, order)) {
+        ['about-title-input','about-body-input','about-order-input'].forEach(id => document.getElementById(id).value = '');
+        await renderAdminAbout();
+        if (currentView === 'about') await renderHomeAbout();
+      }
+    });
+
+    // ════════════════════════════════════════════════
+    //  PAYMENT — DATA + RENDER
+    // ════════════════════════════════════════════════
+    async function fetchActivePaymentSetting() {
+      const { data, error } = await supabase.from('payment_settings')
+        .select('*').eq('is_active', true).limit(1).maybeSingle();
+      if (error) { console.error(error); return null; }
+      return data;
+    }
+    async function fetchAnyPaymentSetting() {
+      const { data, error } = await supabase.from('payment_settings')
+        .select('*').order('created_at', { ascending: false }).limit(1).maybeSingle();
+      if (error) { console.error(error); return null; }
+      return data;
+    }
+    async function savePaymentSettings({ id, method_name, handle, instructions, qr_code_url, is_active }) {
+      if (id) {
+        const { error } = await supabase.from('payment_settings')
+          .update({ method_name, handle, instructions, qr_code_url, is_active }).eq('id', id);
+        if (error) throw new Error(error.message);
+      } else {
+        const { error } = await supabase.from('payment_settings')
+          .insert({ method_name, handle, instructions, qr_code_url, is_active });
+        if (error) throw new Error(error.message);
+      }
+    }
+
+    async function renderPaymentStep(regId) {
+      const setting = await fetchActivePaymentSetting();
+      const $content = document.getElementById('reg-payment-content');
+      if (!setting) {
+        // No payment method configured — skip to success
+        document.getElementById('reg-payment-step').classList.add('view-hidden');
+        document.getElementById('reg-success').classList.remove('view-hidden');
+        return;
+      }
+      const isVenmo  = setting.method_name === 'Venmo';
+      const isZelle  = setting.method_name === 'Zelle';
+      const deepLink = isVenmo ? `https://venmo.com/u/${encodeURIComponent(setting.handle)}`
+                     : isZelle ? `https://enroll.zellepay.com/qr-codes?data=${encodeURIComponent(setting.handle)}`
+                     : null;
+      // Payment method icon
+      const icon = isVenmo
+        ? `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.21 2c.8 1.33 1.16 2.69 1.16 4.4 0 5.49-4.69 12.63-8.49 17.6H4.61L1 2.94l7.49-.71 2.17 8.62C12.44 8.25 14 4.72 14 2.64c0-1.06-.18-1.79-.46-2.39L19.21 2z"/></svg>`
+        : isZelle
+        ? `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.5 16.5h-7.83l5.08-6H7.5V9H15l-5.08 6H17.5v1.5z"/></svg>`
+        : `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75"/></svg>`;
+
+      $content.innerHTML = `
+        <div class="flex items-center gap-3 pb-4 border-b border-imperial/10">
+          <div class="w-10 h-10 rounded-lg bg-imperial/10 text-imperial flex items-center justify-center flex-shrink-0">
+            ${icon}
+          </div>
+          <div>
+            <p class="text-xs font-medium text-ink/50 uppercase tracking-wider">Payment Method</p>
+            <p class="font-display text-lg text-ink leading-tight">${esc(setting.method_name)}
+              <span class="text-base text-ink/60 font-normal font-body">— ${esc(setting.handle)}</span>
+            </p>
+          </div>
+        </div>
+        ${setting.instructions ? `
+        <div class="pl-4 border-l-2 border-imperial/25 py-1">
+          <p class="text-ink/65 text-sm leading-relaxed">${esc(setting.instructions)}</p>
+        </div>` : ''}
+        ${deepLink ? `
+        <a href="${esc(deepLink)}" target="_blank" rel="noopener noreferrer"
+          class="btn-imperial w-full flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-medium">
+          ${icon}
+          Open ${esc(setting.method_name)} — ${esc(setting.handle)}
+        </a>` : `
+        <div class="bg-imperial/5 rounded-lg p-4 text-center">
+          <p class="font-medium text-ink text-sm">Handle / Number</p>
+          <p class="text-imperial font-semibold text-lg mt-1">${esc(setting.handle)}</p>
+        </div>`}
+        ${setting.qr_code_url ? `
+        <div class="text-center pt-2">
+          <p class="text-xs text-ink/45 mb-3 uppercase tracking-wider">Or scan the QR code</p>
+          <img src="${esc(setting.qr_code_url)}" alt="Payment QR Code"
+            class="mx-auto max-w-[180px] rounded-xl border border-imperial/10 shadow-sm" />
+        </div>` : ''}`;
+
+      // Wire up "I have sent" button
+      const $sentBtn = document.getElementById('reg-payment-sent-btn');
+      const newBtn = $sentBtn.cloneNode(true); // remove old listeners
+      $sentBtn.parentNode.replaceChild(newBtn, $sentBtn);
+      newBtn.addEventListener('click', async () => {
+        newBtn.disabled = true; newBtn.textContent = 'Recording…';
+        await updateRegStatus(regId, 'awaiting_verification');
+        document.getElementById('reg-payment-step').classList.add('view-hidden');
+        document.getElementById('reg-success').classList.remove('view-hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    // ════════════════════════════════════════════════
+    //  ADMIN — PENDING REGISTRATIONS
+    // ════════════════════════════════════════════════
+    async function renderAdminPendingRegistrations() {
+      const { data: regs, error } = await supabase.from('registrations')
+        .select('*')
+        .in('status', ['pending', 'awaiting_verification'])
+        .order('created_at', { ascending: false });
+      if (error) { console.error(error); return; }
+      const $tbody = document.getElementById('admin-pending-tbody');
+      const $empty = document.getElementById('admin-pending-empty');
+      const $badge = document.getElementById('pending-reg-badge');
+      if (!regs || !regs.length) {
+        $tbody.innerHTML = ''; $empty.classList.remove('view-hidden');
+        $badge.classList.add('view-hidden'); return;
+      }
+      $empty.classList.add('view-hidden');
+      $badge.textContent = `${regs.length} pending`; $badge.classList.remove('view-hidden');
+      $tbody.innerHTML = regs.map(r => `<tr>
+        <td class="px-4 py-3 font-medium">${esc(r.student_name)}</td>
+        <td class="px-4 py-3 text-ink/70">${esc(r.parent_name)}</td>
+        <td class="px-4 py-3 text-ink/60 text-xs"><div>${esc(r.email)}</div><div>${esc(r.phone)}</div></td>
+        <td class="px-4 py-3 text-ink/60 text-xs">${esc(r.class_name||'—')}</td>
+        <td class="px-4 py-3">
+          <span class="text-xs px-2 py-1 rounded-full font-medium ${STATUS_STYLES[r.status]||''}">
+            ${STATUS_LABELS[r.status]||r.status}
+          </span>
+        </td>
+        <td class="px-4 py-3 text-ink/40 text-xs whitespace-nowrap">${new Date(r.created_at).toLocaleDateString()}</td>
+        <td class="px-4 py-3 text-center whitespace-nowrap">
+          <button data-approve-reg="${r.id}" class="btn-imperial text-xs px-3 py-1.5 rounded-lg font-medium mr-2">Approve</button>
+          <button data-deny-reg="${r.id}"    class="text-imperial hover:underline text-xs font-medium">Deny</button>
+        </td>
+      </tr>`).join('');
+      $tbody.querySelectorAll('[data-approve-reg]').forEach(b => b.addEventListener('click', async () => {
+        if (await updateRegStatus(b.dataset.approveReg, 'confirmed')) {
+          await renderAdminPendingRegistrations();
+          await renderAdminRegistrations();
+        }
+      }));
+      $tbody.querySelectorAll('[data-deny-reg]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Mark this registration as cancelled?')) return;
+        if (await updateRegStatus(b.dataset.denyReg, 'cancelled')) {
+          await renderAdminPendingRegistrations();
+          await renderAdminRegistrations();
+        }
+      }));
+    }
+
+    // ════════════════════════════════════════════════
+    //  ADMIN — PAYMENT SETTINGS
+    // ════════════════════════════════════════════════
+    async function renderAdminPaymentSettings() {
+      const setting = await fetchAnyPaymentSetting();
+      if (!setting) return;
+      document.getElementById('ps-method').value        = setting.method_name  || 'Venmo';
+      document.getElementById('ps-handle').value        = setting.handle       || '';
+      document.getElementById('ps-instructions').value  = setting.instructions || '';
+      document.getElementById('ps-qr-url').value        = setting.qr_code_url  || '';
+      document.getElementById('ps-active').checked      = setting.is_active;
+      document.getElementById('payment-settings-form').dataset.settingId = setting.id;
+    }
+
+    document.getElementById('payment-settings-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const $status = document.getElementById('ps-status');
+      $status.classList.add('view-hidden');
+      const id = document.getElementById('payment-settings-form').dataset.settingId || null;
+      try {
+        await savePaymentSettings({
+          id:           id || undefined,
+          method_name:  document.getElementById('ps-method').value,
+          handle:       document.getElementById('ps-handle').value.trim(),
+          instructions: document.getElementById('ps-instructions').value.trim() || null,
+          qr_code_url:  document.getElementById('ps-qr-url').value.trim() || null,
+          is_active:    document.getElementById('ps-active').checked,
+        });
+        $status.textContent = '✓ Settings saved'; $status.classList.remove('view-hidden');
+        setTimeout(() => $status.classList.add('view-hidden'), 2500);
+        await renderAdminPaymentSettings();
+      } catch (err) { $status.textContent = 'Error: ' + err.message; $status.classList.remove('view-hidden'); }
+    });
+
+    // ════════════════════════════════════════════════
+    //  LIGHTBOX
+    // ════════════════════════════════════════════════
+    const $lb = document.getElementById('lightbox');
+    function openLightbox(url, cap) {
+      document.getElementById('lightbox-img').src = url;
+      document.getElementById('lightbox-caption').textContent = cap || '';
+      document.getElementById('lightbox-caption').classList.toggle('view-hidden', !cap);
+      $lb.classList.add('active'); $lb.setAttribute('aria-hidden','false');
+    }
+    function closeLightbox() { $lb.classList.remove('active'); $lb.setAttribute('aria-hidden','true'); }
+    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+    $lb.addEventListener('click', e => { if (e.target === $lb) closeLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    // ════════════════════════════════════════════════
+    //  GROQ AI CHAT
+    // ════════════════════════════════════════════════
+    const $fab   = document.getElementById('chat-fab');
+    const $panel = document.getElementById('chat-panel');
+    const $msgs  = document.getElementById('chat-messages');
+    const $inp   = document.getElementById('chat-input');
+    const $send  = document.getElementById('chat-send');
+
+    $fab.addEventListener('click', () => {
+      chatOpen = !chatOpen;
+      $panel.classList.toggle('active', chatOpen);
+      if (chatOpen && !chatHistory.length) {
+        addBotMsg("Hi! I'm **Pearl**, your academy assistant. Ask me about classes, awards, or visit **About** to learn our story!");
+        buildChatContext();
+      }
+      if (chatOpen) $inp.focus();
+    });
+
+    async function buildChatContext() {
+      const [awards, classes] = await Promise.all([fetchAwards(), fetchClasses()]);
+      let ctx = `You are Pearl, the friendly AI assistant for Bright Pearl Academy — a Chinese dance school founded in 2018.
+Personality: warm, concise, encouraging. 1-3 sentences per reply unless detail is requested.
+For pricing or unknown topics, suggest contacting the academy.
+
+CLASSES:\n`;
+      classes.length ? classes.forEach(c => { ctx += `- ${c.name} | ${c.schedule_time||'TBD'} | Level: ${c.level||'All'} | ${c.description||''}\n`; }) : (ctx += '(None listed yet)\n');
+      ctx += `\nAWARDS:\n`;
+      awards.length  ? awards.forEach(a  => { ctx += `- ${a.title}${a.year?` (${a.year})`:''}: ${a.description||''}\n`; }) : (ctx += '(None listed yet)\n');
+      ctx += `\nSITES: Home (hero/awards/gallery), About (story + PDF downloads), Register (no payment needed), Admin (staff).
+To enroll: direct users to click "Register" in the nav. Documents are on the About page under "Downloads & Resources".`;
+      chatContext = ctx;
+    }
+
+    async function sendMessage(text) {
+      if (!text.trim() || isSending) return;
+      isSending = true; $send.disabled = true;
+      addUserMsg(text); chatHistory.push({ role:'user', content:text });
+      const $t = document.createElement('div');
+      $t.className = 'chat-typing'; $t.innerHTML = '<span></span><span></span><span></span>';
+      $msgs.appendChild($t); $msgs.scrollTop = $msgs.scrollHeight;
+      try {
+        if (!chatContext) await buildChatContext();
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${GROQ_API_KEY}` },
+          body: JSON.stringify({ model:GROQ_MODEL, messages:[{role:'system',content:chatContext},...chatHistory.slice(-16)], temperature:0.7, max_tokens:512 }),
+        });
+        const json = await res.json(); $t.remove();
+        if (json.error) throw new Error(json.error.message);
+        const reply = json.choices?.[0]?.message?.content || 'I couldn\'t generate a response. Please try again.';
+        chatHistory.push({ role:'assistant', content:reply }); addBotMsg(reply);
+      } catch (err) { $t.remove(); addBotMsg('Sorry, connection issue. Please try again.'); console.error(err); }
+      isSending = false; $send.disabled = false; $inp.focus();
+    }
+
+    $send.addEventListener('click', () => { sendMessage($inp.value); $inp.value = ''; });
+    $inp.addEventListener('keydown', e => { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); sendMessage($inp.value); $inp.value = ''; } });
+    document.querySelectorAll('[data-quick]').forEach(b => b.addEventListener('click', () => sendMessage(b.dataset.quick)));
+    document.querySelector('[data-tour]').addEventListener('click', startSiteTour);
+
+    async function startSiteTour() {
+      if (tourActive) return; tourActive = true;
+      if (currentView !== 'home') showView('home');
+      const steps = [
+        { id:'section-hero',    msg:"Welcome to **Bright Pearl Academy**! Here on the Home page you'll find our mission and a taste of what we offer." },
+        { id:'section-awards',  msg:"These are our **Awards & Honors** — recognition from competitions and cultural festivals across North America." },
+        { id:'section-gallery', msg:"Our **Gallery** captures performances and rehearsals. Click any photo to enlarge it." },
+      ];
+      for (const s of steps) {
+        addBotMsg(s.msg); await sleep(800);
+        const el = document.getElementById(s.id);
+        if (el) { el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('tour-highlight'); await sleep(3000); el.classList.remove('tour-highlight'); }
+      }
+      addBotMsg("Visit the **About** page to read our story and download resources. Ready to join? Click **Register** in the menu — no payment needed at that stage!");
+      await sleep(1500);
+      addBotMsg("Tour complete! What else can I help you with?");
+      tourActive = false;
+    }
+
+    function addUserMsg(text) {
+      const $e = document.createElement('div'); $e.className = 'chat-bubble user'; $e.textContent = text;
+      $msgs.appendChild($e); $msgs.scrollTop = $msgs.scrollHeight;
+    }
+    function addBotMsg(text) {
+      const $e = document.createElement('div'); $e.className = 'chat-bubble assistant';
+      $e.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      $msgs.appendChild($e); $msgs.scrollTop = $msgs.scrollHeight;
+    }
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    // ── Utility ────────────────────────────────────
+    function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+    // ── Init ───────────────────────────────────────
+    showView('home');
+    renderHomeAwards();
+    renderHomeGallery();
+  </script>
+</body>
+</html>
