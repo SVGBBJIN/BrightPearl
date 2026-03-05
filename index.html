@@ -40,11 +40,11 @@
   <style>
     /* ── CSS Color Variables ──────────────────────── */
     :root {
-      --cream-rgb:           249 247 242;   /* #f9f7f2  warm cream        */
-      --ink-rgb:             26  26  26;    /* #1a1a1a  near-black         */
-      --imperial-rgb:        91  79  207;   /* #5b4fcf  blue-purple        */
-      --imperial-hover-rgb:  74  61  191;   /* #4a3dbf  darker hover       */
-      --surface-rgb:         255 255 255;   /* white cards                 */
+      --cream-rgb:           246 240 243;   /* gray-rose light backdrop    */
+      --ink-rgb:             45  37  46;    /* deep plum-gray text         */
+      --imperial-rgb:        161 98  138;   /* rose plum primary           */
+      --imperial-hover-rgb:  138 79  117;   /* darker hover                */
+      --surface-rgb:         252 247 250;   /* soft rose-not-white cards   */
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -143,6 +143,37 @@
     }
     .gallery-cell:hover { border-color: rgb(var(--imperial-rgb) / 0.4); transform: scale(1.02); }
     .gallery-cell img   { width: 100%; height: 100%; object-fit: cover; }
+
+    .gallery-mosaic-item { min-height: 160px; }
+    .gallery-mosaic-item.tall { min-height: 340px; }
+    .gallery-mosaic-item.wide { grid-column: span 2; }
+    .gallery-carousel-track {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(240px, 32vw);
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scroll-snap-type: x mandatory;
+    }
+    .gallery-carousel-track .gallery-cell {
+      scroll-snap-align: center;
+      min-height: 220px;
+    }
+    .gallery-carousel-track .gallery-cell.hero { min-height: 300px; }
+
+    .admin-quick-tabs {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .admin-quick-tab {
+      border: 1px solid rgb(var(--imperial-rgb) / 0.2);
+      color: rgb(var(--ink-rgb));
+      border-radius: 999px;
+      padding: 0.35rem 0.8rem;
+      font-size: 0.72rem;
+      background: rgb(var(--surface-rgb) / 0.7);
+    }
 
     /* ── Admin Table ─────────────────────────────── */
     .admin-table th {
@@ -413,7 +444,11 @@
     <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
       <p class="text-center text-ink/50 text-sm mb-10">Moments captured in motion</p>
-      <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
+      <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4 auto-rows-[160px]"></div>
+      <div id="gallery-carousel-wrap" class="mt-6 view-hidden">
+        <p class="text-ink/50 text-xs uppercase tracking-[0.24em] mb-3 text-center">Featured Highlights</p>
+        <div id="gallery-carousel" class="gallery-carousel-track"></div>
+      </div>
     </section>
 
     <!-- Footer -->
@@ -442,6 +477,16 @@
     <!-- About Sections -->
     <div class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 space-y-6" id="about-sections-container"></div>
     <p id="about-sections-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Our story is coming soon — check back shortly.</p>
+
+    <div class="ink-divider"></div>
+
+    <!-- Community Pages -->
+    <section id="section-community-pages" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Community Pages</h2>
+      <p class="text-center text-ink/50 text-sm mb-10">Admin-published pages for events, announcements, and team updates</p>
+      <div id="custom-pages-grid" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <p id="custom-pages-empty" class="view-hidden text-center text-ink/40 italic py-8">No extra pages published yet.</p>
+    </section>
 
     <div class="ink-divider"></div>
 
@@ -629,13 +674,25 @@
       <div class="flex items-center justify-between mb-10">
         <div>
           <h2 class="font-display text-2xl sm:text-3xl text-ink">Dashboard</h2>
-          <p class="text-ink/50 text-sm">Manage content, classes, gallery &amp; registrations</p>
+          <p class="text-ink/50 text-sm">Manage key content quickly with focused sections</p>
         </div>
         <span id="admin-email-badge" class="text-xs bg-imperial/10 text-imperial px-3 py-1 rounded-full"></span>
       </div>
 
+      <div class="admin-quick-tabs">
+        <button type="button" class="admin-quick-tab" data-admin-jump="admin-pending">Pending</button>
+        <button type="button" class="admin-quick-tab" data-admin-jump="admin-payment">Payments</button>
+        <button type="button" class="admin-quick-tab" data-admin-jump="admin-awards">Awards</button>
+        <button type="button" class="admin-quick-tab" data-admin-jump="admin-classes">Classes</button>
+        <button type="button" class="admin-quick-tab" data-admin-jump="admin-about">About</button>
+        <button type="button" class="admin-quick-tab" data-admin-jump="admin-custom-pages">Pages</button>
+        <button type="button" class="admin-quick-tab" data-admin-jump="admin-pdfs">PDFs</button>
+        <button type="button" class="admin-quick-tab" data-admin-jump="admin-gallery">Gallery</button>
+        <button type="button" class="admin-quick-tab" data-admin-jump="admin-registrations">All Registrations</button>
+      </div>
+
       <!-- ── Pending Registrations ── -->
-      <div class="mb-14">
+      <div id="admin-pending" class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Pending Registrations
           <span id="pending-reg-badge" class="view-hidden text-xs bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium ml-1"></span>
@@ -658,7 +715,7 @@
       </div>
 
       <!-- ── Payment Settings ── -->
-      <div class="mb-14">
+      <div id="admin-payment" class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Payment Settings
         </h3>
@@ -701,7 +758,7 @@
       </div>
 
       <!-- ── Awards ── -->
-      <div class="mb-14">
+      <div id="admin-awards" class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Awards
         </h3>
@@ -726,7 +783,7 @@
       </div>
 
       <!-- ── Classes ── -->
-      <div class="mb-14">
+      <div id="admin-classes" class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Classes
         </h3>
@@ -753,7 +810,7 @@
       </div>
 
       <!-- ── About Sections ── -->
-      <div class="mb-14">
+      <div id="admin-about" class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>About Page Sections
         </h3>
@@ -782,8 +839,37 @@
         <p id="admin-about-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No about sections yet.</p>
       </div>
 
+      <!-- ── Custom Pages ── -->
+      <div id="admin-custom-pages" class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Custom Pages
+        </h3>
+        <form id="add-custom-page-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
+          <div class="grid sm:grid-cols-4 gap-3">
+            <input id="custom-page-title-input" type="text" placeholder="Page Title *" required class="sm:col-span-2 px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="custom-page-slug-input" type="text" placeholder="Slug (e.g. spring-show)" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="custom-page-order-input" type="number" placeholder="Order" min="0" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          </div>
+          <textarea id="custom-page-body-input" rows="4" placeholder="Page content..." required class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Publish Page</button>
+        </form>
+        <div class="overflow-x-auto rounded-lg border border-imperial/10">
+          <table class="admin-table w-full text-sm">
+            <thead><tr>
+              <th class="text-left px-4 py-3 rounded-tl-lg">Title</th>
+              <th class="text-left px-4 py-3">Slug</th>
+              <th class="text-left px-4 py-3">Preview</th>
+              <th class="text-center px-4 py-3">Order</th>
+              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+            </tr></thead>
+            <tbody id="admin-custom-pages-tbody" class="bg-surface/40"></tbody>
+          </table>
+        </div>
+        <p id="admin-custom-pages-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No custom pages yet.</p>
+      </div>
+
       <!-- ── PDF Downloads ── -->
-      <div class="mb-14">
+      <div id="admin-pdfs" class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>PDF Downloads
         </h3>
@@ -831,7 +917,7 @@
       </div>
 
       <!-- ── Gallery Photos ── -->
-      <div class="mb-14">
+      <div id="admin-gallery" class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Gallery Photos
         </h3>
@@ -871,7 +957,7 @@
       </div>
 
       <!-- ── Registrations ── -->
-      <div class="mb-14">
+      <div id="admin-registrations" class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Registrations
           <span id="reg-count-badge" class="view-hidden text-xs bg-imperial/10 text-imperial px-2 py-0.5 rounded-full font-medium ml-1"></span>
@@ -953,6 +1039,7 @@
     let tourActive   = false;
     let selectedFile = null;
     let selectedPdf  = null;
+    const CUSTOM_PAGES_KEY = "brightpearl_custom_pages";
 
     // ── DOM refs ───────────────────────────────────
     const $homeView       = document.getElementById('home-view');
@@ -987,6 +1074,7 @@
           renderAdminAwards();
           renderAdminClasses();
           renderAdminAbout();
+          renderAdminCustomPages();
           renderAdminPdfs();
           renderAdminGallery();
           renderAdminRegistrations();
@@ -995,6 +1083,7 @@
         $navLogout.classList.add('view-hidden');
         $navAdmin.classList.remove('view-hidden');
         renderHomeAbout();
+        renderHomeCustomPages();
         renderAboutPdfs();
       } else if (view === 'register') {
         $navLogout.classList.add('view-hidden');
@@ -1014,6 +1103,12 @@
     document.getElementById('nav-admin').addEventListener('click',         () => showView('admin'));
     document.getElementById('hero-cta-register').addEventListener('click', () => showView('register'));
     document.getElementById('hero-cta-about').addEventListener('click',    () => showView('about'));
+    document.querySelectorAll('[data-admin-jump]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.adminJump);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
     document.getElementById('nav-logout').addEventListener('click', async () => {
       try { await supabase.auth.signOut(); } catch (err) { console.error(err); }
       session = null; showView('home');
@@ -1057,6 +1152,12 @@
       const { data, error } = await supabase.from('about_sections').select('*').order('display_order', { ascending: true });
       if (error) { console.error(error); return []; } return data || [];
     }
+    async function fetchCustomPages() {
+      const localPages = JSON.parse(localStorage.getItem(CUSTOM_PAGES_KEY) || '[]');
+      const { data, error } = await supabase.from('custom_pages').select('*').order('display_order', { ascending: true });
+      if (error) { return localPages; }
+      return (data && data.length ? data : localPages) || [];
+    }
     async function fetchPdfs() {
       const { data, error } = await supabase.from('pdfs').select('*').order('display_order', { ascending: true });
       if (error) { console.error(error); return []; } return data || [];
@@ -1089,6 +1190,22 @@
     async function deleteAboutSection(id) {
       const { error } = await supabase.from('about_sections').delete().eq('id', id);
       if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function addCustomPage(title, slug, body, display_order) {
+      const localPages = JSON.parse(localStorage.getItem(CUSTOM_PAGES_KEY) || '[]');
+      const payload = { id: Date.now(), title, slug, body, display_order, created_at: new Date().toISOString() };
+      localPages.push(payload);
+      localStorage.setItem(CUSTOM_PAGES_KEY, JSON.stringify(localPages.sort((a,b)=>(a.display_order||0)-(b.display_order||0))));
+      const { error } = await supabase.from('custom_pages').insert({ title, slug, body, display_order });
+      if (error && !/custom_pages/i.test(error.message)) { alert('Error: ' + error.message); return false; }
+      return true;
+    }
+    async function deleteCustomPage(id) {
+      const localPages = JSON.parse(localStorage.getItem(CUSTOM_PAGES_KEY) || '[]').filter(p => String(p.id) !== String(id));
+      localStorage.setItem(CUSTOM_PAGES_KEY, JSON.stringify(localPages));
+      const { error } = await supabase.from('custom_pages').delete().eq('id', id);
+      if (error && !/custom_pages/i.test(error.message)) { alert('Error: ' + error.message); return false; }
+      return true;
     }
     async function deletePdf(id, fileUrl) {
       const parts = fileUrl.split('/pdfs/');
@@ -1237,15 +1354,27 @@
     async function renderHomeGallery() {
       const photos = await fetchGallery();
       const $grid  = document.getElementById('gallery-grid');
+      const $carouselWrap = document.getElementById('gallery-carousel-wrap');
+      const $carousel = document.getElementById('gallery-carousel');
       if (!photos.length) {
-        $grid.innerHTML = Array.from({length:6},(_,i)=>`<div class="gallery-cell rounded-lg"><span class="text-ink/20 text-xs font-medium">Photo ${i+1}</span></div>`).join('');
+        $grid.innerHTML = Array.from({length:8},(_,i)=>`<div class="gallery-cell gallery-mosaic-item rounded-lg"><span class="text-ink/20 text-xs font-medium">Photo ${i+1}</span></div>`).join('');
+        $carouselWrap.classList.add('view-hidden');
         return;
       }
-      $grid.innerHTML = photos.map(p => `
-        <div class="gallery-cell rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
+      $grid.innerHTML = photos.map((p, i) => {
+        const variant = i % 7;
+        const shape = variant === 0 ? 'tall' : (variant === 3 || variant === 5 ? 'wide' : '');
+        return `<div class="gallery-cell gallery-mosaic-item ${shape} rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
+          <img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />
+        </div>`;
+      }).join('');
+      const featured = photos.slice(0, Math.min(6, photos.length));
+      $carousel.innerHTML = featured.map((p, i) => `
+        <div class="gallery-cell ${i===0 ? 'hero' : ''} rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
           <img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />
         </div>`).join('');
-      $grid.querySelectorAll('[data-lburl]').forEach(c => {
+      $carouselWrap.classList.toggle('view-hidden', featured.length < 2);
+      document.querySelectorAll('#gallery-grid [data-lburl], #gallery-carousel [data-lburl]').forEach(c => {
         c.addEventListener('click', () => openLightbox(c.dataset.lburl, c.dataset.lbcap));
       });
     }
@@ -1264,6 +1393,22 @@
           <h3 class="font-display text-xl text-ink mb-3">${esc(s.title)}</h3>
           <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base">${esc(s.body)}</p>
         </div>`).join('');
+    }
+
+    async function renderHomeCustomPages() {
+      const pages = await fetchCustomPages();
+      const $grid = document.getElementById('custom-pages-grid');
+      const $empty = document.getElementById('custom-pages-empty');
+      if (!pages.length) { $grid.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $grid.innerHTML = pages.map(p => `
+        <article class="card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-5 flex flex-col gap-2">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="font-display text-lg text-ink">${esc(p.title)}</h3>
+            <span class="text-[0.65rem] uppercase tracking-[0.2em] text-imperial/70">${esc(p.slug || 'page')}</span>
+          </div>
+          <p class="text-ink/60 text-sm leading-relaxed whitespace-pre-line">${esc((p.body||'').substring(0,180))}${(p.body||'').length>180?'…':''}</p>
+        </article>`).join('');
     }
 
     async function renderAboutPdfs() {
@@ -1356,7 +1501,30 @@
       }));
     }
 
+    async function renderAdminCustomPages() {
+      const pages = await fetchCustomPages();
+      const $tbody = document.getElementById('admin-custom-pages-tbody');
+      const $empty = document.getElementById('admin-custom-pages-empty');
+      if (!pages.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $tbody.innerHTML = pages.map(p => `<tr>
+        <td class="px-4 py-3 font-medium">${esc(p.title)}</td>
+        <td class="px-4 py-3 text-ink/60 text-xs">${esc(p.slug || '—')}</td>
+        <td class="px-4 py-3 text-ink/60 text-xs">${esc((p.body||'').substring(0,80))}${(p.body||'').length>80?'…':''}</td>
+        <td class="px-4 py-3 text-ink/50 text-center">${p.display_order || 0}</td>
+        <td class="px-4 py-3 text-center"><button data-del-custom-page="${p.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+      </tr>`).join('');
+      $tbody.querySelectorAll('[data-del-custom-page]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this page?')) return;
+        if (await deleteCustomPage(b.dataset.delCustomPage)) {
+          await renderAdminCustomPages();
+          if (currentView === 'about') await renderHomeCustomPages();
+        }
+      }));
+    }
+
     async function renderAdminPdfs() {
+
       const pdfs   = await fetchPdfs();
       const $tbody = document.getElementById('admin-pdf-tbody');
       const $empty = document.getElementById('admin-pdf-empty');
@@ -1536,6 +1704,21 @@
         ['about-title-input','about-body-input','about-order-input'].forEach(id => document.getElementById(id).value = '');
         await renderAdminAbout();
         if (currentView === 'about') await renderHomeAbout();
+      }
+    });
+
+    document.getElementById('add-custom-page-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const title = document.getElementById('custom-page-title-input').value.trim();
+      const body = document.getElementById('custom-page-body-input').value.trim();
+      const slugRaw = document.getElementById('custom-page-slug-input').value.trim();
+      const slug = slugRaw.toLowerCase().replace(/[^a-z0-9-\s]/g, '').trim().replace(/\s+/g, '-');
+      const order = parseInt(document.getElementById('custom-page-order-input').value) || 0;
+      if (!title || !body) return;
+      if (await addCustomPage(title, slug || null, body, order)) {
+        ['custom-page-title-input','custom-page-slug-input','custom-page-body-input','custom-page-order-input'].forEach(id => document.getElementById(id).value = '');
+        await renderAdminCustomPages();
+        if (currentView === 'about') await renderHomeCustomPages();
       }
     });
 
@@ -1833,6 +2016,7 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     showView('home');
     renderHomeAwards().catch(console.error);
     renderHomeGallery().catch(console.error);
+    renderHomeCustomPages().catch(console.error);
   </script>
 </body>
 </html>
