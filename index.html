@@ -104,9 +104,26 @@
     .lotus-petal:nth-child(7)  { transform: translate(-50%, -100%) rotate(270deg); }
     .lotus-petal:nth-child(8)  { transform: translate(-50%, -100%) rotate(315deg); }
 
+    /* ── Hero Gallery Strip ─────────────────────── */
+    .hero-strip-img {
+      flex: 1 1 0; max-width: 220px; aspect-ratio: 3/2;
+      border-radius: 0.75rem; overflow: hidden; cursor: pointer;
+      box-shadow: 0 4px 16px rgb(var(--ink-rgb) / 0.10);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .hero-strip-img:hover { transform: scale(1.04); box-shadow: 0 6px 24px rgb(var(--ink-rgb) / 0.16); }
+    .hero-strip-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ── CTA Glow ───────────────────────────────── */
+    @keyframes cta-glow {
+      0%, 100% { box-shadow: 0 4px 20px rgb(var(--imperial-rgb) / 0.2); }
+      50%      { box-shadow: 0 4px 28px rgb(var(--imperial-rgb) / 0.35); }
+    }
+    .cta-glow { animation: cta-glow 3s ease-in-out infinite; }
+
     /* ── Ink-brush Divider ───────────────────────── */
     .ink-divider {
-      display: block; margin: 3rem auto; width: 120px; height: 2px;
+      display: block; margin: 2rem auto; width: 120px; height: 2px;
       background: linear-gradient(90deg,
         transparent 0%,
         rgb(var(--imperial-rgb) / 0.35) 20%,
@@ -384,7 +401,7 @@
   <main id="home-view" class="relative z-10">
 
     <!-- Hero -->
-    <section id="section-hero" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center">
+    <section id="section-hero" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
       <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-4">Est. 2018</p>
       <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl text-ink leading-tight mb-6">
         Where Tradition Meets<br/><em class="text-imperial">Graceful Expression</em>
@@ -392,32 +409,33 @@
       <p class="max-w-2xl mx-auto text-ink/60 text-base sm:text-lg leading-relaxed">
         Bright Pearl Academy nurtures the art of Chinese dance, cultivating discipline, cultural pride, and artistic excellence in every student. From classical forms to contemporary fusion, we carry the beauty of heritage into the future.
       </p>
-      <div class="mt-8 flex items-center justify-center gap-4 flex-wrap">
-        <button id="hero-cta-register" class="btn-imperial px-7 py-3 rounded-lg text-sm font-medium">Enroll Now</button>
-        <button id="hero-cta-about"    class="btn-outline  px-7 py-3 rounded-lg text-sm font-medium">Our Story</button>
+      <div class="mt-8 flex items-center justify-center gap-5 flex-wrap">
+        <button id="hero-cta-register" class="btn-imperial cta-glow px-8 py-3.5 rounded-lg text-sm font-semibold tracking-wide">Enroll Now</button>
+        <button id="hero-cta-about"    class="btn-outline border-2 px-8 py-3.5 rounded-lg text-sm font-semibold tracking-wide">Our Story</button>
       </div>
-      <div class="ink-divider mt-10"></div>
+      <div id="hero-gallery-strip" class="mt-10 flex justify-center gap-3 max-w-3xl mx-auto"></div>
+      <div class="ink-divider mt-8"></div>
     </section>
 
-    <!-- Awards -->
-    <section id="section-awards" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-      <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Awards &amp; Honors</h2>
-      <p class="text-center text-ink/50 text-sm mb-10">Recognition earned through dedication and artistry</p>
-      <div id="awards-list" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
-      <p id="awards-empty" class="view-hidden text-center text-ink/40 italic py-8">No awards to display yet.</p>
+    <!-- Photo Gallery -->
+    <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
+      <p class="text-center text-ink/50 text-sm mb-8">Moments captured in motion</p>
+      <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
     </section>
 
     <div class="ink-divider"></div>
 
-    <!-- Photo Gallery -->
-    <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
-      <p class="text-center text-ink/50 text-sm mb-10">Moments captured in motion</p>
-      <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
+    <!-- Awards -->
+    <section id="section-awards" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Awards &amp; Honors</h2>
+      <p class="text-center text-ink/50 text-sm mb-8">Recognition earned through dedication and artistry</p>
+      <div id="awards-list" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <p id="awards-empty" class="view-hidden text-center text-ink/40 italic py-8">No awards to display yet.</p>
     </section>
 
     <!-- Footer -->
-    <footer class="border-t border-imperial/10 mt-12">
+    <footer class="border-t border-imperial/10 mt-8">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
         &copy; 2026 Bright Pearl Academy. All rights reserved.
       </div>
@@ -1169,7 +1187,7 @@
         $br.style.width = '100%'; $tx.textContent = 'Upload complete!';
         selectedFile = null; $fi.value = ''; $fn.classList.add('view-hidden'); document.getElementById('upload-caption').value = '';
         setTimeout(() => { $st.classList.add('view-hidden'); $br.style.width = '0%'; $ub.disabled = true; }, 1500);
-        await renderAdminGallery(); await renderHomeGallery();
+        await renderAdminGallery(); await renderHomeGallery(); await renderHeroStrip();
       } catch (err) { $tx.textContent = 'Error: ' + err.message; $br.style.width = '0%'; $ub.disabled = false; }
     });
 
@@ -1218,6 +1236,20 @@
     // ════════════════════════════════════════════════
     //  RENDER — HOME
     // ════════════════════════════════════════════════
+    async function renderHeroStrip() {
+      const photos = await fetchGallery();
+      const $strip = document.getElementById('hero-gallery-strip');
+      if (!photos.length) { $strip.style.display = 'none'; return; }
+      const featured = photos.slice(0, 3);
+      $strip.innerHTML = featured.map(p => `
+        <div class="hero-strip-img" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
+          <img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />
+        </div>`).join('');
+      $strip.querySelectorAll('[data-lburl]').forEach(c => {
+        c.addEventListener('click', () => openLightbox(c.dataset.lburl, c.dataset.lbcap));
+      });
+    }
+
     async function renderHomeAwards() {
       const awards = await fetchAwards();
       const $list  = document.getElementById('awards-list');
@@ -1395,7 +1427,7 @@
       </tr>`).join('');
       $tbody.querySelectorAll('[data-del-gal]').forEach(b => b.addEventListener('click', async () => {
         if (!confirm('Delete this photo?')) return;
-        if (await deleteGalleryItem(b.dataset.delGal, b.dataset.galUrl)) { await renderAdminGallery(); await renderHomeGallery(); }
+        if (await deleteGalleryItem(b.dataset.delGal, b.dataset.galUrl)) { await renderAdminGallery(); await renderHomeGallery(); await renderHeroStrip(); }
       }));
     }
 
@@ -1833,6 +1865,7 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     showView('home');
     renderHomeAwards().catch(console.error);
     renderHomeGallery().catch(console.error);
+    renderHeroStrip().catch(console.error);
   </script>
 </body>
 </html>
