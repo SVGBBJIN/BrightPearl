@@ -104,6 +104,30 @@
     .lotus-petal:nth-child(7)  { transform: translate(-50%, -100%) rotate(270deg); }
     .lotus-petal:nth-child(8)  { transform: translate(-50%, -100%) rotate(315deg); }
 
+    /* ── Hero CTA Background ─────────────────────── */
+    .hero-cta-bg {
+      position: relative; border-radius: 1rem; overflow: hidden;
+      background-color: rgb(var(--ink-rgb)); background-size: cover; background-position: center;
+      transition: background-image 0.4s ease;
+    }
+    .hero-cta-bg::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.58) 0%, rgba(100,0,0,0.42) 100%);
+      border-radius: inherit;
+    }
+    .hero-cta-bg .cta-inner {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      gap: 1.25rem; flex-wrap: wrap;
+      padding: 3.5rem 2rem;
+    }
+    .hero-cta-bg .btn-outline {
+      color: #fff; border-color: rgba(255,255,255,0.65);
+    }
+    .hero-cta-bg .btn-outline:hover {
+      background: rgba(255,255,255,0.12); border-color: #fff;
+    }
+
     /* ── Hero Gallery Strip ─────────────────────── */
     .hero-strip-img {
       flex: 1 1 0; max-width: 220px; aspect-ratio: 3/2;
@@ -409,9 +433,11 @@
       <p class="max-w-2xl mx-auto text-ink/60 text-base sm:text-lg leading-relaxed">
         Bright Pearl Academy nurtures the art of Chinese dance, cultivating discipline, cultural pride, and artistic excellence in every student. From classical forms to contemporary fusion, we carry the beauty of heritage into the future.
       </p>
-      <div class="mt-8 flex items-center justify-center gap-5 flex-wrap">
-        <button id="hero-cta-register" class="btn-imperial cta-glow px-8 py-3.5 rounded-lg text-sm font-semibold tracking-wide">Enroll Now</button>
-        <button id="hero-cta-about"    class="btn-outline border-2 px-8 py-3.5 rounded-lg text-sm font-semibold tracking-wide">Our Story</button>
+      <div id="hero-cta-bg" class="hero-cta-bg mt-8 max-w-3xl mx-auto">
+        <div class="cta-inner">
+          <button id="hero-cta-register" class="btn-imperial cta-glow px-8 py-3.5 rounded-lg text-sm font-semibold tracking-wide">Enroll Now</button>
+          <button id="hero-cta-about"    class="btn-outline border-2 px-8 py-3.5 rounded-lg text-sm font-semibold tracking-wide">Our Story</button>
+        </div>
       </div>
       <div id="hero-gallery-strip" class="mt-10 flex justify-center gap-3 max-w-3xl mx-auto"></div>
       <div class="ink-divider mt-8"></div>
@@ -1240,6 +1266,13 @@
       const photos = await fetchGallery();
       const $strip = document.getElementById('hero-gallery-strip');
       if (!photos.length) { $strip.style.display = 'none'; return; }
+      // Set the CTA background to the 4th photo (or last available)
+      const $ctaBg = document.getElementById('hero-cta-bg');
+      if ($ctaBg) {
+        const bgPhoto = photos[3] || photos[photos.length - 1];
+        $ctaBg.style.backgroundImage = `url('${bgPhoto.image_url.replace(/'/g, "\\'")}')`;
+      }
+
       const featured = photos.slice(0, 3);
       $strip.innerHTML = featured.map(p => `
         <div class="hero-strip-img" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
