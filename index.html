@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
 
+  <!-- SortableJS for drag-and-drop -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+
   <!-- Tailwind CSS Play CDN -->
   <!-- TODO (SRI): Tailwind Play CDN is dynamic and cannot have a stable SRI hash.
        For production, replace with a build-step output (npx tailwindcss) or a
@@ -442,6 +445,164 @@
     @media (max-width: 440px) {
       .chat-panel { width: calc(100vw - 1.5rem); right: 0.75rem; bottom: 5rem; height: 60vh; }
     }
+
+    /* ══════════════════════════════════════════════════
+       VISUAL EDIT MODE
+    ══════════════════════════════════════════════════ */
+
+    /* ── Edit toolbar ──────────────────────────────── */
+    .visual-edit-toolbar {
+      position: fixed; top: 64px; left: 0; right: 0; z-index: 48;
+      background: rgb(var(--imperial-rgb));
+      color: rgb(var(--cream-rgb));
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem; height: 44px; gap: 0.75rem;
+      box-shadow: 0 2px 12px rgb(var(--imperial-rgb) / 0.25);
+      transform: translateY(-100%); opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .visual-edit-toolbar.visible { transform: translateY(0); opacity: 1; }
+    .visual-edit-toolbar button {
+      background: rgb(var(--cream-rgb) / 0.15); border: 1px solid rgb(var(--cream-rgb) / 0.25);
+      color: rgb(var(--cream-rgb)); padding: 0.3rem 0.9rem; border-radius: 0.375rem;
+      font-size: 0.8rem; font-weight: 500; cursor: pointer; white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .visual-edit-toolbar button:hover { background: rgb(var(--cream-rgb) / 0.25); }
+    .visual-edit-toolbar button.active {
+      background: rgb(var(--cream-rgb)); color: rgb(var(--imperial-rgb)); font-weight: 600;
+    }
+    .visual-edit-toolbar .toolbar-label {
+      font-size: 0.75rem; font-weight: 500; opacity: 0.7; letter-spacing: 0.05em; text-transform: uppercase;
+    }
+
+    /* ── Editable sections in edit mode ─────────────── */
+    body.edit-mode .editable-section {
+      position: relative;
+      outline: 2px dashed rgb(var(--imperial-rgb) / 0.3);
+      outline-offset: 4px;
+      border-radius: 0.75rem;
+      transition: outline-color 0.2s;
+    }
+    body.edit-mode .editable-section:hover {
+      outline-color: rgb(var(--imperial-rgb) / 0.6);
+    }
+    body.edit-mode .editable-section .section-toolbar {
+      display: flex !important;
+    }
+
+    /* ── Section toolbar (edit/delete/drag) ─────────── */
+    .section-toolbar {
+      display: none !important;
+      position: absolute; top: -14px; right: 8px; z-index: 10;
+      gap: 4px; align-items: center;
+    }
+    .section-toolbar button, .section-toolbar .drag-handle {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.2);
+      background: rgb(var(--surface-rgb)); color: rgb(var(--imperial-rgb));
+      cursor: pointer; font-size: 14px; transition: all 0.2s;
+      box-shadow: 0 1px 4px rgb(var(--ink-rgb) / 0.1);
+    }
+    .section-toolbar button:hover { background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); }
+    .section-toolbar .drag-handle { cursor: grab; }
+    .section-toolbar .drag-handle:active { cursor: grabbing; }
+
+    /* ── Inline editing ────────────────────────────── */
+    [contenteditable="true"] {
+      outline: none; border-radius: 4px; padding: 2px 4px; margin: -2px -4px;
+      transition: box-shadow 0.2s;
+    }
+    [contenteditable="true"]:focus {
+      box-shadow: 0 0 0 2px rgb(var(--imperial-rgb) / 0.4);
+      background: rgb(var(--imperial-rgb) / 0.05);
+    }
+    .inline-save-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
+      border: none; border-radius: 0.375rem; padding: 0.25rem 0.75rem;
+      font-size: 0.75rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem;
+      transition: background 0.2s;
+    }
+    .inline-save-btn:hover { background: rgb(var(--imperial-hover-rgb)); }
+
+    /* ── About section with image ──────────────────── */
+    .about-section-with-image {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;
+    }
+    .about-section-with-image.image-right { grid-template-columns: 1fr 1fr; }
+    .about-section-with-image.image-right .about-section-img { order: 2; }
+    .about-section-with-image.image-right .about-section-text { order: 1; }
+    .about-section-img {
+      border-radius: 0.75rem; overflow: hidden; aspect-ratio: 4/3;
+    }
+    .about-section-img img {
+      width: 100%; height: 100%; object-fit: cover; border-radius: 0.75rem;
+    }
+    @media (max-width: 640px) {
+      .about-section-with-image { grid-template-columns: 1fr !important; }
+      .about-section-with-image .about-section-img { order: 1 !important; }
+      .about-section-with-image .about-section-text { order: 2 !important; }
+    }
+
+    /* ── Image overlay controls (edit mode) ─────────── */
+    .img-overlay-controls {
+      position: absolute; inset: 0; display: none;
+      background: rgb(var(--ink-rgb) / 0.4); border-radius: 0.75rem;
+      align-items: center; justify-content: center; gap: 8px;
+    }
+    body.edit-mode .img-overlay-controls { display: flex; }
+    .img-overlay-controls button {
+      background: rgb(var(--cream-rgb) / 0.95); color: rgb(var(--imperial-rgb));
+      border: none; border-radius: 0.5rem; padding: 0.4rem 0.8rem;
+      font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .img-overlay-controls button:hover { background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); }
+
+    /* ── Image destination modal ───────────────────── */
+    .dest-modal-backdrop {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgb(var(--ink-rgb) / 0.6); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+    }
+    .dest-modal-backdrop.active { opacity: 1; pointer-events: auto; }
+    .dest-modal {
+      background: rgb(var(--surface-rgb)); border-radius: 1rem; padding: 2rem;
+      max-width: 480px; width: 90%; box-shadow: 0 8px 40px rgb(var(--ink-rgb) / 0.2);
+      border: 1px solid rgb(var(--imperial-rgb) / 0.1);
+    }
+    .dest-option {
+      display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem;
+      border: 2px solid rgb(var(--imperial-rgb) / 0.1); border-radius: 0.75rem;
+      cursor: pointer; transition: all 0.2s; background: transparent;
+    }
+    .dest-option:hover { border-color: rgb(var(--imperial-rgb) / 0.3); background: rgb(var(--imperial-rgb) / 0.03); }
+    .dest-option.selected { border-color: rgb(var(--imperial-rgb)); background: rgb(var(--imperial-rgb) / 0.06); }
+    .dest-option input[type="radio"] { accent-color: rgb(var(--imperial-rgb)); width: 18px; height: 18px; }
+
+    /* ── SortableJS ghost ─────────────────────────── */
+    .sortable-ghost { opacity: 0.4; }
+    .sortable-chosen { box-shadow: 0 4px 20px rgb(var(--imperial-rgb) / 0.2); }
+    .sortable-drag { transform: rotate(1deg); }
+
+    /* ── Hero image overlay (edit mode) ──────────── */
+    .hero-edit-overlay {
+      position: absolute; inset: 0; z-index: 5;
+      background: rgb(var(--ink-rgb) / 0.3);
+      display: none; align-items: center; justify-content: center;
+      border-radius: inherit;
+    }
+    body.edit-mode .hero-edit-overlay { display: flex; }
+    .hero-edit-overlay button {
+      background: rgb(var(--cream-rgb) / 0.95); color: rgb(var(--imperial-rgb));
+      border: none; border-radius: 0.75rem; padding: 0.6rem 1.2rem;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      box-shadow: 0 2px 12px rgb(var(--ink-rgb) / 0.2);
+      transition: all 0.2s;
+    }
+    .hero-edit-overlay button:hover { background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); }
   </style>
 </head>
 
@@ -472,6 +633,75 @@
     </div>
   </nav>
 
+  <!-- ═══ Visual Edit Toolbar (admin only) ═══ -->
+  <div id="visual-edit-toolbar" class="visual-edit-toolbar">
+    <div class="flex items-center gap-3">
+      <span class="toolbar-label">Admin Editor</span>
+      <span id="edit-page-label" class="text-sm font-medium opacity-90">Home</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="edit-mode-toggle" title="Toggle visual edit mode">
+        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zM19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
+        Edit Mode
+      </button>
+      <button id="edit-back-dashboard" title="Back to dashboard">
+        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/></svg>
+        Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ Image Destination Modal ═══ -->
+  <div id="image-dest-modal" class="dest-modal-backdrop">
+    <div class="dest-modal">
+      <h3 class="font-display text-xl text-ink mb-1">Upload Image</h3>
+      <p class="text-ink/50 text-sm mb-5">Choose where this image should appear</p>
+      <div id="dest-preview-container" class="mb-5 flex justify-center">
+        <img id="dest-preview-img" class="max-h-32 rounded-lg border border-imperial/10" src="" alt="Preview"/>
+      </div>
+      <div class="space-y-3 mb-5">
+        <label class="dest-option selected" data-dest="gallery">
+          <input type="radio" name="img-dest" value="gallery" checked />
+          <div>
+            <div class="font-medium text-sm text-ink">Gallery</div>
+            <div class="text-xs text-ink/50">Add to the photo gallery grid</div>
+          </div>
+        </label>
+        <label class="dest-option" data-dest="hero">
+          <input type="radio" name="img-dest" value="hero" />
+          <div>
+            <div class="font-medium text-sm text-ink">Hero Banner</div>
+            <div class="text-xs text-ink/50">Set as the main hero background image</div>
+          </div>
+        </label>
+        <label class="dest-option" data-dest="about">
+          <input type="radio" name="img-dest" value="about" />
+          <div class="flex-1">
+            <div class="font-medium text-sm text-ink">About Section</div>
+            <div class="text-xs text-ink/50">Attach to a specific about page section</div>
+          </div>
+        </label>
+      </div>
+      <div id="dest-about-picker" class="view-hidden mb-4">
+        <label class="block text-xs font-medium text-ink/70 mb-1">Select section:</label>
+        <select id="dest-about-select" class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial"></select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-xs font-medium text-ink/70 mb-1">Caption / Alt text (optional)</label>
+        <input id="dest-caption" type="text" placeholder="Describe this image…"
+          class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+      </div>
+      <div class="flex gap-3 justify-end">
+        <button id="dest-cancel" class="btn-outline px-5 py-2 rounded-lg text-sm font-medium">Cancel</button>
+        <button id="dest-upload" class="btn-imperial px-5 py-2 rounded-lg text-sm font-medium">Upload</button>
+      </div>
+      <div id="dest-upload-status" class="mt-3 view-hidden">
+        <div class="upload-progress"><div id="dest-upload-progress-bar" class="upload-progress-bar" style="width:0%"></div></div>
+        <p id="dest-upload-status-text" class="text-xs text-ink/50 mt-1"></p>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══════════════════════════════════════════════ -->
   <!--  HOME VIEW                                      -->
   <!-- ═══════════════════════════════════════════════ -->
@@ -480,6 +710,13 @@
     <!-- Hero — full-width rounded image with overlay CTAs -->
     <section id="section-hero" class="hero-banner">
       <img id="hero-photo-img" src="" alt="Chinese dance performance at Bright Pearl Academy" />
+      <!-- Edit mode overlay for changing hero image -->
+      <div class="hero-edit-overlay">
+        <button id="hero-change-btn">
+          <svg class="w-5 h-5 inline mr-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Change Hero Image
+        </button>
+      </div>
       <div class="hero-overlay">
         <div class="hero-glass">
           <p class="uppercase tracking-[0.25em] text-white/50 text-xs font-semibold mb-3">Est. 2018</p>
@@ -795,6 +1032,34 @@
         </form>
       </div>
 
+      <!-- ── Hero Image ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Hero Banner Image
+        </h3>
+        <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5">
+          <div class="flex items-start gap-5">
+            <div id="hero-admin-preview" class="w-40 h-28 rounded-lg border border-imperial/10 overflow-hidden bg-cream flex items-center justify-center flex-shrink-0">
+              <span class="text-ink/30 text-xs">No hero image</span>
+            </div>
+            <div class="flex-1 space-y-3">
+              <p class="text-ink/55 text-sm">Upload a dedicated hero banner image. This will be shown as the main background of the home page.</p>
+              <div id="hero-drop-zone" class="drop-zone">
+                <svg class="mx-auto mb-2 w-6 h-6 text-imperial/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <p class="text-ink/50 text-xs">Drop image or <span class="text-imperial font-medium">click to browse</span></p>
+                <input id="hero-file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" />
+              </div>
+              <button id="hero-upload-btn" disabled class="btn-imperial px-4 py-1.5 rounded text-xs font-medium">Set Hero Image</button>
+              <p id="hero-upload-filename" class="view-hidden text-xs text-imperial"></p>
+              <div id="hero-upload-status" class="view-hidden">
+                <div class="upload-progress"><div id="hero-upload-progress-bar" class="upload-progress-bar" style="width:0%"></div></div>
+                <p id="hero-upload-status-text" class="text-xs text-ink/50 mt-1"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ── Awards ── -->
       <div class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
@@ -861,12 +1126,23 @@
           </div>
           <textarea id="about-body-input" rows="4" placeholder="Section body text…" required
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          <div class="flex items-center gap-3">
+            <div id="about-img-drop" class="drop-zone flex-1 !py-2">
+              <p class="text-ink/50 text-xs">Section image (optional) — drop or <span class="text-imperial font-medium">click</span></p>
+              <input id="about-img-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" />
+            </div>
+            <div id="about-img-preview" class="view-hidden flex items-center gap-2">
+              <img id="about-img-thumb" class="w-12 h-8 object-cover rounded border border-imperial/10" src="" alt=""/>
+              <button type="button" id="about-img-clear" class="text-imperial text-xs hover:underline">Clear</button>
+            </div>
+          </div>
           <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Section</button>
         </form>
         <div class="overflow-x-auto rounded-lg border border-imperial/10">
           <table class="admin-table w-full text-sm">
             <thead><tr>
-              <th class="text-left px-4 py-3 rounded-tl-lg">Title</th>
+              <th class="text-left px-4 py-3 rounded-tl-lg w-16">Image</th>
+              <th class="text-left px-4 py-3">Title</th>
               <th class="text-left px-4 py-3">Preview</th>
               <th class="text-center px-4 py-3 w-20">Order</th>
               <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
@@ -943,7 +1219,7 @@
               <input id="upload-caption" type="text" placeholder="Describe this photo…"
                 class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
             </div>
-            <button id="upload-btn" disabled class="btn-imperial px-5 py-2 rounded text-sm font-medium">Upload</button>
+            <button id="upload-btn" disabled class="btn-imperial px-5 py-2 rounded text-sm font-medium">Upload Image…</button>
           </div>
           <div id="upload-status" class="mt-3 view-hidden">
             <div class="upload-progress"><div id="upload-progress-bar" class="upload-progress-bar" style="width:0%"></div></div>
@@ -1048,6 +1324,13 @@
     let tourActive   = false;
     let selectedFile = null;
     let selectedPdf  = null;
+    let editMode     = false;
+    let selectedAboutImg = null;
+    let selectedHeroFile = null;
+    let destModalFile    = null;
+    let destModalResolve = null;
+    let aboutSortable    = null;
+    let gallerySortable  = null;
 
     // ── DOM refs ───────────────────────────────────
     const $homeView       = document.getElementById('home-view');
@@ -1069,16 +1352,22 @@
       $registerView.classList.toggle('view-hidden', view !== 'register');
       $adminView.classList.toggle('view-hidden',    view !== 'admin');
 
+      const $toolbar = document.getElementById('visual-edit-toolbar');
+      const $pageLabel = document.getElementById('edit-page-label');
+
       if (view === 'admin') {
         const loggedIn = !!session;
         $adminLogin.classList.toggle('view-hidden',     loggedIn);
         $adminDashboard.classList.toggle('view-hidden', !loggedIn);
         $navLogout.classList.toggle('view-hidden', !loggedIn);
         $navAdmin.classList.toggle('view-hidden',   loggedIn);
+        $toolbar.classList.remove('visible');
+        if (editMode) toggleEditMode();
         if (loggedIn) {
           document.getElementById('admin-email-badge').textContent = session.user.email;
           renderAdminPendingRegistrations();
           renderAdminPaymentSettings();
+          renderAdminHeroPreview();
           renderAdminAwards();
           renderAdminClasses();
           renderAdminAbout();
@@ -1087,17 +1376,23 @@
           renderAdminRegistrations();
         }
       } else if (view === 'about') {
-        $navLogout.classList.add('view-hidden');
-        $navAdmin.classList.remove('view-hidden');
+        if (session) { $navLogout.classList.remove('view-hidden'); $navAdmin.classList.remove('view-hidden'); }
+        else { $navLogout.classList.add('view-hidden'); $navAdmin.classList.remove('view-hidden'); }
         renderHomeAbout();
         renderAboutPdfs();
+        if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'About Page'; }
+        else { $toolbar.classList.remove('visible'); }
       } else if (view === 'register') {
         $navLogout.classList.add('view-hidden');
         $navAdmin.classList.remove('view-hidden');
+        $toolbar.classList.remove('visible');
+        if (editMode) toggleEditMode();
         populateClassDropdown();
       } else {
-        $navLogout.classList.add('view-hidden');
-        $navAdmin.classList.remove('view-hidden');
+        if (session) { $navLogout.classList.remove('view-hidden'); $navAdmin.classList.remove('view-hidden'); }
+        else { $navLogout.classList.add('view-hidden'); $navAdmin.classList.remove('view-hidden'); }
+        if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Home Page'; }
+        else { $toolbar.classList.remove('visible'); }
       }
     }
 
@@ -1177,8 +1472,10 @@
       const { error } = await supabase.from('classes').delete().eq('id', id);
       if (error) { alert('Error: ' + error.message); return false; } return true;
     }
-    async function addAboutSection(title, body, display_order) {
-      const { error } = await supabase.from('about_sections').insert({ title, body, display_order });
+    async function addAboutSection(title, body, display_order, image_url) {
+      const row = { title, body, display_order };
+      if (image_url) row.image_url = image_url;
+      const { error } = await supabase.from('about_sections').insert(row);
       if (error) { alert('Error: ' + error.message); return false; } return true;
     }
     async function deleteAboutSection(id) {
@@ -1204,6 +1501,202 @@
       const { error } = await supabase.from('registrations').delete().eq('id', id);
       if (error) { alert('Error: ' + error.message); return false; } return true;
     }
+
+    // ════════════════════════════════════════════════
+    //  VISUAL EDIT MODE + DRAG-AND-DROP
+    // ════════════════════════════════════════════════
+    async function updateAboutSection(id, fields) {
+      const { error } = await supabase.from('about_sections').update(fields).eq('id', id);
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function reorderAboutSections(orderedIds) {
+      for (let i = 0; i < orderedIds.length; i++) {
+        const { error } = await supabase.from('about_sections').update({ display_order: i }).eq('id', orderedIds[i]);
+        if (error) { console.error('Reorder error:', error); return false; }
+      }
+      return true;
+    }
+    async function fetchHeroSetting() {
+      const { data, error } = await supabase.from('site_settings').select('*').eq('key', 'hero_image').single();
+      if (error) return null;
+      return data;
+    }
+    async function saveHeroSetting(imageUrl) {
+      const { data: existing } = await supabase.from('site_settings').select('id').eq('key', 'hero_image').single();
+      if (existing) {
+        const { error } = await supabase.from('site_settings').update({ value: imageUrl }).eq('key', 'hero_image');
+        if (error) { alert('Error saving hero: ' + error.message); return false; }
+      } else {
+        const { error } = await supabase.from('site_settings').insert({ key: 'hero_image', value: imageUrl });
+        if (error) { alert('Error saving hero: ' + error.message); return false; }
+      }
+      return true;
+    }
+    async function uploadImageToStorage(file) {
+      const ext = file.name.split('.').pop();
+      const filename = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+      const { error: ue } = await supabase.storage.from('gallery').upload(filename, file, { contentType: file.type });
+      if (ue) throw new Error(ue.message);
+      const { data: { publicUrl } } = supabase.storage.from('gallery').getPublicUrl(filename);
+      return publicUrl;
+    }
+
+    function toggleEditMode() {
+      editMode = !editMode;
+      document.body.classList.toggle('edit-mode', editMode);
+      const $btn = document.getElementById('edit-mode-toggle');
+      $btn.classList.toggle('active', editMode);
+      $btn.innerHTML = editMode
+        ? '<svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Preview'
+        : '<svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zM19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>Edit Mode';
+
+      if (editMode && currentView === 'about') initAboutSortable();
+      else destroySortables();
+
+      if (editMode && currentView === 'home') initGallerySortable();
+    }
+
+    function initAboutSortable() {
+      const container = document.getElementById('about-sections-container');
+      if (!container || aboutSortable) return;
+      aboutSortable = Sortable.create(container, {
+        handle: '.drag-handle',
+        animation: 200,
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        dragClass: 'sortable-drag',
+        onEnd: async () => {
+          const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
+          await reorderAboutSections(ids);
+        }
+      });
+    }
+
+    function initGallerySortable() {
+      const grid = document.getElementById('gallery-grid');
+      if (!grid || gallerySortable) return;
+      gallerySortable = Sortable.create(grid, {
+        animation: 200,
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        dragClass: 'sortable-drag',
+      });
+    }
+
+    function destroySortables() {
+      if (aboutSortable) { aboutSortable.destroy(); aboutSortable = null; }
+      if (gallerySortable) { gallerySortable.destroy(); gallerySortable = null; }
+    }
+
+    // ── Edit toolbar buttons ───────────────────────
+    document.getElementById('edit-mode-toggle').addEventListener('click', toggleEditMode);
+    document.getElementById('edit-back-dashboard').addEventListener('click', () => showView('admin'));
+
+    // ── Hero change button (in edit mode overlay) ──
+    document.getElementById('hero-change-btn').addEventListener('click', () => {
+      const inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+      inp.onchange = async () => {
+        if (!inp.files.length) return;
+        const file = inp.files[0];
+        if (file.size > 5*1024*1024) { alert('File too large (max 5 MB)'); return; }
+        try {
+          const url = await uploadImageToStorage(file);
+          await saveHeroSetting(url);
+          await renderHeroPhoto();
+          renderAdminHeroPreview();
+        } catch (err) { alert('Upload error: ' + err.message); }
+      };
+      inp.click();
+    });
+
+    // ════════════════════════════════════════════════
+    //  IMAGE DESTINATION PICKER
+    // ════════════════════════════════════════════════
+    function openDestModal(file) {
+      return new Promise((resolve) => {
+        destModalFile = file;
+        destModalResolve = resolve;
+        const $modal = document.getElementById('image-dest-modal');
+        const $preview = document.getElementById('dest-preview-img');
+        $preview.src = URL.createObjectURL(file);
+        // Reset state
+        document.querySelectorAll('.dest-option').forEach(o => o.classList.remove('selected'));
+        document.querySelector('.dest-option[data-dest="gallery"]').classList.add('selected');
+        document.querySelector('input[name="img-dest"][value="gallery"]').checked = true;
+        document.getElementById('dest-about-picker').classList.add('view-hidden');
+        document.getElementById('dest-caption').value = '';
+        document.getElementById('dest-upload-status').classList.add('view-hidden');
+        // Populate about sections dropdown
+        populateDestAboutSelect();
+        $modal.classList.add('active');
+      });
+    }
+
+    async function populateDestAboutSelect() {
+      const sections = await fetchAboutSections();
+      const $sel = document.getElementById('dest-about-select');
+      $sel.innerHTML = sections.map(s => `<option value="${s.id}">${esc(s.title)}</option>`).join('');
+    }
+
+    // Destination radio handling
+    document.querySelectorAll('.dest-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.dest-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        opt.querySelector('input[type="radio"]').checked = true;
+        const dest = opt.dataset.dest;
+        document.getElementById('dest-about-picker').classList.toggle('view-hidden', dest !== 'about');
+      });
+    });
+
+    document.getElementById('dest-cancel').addEventListener('click', () => {
+      document.getElementById('image-dest-modal').classList.remove('active');
+      if (destModalResolve) { destModalResolve(null); destModalResolve = null; }
+    });
+
+    document.getElementById('dest-upload').addEventListener('click', async () => {
+      if (!destModalFile) return;
+      const dest = document.querySelector('input[name="img-dest"]:checked').value;
+      const caption = document.getElementById('dest-caption').value.trim();
+      const $st = document.getElementById('dest-upload-status');
+      const $br = document.getElementById('dest-upload-progress-bar');
+      const $tx = document.getElementById('dest-upload-status-text');
+      const $btn = document.getElementById('dest-upload');
+      $btn.disabled = true; $st.classList.remove('view-hidden'); $br.style.width = '30%'; $tx.textContent = 'Uploading…';
+
+      try {
+        $br.style.width = '60%';
+        const url = await uploadImageToStorage(destModalFile);
+        $br.style.width = '80%';
+
+        if (dest === 'gallery') {
+          const { error } = await supabase.from('gallery').insert({ image_url: url, caption: caption || null });
+          if (error) throw new Error(error.message);
+          await renderAdminGallery(); await renderHomeGallery(); await renderHeroPhoto();
+        } else if (dest === 'hero') {
+          await saveHeroSetting(url);
+          await renderHeroPhoto();
+          renderAdminHeroPreview();
+        } else if (dest === 'about') {
+          const sectionId = document.getElementById('dest-about-select').value;
+          if (sectionId) {
+            await updateAboutSection(sectionId, { image_url: url });
+            await renderHomeAbout();
+            await renderAdminAbout();
+          }
+        }
+
+        $br.style.width = '100%'; $tx.textContent = 'Done!';
+        setTimeout(() => {
+          document.getElementById('image-dest-modal').classList.remove('active');
+          $st.classList.add('view-hidden'); $br.style.width = '0%'; $btn.disabled = false;
+          if (destModalResolve) { destModalResolve(url); destModalResolve = null; }
+        }, 800);
+      } catch (err) {
+        $tx.textContent = 'Error: ' + err.message; $br.style.width = '0%'; $btn.disabled = false;
+      }
+    });
 
     // ════════════════════════════════════════════════
     //  FILE UPLOAD
@@ -1253,19 +1746,46 @@
     }
     $ub.addEventListener('click', async () => {
       if (!selectedFile) return;
-      const $st = document.getElementById('upload-status');
-      const $br = document.getElementById('upload-progress-bar');
-      const $tx = document.getElementById('upload-status-text');
-      const cap = document.getElementById('upload-caption').value.trim();
-      $ub.disabled = true; $st.classList.remove('view-hidden'); $br.style.width = '30%'; $tx.textContent = 'Uploading…';
+      // Open destination picker instead of direct upload
+      openDestModal(selectedFile);
+      selectedFile = null; $fi.value = ''; $fn.classList.add('view-hidden'); $ub.disabled = true;
+      document.getElementById('upload-caption').value = '';
+    });
+
+    // Hero image drop zone (admin dashboard)
+    const $hdz = document.getElementById('hero-drop-zone');
+    const $hfi = document.getElementById('hero-file-input');
+    const $hub = document.getElementById('hero-upload-btn');
+    $hdz.addEventListener('click', () => $hfi.click());
+    $hdz.addEventListener('dragover', e => { e.preventDefault(); $hdz.classList.add('dragover'); });
+    $hdz.addEventListener('dragleave', () => $hdz.classList.remove('dragover'));
+    $hdz.addEventListener('drop', e => { e.preventDefault(); $hdz.classList.remove('dragover'); if (e.dataTransfer.files.length) pickHeroFile(e.dataTransfer.files[0]); });
+    $hfi.addEventListener('change', () => { if ($hfi.files.length) pickHeroFile($hfi.files[0]); });
+    function pickHeroFile(file) {
+      if (file.size > 5*1024*1024) { alert('File too large (max 5 MB)'); return; }
+      selectedHeroFile = file;
+      document.getElementById('hero-upload-filename').textContent = `Selected: ${file.name}`;
+      document.getElementById('hero-upload-filename').classList.remove('view-hidden');
+      $hub.disabled = false;
+    }
+    $hub.addEventListener('click', async () => {
+      if (!selectedHeroFile) return;
+      const $st = document.getElementById('hero-upload-status');
+      const $br = document.getElementById('hero-upload-progress-bar');
+      const $tx = document.getElementById('hero-upload-status-text');
+      $hub.disabled = true; $st.classList.remove('view-hidden'); $br.style.width = '30%'; $tx.textContent = 'Uploading…';
       try {
         $br.style.width = '60%';
-        await uploadPhoto(selectedFile, cap);
-        $br.style.width = '100%'; $tx.textContent = 'Upload complete!';
-        selectedFile = null; $fi.value = ''; $fn.classList.add('view-hidden'); document.getElementById('upload-caption').value = '';
-        setTimeout(() => { $st.classList.add('view-hidden'); $br.style.width = '0%'; $ub.disabled = true; }, 1500);
-        await renderAdminGallery(); await renderHomeGallery(); await renderHeroPhoto();
-      } catch (err) { $tx.textContent = 'Error: ' + err.message; $br.style.width = '0%'; $ub.disabled = false; }
+        const url = await uploadImageToStorage(selectedHeroFile);
+        $br.style.width = '80%';
+        await saveHeroSetting(url);
+        $br.style.width = '100%'; $tx.textContent = 'Hero image updated!';
+        selectedHeroFile = null; $hfi.value = '';
+        document.getElementById('hero-upload-filename').classList.add('view-hidden');
+        setTimeout(() => { $st.classList.add('view-hidden'); $br.style.width = '0%'; $hub.disabled = true; }, 1500);
+        await renderHeroPhoto();
+        renderAdminHeroPreview();
+      } catch (err) { $tx.textContent = 'Error: ' + err.message; $br.style.width = '0%'; $hub.disabled = false; }
     });
 
     // PDF drop zone
@@ -1314,12 +1834,36 @@
     //  RENDER — HOME
     // ════════════════════════════════════════════════
     async function renderHeroPhoto() {
-      const photos = await fetchGallery();
       const $img = document.getElementById('hero-photo-img');
-      if (!$img || !photos.length) return;
-      const src = photos[0].image_url;
+      if (!$img) return;
+      // Try dedicated hero setting first
+      const hero = await fetchHeroSetting();
+      if (hero && hero.value) {
+        $img.onload = () => $img.classList.add('loaded');
+        $img.src = hero.value;
+        return;
+      }
+      // Fallback to first gallery image
+      const photos = await fetchGallery();
+      if (!photos.length) return;
       $img.onload = () => $img.classList.add('loaded');
-      $img.src = src;
+      $img.src = photos[0].image_url;
+    }
+
+    async function renderAdminHeroPreview() {
+      const $preview = document.getElementById('hero-admin-preview');
+      if (!$preview) return;
+      const hero = await fetchHeroSetting();
+      if (hero && hero.value) {
+        $preview.innerHTML = `<img src="${esc(hero.value)}" class="w-full h-full object-cover" alt="Hero"/>`;
+      } else {
+        const photos = await fetchGallery();
+        if (photos.length) {
+          $preview.innerHTML = `<img src="${esc(photos[0].image_url)}" class="w-full h-full object-cover" alt="Hero"/><span class="absolute bottom-1 right-1 text-[10px] bg-ink/50 text-cream px-1 rounded">from gallery</span>`;
+        } else {
+          $preview.innerHTML = '<span class="text-ink/30 text-xs">No hero image</span>';
+        }
+      }
     }
 
     async function renderHomeAwards() {
@@ -1360,11 +1904,134 @@
       const $empty     = document.getElementById('about-sections-empty');
       if (!sections.length) { $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
-      $container.innerHTML = sections.map(s => `
-        <div class="card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
-          <h3 class="font-display text-xl text-ink mb-3">${esc(s.title)}</h3>
-          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base">${esc(s.body)}</p>
-        </div>`).join('');
+      $container.innerHTML = sections.map((s, idx) => {
+        const hasImage = s.image_url;
+        const imgSide = idx % 2 === 0 ? '' : 'image-right';
+        return `
+        <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8" data-section-id="${s.id}">
+          <!-- Section toolbar (visible in edit mode) -->
+          <div class="section-toolbar">
+            <div class="drag-handle" title="Drag to reorder">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>
+            </div>
+            <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+            </button>
+            <button class="img-section-btn" title="Add/change image" data-imgbtn-id="${s.id}">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </button>
+            <button class="del-section-btn" title="Delete section" data-delbtn-id="${s.id}">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+            </button>
+          </div>
+          ${hasImage ? `
+          <div class="about-section-with-image ${imgSide}">
+            <div class="about-section-img relative">
+              <img src="${esc(s.image_url)}" alt="${esc(s.title)}" loading="lazy"/>
+              <div class="img-overlay-controls">
+                <button data-change-img="${s.id}">Change</button>
+                <button data-remove-img="${s.id}">Remove</button>
+              </div>
+            </div>
+            <div class="about-section-text">
+              <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
+              <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>
+            </div>
+          </div>` : `
+          <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
+          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>
+          `}
+        </div>`;
+      }).join('');
+
+      // Wire up edit mode buttons
+      $container.querySelectorAll('.edit-section-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.editId;
+          const card = $container.querySelector(`[data-section-id="${id}"]`);
+          const $title = card.querySelector('.editable-title');
+          const $body = card.querySelector('.editable-body');
+          if ($title.contentEditable === 'true') {
+            // Save
+            $title.contentEditable = 'false'; $body.contentEditable = 'false';
+            const saveBtn = card.querySelector('.inline-save-btn');
+            if (saveBtn) saveBtn.remove();
+            updateAboutSection(id, { title: $title.textContent.trim(), body: $body.textContent.trim() });
+          } else {
+            $title.contentEditable = 'true'; $body.contentEditable = 'true';
+            $title.focus();
+            // Add save button
+            if (!card.querySelector('.inline-save-btn')) {
+              const sb = document.createElement('button');
+              sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
+              sb.addEventListener('click', async () => {
+                await updateAboutSection(id, { title: $title.textContent.trim(), body: $body.textContent.trim() });
+                $title.contentEditable = 'false'; $body.contentEditable = 'false'; sb.remove();
+              });
+              card.appendChild(sb);
+            }
+          }
+        });
+      });
+
+      // Image buttons
+      $container.querySelectorAll('.img-section-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.imgbtnId;
+          const inp = document.createElement('input');
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+          inp.onchange = async () => {
+            if (!inp.files.length) return;
+            const file = inp.files[0];
+            if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+            try {
+              const url = await uploadImageToStorage(file);
+              await updateAboutSection(id, { image_url: url });
+              await renderHomeAbout();
+              if (editMode) initAboutSortable();
+            } catch (err) { alert('Error: ' + err.message); }
+          };
+          inp.click();
+        });
+      });
+
+      // Delete buttons
+      $container.querySelectorAll('.del-section-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this section?')) return;
+          await deleteAboutSection(btn.dataset.delbtnId);
+          await renderHomeAbout();
+          await renderAdminAbout();
+        });
+      });
+
+      // Change/remove image overlays
+      $container.querySelectorAll('[data-change-img]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.changeImg;
+          const inp = document.createElement('input');
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+          inp.onchange = async () => {
+            if (!inp.files.length) return;
+            try {
+              const url = await uploadImageToStorage(inp.files[0]);
+              await updateAboutSection(id, { image_url: url });
+              await renderHomeAbout();
+            } catch (err) { alert('Error: ' + err.message); }
+          };
+          inp.click();
+        });
+      });
+      $container.querySelectorAll('[data-remove-img]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Remove this image?')) return;
+          await updateAboutSection(btn.dataset.removeImg, { image_url: null });
+          await renderHomeAbout();
+        });
+      });
+
+      // Re-init sortable if in edit mode
+      if (editMode) { destroySortables(); initAboutSortable(); }
     }
 
     async function renderAboutPdfs() {
@@ -1443,10 +2110,13 @@
       if (!sections.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $tbody.innerHTML = sections.map(s => `<tr>
+        <td class="px-4 py-3">${s.image_url ? `<img src="${esc(s.image_url)}" class="w-12 h-8 object-cover rounded border border-imperial/10"/>` : '<span class="text-ink/25 text-xs">—</span>'}</td>
         <td class="px-4 py-3 font-medium">${esc(s.title)}</td>
         <td class="px-4 py-3 text-ink/60 text-xs">${esc(s.body.substring(0,90))}${s.body.length>90?'…':''}</td>
         <td class="px-4 py-3 text-ink/50 text-center">${s.display_order}</td>
-        <td class="px-4 py-3 text-center"><button data-del-about="${s.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+        <td class="px-4 py-3 text-center">
+          <button data-del-about="${s.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button>
+        </td>
       </tr>`).join('');
       $tbody.querySelectorAll('[data-del-about]').forEach(b => b.addEventListener('click', async () => {
         if (!confirm('Delete this section?')) return;
@@ -1627,14 +2297,39 @@
       }
     });
 
+    // About section image upload in admin form
+    const $aboutImgDrop = document.getElementById('about-img-drop');
+    const $aboutImgInput = document.getElementById('about-img-input');
+    $aboutImgDrop.addEventListener('click', () => $aboutImgInput.click());
+    $aboutImgDrop.addEventListener('dragover', e => { e.preventDefault(); $aboutImgDrop.classList.add('dragover'); });
+    $aboutImgDrop.addEventListener('dragleave', () => $aboutImgDrop.classList.remove('dragover'));
+    $aboutImgDrop.addEventListener('drop', e => { e.preventDefault(); $aboutImgDrop.classList.remove('dragover'); if (e.dataTransfer.files.length) pickAboutImg(e.dataTransfer.files[0]); });
+    $aboutImgInput.addEventListener('change', () => { if ($aboutImgInput.files.length) pickAboutImg($aboutImgInput.files[0]); });
+    function pickAboutImg(file) {
+      if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+      selectedAboutImg = file;
+      document.getElementById('about-img-thumb').src = URL.createObjectURL(file);
+      document.getElementById('about-img-preview').classList.remove('view-hidden');
+    }
+    document.getElementById('about-img-clear').addEventListener('click', () => {
+      selectedAboutImg = null; $aboutImgInput.value = '';
+      document.getElementById('about-img-preview').classList.add('view-hidden');
+    });
+
     document.getElementById('add-about-form').addEventListener('submit', async e => {
       e.preventDefault();
       const title = document.getElementById('about-title-input').value.trim();
       const body  = document.getElementById('about-body-input').value.trim();
       const order = parseInt(document.getElementById('about-order-input').value) || 0;
       if (!title || !body) return;
-      if (await addAboutSection(title, body, order)) {
+      let imageUrl = null;
+      if (selectedAboutImg) {
+        try { imageUrl = await uploadImageToStorage(selectedAboutImg); } catch (err) { alert('Image upload error: ' + err.message); return; }
+      }
+      if (await addAboutSection(title, body, order, imageUrl)) {
         ['about-title-input','about-body-input','about-order-input'].forEach(id => document.getElementById(id).value = '');
+        selectedAboutImg = null; $aboutImgInput.value = '';
+        document.getElementById('about-img-preview').classList.add('view-hidden');
         await renderAdminAbout();
         if (currentView === 'about') await renderHomeAbout();
       }
