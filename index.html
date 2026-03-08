@@ -104,39 +104,65 @@
     .lotus-petal:nth-child(7)  { transform: translate(-50%, -100%) rotate(270deg); }
     .lotus-petal:nth-child(8)  { transform: translate(-50%, -100%) rotate(315deg); }
 
-    /* ── Hero CTA Background ─────────────────────── */
-    .hero-cta-bg {
-      position: relative; border-radius: 1rem; overflow: hidden;
-      background-color: rgb(var(--ink-rgb)); background-size: cover; background-position: center;
-      transition: background-image 0.4s ease;
+    /* ── Split Hero ──────────────────────────────── */
+    .hero-split {
+      display: grid;
+      grid-template-columns: 42% 58%;
+      min-height: 500px;
+      overflow: hidden;
     }
-    .hero-cta-bg::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(0,0,0,0.58) 0%, rgba(100,0,0,0.42) 100%);
-      border-radius: inherit;
+    @media (max-width: 767px) {
+      .hero-split { grid-template-columns: 1fr; grid-template-rows: auto 260px; }
     }
-    .hero-cta-bg .cta-inner {
-      position: relative; z-index: 1;
-      display: flex; align-items: center; justify-content: center;
-      gap: 1.25rem; flex-wrap: wrap;
-      padding: 3.5rem 2rem;
+    .hero-text-panel {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 4rem 3rem 4rem 4rem;
+      background: rgb(var(--cream-rgb));
     }
-    .hero-cta-bg .btn-outline {
-      color: #fff; border-color: rgba(255,255,255,0.65);
+    @media (max-width: 767px) {
+      .hero-text-panel { padding: 2.5rem 1.5rem; }
     }
-    .hero-cta-bg .btn-outline:hover {
-      background: rgba(255,255,255,0.12); border-color: #fff;
+    .hero-photo-panel { overflow: hidden; background: #1a1826; }
+    .hero-photo-panel img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
+      opacity: 0; transition: opacity 0.5s ease;
     }
+    .hero-photo-panel img.loaded { opacity: 1; }
 
-    /* ── Hero Gallery Strip ─────────────────────── */
-    .hero-strip-img {
-      flex: 1 1 0; max-width: 220px; aspect-ratio: 3/2;
-      border-radius: 0.75rem; overflow: hidden; cursor: pointer;
-      box-shadow: 0 4px 16px rgb(var(--ink-rgb) / 0.10);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    /* ── Awards Strip ────────────────────────────── */
+    .awards-strip-section {
+      display: flex; align-items: center; gap: 2rem;
+      padding: 1rem 2rem;
+      border-top: 1px solid rgb(var(--imperial-rgb) / 0.12);
+      border-bottom: 1px solid rgb(var(--imperial-rgb) / 0.12);
+      background: rgb(var(--surface-rgb));
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
     }
-    .hero-strip-img:hover { transform: scale(1.04); box-shadow: 0 6px 24px rgb(var(--ink-rgb) / 0.16); }
-    .hero-strip-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .awards-strip-label {
+      flex-shrink: 0;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      font-size: 0.68rem; font-weight: 600;
+      color: rgb(var(--ink-rgb) / 0.45);
+      white-space: nowrap;
+    }
+    #awards-list { display: flex; align-items: center; gap: 0; flex-wrap: nowrap; }
+    .award-chip {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0 1.5rem; white-space: nowrap;
+      border-left: 1px solid rgb(var(--imperial-rgb) / 0.2);
+    }
+    .award-chip:first-child { border-left: none; }
+    .award-chip-year {
+      font-size: 0.7rem; font-weight: 600;
+      color: rgb(var(--imperial-rgb));
+      background: rgb(var(--imperial-rgb) / 0.08);
+      padding: 0.1rem 0.45rem; border-radius: 999px;
+    }
+    .award-chip-title {
+      font-size: 0.8rem; color: rgb(var(--ink-rgb) / 0.7); font-weight: 500;
+    }
 
     /* ── CTA Glow ───────────────────────────────── */
     @keyframes cta-glow {
@@ -424,23 +450,33 @@
   <!-- ═══════════════════════════════════════════════ -->
   <main id="home-view" class="relative z-10">
 
-    <!-- Hero -->
-    <section id="section-hero" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
-      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-4">Est. 2018</p>
-      <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl text-ink leading-tight mb-6">
-        Where Tradition Meets<br/><em class="text-imperial">Graceful Expression</em>
-      </h1>
-      <p class="max-w-2xl mx-auto text-ink/60 text-base sm:text-lg leading-relaxed">
-        Bright Pearl Academy nurtures the art of Chinese dance, cultivating discipline, cultural pride, and artistic excellence in every student. From classical forms to contemporary fusion, we carry the beauty of heritage into the future.
-      </p>
-      <div id="hero-cta-bg" class="hero-cta-bg mt-8 max-w-3xl mx-auto">
-        <div class="cta-inner">
-          <button id="hero-cta-register" class="btn-imperial cta-glow px-8 py-3.5 rounded-lg text-sm font-semibold tracking-wide">Enroll Now</button>
-          <button id="hero-cta-about"    class="btn-outline border-2 px-8 py-3.5 rounded-lg text-sm font-semibold tracking-wide">Our Story</button>
+    <!-- Hero — full-width split -->
+    <section id="section-hero" class="hero-split">
+      <!-- Left: text + CTAs -->
+      <div class="hero-text-panel">
+        <p class="uppercase tracking-[0.25em] text-imperial/60 text-xs font-semibold mb-5">Est. 2018</p>
+        <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink leading-tight mb-5">
+          Where Tradition Meets<br/><em class="text-imperial">Graceful Expression</em>
+        </h1>
+        <p class="text-ink/60 text-sm sm:text-base leading-relaxed mb-8 max-w-sm">
+          Bright Pearl Academy nurtures the art of Chinese dance, cultivating discipline, cultural pride, and artistic excellence in every student.
+        </p>
+        <div class="flex items-center gap-4 flex-wrap">
+          <button id="hero-cta-register" class="btn-imperial cta-glow px-7 py-3 rounded-lg text-sm font-semibold tracking-wide">Enroll Now</button>
+          <button id="hero-cta-about"    class="btn-outline border-2 px-7 py-3 rounded-lg text-sm font-semibold tracking-wide">Our Story</button>
         </div>
       </div>
-      <div id="hero-gallery-strip" class="mt-10 flex justify-center gap-3 max-w-3xl mx-auto"></div>
-      <div class="ink-divider mt-8"></div>
+      <!-- Right: live photo from gallery -->
+      <div class="hero-photo-panel" id="hero-photo-panel">
+        <img id="hero-photo-img" src="" alt="Chinese dance performance at Bright Pearl Academy" />
+      </div>
+    </section>
+
+    <!-- Awards — slim horizontal strip -->
+    <section id="section-awards" class="awards-strip-section">
+      <span class="awards-strip-label">Awards &amp; Honors</span>
+      <div id="awards-list"></div>
+      <p id="awards-empty" class="view-hidden text-ink/40 italic text-xs py-1">No awards to display yet.</p>
     </section>
 
     <!-- Photo Gallery -->
@@ -448,16 +484,6 @@
       <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
       <p class="text-center text-ink/50 text-sm mb-8">Moments captured in motion</p>
       <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
-    </section>
-
-    <div class="ink-divider"></div>
-
-    <!-- Awards -->
-    <section id="section-awards" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Awards &amp; Honors</h2>
-      <p class="text-center text-ink/50 text-sm mb-8">Recognition earned through dedication and artistry</p>
-      <div id="awards-list" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
-      <p id="awards-empty" class="view-hidden text-center text-ink/40 italic py-8">No awards to display yet.</p>
     </section>
 
     <!-- Footer -->
@@ -1213,7 +1239,7 @@
         $br.style.width = '100%'; $tx.textContent = 'Upload complete!';
         selectedFile = null; $fi.value = ''; $fn.classList.add('view-hidden'); document.getElementById('upload-caption').value = '';
         setTimeout(() => { $st.classList.add('view-hidden'); $br.style.width = '0%'; $ub.disabled = true; }, 1500);
-        await renderAdminGallery(); await renderHomeGallery(); await renderHeroStrip();
+        await renderAdminGallery(); await renderHomeGallery(); await renderHeroPhoto();
       } catch (err) { $tx.textContent = 'Error: ' + err.message; $br.style.width = '0%'; $ub.disabled = false; }
     });
 
@@ -1262,25 +1288,13 @@
     // ════════════════════════════════════════════════
     //  RENDER — HOME
     // ════════════════════════════════════════════════
-    async function renderHeroStrip() {
+    async function renderHeroPhoto() {
       const photos = await fetchGallery();
-      const $strip = document.getElementById('hero-gallery-strip');
-      if (!photos.length) { $strip.style.display = 'none'; return; }
-      // Set the CTA background to the 4th photo (or last available)
-      const $ctaBg = document.getElementById('hero-cta-bg');
-      if ($ctaBg) {
-        const bgPhoto = photos[3] || photos[photos.length - 1];
-        $ctaBg.style.backgroundImage = `url('${bgPhoto.image_url.replace(/'/g, "\\'")}')`;
-      }
-
-      const featured = photos.slice(0, 3);
-      $strip.innerHTML = featured.map(p => `
-        <div class="hero-strip-img" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
-          <img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />
-        </div>`).join('');
-      $strip.querySelectorAll('[data-lburl]').forEach(c => {
-        c.addEventListener('click', () => openLightbox(c.dataset.lburl, c.dataset.lbcap));
-      });
+      const $img = document.getElementById('hero-photo-img');
+      if (!$img || !photos.length) return;
+      const src = photos[0].image_url;
+      $img.onload = () => $img.classList.add('loaded');
+      $img.src = src;
     }
 
     async function renderHomeAwards() {
@@ -1290,12 +1304,9 @@
       if (!awards.length) { $list.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $list.innerHTML = awards.map(a => `
-        <div class="card-accent bg-surface/60 backdrop-blur rounded-lg p-5">
-          <div class="flex items-start justify-between mb-2">
-            <h3 class="font-display text-base font-semibold text-ink leading-snug pr-2">${esc(a.title)}</h3>
-            ${a.year ? `<span class="shrink-0 text-xs bg-imperial/10 text-imperial px-2 py-0.5 rounded-full font-medium">${esc(a.year)}</span>` : ''}
-          </div>
-          ${a.description ? `<p class="text-ink/55 text-sm leading-relaxed">${esc(a.description)}</p>` : ''}
+        <div class="award-chip">
+          ${a.year ? `<span class="award-chip-year">${esc(a.year)}</span>` : ''}
+          <span class="award-chip-title">${esc(a.title)}</span>
         </div>`).join('');
     }
 
@@ -1460,7 +1471,7 @@
       </tr>`).join('');
       $tbody.querySelectorAll('[data-del-gal]').forEach(b => b.addEventListener('click', async () => {
         if (!confirm('Delete this photo?')) return;
-        if (await deleteGalleryItem(b.dataset.delGal, b.dataset.galUrl)) { await renderAdminGallery(); await renderHomeGallery(); await renderHeroStrip(); }
+        if (await deleteGalleryItem(b.dataset.delGal, b.dataset.galUrl)) { await renderAdminGallery(); await renderHomeGallery(); await renderHeroPhoto(); }
       }));
     }
 
@@ -1898,7 +1909,7 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     showView('home');
     renderHomeAwards().catch(console.error);
     renderHomeGallery().catch(console.error);
-    renderHeroStrip().catch(console.error);
+    renderHeroPhoto().catch(console.error);
   </script>
 </body>
 </html>
