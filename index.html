@@ -104,32 +104,59 @@
     .lotus-petal:nth-child(7)  { transform: translate(-50%, -100%) rotate(270deg); }
     .lotus-petal:nth-child(8)  { transform: translate(-50%, -100%) rotate(315deg); }
 
-    /* ── Split Hero ──────────────────────────────── */
-    .hero-split {
-      display: grid;
-      grid-template-columns: 42% 58%;
-      min-height: 500px;
+    /* ── Hero Banner ─────────────────────────────── */
+    .hero-banner {
+      position: relative;
+      margin: 1rem 1rem 0;
+      border-radius: 1.25rem;
       overflow: hidden;
+      min-height: 420px;
+      background: #1a1826;
     }
-    @media (max-width: 767px) {
-      .hero-split { grid-template-columns: 1fr; grid-template-rows: auto 260px; }
-    }
-    .hero-text-panel {
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 4rem 3rem 4rem 4rem;
-      background: rgb(var(--cream-rgb));
-    }
-    @media (max-width: 767px) {
-      .hero-text-panel { padding: 2.5rem 1.5rem; }
-    }
-    .hero-photo-panel { overflow: hidden; background: #1a1826; }
-    .hero-photo-panel img {
+    @media (min-width: 640px) { .hero-banner { min-height: 500px; margin: 1.25rem 1.5rem 0; border-radius: 1.5rem; } }
+    @media (min-width: 1024px) { .hero-banner { min-height: 560px; } }
+    .hero-banner img {
+      position: absolute; inset: 0;
       width: 100%; height: 100%;
       object-fit: cover; object-position: center top;
       display: block;
-      opacity: 0; transition: opacity 0.5s ease;
+      opacity: 0; transition: opacity 0.6s ease;
     }
-    .hero-photo-panel img.loaded { opacity: 1; }
+    .hero-banner img.loaded { opacity: 1; }
+    .hero-banner::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg,
+        rgba(0,0,0,0.10) 0%,
+        rgba(0,0,0,0.25) 50%,
+        rgba(0,0,0,0.55) 100%);
+      pointer-events: none;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
+      padding: 2rem 1.5rem 2.5rem;
+      text-align: center;
+    }
+    @media (min-width: 640px) { .hero-overlay { padding: 3rem 2rem 3.5rem; } }
+    .hero-glass {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 1rem;
+      padding: 2rem 2.5rem;
+      max-width: 560px;
+    }
+    @media (max-width: 639px) { .hero-glass { padding: 1.5rem 1.25rem; } }
+    .hero-glass h1 { color: #fff; }
+    .hero-glass h1 em { color: #ffd6d6; font-style: italic; }
+    .hero-glass .hero-sub { color: rgba(255,255,255,0.78); }
+    .hero-glass .btn-outline {
+      color: #fff; border-color: rgba(255,255,255,0.55);
+    }
+    .hero-glass .btn-outline:hover {
+      background: rgba(255,255,255,0.15); border-color: #fff;
+    }
 
     /* ── Awards Strip ────────────────────────────── */
     .awards-strip-section {
@@ -450,25 +477,23 @@
   <!-- ═══════════════════════════════════════════════ -->
   <main id="home-view" class="relative z-10">
 
-    <!-- Hero — full-width split -->
-    <section id="section-hero" class="hero-split">
-      <!-- Left: text + CTAs -->
-      <div class="hero-text-panel">
-        <p class="uppercase tracking-[0.25em] text-imperial/60 text-xs font-semibold mb-5">Est. 2018</p>
-        <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink leading-tight mb-5">
-          Where Tradition Meets<br/><em class="text-imperial">Graceful Expression</em>
-        </h1>
-        <p class="text-ink/60 text-sm sm:text-base leading-relaxed mb-8 max-w-sm">
-          Bright Pearl Academy nurtures the art of Chinese dance, cultivating discipline, cultural pride, and artistic excellence in every student.
-        </p>
-        <div class="flex items-center gap-4 flex-wrap">
-          <button id="hero-cta-register" class="btn-imperial cta-glow px-7 py-3 rounded-lg text-sm font-semibold tracking-wide">Enroll Now</button>
-          <button id="hero-cta-about"    class="btn-outline border-2 px-7 py-3 rounded-lg text-sm font-semibold tracking-wide">Our Story</button>
+    <!-- Hero — full-width rounded image with overlay CTAs -->
+    <section id="section-hero" class="hero-banner">
+      <img id="hero-photo-img" src="" alt="Chinese dance performance at Bright Pearl Academy" />
+      <div class="hero-overlay">
+        <div class="hero-glass">
+          <p class="uppercase tracking-[0.25em] text-white/50 text-xs font-semibold mb-3">Est. 2018</p>
+          <h1 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight mb-3">
+            Where Tradition Meets<br/><em>Graceful Expression</em>
+          </h1>
+          <p class="hero-sub text-xs sm:text-sm leading-relaxed mb-5 max-w-md mx-auto">
+            Bright Pearl Academy nurtures the art of Chinese dance, cultivating discipline, cultural pride, and artistic excellence in every student.
+          </p>
+          <div class="flex items-center justify-center gap-4 flex-wrap">
+            <button id="hero-cta-register" class="btn-imperial cta-glow px-7 py-3 rounded-lg text-sm font-semibold tracking-wide">Enroll Now</button>
+            <button id="hero-cta-about"    class="btn-outline border-2 px-7 py-3 rounded-lg text-sm font-semibold tracking-wide">Our Story</button>
+          </div>
         </div>
-      </div>
-      <!-- Right: live photo from gallery -->
-      <div class="hero-photo-panel" id="hero-photo-panel">
-        <img id="hero-photo-img" src="" alt="Chinese dance performance at Bright Pearl Academy" />
       </div>
     </section>
 
