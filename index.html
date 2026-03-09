@@ -2620,10 +2620,15 @@
         }
       ];
 
+      // Resolve effective category: use stored value if set, otherwise infer from title
+      const effCat = m => m.category && m.category !== '' && m.category !== 'Other'
+        ? m.category
+        : inferFacultyCategory((m.title || '') + ' ' + (m.role || ''));
+
       // Build category grid — always render all 3 cards
       $grid.innerHTML = ALL_CATS.map(cat => {
         const sectionId = 'faculty-section-' + cat.key.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-        const count = members.filter(m => m.category === cat.key).length;
+        const count = members.filter(m => effCat(m) === cat.key).length;
         return `
           <div class="faculty-cat-card">
             <div class="faculty-cat-img-wrap" style="background:${cat.grad}">
@@ -2644,12 +2649,12 @@
       }).join('');
 
       // Faculty sections — only for categories with members
-      const presentCats = ALL_CATS.filter(cat => members.some(m => m.category === cat.key));
+      const presentCats = ALL_CATS.filter(cat => members.some(m => effCat(m) === cat.key));
       if (!presentCats.length) { $sections.innerHTML = ''; return; }
 
       $sections.innerHTML = presentCats.map(cat => {
         const sectionId = 'faculty-section-' + cat.key.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-        const group = members.filter(m => m.category === cat.key);
+        const group = members.filter(m => effCat(m) === cat.key);
         return `
           <div class="faculty-group-section" id="${sectionId}">
             <div class="faculty-group-header">
@@ -3464,7 +3469,6 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     renderHomeGallery().catch(console.error);
     renderHeroPhoto().catch(console.error);
     populateProgramsDropdown().catch(console.error);
-    migrateFacultyCategories().catch(console.error);
   </script>
 </body>
 </html>
