@@ -665,6 +665,35 @@
       .faculty-name-divider { margin-left: auto; margin-right: auto; }
     }
 
+    /* ── Gallery caption overlay (edit mode) ────── */
+    .gallery-caption-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0; padding: 0.4rem 0.6rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%);
+      display: none; align-items: center; justify-content: space-between; gap: 0.4rem;
+    }
+    body.edit-mode .gallery-caption-overlay { display: flex; }
+    .gallery-caption-overlay .caption-text {
+      font-size: 0.7rem; color: rgba(255,255,255,0.85); flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .gallery-caption-overlay .caption-edit-btn {
+      background: rgba(255,255,255,0.15); border: none; border-radius: 4px;
+      color: white; padding: 2px 4px; cursor: pointer; flex-shrink: 0;
+      line-height: 1;
+    }
+    .gallery-caption-overlay .caption-edit-btn:hover { background: rgba(255,255,255,0.3); }
+    /* ── Program page edit-mode header ──────────── */
+    body.edit-mode #program-page-title,
+    body.edit-mode #program-page-desc {
+      outline: 2px dashed rgb(var(--imperial-rgb) / 0.35);
+      outline-offset: 3px; border-radius: 4px; cursor: text;
+    }
+    body.edit-mode #program-page-title:focus,
+    body.edit-mode #program-page-desc:focus {
+      outline-color: rgb(var(--imperial-rgb) / 0.7);
+      background: rgb(var(--imperial-rgb) / 0.04);
+    }
+
     /* ── Faculty filter tabs ─────────────────────── */
     .faculty-filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center; }
     .faculty-filter-btn {
@@ -1689,8 +1718,10 @@
     let selectedFacultyPhoto = null;
     let destModalFile    = null;
     let destModalResolve = null;
-    let aboutSortable    = null;
-    let gallerySortable  = null;
+    let aboutSortable       = null;
+    let gallerySortable     = null;
+    let concertSortable     = null;
+    let galleryPageSortable = null;
 
     // ── DOM refs ───────────────────────────────────
     const $homeView        = document.getElementById('home-view');
@@ -1768,19 +1799,23 @@
         populateClassDropdown();
       } else if (view === 'faculty') {
         _syncNavSession();
-        $toolbar.classList.remove('visible');
+        if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Faculty Page'; }
+        else $toolbar.classList.remove('visible');
         renderFacultyPage();
       } else if (view === 'concert') {
         _syncNavSession();
-        $toolbar.classList.remove('visible');
+        if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Concert Page'; }
+        else $toolbar.classList.remove('visible');
         renderConcertPage();
       } else if (view === 'programs') {
         _syncNavSession();
-        $toolbar.classList.remove('visible');
+        if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Programs Page'; }
+        else $toolbar.classList.remove('visible');
         renderProgramPage(currentProgram);
       } else if (view === 'gallery-page') {
         _syncNavSession();
-        $toolbar.classList.remove('visible');
+        if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Gallery Page'; }
+        else $toolbar.classList.remove('visible');
         renderGalleryPage();
       } else {
         // home
@@ -2009,6 +2044,38 @@
       const { error } = await supabase.from('about_sections').update(fields).eq('id', id);
       if (error) { alert('Error: ' + error.message); return false; } return true;
     }
+    async function updateConcertSection(id, fields) {
+      const sections = await fetchConcertSections();
+      const idx = sections.findIndex(s => s.id === id);
+      if (idx === -1) return false;
+      sections[idx] = { ...sections[idx], ...fields };
+      await saveSetting('concert_data', sections); return true;
+    }
+    async function reorderConcertSections(orderedIds) {
+      const sections = await fetchConcertSections();
+      const ordered = orderedIds.map((id, i) => {
+        const s = sections.find(s => s.id === id); return s ? { ...s, display_order: i } : null;
+      }).filter(Boolean);
+      await saveSetting('concert_data', ordered);
+    }
+    async function updateFacultyMember(id, fields) {
+      const members = await fetchFaculty();
+      const idx = members.findIndex(m => m.id === id);
+      if (idx === -1) return false;
+      members[idx] = { ...members[idx], ...fields };
+      await saveSetting('faculty_data', members); return true;
+    }
+    async function updateProgramItem(id, fields) {
+      const programs = await fetchPrograms();
+      const idx = programs.findIndex(p => p.id === id);
+      if (idx === -1) return false;
+      programs[idx] = { ...programs[idx], ...fields };
+      await saveSetting('programs_data', programs); return true;
+    }
+    async function updateGalleryCaption(id, caption) {
+      const { error } = await supabase.from('gallery').update({ caption }).eq('id', id);
+      if (error) throw new Error(error.message); return true;
+    }
     async function reorderAboutSections(orderedIds) {
       for (let i = 0; i < orderedIds.length; i++) {
         const { error } = await supabase.from('about_sections').update({ display_order: i }).eq('id', orderedIds[i]);
@@ -2050,10 +2117,15 @@
         ? '<svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Preview'
         : '<svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zM19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>Edit Mode';
 
-      if (editMode && currentView === 'about') initAboutSortable();
+      if      (editMode && currentView === 'about')        initAboutSortable();
+      else if (editMode && currentView === 'concert')      initConcertSortable();
+      else if (editMode && currentView === 'gallery-page') initGalleryPageSortable();
       else destroySortables();
 
       if (editMode && currentView === 'home') initGallerySortable();
+
+      // Refresh program edit controls when toggling on programs page
+      if (currentView === 'programs') _applyProgramEditMode();
     }
 
     function initAboutSortable() {
@@ -2083,9 +2155,30 @@
       });
     }
 
+    function initConcertSortable() {
+      const container = document.getElementById('concert-sections-container');
+      if (!container || concertSortable) return;
+      concertSortable = Sortable.create(container, {
+        handle: '.drag-handle', animation: 200,
+        ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
+        onEnd: async () => {
+          const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
+          await reorderConcertSections(ids);
+        }
+      });
+    }
+    function initGalleryPageSortable() {
+      const grid = document.getElementById('gallery-page-grid');
+      if (!grid || galleryPageSortable) return;
+      galleryPageSortable = Sortable.create(grid, {
+        animation: 200, ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
+      });
+    }
     function destroySortables() {
-      if (aboutSortable) { aboutSortable.destroy(); aboutSortable = null; }
-      if (gallerySortable) { gallerySortable.destroy(); gallerySortable = null; }
+      if (aboutSortable)       { aboutSortable.destroy();       aboutSortable = null; }
+      if (gallerySortable)     { gallerySortable.destroy();     gallerySortable = null; }
+      if (concertSortable)     { concertSortable.destroy();     concertSortable = null; }
+      if (galleryPageSortable) { galleryPageSortable.destroy(); galleryPageSortable = null; }
     }
 
     // ── Edit toolbar buttons ───────────────────────
@@ -2662,7 +2755,12 @@
               <span class="group-count">${group.length} instructor${group.length !== 1 ? 's' : ''}</span>
             </div>
             ${group.map(m => `
-              <div class="faculty-card">
+              <div class="editable-section faculty-card" data-section-id="${m.id}">
+                <div class="section-toolbar" style="top:0.5rem;left:0.5rem;">
+                  <button class="edit-section-btn" title="Edit inline" data-edit-id="${m.id}">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+                  </button>
+                </div>
                 <div>
                   <div class="faculty-photo-wrap">
                     ${m.photo_url
@@ -2672,13 +2770,40 @@
                 </div>
                 <div>
                   <span class="faculty-name-divider"></span>
-                  <h2 class="font-display text-2xl sm:text-3xl text-ink font-bold mb-1">${esc(m.name)}</h2>
-                  ${m.title ? `<p class="text-sm font-bold text-ink/70 mb-4">${esc(m.title)}</p>` : ''}
-                  <p class="text-ink/65 leading-relaxed text-sm sm:text-base whitespace-pre-line">${esc(m.bio)}</p>
+                  <h2 class="font-display text-2xl sm:text-3xl text-ink font-bold mb-1 editable-title" data-field="name" data-id="${m.id}">${esc(m.name)}</h2>
+                  <p class="text-sm font-bold text-ink/70 mb-4 editable-subtitle" data-field="title" data-id="${m.id}">${esc(m.title || '')}</p>
+                  <p class="text-ink/65 leading-relaxed text-sm sm:text-base whitespace-pre-line editable-body" data-field="bio" data-id="${m.id}">${esc(m.bio)}</p>
                 </div>
               </div>`).join('')}
           </div>`;
       }).join('');
+
+      // Wire faculty inline-edit buttons
+      $sections.querySelectorAll('.edit-section-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.editId;
+          const card = $sections.querySelector(`[data-section-id="${id}"]`);
+          const $name = card.querySelector('.editable-title');
+          const $sub  = card.querySelector('.editable-subtitle');
+          const $bio  = card.querySelector('.editable-body');
+          if ($name.contentEditable === 'true') {
+            [$name, $sub, $bio].forEach(el => { el.contentEditable = 'false'; });
+            const sb = card.querySelector('.inline-save-btn'); if (sb) sb.remove();
+            updateFacultyMember(id, { name: $name.textContent.trim(), title: $sub.textContent.trim(), bio: $bio.textContent.trim() });
+          } else {
+            [$name, $sub, $bio].forEach(el => { el.contentEditable = 'true'; }); $name.focus();
+            if (!card.querySelector('.inline-save-btn')) {
+              const sb = document.createElement('button');
+              sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
+              sb.addEventListener('click', async () => {
+                await updateFacultyMember(id, { name: $name.textContent.trim(), title: $sub.textContent.trim(), bio: $bio.textContent.trim() });
+                [$name, $sub, $bio].forEach(el => { el.contentEditable = 'false'; }); sb.remove();
+              });
+              card.appendChild(sb);
+            }
+          }
+        });
+      });
     }
 
     async function renderConcertPage() {
@@ -2687,11 +2812,51 @@
       const $empty     = document.getElementById('concert-sections-empty');
       if (!sections.length) { $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
+      const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
+      const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
+      const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
       $container.innerHTML = sections.map(s => `
-        <div class="card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
-          <h3 class="font-display text-xl text-ink mb-3">${esc(s.title)}</h3>
-          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base">${esc(s.body)}</p>
+        <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8" data-section-id="${s.id}">
+          <div class="section-toolbar">
+            <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
+            <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
+            <button class="del-section-btn" title="Delete" data-delbtn-id="${s.id}">${SVG_TRASH}</button>
+          </div>
+          <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
+          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>
         </div>`).join('');
+
+      $container.querySelectorAll('.edit-section-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.editId;
+          const card = $container.querySelector(`[data-section-id="${id}"]`);
+          const $t = card.querySelector('.editable-title'), $b = card.querySelector('.editable-body');
+          if ($t.contentEditable === 'true') {
+            $t.contentEditable = 'false'; $b.contentEditable = 'false';
+            const sb = card.querySelector('.inline-save-btn'); if (sb) sb.remove();
+            updateConcertSection(id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
+          } else {
+            $t.contentEditable = 'true'; $b.contentEditable = 'true'; $t.focus();
+            if (!card.querySelector('.inline-save-btn')) {
+              const sb = document.createElement('button');
+              sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
+              sb.addEventListener('click', async () => {
+                await updateConcertSection(id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
+                $t.contentEditable = 'false'; $b.contentEditable = 'false'; sb.remove();
+              });
+              card.appendChild(sb);
+            }
+          }
+        });
+      });
+      $container.querySelectorAll('.del-section-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this section?')) return;
+          await deleteConcertSection(btn.dataset.delbtnId);
+          await renderConcertPage(); await renderAdminConcert();
+        });
+      });
+      if (editMode) { destroySortables(); initConcertSortable(); }
     }
 
     async function renderProgramPage(slug) {
@@ -2703,18 +2868,64 @@
       const $empty   = document.getElementById('program-content-empty');
       if (!program) {
         $title.textContent = 'Program'; $desc.textContent = '';
+        $title.dataset.programId = ''; $desc.dataset.programId = '';
         $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return;
       }
       $title.textContent = program.name;
       $desc.textContent  = program.description || '';
+      $title.dataset.programId = program.id;
+      $desc.dataset.programId  = program.id;
       if (program.content) {
         $empty.classList.add('view-hidden');
         $container.innerHTML = `
-          <div class="program-content-section">
-            <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base">${esc(program.content)}</p>
+          <div class="editable-section program-content-section" data-section-id="${program.id}">
+            <div class="section-toolbar">
+              <button class="edit-section-btn" title="Edit content" data-edit-id="${program.id}">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+              </button>
+            </div>
+            <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="content" data-id="${program.id}">${esc(program.content)}</p>
           </div>`;
+        $container.querySelector('.edit-section-btn')?.addEventListener('click', () => {
+          const $body = $container.querySelector('.editable-body');
+          if ($body.contentEditable === 'true') {
+            $body.contentEditable = 'false';
+            const sb = $container.querySelector('.inline-save-btn'); if (sb) sb.remove();
+            updateProgramItem(program.id, { content: $body.textContent.trim() });
+          } else {
+            $body.contentEditable = 'true'; $body.focus();
+            if (!$container.querySelector('.inline-save-btn')) {
+              const sb = document.createElement('button');
+              sb.className = 'inline-save-btn'; sb.textContent = 'Save Content';
+              sb.addEventListener('click', async () => {
+                await updateProgramItem(program.id, { content: $body.textContent.trim() });
+                $body.contentEditable = 'false'; sb.remove();
+              });
+              $container.querySelector('.program-content-section').appendChild(sb);
+            }
+          }
+        });
       } else {
         $container.innerHTML = ''; $empty.classList.remove('view-hidden');
+      }
+      _applyProgramEditMode();
+    }
+    function _applyProgramEditMode() {
+      const $title = document.getElementById('program-page-title');
+      const $desc  = document.getElementById('program-page-desc');
+      if (!$title || !$title.dataset.programId) return;
+      $title.contentEditable = editMode ? 'true' : 'false';
+      $desc.contentEditable  = editMode ? 'true' : 'false';
+      if (editMode) {
+        if (!$title._saveWired) {
+          $title._saveWired = true;
+          const save = async () => {
+            const id = $title.dataset.programId;
+            if (id) await updateProgramItem(id, { name: $title.textContent.trim(), description: $desc.textContent.trim() });
+          };
+          $title.addEventListener('blur', save);
+          $desc.addEventListener('blur', save);
+        }
       }
     }
 
@@ -2725,12 +2936,36 @@
       if (!photos.length) { $grid.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $grid.innerHTML = photos.map(p => `
-        <div class="gallery-cell rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
+        <div class="gallery-cell rounded-lg" data-photo-id="${esc(p.id)}" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
           <img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />
+          <div class="gallery-caption-overlay">
+            <span class="caption-text">${esc(p.caption||'')}</span>
+            <button class="caption-edit-btn" title="Edit caption">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+            </button>
+          </div>
         </div>`).join('');
       $grid.querySelectorAll('[data-lburl]').forEach(c => {
-        c.addEventListener('click', () => openLightbox(c.dataset.lburl, c.dataset.lbcap));
+        c.addEventListener('click', e => {
+          if (e.target.closest('.gallery-caption-overlay')) return;
+          openLightbox(c.dataset.lburl, c.dataset.lbcap);
+        });
       });
+      $grid.querySelectorAll('.caption-edit-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const cell = btn.closest('[data-photo-id]');
+          const id   = cell.dataset.photoId;
+          const $span = cell.querySelector('.caption-text');
+          const cur   = $span.textContent;
+          const val   = prompt('Edit caption:', cur);
+          if (val === null) return;
+          $span.textContent = val;
+          cell.dataset.lbcap = val;
+          updateGalleryCaption(id, val).catch(err => alert('Save failed: ' + err.message));
+        });
+      });
+      if (editMode) { destroySortables(); initGalleryPageSortable(); }
     }
 
     async function populateProgramsDropdown() {
