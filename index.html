@@ -684,6 +684,59 @@
       padding: 0.15rem 0.6rem; margin-bottom: 0.6rem;
     }
 
+    /* ── Faculty category section cards ─────────── */
+    .faculty-cat-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; margin-bottom: 3.5rem;
+    }
+    @media (max-width: 900px) { .faculty-cat-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .faculty-cat-grid { grid-template-columns: 1fr; } }
+    .faculty-cat-card {
+      border-radius: 0.75rem; overflow: hidden;
+      border: 1.5px solid rgb(var(--imperial-rgb) / 0.12);
+      background: rgb(var(--surface-rgb));
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .faculty-cat-card:hover { box-shadow: 0 8px 32px rgb(var(--imperial-rgb) / 0.12); transform: translateY(-3px); }
+    .faculty-cat-img-wrap {
+      width: 100%; aspect-ratio: 4/3; overflow: hidden;
+      background: linear-gradient(135deg, rgb(var(--imperial-rgb) / 0.12) 0%, rgb(var(--imperial-rgb) / 0.06) 100%);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .faculty-cat-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .faculty-cat-img-placeholder {
+      font-size: 3rem; opacity: 0.25; color: rgb(var(--imperial-rgb));
+    }
+    .faculty-cat-body { padding: 1.25rem 1.25rem 1.5rem; }
+    .faculty-cat-title {
+      font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700;
+      color: rgb(var(--imperial-rgb)); margin-bottom: 0.85rem;
+    }
+    .faculty-cat-btn {
+      display: inline-block; padding: 0.45rem 1.25rem;
+      border: 1.5px solid rgb(var(--imperial-rgb) / 0.4); border-radius: 0.4rem;
+      font-size: 0.8rem; font-weight: 500; color: rgb(var(--imperial-rgb));
+      background: transparent; cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .faculty-cat-btn:hover {
+      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); border-color: rgb(var(--imperial-rgb));
+    }
+    /* ── Faculty group section headers ───────────── */
+    .faculty-group-section { margin-bottom: 3.5rem; scroll-margin-top: 90px; }
+    .faculty-group-header {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; padding-bottom: 0.75rem;
+      border-bottom: 2px solid rgb(var(--imperial-rgb) / 0.12);
+    }
+    .faculty-group-header h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700;
+      color: rgb(var(--ink-rgb));
+    }
+    .faculty-group-header .group-count {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      color: rgb(var(--imperial-rgb) / 0.6); border: 1px solid rgb(var(--imperial-rgb) / 0.2);
+      border-radius: 9999px; padding: 0.15rem 0.65rem; white-space: nowrap;
+    }
+
     /* ── Program page content ────────────────────── */
     .program-content-section {
       background: rgb(var(--surface-rgb) / 0.6); backdrop-filter: blur(8px);
@@ -1345,6 +1398,35 @@
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Faculty
         </h3>
+        <!-- Category cover images -->
+        <div class="bg-surface/40 rounded-lg border border-imperial/10 p-4 mb-5">
+          <h4 class="text-sm font-bold text-ink mb-1">Category Cover Images</h4>
+          <p class="text-xs text-ink/50 mb-3">Paste an image URL for each category card shown on the public Faculty page. You can copy URLs from gallery uploads.</p>
+          <div class="grid sm:grid-cols-2 gap-3 mb-3">
+            <div>
+              <label class="text-xs font-semibold text-ink/60 mb-1 block">Dance</label>
+              <input id="catimg-dance" type="url" placeholder="https://…"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-ink/60 mb-1 block">Chinese / Mandarin</label>
+              <input id="catimg-chinese" type="url" placeholder="https://…"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-ink/60 mb-1 block">STEM / Coding</label>
+              <input id="catimg-stem" type="url" placeholder="https://…"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-ink/60 mb-1 block">Music</label>
+              <input id="catimg-music" type="url" placeholder="https://…"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+          </div>
+          <button id="save-category-images-btn" type="button" class="btn-imperial px-4 py-2 rounded text-sm font-medium">Save Images</button>
+          <span id="catimg-saved-msg" class="view-hidden ml-3 text-xs text-imperial font-medium">Saved ✓</span>
+        </div>
         <form id="add-faculty-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
           <div class="grid sm:grid-cols-2 gap-3">
             <input id="faculty-name" type="text" placeholder="Full Name *" required
@@ -1499,8 +1581,10 @@
       </p>
       <div class="ink-divider mt-8"></div>
     </div>
-    <div id="faculty-filter-bar" class="faculty-filter-bar max-w-4xl mx-auto px-4 sm:px-6"></div>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 pb-20" id="faculty-list-container"></div>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
+      <div id="faculty-category-grid" class="faculty-cat-grid"></div>
+    </div>
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24" id="faculty-sections-container"></div>
     <p id="faculty-list-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Faculty profiles coming soon.</p>
     <footer class="border-t border-imperial/10 mt-8">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
@@ -1844,19 +1928,24 @@
       await saveSetting('faculty_data', members.filter(m => m.id !== id));
       return true;
     }
-    function inferFacultyCategory(title) {
-      const t = (title || '').toLowerCase();
+    function inferFacultyCategory(text) {
+      const t = (text || '').toLowerCase();
       if (/dance|ballet|contemporary|choreograph/.test(t)) return 'Dance';
       if (/chinese|mandarin|language|culture|中文/.test(t)) return 'Chinese / Mandarin';
-      if (/stem|cod|math|science|tech|program/.test(t)) return 'STEM / Coding';
+      if (/stem|cod|math|science|tech|program|enrich/.test(t)) return 'STEM / Coding';
       if (/music|vocal|instrument|piano|violin|sing/.test(t)) return 'Music';
       return 'Other';
     }
     async function migrateFacultyCategories() {
       const members = await fetchFaculty();
       if (!members.length) return;
-      if (members.every(m => m.category)) return; // already fully migrated
-      const migrated = members.map(m => ({ ...m, category: m.category || inferFacultyCategory(m.title) }));
+      // Run whenever any member is missing a meaningful category
+      const needsMigration = members.some(m => !m.category || m.category === '');
+      if (!needsMigration) return;
+      const migrated = members.map(m => ({
+        ...m,
+        category: m.category || inferFacultyCategory((m.title || '') + ' ' + (m.role || ''))
+      }));
       await saveSetting('faculty_data', migrated);
     }
 
@@ -2506,57 +2595,87 @@
     // ════════════════════════════════════════════════
     //  RENDER — FACULTY / CONCERT / PROGRAMS / GALLERY PAGE
     // ════════════════════════════════════════════════
+    async function fetchCategoryImages() {
+      const data = await fetchSetting('faculty_category_images');
+      return (data && typeof data === 'object' && !Array.isArray(data)) ? data : {};
+    }
+    async function saveCategoryImages(images) {
+      await saveSetting('faculty_category_images', images);
+    }
+
+    const FACULTY_CAT_ICONS = {
+      'Dance': '💃',
+      'Chinese / Mandarin': '🏮',
+      'STEM / Coding': '💻',
+      'Music': '🎵',
+      'Other': '⭐'
+    };
+
     async function renderFacultyPage() {
-      const members    = await fetchFaculty();
-      const $container = document.getElementById('faculty-list-container');
-      const $empty     = document.getElementById('faculty-list-empty');
-      const $filterBar = document.getElementById('faculty-filter-bar');
+      const [members, catImages] = await Promise.all([fetchFaculty(), fetchCategoryImages()]);
+      const $grid     = document.getElementById('faculty-category-grid');
+      const $sections = document.getElementById('faculty-sections-container');
+      const $empty    = document.getElementById('faculty-list-empty');
+
       if (!members.length) {
-        $container.innerHTML = ''; $filterBar.innerHTML = '';
+        $grid.innerHTML = ''; $sections.innerHTML = '';
         $empty.classList.remove('view-hidden'); return;
       }
       $empty.classList.add('view-hidden');
 
       const CATEGORY_ORDER = ['Dance', 'Chinese / Mandarin', 'STEM / Coding', 'Music', 'Other'];
       const presentCats = CATEGORY_ORDER.filter(c => members.some(m => m.category === c));
-      const categories = ['All', ...presentCats];
-      const activeFilter = $filterBar.dataset.active && categories.includes($filterBar.dataset.active)
-        ? $filterBar.dataset.active : 'All';
 
-      function renderCards(filter) {
-        $filterBar.dataset.active = filter;
-        $filterBar.querySelectorAll('.faculty-filter-btn').forEach(b =>
-          b.classList.toggle('active', b.dataset.cat === filter));
-        const filtered = filter === 'All' ? members : members.filter(m => m.category === filter);
-        if (!filtered.length) {
-          $container.innerHTML = '<p class="text-center text-ink/40 italic py-8">No faculty in this category yet.</p>';
-          return;
-        }
-        $container.innerHTML = filtered.map(m => `
-          <div class="faculty-card">
-            <div>
-              <div class="faculty-photo-wrap">
-                ${m.photo_url
-                  ? `<img src="${esc(m.photo_url)}" alt="${esc(m.name)}" />`
-                  : `<div class="faculty-photo-placeholder">${esc(m.name.charAt(0))}</div>`}
-              </div>
+      // ── Category grid cards ──
+      const CAT_IMG_KEYS = { 'Dance': 'Dance', 'Chinese / Mandarin': 'Chinese / Mandarin', 'STEM / Coding': 'STEM / Coding', 'Music': 'Music', 'Other': 'Other' };
+      $grid.innerHTML = presentCats.map(cat => {
+        const imgUrl = catImages[CAT_IMG_KEYS[cat]];
+        const sectionId = 'faculty-section-' + cat.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+        const count = members.filter(m => m.category === cat).length;
+        return `
+          <div class="faculty-cat-card">
+            <div class="faculty-cat-img-wrap">
+              ${imgUrl
+                ? `<img src="${esc(imgUrl)}" alt="${esc(cat)}" />`
+                : `<div class="faculty-cat-img-placeholder">${esc(FACULTY_CAT_ICONS[cat] || '🎓')}</div>`}
             </div>
-            <div>
-              <span class="faculty-name-divider"></span>
-              ${m.category ? `<span class="faculty-category-badge">${esc(m.category)}</span>` : ''}
-              <h2 class="font-display text-2xl sm:text-3xl text-ink font-bold mb-1">${esc(m.name)}</h2>
-              ${m.title ? `<p class="text-sm font-bold text-ink mb-4">${esc(m.title)}</p>` : ''}
-              <p class="text-ink/65 leading-relaxed text-sm sm:text-base whitespace-pre-line">${esc(m.bio)}</p>
+            <div class="faculty-cat-body">
+              <div class="faculty-cat-title">${esc(cat)} Faculty</div>
+              <a href="#${sectionId}" class="faculty-cat-btn" onclick="document.getElementById('${sectionId}')?.scrollIntoView({behavior:'smooth',block:'start'});return false;">
+                Learn More →
+              </a>
             </div>
-          </div>`).join('');
-      }
+          </div>`;
+      }).join('');
 
-      $filterBar.innerHTML = categories.map(c =>
-        `<button class="faculty-filter-btn${c === activeFilter ? ' active' : ''}" data-cat="${esc(c)}">${esc(c)}</button>`
-      ).join('');
-      $filterBar.querySelectorAll('.faculty-filter-btn').forEach(b =>
-        b.addEventListener('click', () => renderCards(b.dataset.cat)));
-      renderCards(activeFilter);
+      // ── Faculty sections (one per category) ──
+      $sections.innerHTML = presentCats.map(cat => {
+        const sectionId = 'faculty-section-' + cat.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+        const group = members.filter(m => m.category === cat);
+        return `
+          <div class="faculty-group-section" id="${sectionId}">
+            <div class="faculty-group-header">
+              <h3>${esc(cat)} Faculty</h3>
+              <span class="group-count">${group.length} instructor${group.length !== 1 ? 's' : ''}</span>
+            </div>
+            ${group.map(m => `
+              <div class="faculty-card">
+                <div>
+                  <div class="faculty-photo-wrap">
+                    ${m.photo_url
+                      ? `<img src="${esc(m.photo_url)}" alt="${esc(m.name)}" />`
+                      : `<div class="faculty-photo-placeholder">${esc(m.name.charAt(0))}</div>`}
+                  </div>
+                </div>
+                <div>
+                  <span class="faculty-name-divider"></span>
+                  <h2 class="font-display text-2xl sm:text-3xl text-ink font-bold mb-1">${esc(m.name)}</h2>
+                  ${m.title ? `<p class="text-sm font-bold text-ink/70 mb-4">${esc(m.title)}</p>` : ''}
+                  <p class="text-ink/65 leading-relaxed text-sm sm:text-base whitespace-pre-line">${esc(m.bio)}</p>
+                </div>
+              </div>`).join('')}
+          </div>`;
+      }).join('');
     }
 
     async function renderConcertPage() {
@@ -2632,7 +2751,16 @@
     // ════════════════════════════════════════════════
     //  RENDER — ADMIN (Faculty / Programs / Concert)
     // ════════════════════════════════════════════════
+    async function loadCategoryImageInputs() {
+      const imgs = await fetchCategoryImages();
+      const map = { 'catimg-dance': 'Dance', 'catimg-chinese': 'Chinese / Mandarin', 'catimg-stem': 'STEM / Coding', 'catimg-music': 'Music' };
+      Object.entries(map).forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = imgs[key] || '';
+      });
+    }
     async function renderAdminFaculty() {
+      loadCategoryImageInputs().catch(console.error);
       const members = await fetchFaculty();
       const $tbody  = document.getElementById('admin-faculty-tbody');
       const $empty  = document.getElementById('admin-faculty-empty');
@@ -3018,6 +3146,22 @@
         await renderAdminFaculty();
         if (currentView === 'faculty') await renderFacultyPage();
       } catch (err) { alert('Error: ' + err.message); }
+    });
+
+    document.getElementById('save-category-images-btn').addEventListener('click', async () => {
+      const map = { 'catimg-dance': 'Dance', 'catimg-chinese': 'Chinese / Mandarin', 'catimg-stem': 'STEM / Coding', 'catimg-music': 'Music' };
+      const images = {};
+      Object.entries(map).forEach(([id, key]) => {
+        const val = (document.getElementById(id)?.value || '').trim();
+        if (val) images[key] = val;
+      });
+      try {
+        await saveCategoryImages(images);
+        const $msg = document.getElementById('catimg-saved-msg');
+        $msg.classList.remove('view-hidden');
+        setTimeout(() => $msg.classList.add('view-hidden'), 2500);
+        if (currentView === 'faculty') await renderFacultyPage();
+      } catch (err) { alert('Error saving images: ' + err.message); }
     });
 
     document.getElementById('add-program-form').addEventListener('submit', async e => {
