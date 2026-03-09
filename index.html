@@ -665,6 +665,25 @@
       .faculty-name-divider { margin-left: auto; margin-right: auto; }
     }
 
+    /* ── Faculty filter tabs ─────────────────────── */
+    .faculty-filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center; }
+    .faculty-filter-btn {
+      padding: 0.35rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.25); cursor: pointer;
+      color: rgb(var(--ink-rgb) / 0.6); background: transparent; transition: all 0.15s;
+    }
+    .faculty-filter-btn:hover { border-color: rgb(var(--imperial-rgb) / 0.5); color: rgb(var(--ink-rgb)); }
+    .faculty-filter-btn.active {
+      background: rgb(var(--imperial-rgb)); border-color: rgb(var(--imperial-rgb));
+      color: rgb(var(--cream-rgb));
+    }
+    .faculty-category-badge {
+      display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgb(var(--imperial-rgb) / 0.7);
+      border: 1px solid rgb(var(--imperial-rgb) / 0.2); border-radius: 9999px;
+      padding: 0.15rem 0.6rem; margin-bottom: 0.6rem;
+    }
+
     /* ── Program page content ────────────────────── */
     .program-content-section {
       background: rgb(var(--surface-rgb) / 0.6); backdrop-filter: blur(8px);
@@ -1333,6 +1352,16 @@
             <input id="faculty-title" type="text" placeholder="Title/Role (e.g. Director/Chinese Dance)"
               class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           </div>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <select id="faculty-category" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial">
+              <option value="">— Category —</option>
+              <option value="Dance">Dance</option>
+              <option value="Chinese / Mandarin">Chinese / Mandarin</option>
+              <option value="STEM / Coding">STEM / Coding</option>
+              <option value="Music">Music</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
           <textarea id="faculty-bio" rows="3" placeholder="Biography *" required
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
           <div class="flex items-center gap-3 flex-wrap">
@@ -1355,6 +1384,7 @@
               <th class="text-left px-4 py-3 rounded-tl-lg w-14">Photo</th>
               <th class="text-left px-4 py-3">Name</th>
               <th class="text-left px-4 py-3">Title</th>
+              <th class="text-left px-4 py-3">Category</th>
               <th class="text-left px-4 py-3">Bio Preview</th>
               <th class="text-center px-4 py-3 w-16">Order</th>
               <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
@@ -1469,6 +1499,7 @@
       </p>
       <div class="ink-divider mt-8"></div>
     </div>
+    <div id="faculty-filter-bar" class="faculty-filter-bar max-w-4xl mx-auto px-4 sm:px-6"></div>
     <div class="max-w-4xl mx-auto px-4 sm:px-6 pb-20" id="faculty-list-container"></div>
     <p id="faculty-list-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Faculty profiles coming soon.</p>
     <footer class="border-t border-imperial/10 mt-8">
@@ -1802,9 +1833,9 @@
       const list = Array.isArray(data) ? data : [];
       return list.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
     }
-    async function addFacultyMember(name, title, bio, photo_url, display_order) {
+    async function addFacultyMember(name, title, bio, photo_url, display_order, category) {
       const members = await fetchFaculty();
-      members.push({ id: crypto.randomUUID(), name, title, bio, photo_url, display_order });
+      members.push({ id: crypto.randomUUID(), name, title, bio, photo_url, display_order, category: category || '' });
       await saveSetting('faculty_data', members);
       return true;
     }
@@ -1812,6 +1843,21 @@
       const members = await fetchFaculty();
       await saveSetting('faculty_data', members.filter(m => m.id !== id));
       return true;
+    }
+    function inferFacultyCategory(title) {
+      const t = (title || '').toLowerCase();
+      if (/dance|ballet|contemporary|choreograph/.test(t)) return 'Dance';
+      if (/chinese|mandarin|language|culture|中文/.test(t)) return 'Chinese / Mandarin';
+      if (/stem|cod|math|science|tech|program/.test(t)) return 'STEM / Coding';
+      if (/music|vocal|instrument|piano|violin|sing/.test(t)) return 'Music';
+      return 'Other';
+    }
+    async function migrateFacultyCategories() {
+      const members = await fetchFaculty();
+      if (!members.length) return;
+      if (members.every(m => m.category)) return; // already fully migrated
+      const migrated = members.map(m => ({ ...m, category: m.category || inferFacultyCategory(m.title) }));
+      await saveSetting('faculty_data', migrated);
     }
 
     // ── Programs CRUD ──
@@ -2464,24 +2510,53 @@
       const members    = await fetchFaculty();
       const $container = document.getElementById('faculty-list-container');
       const $empty     = document.getElementById('faculty-list-empty');
-      if (!members.length) { $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      const $filterBar = document.getElementById('faculty-filter-bar');
+      if (!members.length) {
+        $container.innerHTML = ''; $filterBar.innerHTML = '';
+        $empty.classList.remove('view-hidden'); return;
+      }
       $empty.classList.add('view-hidden');
-      $container.innerHTML = members.map(m => `
-        <div class="faculty-card">
-          <div>
-            <div class="faculty-photo-wrap">
-              ${m.photo_url
-                ? `<img src="${esc(m.photo_url)}" alt="${esc(m.name)}" />`
-                : `<div class="faculty-photo-placeholder">${esc(m.name.charAt(0))}</div>`}
+
+      const CATEGORY_ORDER = ['Dance', 'Chinese / Mandarin', 'STEM / Coding', 'Music', 'Other'];
+      const presentCats = CATEGORY_ORDER.filter(c => members.some(m => m.category === c));
+      const categories = ['All', ...presentCats];
+      const activeFilter = $filterBar.dataset.active && categories.includes($filterBar.dataset.active)
+        ? $filterBar.dataset.active : 'All';
+
+      function renderCards(filter) {
+        $filterBar.dataset.active = filter;
+        $filterBar.querySelectorAll('.faculty-filter-btn').forEach(b =>
+          b.classList.toggle('active', b.dataset.cat === filter));
+        const filtered = filter === 'All' ? members : members.filter(m => m.category === filter);
+        if (!filtered.length) {
+          $container.innerHTML = '<p class="text-center text-ink/40 italic py-8">No faculty in this category yet.</p>';
+          return;
+        }
+        $container.innerHTML = filtered.map(m => `
+          <div class="faculty-card">
+            <div>
+              <div class="faculty-photo-wrap">
+                ${m.photo_url
+                  ? `<img src="${esc(m.photo_url)}" alt="${esc(m.name)}" />`
+                  : `<div class="faculty-photo-placeholder">${esc(m.name.charAt(0))}</div>`}
+              </div>
             </div>
-          </div>
-          <div>
-            <span class="faculty-name-divider"></span>
-            <h2 class="font-display text-2xl sm:text-3xl text-ink font-bold mb-1">${esc(m.name)}</h2>
-            ${m.title ? `<p class="text-sm font-bold text-ink mb-4">${esc(m.title)}</p>` : ''}
-            <p class="text-ink/65 leading-relaxed text-sm sm:text-base whitespace-pre-line">${esc(m.bio)}</p>
-          </div>
-        </div>`).join('');
+            <div>
+              <span class="faculty-name-divider"></span>
+              ${m.category ? `<span class="faculty-category-badge">${esc(m.category)}</span>` : ''}
+              <h2 class="font-display text-2xl sm:text-3xl text-ink font-bold mb-1">${esc(m.name)}</h2>
+              ${m.title ? `<p class="text-sm font-bold text-ink mb-4">${esc(m.title)}</p>` : ''}
+              <p class="text-ink/65 leading-relaxed text-sm sm:text-base whitespace-pre-line">${esc(m.bio)}</p>
+            </div>
+          </div>`).join('');
+      }
+
+      $filterBar.innerHTML = categories.map(c =>
+        `<button class="faculty-filter-btn${c === activeFilter ? ' active' : ''}" data-cat="${esc(c)}">${esc(c)}</button>`
+      ).join('');
+      $filterBar.querySelectorAll('.faculty-filter-btn').forEach(b =>
+        b.addEventListener('click', () => renderCards(b.dataset.cat)));
+      renderCards(activeFilter);
     }
 
     async function renderConcertPage() {
@@ -2569,6 +2644,7 @@
           : '<span class="text-ink/25 text-xs">—</span>'}</td>
         <td class="px-4 py-3 font-medium">${esc(m.name)}</td>
         <td class="px-4 py-3 text-ink/60">${esc(m.title||'')}</td>
+        <td class="px-4 py-3">${m.category ? `<span class="faculty-category-badge">${esc(m.category)}</span>` : '<span class="text-ink/25 text-xs">—</span>'}</td>
         <td class="px-4 py-3 text-ink/60 text-xs">${esc((m.bio||'').substring(0,80))}${(m.bio||'').length>80?'…':''}</td>
         <td class="px-4 py-3 text-ink/50 text-center">${m.display_order||0}</td>
         <td class="px-4 py-3 text-center"><button data-del-faculty="${m.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
@@ -2922,10 +2998,11 @@
 
     document.getElementById('add-faculty-form').addEventListener('submit', async e => {
       e.preventDefault();
-      const name  = document.getElementById('faculty-name').value.trim();
-      const title = document.getElementById('faculty-title').value.trim();
-      const bio   = document.getElementById('faculty-bio').value.trim();
-      const order = parseInt(document.getElementById('faculty-order').value) || 0;
+      const name     = document.getElementById('faculty-name').value.trim();
+      const title    = document.getElementById('faculty-title').value.trim();
+      const bio      = document.getElementById('faculty-bio').value.trim();
+      const order    = parseInt(document.getElementById('faculty-order').value) || 0;
+      const category = document.getElementById('faculty-category').value;
       if (!name || !bio) return;
       let photoUrl = null;
       if (selectedFacultyPhoto) {
@@ -2933,8 +3010,9 @@
         catch (err) { alert('Photo upload error: ' + err.message); return; }
       }
       try {
-        await addFacultyMember(name, title||null, bio, photoUrl, order);
+        await addFacultyMember(name, title||null, bio, photoUrl, order, category||null);
         ['faculty-name','faculty-title','faculty-bio','faculty-order'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('faculty-category').value = '';
         selectedFacultyPhoto = null; $facPhInput.value = '';
         document.getElementById('faculty-photo-preview').classList.add('view-hidden');
         await renderAdminFaculty();
@@ -3269,6 +3347,7 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     renderHomeGallery().catch(console.error);
     renderHeroPhoto().catch(console.error);
     populateProgramsDropdown().catch(console.error);
+    migrateFacultyCategories().catch(console.error);
   </script>
 </body>
 </html>
