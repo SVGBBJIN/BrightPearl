@@ -772,6 +772,23 @@
       border: 1px solid rgb(var(--imperial-rgb) / 0.1);
       border-radius: 0.75rem; padding: 1.75rem 2rem;
     }
+
+    /* ── Loading skeletons ─────────────────────────── */
+    @keyframes skeleton-shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg,
+        rgb(var(--imperial-rgb) / 0.06) 25%,
+        rgb(var(--imperial-rgb) / 0.12) 50%,
+        rgb(var(--imperial-rgb) / 0.06) 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.4s infinite;
+      border-radius: 0.625rem;
+    }
+    .skeleton-line { height: 12px; margin-bottom: 10px; }
+    .skeleton-line:last-child { margin-bottom: 0; width: 70%; }
   </style>
 </head>
 
@@ -808,6 +825,7 @@
         <button id="nav-faculty"      class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Faculty</button>
         <button id="nav-gallery-page" class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Gallery</button>
         <button id="nav-register"     class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Registration</button>
+        <button id="nav-tos"          class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Terms</button>
         <button id="nav-admin"        class="btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Admin</button>
         <button id="nav-logout"       class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Logout</button>
       </div>
@@ -927,6 +945,28 @@
       <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
       <p class="text-center text-ink/50 text-sm mb-8">Moments captured in motion</p>
       <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6">
+          <h3 class="font-display text-xl text-ink mb-3">Contact &amp; Enrollment Help</h3>
+          <p class="text-sm text-ink/60 mb-4">Have questions before registering? We usually reply within 1 business day.</p>
+          <div class="space-y-2 text-sm">
+            <p><span class="font-medium text-ink">Email:</span> hello@brightpearl.academy</p>
+            <p><span class="font-medium text-ink">Phone:</span> (555) 123-4567</p>
+            <p><span class="font-medium text-ink">Location:</span> Greater Seattle Area</p>
+          </div>
+        </div>
+        <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6">
+          <h3 class="font-display text-xl text-ink mb-3">Quick FAQ</h3>
+          <div class="space-y-3 text-sm text-ink/65">
+            <div><p class="font-medium text-ink">When does registration open?</p><p>Registration opens seasonally. Join the waitlist through the registration form now.</p></div>
+            <div><p class="font-medium text-ink">How are students placed?</p><p>Placement is based on age, experience, and a brief instructor review if needed.</p></div>
+            <div><p class="font-medium text-ink">What happens after I apply?</p><p>We confirm details by email and send next steps within 1–2 business days.</p></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Footer -->
@@ -1105,9 +1145,36 @@
         <div class="flex justify-center">
           <button type="submit" id="reg-submit" class="btn-imperial px-10 py-3 rounded-lg text-sm font-medium min-w-[180px]">Submit Application</button>
         </div>
+        <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-5 text-sm text-ink/65">
+          <h4 class="font-display text-base text-ink mb-2">What happens next?</h4>
+          <ul class="space-y-1.5 list-disc pl-5">
+            <li>We review your application within 1&ndash;2 business days.</li>
+            <li>You’ll receive a confirmation email with class placement details.</li>
+            <li>Our team will contact you if we need any additional information.</li>
+          </ul>
+        </div>
         <p class="text-center text-ink/35 text-xs">After submitting, you'll be guided through a quick payment step to secure your spot.</p>
       </form>
     </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--  TERMS VIEW                                     -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <main id="tos-view" class="view-hidden relative z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
+      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Legal</p>
+      <h2 id="tos-page-title" class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4">Terms of Service</h2>
+      <p id="tos-page-subtitle" class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed">Please review these terms before using our services.</p>
+      <div class="ink-divider mt-8"></div>
+    </div>
+    <div id="tos-content-container" class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 space-y-6"></div>
+    <p id="tos-content-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Terms content is coming soon.</p>
+    <footer class="border-t border-imperial/10 mt-6">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
+        &copy; 2026 Bright Pearl Academy. All rights reserved.
+      </div>
+    </footer>
   </main>
 
   <!-- ═══════════════════════════════════════════════ -->
@@ -1543,6 +1610,25 @@
         <p id="admin-concert-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No concert sections yet.</p>
       </div>
 
+      <!-- ── Terms of Service Page ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Terms of Service Page
+        </h3>
+        <form id="tos-settings-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
+          <input id="tos-title" type="text" placeholder="Page title"
+            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="tos-subtitle" type="text" placeholder="Subtitle / intro"
+            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <textarea id="tos-body" rows="8" placeholder="Paste terms here. Separate sections with a blank line."
+            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          <div class="flex items-center gap-3">
+            <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">Save Terms</button>
+            <span class="text-ink/45 text-xs">Changes appear instantly on the Terms page.</span>
+          </div>
+        </form>
+      </div>
+
       <!-- ── Registrations ── -->
       <div class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
@@ -1723,6 +1809,33 @@
     let concertSortable     = null;
     let galleryPageSortable = null;
 
+    const DEFAULT_PROGRAMS = [
+      {
+        id: 'default-dance-program',
+        name: 'Elite Dance Program',
+        slug: 'elite-dance-program',
+        description: 'Technique, artistry, and stage confidence for committed dancers.',
+        content: 'Our Elite Dance Program develops strong technical foundations, cultural expression, and performance readiness. Students train in classical Chinese dance, contemporary repertory, and stage presence through guided rehearsals and curated performance opportunities.',
+        display_order: 0,
+      },
+      {
+        id: 'default-mandarin-program',
+        name: 'Mandarin Afterschool Enrichment',
+        slug: 'mandarin-afterschool',
+        description: 'Language, culture, and creativity in a joyful afterschool format.',
+        content: 'This program blends practical Mandarin, cultural literacy, and project-based activities to help students build confidence speaking, reading, and expressing themselves in Chinese. Lessons are structured by age and level to support steady growth.',
+        display_order: 1,
+      },
+      {
+        id: 'default-stem-program',
+        name: 'Coding & STEM Program',
+        slug: 'coding-stem',
+        description: 'Hands-on computing, logic, and maker projects for young innovators.',
+        content: 'Students explore coding fundamentals, computational thinking, and problem-solving through interactive challenges and guided projects. The curriculum emphasizes creativity, collaboration, and practical digital skills.',
+        display_order: 2,
+      },
+    ];
+
     // ── DOM refs ───────────────────────────────────
     const $homeView        = document.getElementById('home-view');
     const $aboutView       = document.getElementById('about-view');
@@ -1732,6 +1845,7 @@
     const $concertView     = document.getElementById('concert-view');
     const $programsView    = document.getElementById('programs-view');
     const $galleryPageView = document.getElementById('gallery-page-view');
+    const $tosView         = document.getElementById('tos-view');
     const $adminLogin      = document.getElementById('admin-login');
     const $adminDashboard  = document.getElementById('admin-dashboard');
     const $navLogout       = document.getElementById('nav-logout');
@@ -1757,6 +1871,7 @@
       $concertView.classList.toggle('view-hidden',     view !== 'concert');
       $programsView.classList.toggle('view-hidden',    view !== 'programs');
       $galleryPageView.classList.toggle('view-hidden', view !== 'gallery-page');
+      $tosView.classList.toggle('view-hidden',         view !== 'tos');
 
       const $toolbar   = document.getElementById('visual-edit-toolbar');
       const $pageLabel = document.getElementById('edit-page-label');
@@ -1784,6 +1899,7 @@
           renderAdminFaculty();
           renderAdminPrograms();
           renderAdminConcert();
+          renderAdminTosSettings();
         }
       } else if (view === 'about') {
         _syncNavSession();
@@ -1817,6 +1933,11 @@
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Gallery Page'; }
         else $toolbar.classList.remove('visible');
         renderGalleryPage();
+      } else if (view === 'tos') {
+        _syncNavSession();
+        if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Terms Page'; }
+        else $toolbar.classList.remove('visible');
+        renderTosPage();
       } else {
         // home
         _syncNavSession();
@@ -1833,6 +1954,7 @@
     document.getElementById('nav-faculty').addEventListener('click',       () => showView('faculty'));
     document.getElementById('nav-gallery-page').addEventListener('click',  () => showView('gallery-page'));
     document.getElementById('nav-register').addEventListener('click',      () => showView('register'));
+    document.getElementById('nav-tos').addEventListener('click',           () => showView('tos'));
     document.getElementById('nav-admin').addEventListener('click',         () => showView('admin'));
     document.getElementById('hero-cta-register').addEventListener('click', () => showView('register'));
     document.getElementById('hero-cta-about').addEventListener('click',    () => showView('about'));
@@ -1956,19 +2078,20 @@
     }
 
     // ── Programs CRUD ──
-    async function fetchPrograms() {
+    async function fetchPrograms(includeDefaults = true) {
       const data = await fetchSetting('programs_data');
       const list = Array.isArray(data) ? data : [];
+      if (!list.length && includeDefaults) return DEFAULT_PROGRAMS;
       return list.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
     }
     async function addProgramItem(name, slug, description, content, display_order) {
-      const programs = await fetchPrograms();
+      const programs = await fetchPrograms(false);
       programs.push({ id: crypto.randomUUID(), name, slug, description, content, display_order });
       await saveSetting('programs_data', programs);
       return true;
     }
     async function deleteProgramItem(id) {
-      const programs = await fetchPrograms();
+      const programs = await fetchPrograms(false);
       await saveSetting('programs_data', programs.filter(p => p.id !== id));
       return true;
     }
@@ -1988,6 +2111,20 @@
     async function deleteConcertSection(id) {
       const sections = await fetchConcertSections();
       await saveSetting('concert_data', sections.filter(s => s.id !== id));
+      return true;
+    }
+
+    async function fetchTosSettings() {
+      const data = await fetchSetting('tos_data');
+      const fallback = {
+        title: 'Terms of Service',
+        subtitle: 'Please review these terms before using our services.',
+        body: 'Acceptance of Terms\nBy accessing Bright Pearl Academy services, you agree to these terms.\n\nEnrollment & Conduct\nFamilies agree to provide accurate registration details and follow academy conduct guidelines.\n\nUpdates\nThese terms may be updated periodically; continued use indicates acceptance of updates.',
+      };
+      return data && typeof data === 'object' ? { ...fallback, ...data } : fallback;
+    }
+    async function saveTosSettings(payload) {
+      await saveSetting('tos_data', payload);
       return true;
     }
 
@@ -2426,6 +2563,18 @@
     // ════════════════════════════════════════════════
     //  RENDER — HOME
     // ════════════════════════════════════════════════
+    function renderSkeletonCards(containerId, count = 3) {
+      const $container = document.getElementById(containerId);
+      if (!$container) return;
+      $container.innerHTML = Array.from({ length: count }, () => `
+        <div class="bg-surface/60 border border-imperial/10 rounded-xl p-6">
+          <div class="skeleton skeleton-line w-1/3"></div>
+          <div class="skeleton skeleton-line w-full"></div>
+          <div class="skeleton skeleton-line w-5/6"></div>
+        </div>
+      `).join('');
+    }
+
     async function renderHeroPhoto() {
       const $img = document.getElementById('hero-photo-img');
       if (!$img) return;
@@ -2492,9 +2641,10 @@
     //  RENDER — ABOUT
     // ════════════════════════════════════════════════
     async function renderHomeAbout() {
-      const sections   = await fetchAboutSections();
       const $container = document.getElementById('about-sections-container');
       const $empty     = document.getElementById('about-sections-empty');
+      renderSkeletonCards('about-sections-container', 3);
+      const sections   = await fetchAboutSections();
       if (!sections.length) { $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $container.innerHTML = sections.map((s, idx) => {
@@ -2628,9 +2778,10 @@
     }
 
     async function renderAboutPdfs() {
-      const pdfs   = await fetchPdfs();
       const $grid  = document.getElementById('pdf-grid');
       const $empty = document.getElementById('pdf-empty');
+      renderSkeletonCards('pdf-grid', 3);
+      const pdfs   = await fetchPdfs();
       if (!pdfs.length) { $grid.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $grid.innerHTML = pdfs.map(p => `
@@ -2668,10 +2819,11 @@
     };
 
     async function renderFacultyPage() {
-      const members   = await fetchFaculty();
       const $grid     = document.getElementById('faculty-category-grid');
       const $sections = document.getElementById('faculty-sections-container');
       const $empty    = document.getElementById('faculty-list-empty');
+      renderSkeletonCards('faculty-sections-container', 4);
+      const members   = await fetchFaculty();
       $empty.classList.add('view-hidden');
 
       // Always show these 3 primary categories regardless of faculty count
@@ -2807,9 +2959,10 @@
     }
 
     async function renderConcertPage() {
-      const sections   = await fetchConcertSections();
       const $container = document.getElementById('concert-sections-container');
       const $empty     = document.getElementById('concert-sections-empty');
+      renderSkeletonCards('concert-sections-container', 3);
+      const sections   = await fetchConcertSections();
       if (!sections.length) { $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
@@ -2860,12 +3013,13 @@
     }
 
     async function renderProgramPage(slug) {
-      const programs = await fetchPrograms();
-      const program  = slug ? programs.find(p => p.slug === slug) : programs[0];
       const $title   = document.getElementById('program-page-title');
       const $desc    = document.getElementById('program-page-desc');
       const $container = document.getElementById('program-content-container');
       const $empty   = document.getElementById('program-content-empty');
+      renderSkeletonCards('program-content-container', 1);
+      const programs = await fetchPrograms();
+      const program  = slug ? programs.find(p => p.slug === slug) : programs[0];
       if (!program) {
         $title.textContent = 'Program'; $desc.textContent = '';
         $title.dataset.programId = ''; $desc.dataset.programId = '';
@@ -2930,9 +3084,10 @@
     }
 
     async function renderGalleryPage() {
-      const photos = await fetchGallery();
       const $grid  = document.getElementById('gallery-page-grid');
       const $empty = document.getElementById('gallery-page-empty');
+      $grid.innerHTML = Array.from({length:8},()=>'<div class="skeleton" style="aspect-ratio:4/3"></div>').join('');
+      const photos = await fetchGallery();
       if (!photos.length) { $grid.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $grid.innerHTML = photos.map(p => `
@@ -2966,6 +3121,34 @@
         });
       });
       if (editMode) { destroySortables(); initGalleryPageSortable(); }
+    }
+
+    async function renderTosPage() {
+      const tos = await fetchTosSettings();
+      const $title = document.getElementById('tos-page-title');
+      const $subtitle = document.getElementById('tos-page-subtitle');
+      const $container = document.getElementById('tos-content-container');
+      const $empty = document.getElementById('tos-content-empty');
+      renderSkeletonCards('tos-content-container', 3);
+      $title.textContent = tos.title || 'Terms of Service';
+      $subtitle.textContent = tos.subtitle || '';
+      const sections = (tos.body || '')
+        .split(/\n\s*\n/g)
+        .map(s => s.trim())
+        .filter(Boolean);
+      if (!sections.length) {
+        $container.innerHTML = '';
+        $empty.classList.remove('view-hidden');
+        return;
+      }
+      $empty.classList.add('view-hidden');
+      $container.innerHTML = sections.map(sec => {
+        const [first, ...rest] = sec.split('\n');
+        return `<div class="card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
+          <h3 class="font-display text-xl text-ink mb-3">${esc(first)}</h3>
+          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base">${esc(rest.join('\n').trim() || first)}</p>
+        </div>`;
+      }).join('');
     }
 
     async function populateProgramsDropdown() {
@@ -3016,7 +3199,7 @@
     }
 
     async function renderAdminPrograms() {
-      const programs = await fetchPrograms();
+      const programs = await fetchPrograms(false);
       const $tbody   = document.getElementById('admin-programs-tbody');
       const $empty   = document.getElementById('admin-programs-empty');
       if (!programs.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
@@ -3056,6 +3239,13 @@
           if (currentView === 'concert') await renderConcertPage();
         }
       }));
+    }
+
+    async function renderAdminTosSettings() {
+      const tos = await fetchTosSettings();
+      document.getElementById('tos-title').value = tos.title || '';
+      document.getElementById('tos-subtitle').value = tos.subtitle || '';
+      document.getElementById('tos-body').value = tos.body || '';
     }
 
     // ════════════════════════════════════════════════
@@ -3406,6 +3596,21 @@
         await renderAdminConcert();
         if (currentView === 'concert') await renderConcertPage();
       } catch (err) { alert('Error: ' + err.message); }
+    });
+
+    document.getElementById('tos-settings-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      try {
+        await saveTosSettings({
+          title: document.getElementById('tos-title').value.trim(),
+          subtitle: document.getElementById('tos-subtitle').value.trim(),
+          body: document.getElementById('tos-body').value.trim(),
+        });
+        if (currentView === 'tos') await renderTosPage();
+        alert('Terms page updated.');
+      } catch (err) {
+        alert('Save failed: ' + err.message);
+      }
     });
 
     // ════════════════════════════════════════════════
