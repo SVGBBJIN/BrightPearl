@@ -642,35 +642,6 @@
       padding-left: 1.5rem;
     }
 
-    /* ── About Nav Dropdown ─────────────────────── */
-    .about-dropdown-menu {
-      position: absolute; top: calc(100% + 2px); left: 0;
-      background: rgb(var(--cream-rgb));
-      border: 1px solid rgb(var(--imperial-rgb) / 0.15);
-      border-radius: 0.625rem;
-      box-shadow: 0 8px 32px rgb(var(--ink-rgb) / 0.12);
-      min-width: 200px; z-index: 60; padding: 0.375rem 0;
-      opacity: 0; pointer-events: none;
-      transform: translateY(-4px);
-      transition: opacity 0.18s, transform 0.18s;
-    }
-    .about-dropdown-menu.open {
-      opacity: 1; pointer-events: auto;
-      transform: translateY(0);
-    }
-    .about-dropdown-item {
-      display: block; width: 100%; padding: 0.65rem 1.25rem;
-      text-align: left; font-size: 0.8rem; font-weight: 500;
-      color: rgb(var(--ink-rgb) / 0.75);
-      transition: color 0.15s, background 0.15s, padding-left 0.15s;
-      border: none; background: transparent; cursor: pointer; white-space: nowrap;
-    }
-    .about-dropdown-item:hover {
-      color: rgb(var(--imperial-rgb));
-      background: rgb(var(--imperial-rgb) / 0.05);
-      padding-left: 1.5rem;
-    }
-
     /* ── Faculty Cards ───────────────────────────── */
     .faculty-card {
       display: grid; grid-template-columns: 220px 1fr;
@@ -848,10 +819,7 @@
       </button>
       <div class="nav-scroll-items">
         <button id="nav-home"         class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Home</button>
-        <button id="nav-about"        class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap flex items-center gap-1">
-          About
-          <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-        </button>
+        <button id="nav-about"        class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">About</button>
         <button id="nav-concert"      class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Concert</button>
         <button id="nav-programs"     class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap flex items-center gap-1">
           Programs
@@ -867,11 +835,6 @@
       <!-- Programs dropdown: outside the overflow container so it isn't clipped -->
       <div id="programs-dropdown" class="programs-dropdown-menu">
         <!-- Populated dynamically by JS -->
-      </div>
-      <!-- About dropdown -->
-      <div id="about-dropdown" class="about-dropdown-menu">
-        <button class="about-dropdown-item" data-about-section="story">Our Story</button>
-        <button class="about-dropdown-item" data-about-section="downloads">Downloads &amp; Resources</button>
       </div>
     </div>
   </nav>
@@ -2046,7 +2009,7 @@
     // ── Navigation ─────────────────────────────────
     document.getElementById('nav-brand').addEventListener('click',         () => showView('home'));
     document.getElementById('nav-home').addEventListener('click',          () => showView('home'));
-    // nav-about is now a dropdown — its listener is set up below
+    document.getElementById('nav-about').addEventListener('click',         () => showView('about'));
     document.getElementById('nav-concert').addEventListener('click',       () => showView('concert'));
     document.getElementById('nav-faculty').addEventListener('click',       () => showView('faculty'));
     document.getElementById('nav-gallery-page').addEventListener('click',  () => showView('gallery-page'));
@@ -2079,39 +2042,8 @@
       closeProgramsDropdown();
       if (!isOpen) { positionProgramsDropdown(); $programsDropdownMenu.classList.add('open'); }
     });
-    document.addEventListener('click', () => { closeProgramsDropdown(); closeAboutDropdown(); });
+    document.addEventListener('click', () => closeProgramsDropdown());
     $programsDropdownMenu.addEventListener('click', e => e.stopPropagation());
-
-    // About dropdown toggle
-    const $aboutDropdownBtn  = document.getElementById('nav-about');
-    const $aboutDropdownMenu = document.getElementById('about-dropdown');
-    function positionAboutDropdown() {
-      const btnRect = $aboutDropdownBtn.getBoundingClientRect();
-      const navRect = $navInner.getBoundingClientRect();
-      let left = btnRect.left - navRect.left;
-      const maxLeft = navRect.width - $aboutDropdownMenu.offsetWidth - 4;
-      $aboutDropdownMenu.style.left = Math.min(left, maxLeft) + 'px';
-    }
-    function closeAboutDropdown() { $aboutDropdownMenu.classList.remove('open'); }
-    $aboutDropdownBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      const isOpen = $aboutDropdownMenu.classList.contains('open');
-      closeProgramsDropdown(); closeAboutDropdown();
-      if (!isOpen) { positionAboutDropdown(); $aboutDropdownMenu.classList.add('open'); }
-    });
-    $aboutDropdownMenu.addEventListener('click', e => e.stopPropagation());
-    $aboutDropdownMenu.querySelectorAll('[data-about-section]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        closeAboutDropdown();
-        showView('about');
-        requestAnimationFrame(() => {
-          const target = btn.dataset.aboutSection === 'story'
-            ? document.getElementById('about-sections-container')
-            : document.getElementById('section-pdfs');
-          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-      });
-    });
 
     // ── Auth ───────────────────────────────────────
     document.getElementById('login-form').addEventListener('submit', async (e) => {
