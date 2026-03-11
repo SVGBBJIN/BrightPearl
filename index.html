@@ -949,23 +949,8 @@
 
     <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       <div class="grid lg:grid-cols-2 gap-6">
-        <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6">
-          <h3 class="font-display text-xl text-ink mb-3">Contact &amp; Enrollment Help</h3>
-          <p class="text-sm text-ink/60 mb-4">Have questions before registering? We usually reply within 1 business day.</p>
-          <div class="space-y-2 text-sm">
-            <p><span class="font-medium text-ink">Email:</span> hello@brightpearl.academy</p>
-            <p><span class="font-medium text-ink">Phone:</span> (555) 123-4567</p>
-            <p><span class="font-medium text-ink">Location:</span> Greater Seattle Area</p>
-          </div>
-        </div>
-        <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6">
-          <h3 class="font-display text-xl text-ink mb-3">Quick FAQ</h3>
-          <div class="space-y-3 text-sm text-ink/65">
-            <div><p class="font-medium text-ink">When does registration open?</p><p>Registration opens seasonally. Join the waitlist through the registration form now.</p></div>
-            <div><p class="font-medium text-ink">How are students placed?</p><p>Placement is based on age, experience, and a brief instructor review if needed.</p></div>
-            <div><p class="font-medium text-ink">What happens after I apply?</p><p>We confirm details by email and send next steps within 1–2 business days.</p></div>
-          </div>
-        </div>
+        <div id="contact-info-card" class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6"></div>
+        <div id="faq-card" class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6"></div>
       </div>
     </section>
 
@@ -1633,6 +1618,61 @@
         </form>
       </div>
 
+      <!-- ── Contact & Enrollment Info ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Contact &amp; Enrollment Info
+        </h3>
+        <form id="contact-info-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+          <p class="text-ink/50 text-xs">This information is displayed in the Contact &amp; Enrollment Help box on the home page.</p>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Email</label>
+              <input id="ci-email" type="text" placeholder="hello@brightpearl.academy"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-ink/70 mb-1.5">Phone</label>
+              <input id="ci-phone" type="text" placeholder="(555) 123-4567"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-ink/70 mb-1.5">Location</label>
+            <input id="ci-location" type="text" placeholder="Greater Seattle Area"
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-ink/70 mb-1.5">Helper Text <span class="text-ink/35">(shown below heading)</span></label>
+            <input id="ci-helper" type="text" placeholder="Have questions before registering? We usually reply within 1 business day."
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          </div>
+          <div class="flex items-center gap-4">
+            <button type="submit" class="btn-imperial px-6 py-2 rounded text-sm font-medium">Save Contact Info</button>
+            <p id="ci-status" class="view-hidden text-sm text-imperial font-medium"></p>
+          </div>
+        </form>
+      </div>
+
+      <!-- ── Quick FAQ ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Quick FAQ
+        </h3>
+        <div class="mb-4">
+          <div id="admin-faq-list" class="space-y-2 mb-3"></div>
+          <p id="admin-faq-empty" class="view-hidden text-ink/40 italic text-sm py-2">No FAQ items yet — add one below.</p>
+        </div>
+        <form id="add-faq-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+          <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Add New FAQ Item</p>
+          <input id="faq-question" type="text" placeholder="Question *" required
+            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <textarea id="faq-answer" rows="3" placeholder="Answer *" required
+            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add FAQ Item</button>
+        </form>
+      </div>
+
       <!-- ── Registrations ── -->
       <div class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
@@ -1906,6 +1946,8 @@
           renderAdminPrograms();
           renderAdminConcert();
           renderAdminTosSettings();
+          renderAdminContactInfo();
+          renderAdminFaq();
         }
       } else if (view === 'about') {
         _syncNavSession();
@@ -2759,6 +2801,91 @@
       $grid.querySelectorAll('[data-lburl]').forEach(c => {
         c.addEventListener('click', () => openLightbox(c.dataset.lburl, c.dataset.lbcap));
       });
+    }
+
+    // ════════════════════════════════════════════════
+    //  CONTACT INFO + FAQ — DATA & RENDER
+    // ════════════════════════════════════════════════
+    const DEFAULT_CONTACT_INFO = {
+      email:       'hello@brightpearl.academy',
+      phone:       '(555) 123-4567',
+      location:    'Greater Seattle Area',
+      helper_text: 'Have questions before registering? We usually reply within 1 business day.',
+    };
+    const DEFAULT_FAQ = [
+      { id: 'faq-1', question: 'When does registration open?',  answer: 'Registration opens seasonally. Join the waitlist through the registration form now.', display_order: 0 },
+      { id: 'faq-2', question: 'How are students placed?',       answer: 'Placement is based on age, experience, and a brief instructor review if needed.',        display_order: 1 },
+      { id: 'faq-3', question: 'What happens after I apply?',   answer: 'We confirm details by email and send next steps within 1–2 business days.',              display_order: 2 },
+    ];
+
+    async function fetchContactInfo() {
+      const data = await fetchSetting('contact_info');
+      return data && typeof data === 'object' ? { ...DEFAULT_CONTACT_INFO, ...data } : DEFAULT_CONTACT_INFO;
+    }
+    async function fetchFaqData() {
+      const data = await fetchSetting('faq_data');
+      const list = Array.isArray(data) ? data : [];
+      return list.length ? list.sort((a, b) => (a.display_order || 0) - (b.display_order || 0)) : DEFAULT_FAQ;
+    }
+
+    async function renderHomeContactInfo() {
+      const ci   = await fetchContactInfo();
+      const $card = document.getElementById('contact-info-card');
+      $card.innerHTML = `
+        <h3 class="font-display text-xl text-ink mb-3">Contact &amp; Enrollment Help</h3>
+        <p class="text-sm text-ink/60 mb-4">${esc(ci.helper_text)}</p>
+        <div class="space-y-2 text-sm">
+          ${ci.email    ? `<p><span class="font-medium text-ink">Email:</span> ${esc(ci.email)}</p>`    : ''}
+          ${ci.phone    ? `<p><span class="font-medium text-ink">Phone:</span> ${esc(ci.phone)}</p>`    : ''}
+          ${ci.location ? `<p><span class="font-medium text-ink">Location:</span> ${esc(ci.location)}</p>` : ''}
+        </div>`;
+    }
+
+    async function renderHomeFaq() {
+      const items = await fetchFaqData();
+      const $card  = document.getElementById('faq-card');
+      $card.innerHTML = `
+        <h3 class="font-display text-xl text-ink mb-3">Quick FAQ</h3>
+        <div class="space-y-3 text-sm text-ink/65">
+          ${items.map(item => `
+            <div>
+              <p class="font-medium text-ink">${esc(item.question)}</p>
+              <p>${esc(item.answer)}</p>
+            </div>`).join('')}
+        </div>`;
+    }
+
+    async function renderAdminContactInfo() {
+      const ci = await fetchContactInfo();
+      document.getElementById('ci-email').value    = ci.email    || '';
+      document.getElementById('ci-phone').value    = ci.phone    || '';
+      document.getElementById('ci-location').value = ci.location || '';
+      document.getElementById('ci-helper').value   = ci.helper_text || '';
+    }
+
+    async function renderAdminFaq() {
+      const raw   = await fetchSetting('faq_data');
+      const items = Array.isArray(raw) ? raw.sort((a, b) => (a.display_order || 0) - (b.display_order || 0)) : [];
+      const $list  = document.getElementById('admin-faq-list');
+      const $empty = document.getElementById('admin-faq-empty');
+      if (!items.length) { $list.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $list.innerHTML = items.map(item => `
+        <div class="flex items-start gap-2 bg-cream/60 border border-imperial/10 rounded-lg px-3 py-2" data-faq-id="${esc(item.id)}">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-ink truncate">${esc(item.question)}</p>
+            <p class="text-xs text-ink/50 truncate">${esc((item.answer || '').substring(0, 80))}${(item.answer || '').length > 80 ? '…' : ''}</p>
+          </div>
+          <button data-del-faq="${esc(item.id)}" class="text-imperial hover:underline text-xs font-medium shrink-0 mt-0.5">Delete</button>
+        </div>`).join('');
+      $list.querySelectorAll('[data-del-faq]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this FAQ item?')) return;
+        const current = await fetchSetting('faq_data');
+        const updated = Array.isArray(current) ? current.filter(f => f.id !== b.dataset.delFaq) : [];
+        await saveSetting('faq_data', updated);
+        await renderAdminFaq();
+        if (currentView === 'home') await renderHomeFaq();
+      }));
     }
 
     // ════════════════════════════════════════════════
@@ -3907,6 +4034,45 @@
     });
 
     // ════════════════════════════════════════════════
+    //  CONTACT INFO + FAQ — FORM HANDLERS
+    // ════════════════════════════════════════════════
+    document.getElementById('contact-info-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const $status = document.getElementById('ci-status');
+      $status.classList.add('view-hidden');
+      const data = {
+        email:       document.getElementById('ci-email').value.trim(),
+        phone:       document.getElementById('ci-phone').value.trim(),
+        location:    document.getElementById('ci-location').value.trim(),
+        helper_text: document.getElementById('ci-helper').value.trim(),
+      };
+      try {
+        await saveSetting('contact_info', data);
+        $status.textContent = 'Saved!';
+        $status.classList.remove('view-hidden');
+        setTimeout(() => $status.classList.add('view-hidden'), 3000);
+        if (currentView === 'home') await renderHomeContactInfo();
+      } catch (err) { alert('Save failed: ' + err.message); }
+    });
+
+    document.getElementById('add-faq-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const question = document.getElementById('faq-question').value.trim();
+      const answer   = document.getElementById('faq-answer').value.trim();
+      if (!question || !answer) return;
+      try {
+        const current = await fetchSetting('faq_data');
+        const items   = Array.isArray(current) ? current : [];
+        items.push({ id: crypto.randomUUID(), question, answer, display_order: items.length });
+        await saveSetting('faq_data', items);
+        document.getElementById('faq-question').value = '';
+        document.getElementById('faq-answer').value   = '';
+        await renderAdminFaq();
+        if (currentView === 'home') await renderHomeFaq();
+      } catch (err) { alert('Error: ' + err.message); }
+    });
+
+    // ════════════════════════════════════════════════
     //  PAYMENT — DATA + RENDER
     // ════════════════════════════════════════════════
     async function fetchActivePaymentSetting() {
@@ -4201,6 +4367,8 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     renderHomeAwards().catch(console.error);
     renderHomeGallery().catch(console.error);
     renderHeroPhoto().catch(console.error);
+    renderHomeContactInfo().catch(console.error);
+    renderHomeFaq().catch(console.error);
     populateProgramsDropdown().catch(console.error);
   </script>
 </body>
