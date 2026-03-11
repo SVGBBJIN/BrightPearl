@@ -1549,8 +1549,10 @@
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Programs
         </h3>
-        <p class="text-ink/50 text-xs mb-4">Suggested programs: Dance, Mandarin Afterschool Enrichment Program, Coding, Summer Camp, School Vacation Camp, Adult Chinese Dance Classes.</p>
+        <p class="text-ink/50 text-xs mb-4">Each program is a subpage accessible from the Programs nav menu. Add sections inside each program to build out its content.</p>
+        <!-- Create new program -->
         <form id="add-program-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
+          <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Create New Program (Subpage)</p>
           <div class="grid sm:grid-cols-3 gap-3">
             <input id="program-name" type="text" placeholder="Program Name *" required
               class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
@@ -1559,25 +1561,13 @@
             <input id="program-order" type="number" placeholder="Order (0, 1, 2…)" min="0"
               class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           </div>
-          <input id="program-description" type="text" placeholder="Short description (shown under title)"
+          <input id="program-description" type="text" placeholder="Short description (shown under program title)"
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
-          <textarea id="program-content" rows="4" placeholder="Full program content / details…"
-            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
-          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Program</button>
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Create Program</button>
         </form>
-        <div class="overflow-x-auto rounded-lg border border-imperial/10">
-          <table class="admin-table w-full text-sm">
-            <thead><tr>
-              <th class="text-left px-4 py-3 rounded-tl-lg">Name</th>
-              <th class="text-left px-4 py-3">Slug</th>
-              <th class="text-left px-4 py-3">Description</th>
-              <th class="text-center px-4 py-3 w-16">Order</th>
-              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
-            </tr></thead>
-            <tbody id="admin-programs-tbody" class="bg-surface/40"></tbody>
-          </table>
-        </div>
-        <p id="admin-programs-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No programs yet.</p>
+        <!-- Programs list with expandable section editors -->
+        <div id="admin-programs-list" class="space-y-3 mb-3"></div>
+        <p id="admin-programs-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No programs yet. Create one above.</p>
       </div>
 
       <!-- ── Concert Page ── -->
@@ -1615,17 +1605,31 @@
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Terms of Service Page
         </h3>
+        <!-- Page meta (title / subtitle) -->
         <form id="tos-settings-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
           <input id="tos-title" type="text" placeholder="Page title"
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           <input id="tos-subtitle" type="text" placeholder="Subtitle / intro"
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
-          <textarea id="tos-body" rows="8" placeholder="Paste terms here. Separate sections with a blank line."
-            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
           <div class="flex items-center gap-3">
-            <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">Save Terms</button>
-            <span class="text-ink/45 text-xs">Changes appear instantly on the Terms page.</span>
+            <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">Save Page Info</button>
+            <span class="text-ink/45 text-xs">Updates title &amp; subtitle shown at top of Terms page.</span>
           </div>
+        </form>
+        <!-- Sections list -->
+        <div class="mb-4">
+          <h4 class="text-sm font-medium text-ink/70 mb-2">Sections</h4>
+          <div id="admin-tos-sections-list" class="space-y-2 mb-3"></div>
+          <p id="admin-tos-sections-empty" class="view-hidden text-ink/40 italic text-sm py-2">No sections yet — add one below.</p>
+        </div>
+        <!-- Add new TOS section -->
+        <form id="add-tos-section-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+          <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Add New Section</p>
+          <input id="tos-section-title" type="text" placeholder="Section title *" required
+            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <textarea id="tos-section-body" rows="4" placeholder="Section body text…" required
+            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Section</button>
         </form>
       </div>
 
@@ -1808,6 +1812,8 @@
     let gallerySortable     = null;
     let concertSortable     = null;
     let galleryPageSortable = null;
+    let tosSortable         = null;
+    let programSortable     = null;
 
     const DEFAULT_PROGRAMS = [
       {
@@ -2116,16 +2122,66 @@
 
     async function fetchTosSettings() {
       const data = await fetchSetting('tos_data');
+      const fallbackSections = [
+        { id: 'default-tos-1', title: 'Acceptance of Terms', body: 'By accessing Bright Pearl Academy services, you agree to these terms.', display_order: 0 },
+        { id: 'default-tos-2', title: 'Enrollment & Conduct', body: 'Families agree to provide accurate registration details and follow academy conduct guidelines.', display_order: 1 },
+        { id: 'default-tos-3', title: 'Updates', body: 'These terms may be updated periodically; continued use indicates acceptance of updates.', display_order: 2 },
+      ];
       const fallback = {
         title: 'Terms of Service',
         subtitle: 'Please review these terms before using our services.',
-        body: 'Acceptance of Terms\nBy accessing Bright Pearl Academy services, you agree to these terms.\n\nEnrollment & Conduct\nFamilies agree to provide accurate registration details and follow academy conduct guidelines.\n\nUpdates\nThese terms may be updated periodically; continued use indicates acceptance of updates.',
+        sections: fallbackSections,
       };
-      return data && typeof data === 'object' ? { ...fallback, ...data } : fallback;
+      if (!data || typeof data !== 'object') return fallback;
+      const merged = { ...fallback, ...data };
+      // Backward compat: migrate old body string to sections array
+      if (!Array.isArray(merged.sections) || !merged.sections.length) {
+        if (merged.body) {
+          merged.sections = merged.body.split(/\n\s*\n/g).map((s, i) => {
+            s = s.trim(); if (!s) return null;
+            const [first, ...rest] = s.split('\n');
+            return { id: crypto.randomUUID(), title: first.trim(), body: rest.join('\n').trim() || first.trim(), display_order: i };
+          }).filter(Boolean);
+        } else {
+          merged.sections = fallbackSections;
+        }
+      }
+      return merged;
     }
     async function saveTosSettings(payload) {
       await saveSetting('tos_data', payload);
       return true;
+    }
+    async function addTosSection(title, body) {
+      const tos = await fetchTosSettings();
+      const sections = Array.isArray(tos.sections) ? tos.sections : [];
+      const order = sections.length ? Math.max(...sections.map(s => s.display_order || 0)) + 1 : 0;
+      sections.push({ id: crypto.randomUUID(), title, body, display_order: order });
+      await saveTosSettings({ ...tos, sections });
+      return true;
+    }
+    async function updateTosSection(id, fields) {
+      const tos = await fetchTosSettings();
+      const sections = Array.isArray(tos.sections) ? tos.sections : [];
+      const idx = sections.findIndex(s => s.id === id);
+      if (idx === -1) return false;
+      sections[idx] = { ...sections[idx], ...fields };
+      await saveTosSettings({ ...tos, sections });
+      return true;
+    }
+    async function deleteTosSection(id) {
+      const tos = await fetchTosSettings();
+      const sections = (Array.isArray(tos.sections) ? tos.sections : []).filter(s => s.id !== id);
+      await saveTosSettings({ ...tos, sections });
+      return true;
+    }
+    async function reorderTosSections(orderedIds) {
+      const tos = await fetchTosSettings();
+      const sections = Array.isArray(tos.sections) ? tos.sections : [];
+      const ordered = orderedIds.map((id, i) => {
+        const s = sections.find(s => s.id === id); return s ? { ...s, display_order: i } : null;
+      }).filter(Boolean);
+      await saveTosSettings({ ...tos, sections: ordered });
     }
 
     async function addAward(title, year, description) {
@@ -2209,6 +2265,44 @@
       programs[idx] = { ...programs[idx], ...fields };
       await saveSetting('programs_data', programs); return true;
     }
+    async function addProgramSection(programId, title, body) {
+      const programs = await fetchPrograms(false);
+      const idx = programs.findIndex(p => p.id === programId);
+      if (idx === -1) return false;
+      const sections = Array.isArray(programs[idx].sections) ? programs[idx].sections : [];
+      const order = sections.length ? Math.max(...sections.map(s => s.display_order || 0)) + 1 : 0;
+      sections.push({ id: crypto.randomUUID(), title, body, display_order: order });
+      programs[idx] = { ...programs[idx], sections };
+      await saveSetting('programs_data', programs); return true;
+    }
+    async function updateProgramSection(programId, sectionId, fields) {
+      const programs = await fetchPrograms(false);
+      const pi = programs.findIndex(p => p.id === programId);
+      if (pi === -1) return false;
+      const sections = Array.isArray(programs[pi].sections) ? programs[pi].sections : [];
+      const si = sections.findIndex(s => s.id === sectionId);
+      if (si === -1) return false;
+      sections[si] = { ...sections[si], ...fields };
+      programs[pi] = { ...programs[pi], sections };
+      await saveSetting('programs_data', programs); return true;
+    }
+    async function deleteProgramSection(programId, sectionId) {
+      const programs = await fetchPrograms(false);
+      const pi = programs.findIndex(p => p.id === programId);
+      if (pi === -1) return false;
+      programs[pi].sections = (programs[pi].sections || []).filter(s => s.id !== sectionId);
+      await saveSetting('programs_data', programs); return true;
+    }
+    async function reorderProgramSections(programId, orderedIds) {
+      const programs = await fetchPrograms(false);
+      const pi = programs.findIndex(p => p.id === programId);
+      if (pi === -1) return false;
+      const sections = Array.isArray(programs[pi].sections) ? programs[pi].sections : [];
+      programs[pi].sections = orderedIds.map((id, i) => {
+        const s = sections.find(s => s.id === id); return s ? { ...s, display_order: i } : null;
+      }).filter(Boolean);
+      await saveSetting('programs_data', programs); return true;
+    }
     async function updateGalleryCaption(id, caption) {
       const { error } = await supabase.from('gallery').update({ caption }).eq('id', id);
       if (error) throw new Error(error.message); return true;
@@ -2257,6 +2351,8 @@
       if      (editMode && currentView === 'about')        initAboutSortable();
       else if (editMode && currentView === 'concert')      initConcertSortable();
       else if (editMode && currentView === 'gallery-page') initGalleryPageSortable();
+      else if (editMode && currentView === 'tos')          initTosSortable();
+      else if (editMode && currentView === 'programs')     initProgramSortable();
       else destroySortables();
 
       if (editMode && currentView === 'home') initGallerySortable();
@@ -2311,11 +2407,39 @@
         animation: 200, ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
       });
     }
+    function initTosSortable() {
+      const container = document.getElementById('tos-content-container');
+      if (!container || tosSortable) return;
+      tosSortable = Sortable.create(container, {
+        handle: '.drag-handle', animation: 200,
+        ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
+        onEnd: async () => {
+          const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
+          await reorderTosSections(ids);
+        }
+      });
+    }
+    function initProgramSortable() {
+      const container = document.getElementById('program-content-container');
+      if (!container || programSortable) return;
+      programSortable = Sortable.create(container, {
+        handle: '.drag-handle', animation: 200,
+        ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
+        onEnd: async () => {
+          const slug = container.dataset.programId;
+          if (!slug) return;
+          const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
+          await reorderProgramSections(slug, ids);
+        }
+      });
+    }
     function destroySortables() {
       if (aboutSortable)       { aboutSortable.destroy();       aboutSortable = null; }
       if (gallerySortable)     { gallerySortable.destroy();     gallerySortable = null; }
       if (concertSortable)     { concertSortable.destroy();     concertSortable = null; }
       if (galleryPageSortable) { galleryPageSortable.destroy(); galleryPageSortable = null; }
+      if (tosSortable)         { tosSortable.destroy();         tosSortable = null; }
+      if (programSortable)     { programSortable.destroy();     programSortable = null; }
     }
 
     // ── Edit toolbar buttons ───────────────────────
@@ -3017,7 +3141,7 @@
       const $desc    = document.getElementById('program-page-desc');
       const $container = document.getElementById('program-content-container');
       const $empty   = document.getElementById('program-content-empty');
-      renderSkeletonCards('program-content-container', 1);
+      renderSkeletonCards('program-content-container', 2);
       const programs = await fetchPrograms();
       const program  = slug ? programs.find(p => p.slug === slug) : programs[0];
       if (!program) {
@@ -3029,40 +3153,67 @@
       $desc.textContent  = program.description || '';
       $title.dataset.programId = program.id;
       $desc.dataset.programId  = program.id;
-      if (program.content) {
+      $container.dataset.programId = program.id;
+
+      // Normalize sections: prefer program.sections, fall back to legacy content field
+      let sections = Array.isArray(program.sections) ? program.sections : [];
+      if (!sections.length && program.content) {
+        sections = [{ id: program.id + '-legacy', title: program.name, body: program.content, display_order: 0 }];
+      }
+      sections = sections.sort((a,b) => (a.display_order||0)-(b.display_order||0));
+
+      const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
+      const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
+      const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
+
+      if (sections.length) {
         $empty.classList.add('view-hidden');
-        $container.innerHTML = `
-          <div class="editable-section program-content-section" data-section-id="${program.id}">
+        $container.innerHTML = sections.map(s => `
+          <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8" data-section-id="${esc(s.id)}">
             <div class="section-toolbar">
-              <button class="edit-section-btn" title="Edit content" data-edit-id="${program.id}">
-                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
-              </button>
+              <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
+              <button class="edit-section-btn" title="Edit inline" data-edit-id="${esc(s.id)}">${SVG_PENCIL}</button>
+              <button class="del-section-btn" title="Delete section" data-delbtn-id="${esc(s.id)}">${SVG_TRASH}</button>
             </div>
-            <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="content" data-id="${program.id}">${esc(program.content)}</p>
-          </div>`;
-        $container.querySelector('.edit-section-btn')?.addEventListener('click', () => {
-          const $body = $container.querySelector('.editable-body');
-          if ($body.contentEditable === 'true') {
-            $body.contentEditable = 'false';
-            const sb = $container.querySelector('.inline-save-btn'); if (sb) sb.remove();
-            updateProgramItem(program.id, { content: $body.textContent.trim() });
-          } else {
-            $body.contentEditable = 'true'; $body.focus();
-            if (!$container.querySelector('.inline-save-btn')) {
-              const sb = document.createElement('button');
-              sb.className = 'inline-save-btn'; sb.textContent = 'Save Content';
-              sb.addEventListener('click', async () => {
-                await updateProgramItem(program.id, { content: $body.textContent.trim() });
-                $body.contentEditable = 'false'; sb.remove();
-              });
-              $container.querySelector('.program-content-section').appendChild(sb);
+            <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
+            <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${esc(s.body)}</p>
+          </div>`).join('');
+
+        $container.querySelectorAll('.edit-section-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.editId;
+            const card = $container.querySelector(`[data-section-id="${id}"]`);
+            const $t = card.querySelector('.editable-title'), $b = card.querySelector('.editable-body');
+            if ($t.contentEditable === 'true') {
+              $t.contentEditable = 'false'; $b.contentEditable = 'false';
+              const sb = card.querySelector('.inline-save-btn'); if (sb) sb.remove();
+              updateProgramSection(program.id, id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
+            } else {
+              $t.contentEditable = 'true'; $b.contentEditable = 'true'; $t.focus();
+              if (!card.querySelector('.inline-save-btn')) {
+                const sb = document.createElement('button');
+                sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
+                sb.addEventListener('click', async () => {
+                  await updateProgramSection(program.id, id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
+                  $t.contentEditable = 'false'; $b.contentEditable = 'false'; sb.remove();
+                });
+                card.appendChild(sb);
+              }
             }
-          }
+          });
+        });
+        $container.querySelectorAll('.del-section-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            if (!confirm('Delete this section?')) return;
+            await deleteProgramSection(program.id, btn.dataset.delbtnId);
+            await renderProgramPage(slug);
+          });
         });
       } else {
         $container.innerHTML = ''; $empty.classList.remove('view-hidden');
       }
       _applyProgramEditMode();
+      if (editMode) { destroySortables(); initProgramSortable(); }
     }
     function _applyProgramEditMode() {
       const $title = document.getElementById('program-page-title');
@@ -3132,23 +3283,59 @@
       renderSkeletonCards('tos-content-container', 3);
       $title.textContent = tos.title || 'Terms of Service';
       $subtitle.textContent = tos.subtitle || '';
-      const sections = (tos.body || '')
-        .split(/\n\s*\n/g)
-        .map(s => s.trim())
-        .filter(Boolean);
+      const sections = Array.isArray(tos.sections) ? tos.sections.sort((a,b) => (a.display_order||0)-(b.display_order||0)) : [];
       if (!sections.length) {
         $container.innerHTML = '';
         $empty.classList.remove('view-hidden');
         return;
       }
       $empty.classList.add('view-hidden');
-      $container.innerHTML = sections.map(sec => {
-        const [first, ...rest] = sec.split('\n');
-        return `<div class="card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
-          <h3 class="font-display text-xl text-ink mb-3">${esc(first)}</h3>
-          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base">${esc(rest.join('\n').trim() || first)}</p>
-        </div>`;
-      }).join('');
+      const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
+      const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
+      const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
+      $container.innerHTML = sections.map(s => `
+        <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8" data-section-id="${esc(s.id)}">
+          <div class="section-toolbar">
+            <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
+            <button class="edit-section-btn" title="Edit inline" data-edit-id="${esc(s.id)}">${SVG_PENCIL}</button>
+            <button class="del-section-btn" title="Delete section" data-delbtn-id="${esc(s.id)}">${SVG_TRASH}</button>
+          </div>
+          <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
+          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${esc(s.body)}</p>
+        </div>`).join('');
+
+      $container.querySelectorAll('.edit-section-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.editId;
+          const card = $container.querySelector(`[data-section-id="${id}"]`);
+          const $t = card.querySelector('.editable-title'), $b = card.querySelector('.editable-body');
+          if ($t.contentEditable === 'true') {
+            $t.contentEditable = 'false'; $b.contentEditable = 'false';
+            const sb = card.querySelector('.inline-save-btn'); if (sb) sb.remove();
+            updateTosSection(id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
+          } else {
+            $t.contentEditable = 'true'; $b.contentEditable = 'true'; $t.focus();
+            if (!card.querySelector('.inline-save-btn')) {
+              const sb = document.createElement('button');
+              sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
+              sb.addEventListener('click', async () => {
+                await updateTosSection(id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
+                $t.contentEditable = 'false'; $b.contentEditable = 'false'; sb.remove();
+              });
+              card.appendChild(sb);
+            }
+          }
+        });
+      });
+      $container.querySelectorAll('.del-section-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this section?')) return;
+          await deleteTosSection(btn.dataset.delbtnId);
+          await renderTosPage();
+          await renderAdminTosSettings();
+        });
+      });
+      if (editMode) { destroySortables(); initTosSortable(); }
     }
 
     async function populateProgramsDropdown() {
@@ -3200,24 +3387,94 @@
 
     async function renderAdminPrograms() {
       const programs = await fetchPrograms(false);
-      const $tbody   = document.getElementById('admin-programs-tbody');
-      const $empty   = document.getElementById('admin-programs-empty');
-      if (!programs.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      const $list  = document.getElementById('admin-programs-list');
+      const $empty = document.getElementById('admin-programs-empty');
+      if (!programs.length) { $list.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
-      $tbody.innerHTML = programs.map(p => `<tr>
-        <td class="px-4 py-3 font-medium">${esc(p.name)}</td>
-        <td class="px-4 py-3 text-ink/60 text-xs font-mono">${esc(p.slug||'')}</td>
-        <td class="px-4 py-3 text-ink/60 text-xs">${esc((p.description||'').substring(0,60))}${(p.description||'').length>60?'…':''}</td>
-        <td class="px-4 py-3 text-ink/50 text-center">${p.display_order||0}</td>
-        <td class="px-4 py-3 text-center"><button data-del-program="${p.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
-      </tr>`).join('');
-      $tbody.querySelectorAll('[data-del-program]').forEach(b => b.addEventListener('click', async () => {
-        if (!confirm('Delete this program?')) return;
+      $list.innerHTML = programs.map(p => {
+        const sections = Array.isArray(p.sections) ? p.sections.sort((a,b)=>(a.display_order||0)-(b.display_order||0)) : [];
+        const sectionsHtml = sections.map(s => `
+          <div class="flex items-center gap-2 bg-cream/50 border border-imperial/10 rounded px-3 py-1.5 text-xs" data-prog-section-row="${esc(s.id)}">
+            <span class="font-medium text-ink flex-1 truncate">${esc(s.title)}</span>
+            <span class="text-ink/40 truncate max-w-xs hidden sm:block">${esc((s.body||'').substring(0,50))}${(s.body||'').length>50?'…':''}</span>
+            <button data-del-prog-section="${esc(s.id)}" data-prog-id="${esc(p.id)}" class="text-imperial hover:underline font-medium shrink-0">Delete</button>
+          </div>`).join('');
+        return `
+        <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 overflow-hidden">
+          <!-- Program header row -->
+          <div class="flex items-center gap-3 px-4 py-3">
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-ink text-sm">${esc(p.name)}</p>
+              <p class="text-xs text-ink/50 font-mono">${esc(p.slug||'')}${p.description ? ' · ' + esc(p.description.substring(0,50)) : ''}</p>
+            </div>
+            <span class="text-xs text-ink/40 shrink-0">${sections.length} section${sections.length===1?'':'s'}</span>
+            <button class="toggle-program-panel text-imperial text-xs font-medium hover:underline shrink-0" data-prog-id="${esc(p.id)}">Edit ▾</button>
+            <button data-del-program="${esc(p.id)}" class="text-imperial/60 hover:text-imperial text-xs font-medium shrink-0">Delete</button>
+          </div>
+          <!-- Expandable sections panel -->
+          <div id="prog-panel-${esc(p.id)}" class="view-hidden border-t border-imperial/10 px-4 py-4 space-y-3">
+            <div class="space-y-1.5">
+              ${sections.length ? sectionsHtml : '<p class="text-xs text-ink/40 italic">No sections yet.</p>'}
+            </div>
+            <!-- Add section form -->
+            <form class="add-prog-section-form space-y-2 pt-2 border-t border-imperial/10" data-prog-id="${esc(p.id)}">
+              <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Add Section to this Program</p>
+              <input type="text" placeholder="Section title *" required
+                class="prog-sec-title w-full px-3 py-1.5 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+              <textarea rows="3" placeholder="Section body…" required
+                class="prog-sec-body w-full px-3 py-1.5 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+              <button type="submit" class="btn-imperial px-3 py-1.5 rounded text-xs font-medium">+ Add Section</button>
+            </form>
+          </div>
+        </div>`;
+      }).join('');
+
+      // Toggle panels
+      $list.querySelectorAll('.toggle-program-panel').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const panel = document.getElementById('prog-panel-' + btn.dataset.progId);
+          const isOpen = !panel.classList.contains('view-hidden');
+          panel.classList.toggle('view-hidden', isOpen);
+          btn.textContent = isOpen ? 'Edit ▾' : 'Close ▴';
+        });
+      });
+
+      // Delete program
+      $list.querySelectorAll('[data-del-program]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this program and all its content?')) return;
         if (await deleteProgramItem(b.dataset.delProgram)) {
           await renderAdminPrograms();
           await populateProgramsDropdown();
         }
       }));
+
+      // Delete section inside program
+      $list.querySelectorAll('[data-del-prog-section]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this section?')) return;
+        await deleteProgramSection(b.dataset.progId, b.dataset.delProgSection);
+        await renderAdminPrograms();
+        if (currentView === 'programs') await renderProgramPage(currentProgram);
+      }));
+
+      // Add section forms
+      $list.querySelectorAll('.add-prog-section-form').forEach(form => {
+        form.addEventListener('submit', async e => {
+          e.preventDefault();
+          const title = form.querySelector('.prog-sec-title').value.trim();
+          const body  = form.querySelector('.prog-sec-body').value.trim();
+          if (!title || !body) return;
+          await addProgramSection(form.dataset.progId, title, body);
+          form.querySelector('.prog-sec-title').value = '';
+          form.querySelector('.prog-sec-body').value = '';
+          await renderAdminPrograms();
+          // Re-open the panel
+          const panel = document.getElementById('prog-panel-' + form.dataset.progId);
+          if (panel) { panel.classList.remove('view-hidden'); }
+          const toggleBtn = $list.querySelector(`.toggle-program-panel[data-prog-id="${form.dataset.progId}"]`);
+          if (toggleBtn) toggleBtn.textContent = 'Close ▴';
+          if (currentView === 'programs') await renderProgramPage(currentProgram);
+        });
+      });
     }
 
     async function renderAdminConcert() {
@@ -3245,7 +3502,29 @@
       const tos = await fetchTosSettings();
       document.getElementById('tos-title').value = tos.title || '';
       document.getElementById('tos-subtitle').value = tos.subtitle || '';
-      document.getElementById('tos-body').value = tos.body || '';
+      const sections = Array.isArray(tos.sections) ? tos.sections.sort((a,b) => (a.display_order||0)-(b.display_order||0)) : [];
+      const $list  = document.getElementById('admin-tos-sections-list');
+      const $empty = document.getElementById('admin-tos-sections-empty');
+      if (!sections.length) {
+        $list.innerHTML = '';
+        $empty.classList.remove('view-hidden');
+        return;
+      }
+      $empty.classList.add('view-hidden');
+      $list.innerHTML = sections.map(s => `
+        <div class="flex items-start gap-2 bg-cream/60 border border-imperial/10 rounded-lg px-3 py-2" data-tos-admin-id="${esc(s.id)}">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-ink truncate">${esc(s.title)}</p>
+            <p class="text-xs text-ink/50 truncate">${esc((s.body||'').substring(0,80))}${(s.body||'').length>80?'…':''}</p>
+          </div>
+          <button data-del-tos-section="${esc(s.id)}" class="text-imperial hover:underline text-xs font-medium shrink-0 mt-0.5">Delete</button>
+        </div>`).join('');
+      $list.querySelectorAll('[data-del-tos-section]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this section?')) return;
+        await deleteTosSection(b.dataset.delTosSection);
+        await renderAdminTosSettings();
+        if (currentView === 'tos') await renderTosPage();
+      }));
     }
 
     // ════════════════════════════════════════════════
@@ -3573,12 +3852,11 @@
       const rawSlug = document.getElementById('program-slug').value.trim();
       const slug    = rawSlug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
       const desc    = document.getElementById('program-description').value.trim();
-      const content = document.getElementById('program-content').value.trim();
       const order   = parseInt(document.getElementById('program-order').value) || 0;
       if (!name) return;
       try {
-        await addProgramItem(name, slug, desc||null, content||null, order);
-        ['program-name','program-slug','program-description','program-content','program-order'].forEach(id => document.getElementById(id).value = '');
+        await addProgramItem(name, slug, desc||null, null, order);
+        ['program-name','program-slug','program-description','program-order'].forEach(id => document.getElementById(id).value = '');
         await renderAdminPrograms();
         await populateProgramsDropdown();
       } catch (err) { alert('Error: ' + err.message); }
@@ -3601,16 +3879,31 @@
     document.getElementById('tos-settings-form').addEventListener('submit', async e => {
       e.preventDefault();
       try {
+        const tos = await fetchTosSettings();
         await saveTosSettings({
+          ...tos,
           title: document.getElementById('tos-title').value.trim(),
           subtitle: document.getElementById('tos-subtitle').value.trim(),
-          body: document.getElementById('tos-body').value.trim(),
         });
         if (currentView === 'tos') await renderTosPage();
-        alert('Terms page updated.');
+        alert('Terms page info updated.');
       } catch (err) {
         alert('Save failed: ' + err.message);
       }
+    });
+
+    document.getElementById('add-tos-section-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const title = document.getElementById('tos-section-title').value.trim();
+      const body  = document.getElementById('tos-section-body').value.trim();
+      if (!title || !body) return;
+      try {
+        await addTosSection(title, body);
+        document.getElementById('tos-section-title').value = '';
+        document.getElementById('tos-section-body').value = '';
+        await renderAdminTosSettings();
+        if (currentView === 'tos') await renderTosPage();
+      } catch (err) { alert('Error: ' + err.message); }
     });
 
     // ════════════════════════════════════════════════
