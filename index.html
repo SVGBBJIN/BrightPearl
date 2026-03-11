@@ -2260,6 +2260,14 @@
       const { error } = await supabase.from('classes').delete().eq('id', id);
       if (error) { alert('Error: ' + error.message); return false; } return true;
     }
+    async function updateAward(id, fields) {
+      const { error } = await supabase.from('awards').update(fields).eq('id', id);
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
+    async function updateClass(id, fields) {
+      const { error } = await supabase.from('classes').update(fields).eq('id', id);
+      if (error) { alert('Error: ' + error.message); return false; } return true;
+    }
     async function addAboutSection(title, body, display_order, image_url) {
       const row = { title, body, display_order };
       if (image_url) row.image_url = image_url;
@@ -3756,12 +3764,51 @@
       const $empty = document.getElementById('admin-awards-empty');
       if (!awards.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
-      $tbody.innerHTML = awards.map(a => `<tr>
-        <td class="px-4 py-3 font-medium">${esc(a.title)}</td>
-        <td class="px-4 py-3 text-ink/60">${esc(a.year||'')}</td>
-        <td class="px-4 py-3 text-ink/60">${esc(a.description||'')}</td>
-        <td class="px-4 py-3 text-center"><button data-del-award="${a.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+      $tbody.innerHTML = awards.map(a => `<tr data-award-row="${a.id}">
+        <td class="px-4 py-3 font-medium" data-award-display-title="${a.id}">${esc(a.title)}</td>
+        <td class="px-4 py-3 text-ink/60" data-award-display-year="${a.id}">${esc(a.year||'')}</td>
+        <td class="px-4 py-3 text-ink/60" data-award-display-desc="${a.id}">${esc(a.description||'')}</td>
+        <td class="px-4 py-3 text-center space-x-2">
+          <button data-edit-award="${a.id}" class="text-imperial hover:underline text-xs font-medium">Edit</button>
+          <button data-del-award="${a.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button>
+        </td>
+      </tr>
+      <tr data-award-edit-row="${a.id}" class="view-hidden bg-imperial/5">
+        <td class="px-2 py-2"><input data-award-input-title="${a.id}" type="text" value="${esc(a.title)}" placeholder="Title *" class="w-full px-2 py-1 rounded border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" /></td>
+        <td class="px-2 py-2"><input data-award-input-year="${a.id}" type="text" value="${esc(a.year||'')}" placeholder="Year" maxlength="4" class="w-full px-2 py-1 rounded border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" /></td>
+        <td class="px-2 py-2"><input data-award-input-desc="${a.id}" type="text" value="${esc(a.description||'')}" placeholder="Description" class="w-full px-2 py-1 rounded border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" /></td>
+        <td class="px-2 py-2 text-center space-x-2">
+          <button data-save-award="${a.id}" class="btn-imperial px-2 py-1 rounded text-xs font-medium">Save</button>
+          <button data-cancel-award="${a.id}" class="px-2 py-1 rounded text-xs font-medium border border-imperial/20 text-ink/60 hover:border-imperial/40">Cancel</button>
+        </td>
       </tr>`).join('');
+      $tbody.querySelectorAll('[data-edit-award]').forEach(b => {
+        b.addEventListener('click', () => {
+          const id = b.dataset.editAward;
+          $tbody.querySelector(`[data-award-row="${id}"]`).classList.add('view-hidden');
+          $tbody.querySelector(`[data-award-edit-row="${id}"]`).classList.remove('view-hidden');
+        });
+      });
+      $tbody.querySelectorAll('[data-cancel-award]').forEach(b => {
+        b.addEventListener('click', () => {
+          const id = b.dataset.cancelAward;
+          $tbody.querySelector(`[data-award-row="${id}"]`).classList.remove('view-hidden');
+          $tbody.querySelector(`[data-award-edit-row="${id}"]`).classList.add('view-hidden');
+        });
+      });
+      $tbody.querySelectorAll('[data-save-award]').forEach(b => {
+        b.addEventListener('click', async () => {
+          const id    = b.dataset.saveAward;
+          const title = $tbody.querySelector(`[data-award-input-title="${id}"]`).value.trim();
+          const year  = $tbody.querySelector(`[data-award-input-year="${id}"]`).value.trim();
+          const desc  = $tbody.querySelector(`[data-award-input-desc="${id}"]`).value.trim();
+          if (!title) return;
+          b.textContent = 'Saving…'; b.disabled = true;
+          if (await updateAward(id, { title, year: year||null, description: desc||null })) {
+            await renderAdminAwards(); await renderHomeAwards();
+          } else { b.textContent = 'Save'; b.disabled = false; }
+        });
+      });
       $tbody.querySelectorAll('[data-del-award]').forEach(b => b.addEventListener('click', async () => {
         if (!confirm('Delete this award?')) return;
         if (await deleteAward(b.dataset.delAward)) { await renderAdminAwards(); await renderHomeAwards(); }
@@ -3774,13 +3821,54 @@
       const $empty  = document.getElementById('admin-classes-empty');
       if (!classes.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
-      $tbody.innerHTML = classes.map(c => `<tr>
-        <td class="px-4 py-3 font-medium">${esc(c.name)}</td>
-        <td class="px-4 py-3 text-ink/60">${esc(c.schedule_time||'')}</td>
-        <td class="px-4 py-3 text-ink/60">${esc(c.level||'')}</td>
-        <td class="px-4 py-3 text-ink/60">${esc(c.description||'')}</td>
-        <td class="px-4 py-3 text-center"><button data-del-class="${c.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+      $tbody.innerHTML = classes.map(c => `<tr data-class-row="${c.id}">
+        <td class="px-4 py-3 font-medium" data-class-display-name="${c.id}">${esc(c.name)}</td>
+        <td class="px-4 py-3 text-ink/60" data-class-display-time="${c.id}">${esc(c.schedule_time||'')}</td>
+        <td class="px-4 py-3 text-ink/60" data-class-display-level="${c.id}">${esc(c.level||'')}</td>
+        <td class="px-4 py-3 text-ink/60" data-class-display-desc="${c.id}">${esc(c.description||'')}</td>
+        <td class="px-4 py-3 text-center space-x-2">
+          <button data-edit-class="${c.id}" class="text-imperial hover:underline text-xs font-medium">Edit</button>
+          <button data-del-class="${c.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button>
+        </td>
+      </tr>
+      <tr data-class-edit-row="${c.id}" class="view-hidden bg-imperial/5">
+        <td class="px-2 py-2"><input data-class-input-name="${c.id}" type="text" value="${esc(c.name)}" placeholder="Class Name *" class="w-full px-2 py-1 rounded border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" /></td>
+        <td class="px-2 py-2"><input data-class-input-time="${c.id}" type="text" value="${esc(c.schedule_time||'')}" placeholder="Schedule" class="w-full px-2 py-1 rounded border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" /></td>
+        <td class="px-2 py-2"><input data-class-input-level="${c.id}" type="text" value="${esc(c.level||'')}" placeholder="Level" class="w-full px-2 py-1 rounded border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" /></td>
+        <td class="px-2 py-2"><input data-class-input-desc="${c.id}" type="text" value="${esc(c.description||'')}" placeholder="Description" class="w-full px-2 py-1 rounded border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" /></td>
+        <td class="px-2 py-2 text-center space-x-2">
+          <button data-save-class="${c.id}" class="btn-imperial px-2 py-1 rounded text-xs font-medium">Save</button>
+          <button data-cancel-class="${c.id}" class="px-2 py-1 rounded text-xs font-medium border border-imperial/20 text-ink/60 hover:border-imperial/40">Cancel</button>
+        </td>
       </tr>`).join('');
+      $tbody.querySelectorAll('[data-edit-class]').forEach(b => {
+        b.addEventListener('click', () => {
+          const id = b.dataset.editClass;
+          $tbody.querySelector(`[data-class-row="${id}"]`).classList.add('view-hidden');
+          $tbody.querySelector(`[data-class-edit-row="${id}"]`).classList.remove('view-hidden');
+        });
+      });
+      $tbody.querySelectorAll('[data-cancel-class]').forEach(b => {
+        b.addEventListener('click', () => {
+          const id = b.dataset.cancelClass;
+          $tbody.querySelector(`[data-class-row="${id}"]`).classList.remove('view-hidden');
+          $tbody.querySelector(`[data-class-edit-row="${id}"]`).classList.add('view-hidden');
+        });
+      });
+      $tbody.querySelectorAll('[data-save-class]').forEach(b => {
+        b.addEventListener('click', async () => {
+          const id    = b.dataset.saveClass;
+          const name  = $tbody.querySelector(`[data-class-input-name="${id}"]`).value.trim();
+          const time  = $tbody.querySelector(`[data-class-input-time="${id}"]`).value.trim();
+          const level = $tbody.querySelector(`[data-class-input-level="${id}"]`).value.trim();
+          const desc  = $tbody.querySelector(`[data-class-input-desc="${id}"]`).value.trim();
+          if (!name) return;
+          b.textContent = 'Saving…'; b.disabled = true;
+          if (await updateClass(id, { name, schedule_time: time||null, level: level||null, description: desc||null })) {
+            await renderAdminClasses();
+          } else { b.textContent = 'Save'; b.disabled = false; }
+        });
+      });
       $tbody.querySelectorAll('[data-del-class]').forEach(b => b.addEventListener('click', async () => {
         if (!confirm('Delete this class?')) return;
         if (await deleteClass(b.dataset.delClass)) await renderAdminClasses();
