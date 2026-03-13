@@ -2333,13 +2333,20 @@
       programs[idx] = { ...programs[idx], ...fields };
       await saveSetting('programs_data', programs); return true;
     }
-    async function addProgramSection(programId, title, body) {
+    function extractGalleryObjectPath(fileUrl) {
+      if (!fileUrl) return null;
+      const parts = fileUrl.split('/gallery/');
+      if (parts.length < 2) return null;
+      return decodeURIComponent(parts[1]);
+    }
+
+    async function addProgramSection(programId, title, body, image_url = null) {
       const programs = await fetchPrograms(false);
       const idx = programs.findIndex(p => p.id === programId);
       if (idx === -1) return false;
       const sections = Array.isArray(programs[idx].sections) ? programs[idx].sections : [];
       const order = sections.length ? Math.max(...sections.map(s => s.display_order || 0)) + 1 : 0;
-      sections.push({ id: crypto.randomUUID(), title, body, display_order: order });
+      sections.push({ id: crypto.randomUUID(), title, body, image_url: image_url || null, display_order: order });
       programs[idx] = { ...programs[idx], sections };
       await saveSetting('programs_data', programs); return true;
     }
@@ -2634,8 +2641,8 @@
       return publicUrl;
     }
     async function deleteGalleryItem(id, imageUrl) {
-      const parts = imageUrl.split('/gallery/');
-      if (parts.length > 1) await supabase.storage.from('gallery').remove([decodeURIComponent(parts[1])]);
+      const objectPath = extractGalleryObjectPath(imageUrl);
+      if (objectPath) await supabase.storage.from('gallery').remove([objectPath]);
       const { error } = await supabase.from('gallery').delete().eq('id', id);
       if (error) { alert('Error: ' + error.message); return false; } return true;
     }
@@ -3386,8 +3393,9 @@
       // Normalize sections: prefer program.sections, fall back to legacy content field
       let sections = Array.isArray(program.sections) ? program.sections : [];
       if (!sections.length && program.content) {
-        sections = [{ id: program.id + '-legacy', title: program.name, body: program.content, display_order: 0 }];
+        sections = [{ id: program.id + '-legacy', title: program.name, body: program.content, image_url: null, display_order: 0 }];
       }
+      sections = sections.map(s => ({ ...s, image_url: s.image_url || null }));
       sections = sections.sort((a,b) => (a.display_order||0)-(b.display_order||0));
 
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
@@ -3404,6 +3412,7 @@
               <button class="del-section-btn" title="Delete section" data-delbtn-id="${esc(s.id)}">${SVG_TRASH}</button>
             </div>
             <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
+            ${s.image_url ? `<div class="mb-4 rounded-lg overflow-hidden border border-imperial/15 bg-cream/30"><img src="${esc(s.image_url)}" alt="${esc(s.title || program.name || 'Program section image')}" loading="lazy" class="w-full max-h-[420px] object-cover" /></div>` : ''}
             <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${esc(s.body)}</p>
           </div>`).join('');
 
@@ -3620,11 +3629,17 @@
       if (!programs.length) { $list.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $list.innerHTML = programs.map(p => {
-        const sections = Array.isArray(p.sections) ? p.sections.sort((a,b)=>(a.display_order||0)-(b.display_order||0)) : [];
+        const sections = (Array.isArray(p.sections) ? p.sections : [])
+          .map(s => ({ ...s, image_url: s.image_url || null }))
+          .sort((a,b)=>(a.display_order||0)-(b.display_order||0));
         const sectionsHtml = sections.map(s => `
-          <div class="flex items-center gap-2 bg-cream/50 border border-imperial/10 rounded px-3 py-1.5 text-xs" data-prog-section-row="${esc(s.id)}">
-            <span class="font-medium text-ink flex-1 truncate">${esc(s.title)}</span>
+          <div class="flex flex-wrap items-center gap-2 bg-cream/50 border border-imperial/10 rounded px-3 py-1.5 text-xs" data-prog-section-row="${esc(s.id)}">
+            <span class="font-medium text-ink flex-1 min-w-32 truncate">${esc(s.title)}</span>
             <span class="text-ink/40 truncate max-w-xs hidden sm:block">${esc((s.body||'').substring(0,50))}${(s.body||'').length>50?'…':''}</span>
+            <span class="text-[10px] uppercase tracking-wide text-ink/50 bg-cream px-2 py-0.5 rounded">${s.image_url ? 'Has image' : 'No image'}</span>
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="prog-sec-image-input text-[10px] max-w-[170px]" data-prog-id="${esc(p.id)}" data-section-id="${esc(s.id)}" />
+            <button data-replace-prog-section-image="${esc(s.id)}" data-prog-id="${esc(p.id)}" class="text-imperial hover:underline font-medium shrink-0">Replace image</button>
+            <button data-remove-prog-section-image="${esc(s.id)}" data-prog-id="${esc(p.id)}" class="text-imperial/75 hover:text-imperial hover:underline font-medium shrink-0" ${s.image_url ? '' : 'disabled'}>Remove image</button>
             <button data-del-prog-section="${esc(s.id)}" data-prog-id="${esc(p.id)}" class="text-imperial hover:underline font-medium shrink-0">Delete</button>
           </div>`).join('');
         return `
@@ -3651,6 +3666,10 @@
                 class="prog-sec-title w-full px-3 py-1.5 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
               <textarea rows="3" placeholder="Section body…" required
                 class="prog-sec-body w-full px-3 py-1.5 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+              <label class="block text-xs text-ink/60">Section image (optional)
+                <input type="file" accept="image/jpeg,image/png,image/webp,image/gif"
+                  class="prog-sec-image mt-1 block w-full text-xs text-ink/70 file:mr-2 file:px-2 file:py-1 file:rounded file:border-0 file:bg-imperial/10 file:text-imperial file:cursor-pointer" />
+              </label>
               <button type="submit" class="btn-imperial px-3 py-1.5 rounded text-xs font-medium">+ Add Section</button>
             </form>
           </div>
@@ -3690,16 +3709,65 @@
           e.preventDefault();
           const title = form.querySelector('.prog-sec-title').value.trim();
           const body  = form.querySelector('.prog-sec-body').value.trim();
+          const imageInput = form.querySelector('.prog-sec-image');
+          const file = imageInput?.files?.[0] || null;
           if (!title || !body) return;
-          await addProgramSection(form.dataset.progId, title, body);
+          let imageUrl = null;
+          if (file) imageUrl = await uploadImageToStorage(file);
+          await addProgramSection(form.dataset.progId, title, body, imageUrl);
           form.querySelector('.prog-sec-title').value = '';
           form.querySelector('.prog-sec-body').value = '';
+          if (imageInput) imageInput.value = '';
           await renderAdminPrograms();
           // Re-open the panel
           const panel = document.getElementById('prog-panel-' + form.dataset.progId);
           if (panel) { panel.classList.remove('view-hidden'); }
           const toggleBtn = $list.querySelector(`.toggle-program-panel[data-prog-id="${form.dataset.progId}"]`);
           if (toggleBtn) toggleBtn.textContent = 'Close ▴';
+          if (currentView === 'programs') await renderProgramPage(currentProgram);
+        });
+      });
+
+      $list.querySelectorAll('[data-replace-prog-section-image]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const row = btn.closest('[data-prog-section-row]');
+          const input = row?.querySelector('.prog-sec-image-input');
+          const file = input?.files?.[0];
+          if (!file) { alert('Choose an image file first.'); return; }
+
+          const progId = btn.dataset.progId;
+          const sectionId = btn.dataset.replaceProgSectionImage;
+          const programs = await fetchPrograms(false);
+          const program = programs.find(p => p.id === progId);
+          const existing = (program?.sections || []).find(s => s.id === sectionId);
+
+          const newUrl = await uploadImageToStorage(file);
+          await updateProgramSection(progId, sectionId, { image_url: newUrl });
+
+          const oldPath = extractGalleryObjectPath(existing?.image_url);
+          if (oldPath && existing.image_url !== newUrl) {
+            await supabase.storage.from('gallery').remove([oldPath]);
+          }
+
+          await renderAdminPrograms();
+          if (currentView === 'programs') await renderProgramPage(currentProgram);
+        });
+      });
+
+      $list.querySelectorAll('[data-remove-prog-section-image]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Remove this section image?')) return;
+          const progId = btn.dataset.progId;
+          const sectionId = btn.dataset.removeProgSectionImage;
+          const programs = await fetchPrograms(false);
+          const program = programs.find(p => p.id === progId);
+          const existing = (program?.sections || []).find(s => s.id === sectionId);
+
+          await updateProgramSection(progId, sectionId, { image_url: null });
+          const oldPath = extractGalleryObjectPath(existing?.image_url);
+          if (oldPath) await supabase.storage.from('gallery').remove([oldPath]);
+
+          await renderAdminPrograms();
           if (currentView === 'programs') await renderProgramPage(currentProgram);
         });
       });
