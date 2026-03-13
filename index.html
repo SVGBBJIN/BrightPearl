@@ -43,19 +43,19 @@
   <style>
     /* ── CSS Color Variables ──────────────────────── */
     :root {
-      --cream-rgb:           249 247 242;   /* #f9f7f2  warm cream        */
-      --ink-rgb:             26  26  26;    /* #1a1a1a  near-black         */
-      --imperial-rgb:        91  79  207;   /* #5b4fcf  blue-purple        */
-      --imperial-hover-rgb:  74  61  191;   /* #4a3dbf  darker hover       */
-      --surface-rgb:         255 255 255;   /* white cards                 */
+      --cream-rgb:           247 241 230;   /* #f7f1e6  parchment cream    */
+      --ink-rgb:             47  42  36;    /* #2f2a24  espresso text      */
+      --imperial-rgb:        181 103 63;    /* #b5673f  clay accent        */
+      --imperial-hover-rgb:  156 82  47;    /* #9c522f  toasted clay       */
+      --surface-rgb:         255 250 243;   /* #fffaf3  warm card surface  */
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --cream-rgb:           12  11  24;   /* #0c0b18  deep dark          */
-        --ink-rgb:             232 228 245;  /* #e8e4f5  light lavender     */
-        --imperial-rgb:        139 128 248;  /* #8b80f8  lighter purple     */
-        --imperial-hover-rgb:  160 151 252;  /* #a097fc  light hover        */
-        --surface-rgb:         28  25  52;   /* #1c1934  dark card surface  */
+        --cream-rgb:           23  21  17;   /* #171511  night bark         */
+        --ink-rgb:             241 231 216;  /* #f1e7d8  warm light text    */
+        --imperial-rgb:        216 143 99;   /* #d88f63  soft terracotta    */
+        --imperial-hover-rgb:  236 170 127;  /* #ecaa7f  warm hover         */
+        --surface-rgb:         38  32  25;   /* #262019  dark cocoa surface */
       }
     }
 
@@ -114,7 +114,7 @@
       border-radius: 1.25rem;
       overflow: hidden;
       min-height: 420px;
-      background: #1a1826;
+      background: #2a2119;
     }
     @media (min-width: 640px) { .hero-banner { min-height: 500px; margin: 1.25rem 1.5rem 0; border-radius: 1.5rem; } }
     @media (min-width: 1024px) { .hero-banner { min-height: 560px; } }
@@ -129,9 +129,9 @@
     .hero-banner::after {
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(180deg,
-        rgba(0,0,0,0.10) 0%,
-        rgba(0,0,0,0.25) 50%,
-        rgba(0,0,0,0.55) 100%);
+        rgba(43,33,24,0.08) 0%,
+        rgba(38,29,22,0.22) 50%,
+        rgba(26,20,15,0.52) 100%);
       pointer-events: none;
     }
     .hero-overlay {
@@ -143,22 +143,22 @@
     }
     @media (min-width: 640px) { .hero-overlay { padding: 3rem 2rem 3.5rem; } }
     .hero-glass {
-      background: rgba(255,255,255,0.12);
+      background: rgba(252,245,233,0.14);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,243,224,0.24);
       border-radius: 1rem;
       padding: 2rem 2.5rem;
       max-width: 560px;
     }
     @media (max-width: 639px) { .hero-glass { padding: 1.5rem 1.25rem; } }
     .hero-glass h1 { color: #fff; }
-    .hero-glass h1 em { color: #ffd6d6; font-style: italic; }
-    .hero-glass .hero-sub { color: rgba(255,255,255,0.78); }
+    .hero-glass h1 em { color: #ffe3c2; font-style: italic; }
+    .hero-glass .hero-sub { color: rgba(255,244,229,0.83); }
     .hero-glass .btn-outline {
-      color: #fff; border-color: rgba(255,255,255,0.55);
+      color: #fff; border-color: rgba(255,244,229,0.62);
     }
     .hero-glass .btn-outline:hover {
-      background: rgba(255,255,255,0.15); border-color: #fff;
+      background: rgba(255,244,229,0.18); border-color: #fff;
     }
 
     /* ── Awards Strip ────────────────────────────── */
@@ -229,14 +229,14 @@
     /* ── Gallery ─────────────────────────────────── */
     .gallery-cell {
       aspect-ratio: 4/3;
-      background: linear-gradient(135deg, #ece8df 0%, #e2ddd3 100%);
+      background: linear-gradient(135deg, #f2e7d7 0%, #e7d6c0 100%);
       border: 1px solid rgb(var(--imperial-rgb) / 0.12);
       display: flex; align-items: center; justify-content: center;
       transition: border-color 0.2s, transform 0.2s;
       overflow: hidden; cursor: pointer;
     }
     @media (prefers-color-scheme: dark) {
-      .gallery-cell { background: linear-gradient(135deg, #1a1832 0%, #131128 100%); }
+      .gallery-cell { background: linear-gradient(135deg, #32271f 0%, #251d17 100%); }
     }
     .gallery-cell:hover { border-color: rgb(var(--imperial-rgb) / 0.4); transform: scale(1.02); }
     .gallery-cell img   { width: 100%; height: 100%; object-fit: cover; }
