@@ -859,7 +859,7 @@
 
   <!-- ═══ Image Destination Modal ═══ -->
   <div id="image-dest-modal" class="dest-modal-backdrop">
-    <div class="dest-modal">
+    <div class="dest-modal" style="max-height:90vh;overflow-y:auto;">
       <h3 class="font-display text-xl text-ink mb-1">Upload Image</h3>
       <p class="text-ink/50 text-sm mb-5">Choose where this image should appear</p>
       <div id="dest-preview-container" class="mb-5 flex justify-center">
@@ -887,10 +887,49 @@
             <div class="text-xs text-ink/50">Attach to a specific about page section</div>
           </div>
         </label>
+        <label class="dest-option" data-dest="faculty">
+          <input type="radio" name="img-dest" value="faculty" />
+          <div class="flex-1">
+            <div class="font-medium text-sm text-ink">Faculty Member</div>
+            <div class="text-xs text-ink/50">Set as a faculty member's profile photo</div>
+          </div>
+        </label>
+        <label class="dest-option" data-dest="concert">
+          <input type="radio" name="img-dest" value="concert" />
+          <div class="flex-1">
+            <div class="font-medium text-sm text-ink">Concert Section</div>
+            <div class="text-xs text-ink/50">Attach to a concert page section</div>
+          </div>
+        </label>
+        <label class="dest-option" data-dest="program">
+          <input type="radio" name="img-dest" value="program" />
+          <div class="flex-1">
+            <div class="font-medium text-sm text-ink">Program Section</div>
+            <div class="text-xs text-ink/50">Attach to a section within a program page</div>
+          </div>
+        </label>
       </div>
       <div id="dest-about-picker" class="view-hidden mb-4">
         <label class="block text-xs font-medium text-ink/70 mb-1">Select section:</label>
         <select id="dest-about-select" class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial"></select>
+      </div>
+      <div id="dest-faculty-picker" class="view-hidden mb-4">
+        <label class="block text-xs font-medium text-ink/70 mb-1">Select faculty member:</label>
+        <select id="dest-faculty-select" class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial"></select>
+      </div>
+      <div id="dest-concert-picker" class="view-hidden mb-4">
+        <label class="block text-xs font-medium text-ink/70 mb-1">Select concert section:</label>
+        <select id="dest-concert-select" class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial"></select>
+      </div>
+      <div id="dest-program-picker" class="view-hidden mb-4 space-y-2">
+        <div>
+          <label class="block text-xs font-medium text-ink/70 mb-1">Select program:</label>
+          <select id="dest-program-select" class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-ink/70 mb-1">Select section:</label>
+          <select id="dest-program-section-select" class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial"></select>
+        </div>
       </div>
       <div class="mb-4">
         <label class="block text-xs font-medium text-ink/70 mb-1">Caption / Alt text (optional)</label>
@@ -1449,13 +1488,15 @@
         <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5">
           <div id="upload-drop-zone" class="drop-zone mb-4">
             <svg class="mx-auto mb-2 w-8 h-8 text-imperial/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            <p class="text-ink/50 text-sm">Drop an image here or <span class="text-imperial font-medium">click to browse</span></p>
-            <p class="text-ink/30 text-xs mt-1">JPEG, PNG, WebP, GIF &middot; Max 5 MB</p>
-            <input id="upload-file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" />
+            <p class="text-ink/50 text-sm">Drop images here or <span class="text-imperial font-medium">click to browse</span></p>
+            <p class="text-ink/30 text-xs mt-1">JPEG, PNG, WebP, GIF &middot; Max 5 MB each &middot; Multiple files supported</p>
+            <input id="upload-file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple class="hidden" />
           </div>
+          <!-- Bulk preview thumbnails -->
+          <div id="bulk-preview-strip" class="view-hidden flex flex-wrap gap-2 mb-3"></div>
           <div class="flex gap-3 items-end">
             <div class="flex-1">
-              <label class="block text-xs font-medium text-ink/70 mb-1">Caption (optional)</label>
+              <label class="block text-xs font-medium text-ink/70 mb-1">Caption (optional — single upload only)</label>
               <input id="upload-caption" type="text" placeholder="Describe this photo…"
                 class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
             </div>
@@ -2553,11 +2594,16 @@
         document.querySelectorAll('.dest-option').forEach(o => o.classList.remove('selected'));
         document.querySelector('.dest-option[data-dest="gallery"]').classList.add('selected');
         document.querySelector('input[name="img-dest"][value="gallery"]').checked = true;
-        document.getElementById('dest-about-picker').classList.add('view-hidden');
+        ['dest-about-picker','dest-faculty-picker','dest-concert-picker','dest-program-picker'].forEach(id =>
+          document.getElementById(id).classList.add('view-hidden')
+        );
         document.getElementById('dest-caption').value = '';
         document.getElementById('dest-upload-status').classList.add('view-hidden');
-        // Populate about sections dropdown
+        // Populate all dropdowns
         populateDestAboutSelect();
+        populateDestFacultySelect();
+        populateDestConcertSelect();
+        populateDestProgramSelect();
         $modal.classList.add('active');
       });
     }
@@ -2565,7 +2611,39 @@
     async function populateDestAboutSelect() {
       const sections = await fetchAboutSections();
       const $sel = document.getElementById('dest-about-select');
-      $sel.innerHTML = sections.map(s => `<option value="${s.id}">${esc(s.title)}</option>`).join('');
+      $sel.innerHTML = sections.length
+        ? sections.map(s => `<option value="${s.id}">${esc(s.title)}</option>`).join('')
+        : '<option value="">— No sections found —</option>';
+    }
+    async function populateDestFacultySelect() {
+      const members = await fetchFaculty();
+      const $sel = document.getElementById('dest-faculty-select');
+      $sel.innerHTML = members.length
+        ? members.map(m => `<option value="${m.id}">${esc(m.name)}${m.title ? ' — ' + esc(m.title) : ''}</option>`).join('')
+        : '<option value="">— No faculty members found —</option>';
+    }
+    async function populateDestConcertSelect() {
+      const sections = await fetchConcertSections();
+      const $sel = document.getElementById('dest-concert-select');
+      $sel.innerHTML = sections.length
+        ? sections.map(s => `<option value="${s.id}">${esc(s.title)}</option>`).join('')
+        : '<option value="">— No concert sections found —</option>';
+    }
+    async function populateDestProgramSelect() {
+      const programs = await fetchPrograms();
+      const $progSel = document.getElementById('dest-program-select');
+      $progSel.innerHTML = programs.length
+        ? programs.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('')
+        : '<option value="">— No programs found —</option>';
+      // Populate sections for the first program
+      if (programs.length) updateDestProgramSectionSelect(programs[0]);
+    }
+    function updateDestProgramSectionSelect(program) {
+      const $secSel = document.getElementById('dest-program-section-select');
+      const sections = Array.isArray(program?.sections) ? program.sections : [];
+      $secSel.innerHTML = sections.length
+        ? sections.map(s => `<option value="${s.id}">${esc(s.title || 'Untitled section')}</option>`).join('')
+        : '<option value="">— No sections in this program —</option>';
     }
 
     // Destination radio handling
@@ -2576,7 +2654,18 @@
         opt.querySelector('input[type="radio"]').checked = true;
         const dest = opt.dataset.dest;
         document.getElementById('dest-about-picker').classList.toggle('view-hidden', dest !== 'about');
+        document.getElementById('dest-faculty-picker').classList.toggle('view-hidden', dest !== 'faculty');
+        document.getElementById('dest-concert-picker').classList.toggle('view-hidden', dest !== 'concert');
+        document.getElementById('dest-program-picker').classList.toggle('view-hidden', dest !== 'program');
       });
+    });
+
+    // When program selection changes, update section dropdown
+    document.getElementById('dest-program-select').addEventListener('change', async () => {
+      const programId = document.getElementById('dest-program-select').value;
+      const programs = await fetchPrograms();
+      const program = programs.find(p => p.id === programId);
+      updateDestProgramSectionSelect(program);
     });
 
     document.getElementById('dest-cancel').addEventListener('click', () => {
@@ -2613,6 +2702,28 @@
             await updateAboutSection(sectionId, { image_url: url });
             await renderHomeAbout();
             await renderAdminAbout();
+          }
+        } else if (dest === 'faculty') {
+          const memberId = document.getElementById('dest-faculty-select').value;
+          if (memberId) {
+            await updateFacultyMember(memberId, { photo_url: url });
+            if (currentView === 'faculty') await renderFacultyPage();
+            await renderAdminFaculty();
+          }
+        } else if (dest === 'concert') {
+          const sectionId = document.getElementById('dest-concert-select').value;
+          if (sectionId) {
+            await updateConcertSection(sectionId, { image_url: url });
+            if (currentView === 'concert') await renderConcertPage();
+            await renderAdminConcert();
+          }
+        } else if (dest === 'program') {
+          const programId = document.getElementById('dest-program-select').value;
+          const sectionId = document.getElementById('dest-program-section-select').value;
+          if (programId && sectionId) {
+            await updateProgramSection(programId, sectionId, { image_url: url });
+            if (currentView === 'programs') await renderProgramPage(currentProgram);
+            await renderAdminPrograms();
           }
         }
 
@@ -2659,26 +2770,93 @@
       return publicUrl;
     }
 
-    // Gallery drop zone
+    // Gallery drop zone — supports single and bulk upload
     const $dz  = document.getElementById('upload-drop-zone');
     const $fi  = document.getElementById('upload-file-input');
     const $ub  = document.getElementById('upload-btn');
     const $fn  = document.getElementById('upload-filename');
+    const $bulkStrip = document.getElementById('bulk-preview-strip');
+    let selectedFiles = []; // array for multi-file support
     $dz.addEventListener('click',     () => $fi.click());
     $dz.addEventListener('dragover',  e => { e.preventDefault(); $dz.classList.add('dragover'); });
     $dz.addEventListener('dragleave', () => $dz.classList.remove('dragover'));
-    $dz.addEventListener('drop',      e => { e.preventDefault(); $dz.classList.remove('dragover'); if (e.dataTransfer.files.length) pickFile(e.dataTransfer.files[0]); });
-    $fi.addEventListener('change',    () => { if ($fi.files.length) pickFile($fi.files[0]); });
-    function pickFile(file) {
-      if (file.size > 5*1024*1024) { alert('File too large (max 5 MB)'); return; }
-      selectedFile = file; $fn.textContent = `Selected: ${file.name}`; $fn.classList.remove('view-hidden'); $ub.disabled = false;
+    $dz.addEventListener('drop',      e => { e.preventDefault(); $dz.classList.remove('dragover'); if (e.dataTransfer.files.length) pickFiles(Array.from(e.dataTransfer.files)); });
+    $fi.addEventListener('change',    () => { if ($fi.files.length) pickFiles(Array.from($fi.files)); });
+    function pickFiles(files) {
+      const valid = files.filter(f => {
+        if (f.size > 5*1024*1024) { alert(`"${f.name}" is too large (max 5 MB) and was skipped.`); return false; }
+        return true;
+      });
+      if (!valid.length) return;
+      selectedFiles = valid;
+      selectedFile = valid[0]; // keep backward compat for single-file path
+      if (valid.length === 1) {
+        $fn.textContent = `Selected: ${valid[0].name}`;
+        $fn.classList.remove('view-hidden');
+        $ub.textContent = 'Upload Image…';
+        $bulkStrip.classList.add('view-hidden');
+        $bulkStrip.innerHTML = '';
+        document.getElementById('upload-caption').closest('.flex').querySelector('label').textContent = 'Caption (optional)';
+      } else {
+        $fn.textContent = `${valid.length} images selected`;
+        $fn.classList.remove('view-hidden');
+        $ub.textContent = `Upload ${valid.length} Images to Gallery`;
+        // Show thumbnail strip
+        $bulkStrip.innerHTML = valid.map((f, i) =>
+          `<div class="relative group"><img src="${URL.createObjectURL(f)}" class="w-14 h-14 object-cover rounded border border-imperial/20" title="${esc(f.name)}" />` +
+          `<button type="button" data-bulk-remove="${i}" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs leading-none flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">&times;</button></div>`
+        ).join('');
+        $bulkStrip.classList.remove('view-hidden');
+        $bulkStrip.querySelectorAll('[data-bulk-remove]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.bulkRemove);
+            selectedFiles.splice(idx, 1);
+            if (!selectedFiles.length) { clearGalleryPicker(); } else { pickFiles(selectedFiles); }
+          });
+        });
+        document.getElementById('upload-caption').closest('.flex').querySelector('label').textContent = 'Caption (optional — single upload only)';
+      }
+      $ub.disabled = false;
+    }
+    function clearGalleryPicker() {
+      selectedFiles = []; selectedFile = null; $fi.value = '';
+      $fn.classList.add('view-hidden'); $ub.disabled = true; $ub.textContent = 'Upload Image…';
+      $bulkStrip.classList.add('view-hidden'); $bulkStrip.innerHTML = '';
     }
     $ub.addEventListener('click', async () => {
-      if (!selectedFile) return;
-      // Open destination picker instead of direct upload
-      openDestModal(selectedFile);
-      selectedFile = null; $fi.value = ''; $fn.classList.add('view-hidden'); $ub.disabled = true;
-      document.getElementById('upload-caption').value = '';
+      if (!selectedFiles.length && !selectedFile) return;
+      if (selectedFiles.length > 1) {
+        // Bulk upload: all go to gallery
+        const caption = document.getElementById('upload-caption').value.trim();
+        const $st = document.getElementById('upload-status');
+        const $br = document.getElementById('upload-progress-bar');
+        const $tx = document.getElementById('upload-status-text');
+        $ub.disabled = true; $st.classList.remove('view-hidden'); $br.style.width = '0%';
+        let done = 0;
+        const total = selectedFiles.length;
+        const errors = [];
+        for (const file of selectedFiles) {
+          try {
+            $tx.textContent = `Uploading ${done + 1} of ${total}…`;
+            $br.style.width = `${Math.round((done / total) * 90)}%`;
+            const url = await uploadImageToStorage(file);
+            await supabase.from('gallery').insert({ image_url: url, caption: caption || null });
+            done++;
+          } catch (err) { errors.push(file.name + ': ' + err.message); }
+        }
+        $br.style.width = '100%';
+        $tx.textContent = errors.length ? `Done with ${errors.length} error(s): ${errors.join('; ')}` : `${done} image${done !== 1 ? 's' : ''} uploaded!`;
+        clearGalleryPicker();
+        document.getElementById('upload-caption').value = '';
+        await renderAdminGallery(); await renderHomeGallery(); await renderHeroPhoto();
+        setTimeout(() => { $st.classList.add('view-hidden'); $br.style.width = '0%'; $ub.disabled = false; }, 2000);
+      } else {
+        // Single file: open destination picker
+        const file = selectedFiles[0] || selectedFile;
+        openDestModal(file);
+        clearGalleryPicker();
+        document.getElementById('upload-caption').value = '';
+      }
     });
 
     // Hero image drop zone (admin dashboard)
@@ -3335,6 +3513,7 @@
             <button class="del-section-btn" title="Delete" data-delbtn-id="${s.id}">${SVG_TRASH}</button>
           </div>
           <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
+          ${s.image_url ? `<div class="mb-4 rounded-lg overflow-hidden border border-imperial/15 bg-cream/30"><img src="${esc(s.image_url)}" alt="${esc(s.title || 'Concert section image')}" loading="lazy" class="w-full max-h-[420px] object-cover" /></div>` : ''}
           <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>
         </div>`).join('');
 
