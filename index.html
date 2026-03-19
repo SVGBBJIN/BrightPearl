@@ -312,7 +312,179 @@
     .gallery-card-delete-btn:hover { background: #dc2626; }
     body.edit-mode .gallery-card-delete-btn { display: block; }
 
-    /* ── Admin Table ─────────────────────────────── */
+    /* ══════════════════════════════════════════════════
+       HOMEPAGE — AoPS-inspired feature sections
+    ══════════════════════════════════════════════════ */
+
+    /* ── Feature section (text + decorated photo) ─── */
+    #home-about-section {
+      border-top: 1px solid rgb(var(--imperial-rgb) / 0.08);
+    }
+    .hp-feature {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+      max-width: 72rem; margin: 0 auto;
+      padding: 5rem 3rem;
+    }
+    @media (max-width: 900px) {
+      .hp-feature { gap: 3rem; padding: 4rem 2rem; }
+    }
+    @media (max-width: 640px) {
+      .hp-feature { grid-template-columns: 1fr; gap: 2.5rem; padding: 3rem 1.25rem; }
+    }
+    .hp-feature--flip .hp-feature-text { order: 2; }
+    .hp-feature--flip .hp-feature-photo-wrap { order: 1; }
+    @media (max-width: 640px) {
+      .hp-feature--flip .hp-feature-text { order: 1; }
+      .hp-feature--flip .hp-feature-photo-wrap { order: 2; }
+    }
+    /* Eyebrow */
+    .hp-feature-eyebrow {
+      display: block; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgb(var(--imperial-rgb) / 0.7); margin-bottom: 0.85rem;
+    }
+    /* Heading */
+    .hp-feature-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 700;
+      color: rgb(var(--ink-rgb)); line-height: 1.2; margin-bottom: 1.25rem;
+    }
+    /* Body */
+    .hp-feature-body {
+      font-size: 1rem; line-height: 1.8;
+      color: rgb(var(--ink-rgb) / 0.62); margin-bottom: 2rem;
+      white-space: pre-line;
+    }
+    /* AoPS pill CTA */
+    .hp-feature-cta {
+      display: inline-flex; align-items: center;
+      padding: 0.8rem 2.2rem; border-radius: 9999px;
+      border: 2px solid rgb(var(--ink-rgb) / 0.22);
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.13em;
+      text-transform: uppercase; cursor: pointer; background: transparent;
+      color: rgb(var(--ink-rgb)); transition: border-color 0.2s, color 0.2s;
+    }
+    .hp-feature-cta:hover { border-color: rgb(var(--imperial-rgb)); color: rgb(var(--imperial-rgb)); }
+    /* Photo wrap */
+    .hp-feature-photo-wrap { position: relative; padding: 2.5rem 2rem 2rem; }
+    /* Decorative circles */
+    .hp-deco-circle {
+      position: absolute; border-radius: 50%; z-index: 0; pointer-events: none;
+    }
+    .hp-deco-circle--primary {
+      width: 220px; height: 220px;
+      background: rgb(var(--imperial-rgb) / 0.13);
+      top: 0; right: 0;
+    }
+    .hp-deco-circle--accent {
+      width: 120px; height: 120px;
+      background: rgba(248,113,113, 0.16);
+      bottom: 0; left: 0;
+    }
+    /* Dashed offset rectangle */
+    .hp-deco-dash-box {
+      position: absolute; top: 40px; right: 0; bottom: 0; left: 40px;
+      z-index: 0; border: 2px dashed rgb(var(--imperial-rgb) / 0.2);
+      border-radius: 1.5rem; pointer-events: none;
+    }
+    /* Photo */
+    .hp-feature-img {
+      position: relative; z-index: 1; display: block;
+      width: 100%; border-radius: 1.25rem; object-fit: cover;
+      max-height: 480px; min-height: 240px;
+      box-shadow: 0 16px 48px rgb(var(--ink-rgb) / 0.14);
+      opacity: 0; transition: opacity 0.6s ease;
+    }
+    .hp-feature-img.loaded { opacity: 1; }
+    /* Text-only (no image) about block */
+    .hp-feature-text-only {
+      max-width: 68rem; margin: 0 auto; padding: 3rem 3rem;
+      border-top: 1px solid rgb(var(--imperial-rgb) / 0.06);
+    }
+    .hp-feature-text-only:first-child { border-top: none; }
+
+    /* ── Core Values strip ───────────────────────── */
+    .hp-values-section {
+      background: rgb(var(--surface-rgb));
+      border-top: 1px solid rgb(var(--imperial-rgb) / 0.08);
+      border-bottom: 1px solid rgb(var(--imperial-rgb) / 0.08);
+      padding: 5rem 1rem;
+    }
+    .hp-values-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      color: rgb(var(--ink-rgb)); margin-bottom: 0.5rem;
+    }
+    .hp-values-sub {
+      font-size: 0.9rem; color: rgb(var(--ink-rgb) / 0.5); margin-bottom: 3rem;
+    }
+    .hp-values-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2.5rem; }
+    @media (max-width: 900px) { .hp-values-grid { grid-template-columns: repeat(2,1fr); gap: 2rem; } }
+    @media (max-width: 480px) { .hp-values-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
+    .hp-value-icon { width: 68px; height: 68px; margin-bottom: 1.25rem; }
+    .hp-value-title {
+      font-size: 0.95rem; font-weight: 700;
+      color: rgb(var(--ink-rgb)); margin-bottom: 0.5rem;
+    }
+    .hp-value-body {
+      font-size: 0.875rem; color: rgb(var(--ink-rgb) / 0.6); line-height: 1.7;
+    }
+
+    /* ── Programs & Classes ──────────────────────── */
+    .hp-programs-section { padding: 5rem 1rem; }
+    .hp-programs-header { margin-bottom: 3rem; }
+    .hp-programs-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      color: rgb(var(--ink-rgb)); margin-bottom: 0.5rem;
+    }
+    .hp-programs-sub { font-size: 0.95rem; color: rgb(var(--ink-rgb) / 0.55); }
+    .hp-programs-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.75rem; }
+    @media (max-width: 900px) { .hp-programs-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 560px) { .hp-programs-grid { grid-template-columns: 1fr; } }
+    .hp-program-card {
+      background: rgb(var(--surface-rgb));
+      border: 1px solid rgb(var(--imperial-rgb) / 0.1);
+      border-radius: 1rem; padding: 2rem;
+      display: flex; flex-direction: column; gap: 0.75rem;
+      box-shadow: 0 2px 12px rgb(var(--ink-rgb) / 0.05);
+      transition: box-shadow 0.22s, transform 0.22s;
+    }
+    .hp-program-card:hover { box-shadow: 0 8px 28px rgb(var(--ink-rgb) / 0.1); transform: translateY(-3px); }
+    .hp-program-name {
+      font-family: 'Playfair Display', serif; font-size: 1.15rem;
+      font-weight: 700; color: rgb(var(--ink-rgb));
+    }
+    .hp-program-desc { font-size: 0.875rem; color: rgb(var(--ink-rgb) / 0.58); line-height: 1.65; flex: 1; }
+    .hp-program-btns { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    .hp-program-btn-learn {
+      padding: 0.5rem 1.2rem; border-radius: 9999px;
+      border: 1.5px solid rgb(var(--imperial-rgb) / 0.4);
+      font-size: 0.75rem; font-weight: 600; color: rgb(var(--imperial-rgb));
+      background: transparent; cursor: pointer; transition: all 0.15s;
+    }
+    .hp-program-btn-learn:hover { background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); border-color: rgb(var(--imperial-rgb)); }
+    .hp-program-btn-enroll {
+      padding: 0.5rem 1.2rem; border-radius: 9999px;
+      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
+      font-size: 0.75rem; font-weight: 600; border: none; cursor: pointer; transition: opacity 0.15s;
+    }
+    .hp-program-btn-enroll:hover { opacity: 0.82; }
+
+    /* ── Gallery "view all" link ─────────────────── */
+    .hp-gallery-viewall {
+      text-align: center; margin-top: 2.5rem;
+    }
+    .hp-gallery-viewall button {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 2rem; border-radius: 9999px;
+      border: 1.5px solid rgb(var(--imperial-rgb) / 0.35);
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgb(var(--imperial-rgb));
+      background: transparent; cursor: pointer; transition: all 0.15s;
+    }
+    .hp-gallery-viewall button:hover { background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); }
     .admin-table th {
       background-color: rgb(var(--imperial-rgb));
       color: rgb(var(--cream-rgb));
@@ -1066,11 +1238,112 @@
       <p id="awards-empty" class="view-hidden text-ink/40 italic text-xs py-1">No awards to display yet.</p>
     </section>
 
+    <!-- ── Our Story feature blocks (about sections merged) ── -->
+    <section id="home-about-section">
+      <div id="home-about-sections">
+        <!-- Populated by renderHomeAboutFeatures() -->
+      </div>
+    </section>
+
+    <!-- ── Core Values strip ─────────────────────────── -->
+    <section class="hp-values-section">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="hp-values-heading">What We Believe In</h2>
+        <p class="hp-values-sub">The principles that shape every lesson, performance, and student journey.</p>
+        <div class="hp-values-grid">
+
+          <!-- Artistic Discipline -->
+          <div class="hp-value-card">
+            <div class="hp-value-icon">
+              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Overlapping arc figure — dance -->
+                <circle cx="34" cy="16" r="9" fill="rgb(var(--imperial-rgb) / 0.22)" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="1.5"/>
+                <path d="M18 44 Q26 28 34 36 Q42 28 50 44" stroke="rgb(var(--imperial-rgb) / 0.6)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <path d="M22 44 Q20 54 16 58" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M46 44 Q48 54 52 58" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/>
+                <!-- dashed arc above head -->
+                <path d="M22 14 A14 14 0 0 1 46 14" stroke="rgba(248,113,113,0.55)" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+              </svg>
+            </div>
+            <h3 class="hp-value-title">Artistic Discipline</h3>
+            <p class="hp-value-body">Students build precision, presence, and lasting confidence through rigorous classical training that carries far beyond the stage.</p>
+          </div>
+
+          <!-- Cultural Heritage -->
+          <div class="hp-value-card">
+            <div class="hp-value-icon">
+              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Stylized Chinese character strokes -->
+                <rect x="12" y="14" width="44" height="6" rx="3" fill="rgb(var(--imperial-rgb) / 0.18)" stroke="rgb(var(--imperial-rgb) / 0.45)" stroke-width="1.2"/>
+                <rect x="22" y="14" width="5" height="38" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.25)"/>
+                <rect x="41" y="14" width="5" height="38" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.25)"/>
+                <rect x="17" y="36" width="34" height="5" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.18)" stroke="rgb(var(--imperial-rgb) / 0.35)" stroke-width="1"/>
+                <!-- dashed circle around -->
+                <circle cx="34" cy="34" r="26" stroke="rgba(248,113,113,0.3)" stroke-width="1.2" stroke-dasharray="4 3"/>
+              </svg>
+            </div>
+            <h3 class="hp-value-title">Cultural Heritage</h3>
+            <p class="hp-value-body">We honor Chinese tradition through language, dance, and performance — keeping culture alive and meaningful across generations.</p>
+          </div>
+
+          <!-- Creative Expression -->
+          <div class="hp-value-card">
+            <div class="hp-value-icon">
+              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Waveform + note -->
+                <circle cx="22" cy="46" r="7" fill="rgb(var(--imperial-rgb) / 0.2)" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="1.5"/>
+                <line x1="22" y1="46" x2="22" y2="18" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="2" stroke-linecap="round"/>
+                <line x1="22" y1="18" x2="42" y2="22" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/>
+                <!-- soundwave -->
+                <path d="M36 34 Q40 26 44 34 Q48 42 52 34" stroke="rgba(248,113,113,0.55)" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <path d="M30 38 Q34 30 38 38 Q42 46 46 38" stroke="rgb(var(--imperial-rgb) / 0.3)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+            <h3 class="hp-value-title">Creative Expression</h3>
+            <p class="hp-value-body">Every student discovers their voice through music, movement, and collaborative performance — creativity nurtured, not constrained.</p>
+          </div>
+
+          <!-- Community & Growth -->
+          <div class="hp-value-card">
+            <div class="hp-value-icon">
+              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Two figures side by side -->
+                <circle cx="22" cy="18" r="7" fill="rgb(var(--imperial-rgb) / 0.2)" stroke="rgb(var(--imperial-rgb) / 0.45)" stroke-width="1.5"/>
+                <circle cx="46" cy="18" r="7" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1.5"/>
+                <path d="M10 52 Q10 36 22 36 Q30 36 34 42 Q38 36 46 36 Q58 36 58 52" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2.5" stroke-linecap="round" fill="rgb(var(--imperial-rgb) / 0.06)"/>
+                <!-- dashed arc connecting them above -->
+                <path d="M22 10 A12 12 0 0 1 46 10" stroke="rgba(248,113,113,0.4)" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+              </svg>
+            </div>
+            <h3 class="hp-value-title">Community &amp; Growth</h3>
+            <p class="hp-value-body">Students form genuine, lasting bonds — supporting each other on stage and off, growing together as artists and as people.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Programs & Classes ─────────────────────────── -->
+    <section class="hp-programs-section">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="hp-programs-header">
+          <h2 class="hp-programs-heading">Our Programs</h2>
+          <p class="hp-programs-sub">Award-winning instruction in dance, language, STEM, and music.</p>
+        </div>
+        <div id="home-programs-grid" class="hp-programs-grid">
+          <!-- Populated by renderHomePrograms() -->
+        </div>
+      </div>
+    </section>
+
     <!-- Photo Gallery -->
-    <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
       <p class="text-center text-ink/50 text-sm mb-8">Moments captured in motion</p>
       <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
+      <div class="hp-gallery-viewall">
+        <button id="hp-gallery-viewall-btn">View Full Gallery →</button>
+      </div>
     </section>
 
     <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
@@ -3146,6 +3419,84 @@
         </div>`;
     }
 
+    // ════════════════════════════════════════════════
+    //  HOMEPAGE — About feature blocks (Our Story)
+    // ════════════════════════════════════════════════
+    async function renderHomeAboutFeatures() {
+      const $container = document.getElementById('home-about-sections');
+      if (!$container) return;
+      const sections = await fetchAboutSections();
+      if (!sections.length) { $container.innerHTML = ''; return; }
+
+      $container.innerHTML = sections.map((s, idx) => {
+        const flip = idx % 2 !== 0; // even = photo right, odd = photo left
+
+        if (!s.image_url) {
+          // Text-only block
+          return `
+            <div class="hp-feature-text-only">
+              <span class="hp-feature-eyebrow">Our Story</span>
+              <h2 class="hp-feature-heading">${esc(s.title)}</h2>
+              <p class="hp-feature-body">${esc(s.body)}</p>
+            </div>`;
+        }
+
+        return `
+          <div class="hp-feature${flip ? ' hp-feature--flip' : ''}">
+            <div class="hp-feature-text">
+              <span class="hp-feature-eyebrow">Our Story</span>
+              <h2 class="hp-feature-heading">${esc(s.title)}</h2>
+              <p class="hp-feature-body">${esc(s.body)}</p>
+              <button class="hp-feature-cta" data-goto="about">Learn More About Us</button>
+            </div>
+            <div class="hp-feature-photo-wrap">
+              <div class="hp-deco-circle hp-deco-circle--primary"></div>
+              <div class="hp-deco-circle hp-deco-circle--accent"></div>
+              <div class="hp-deco-dash-box"></div>
+              <img class="hp-feature-img" src="${esc(s.image_url)}" alt="${esc(s.title)}" loading="lazy" />
+            </div>
+          </div>`;
+      }).join('');
+
+      // Lazy-load images
+      $container.querySelectorAll('.hp-feature-img').forEach(img => {
+        if (img.complete) img.classList.add('loaded');
+        else img.addEventListener('load', () => img.classList.add('loaded'));
+      });
+      // "Learn More About Us" → navigate to about page
+      $container.querySelectorAll('[data-goto="about"]').forEach(btn => {
+        btn.addEventListener('click', () => showView('about'));
+      });
+    }
+
+    // ════════════════════════════════════════════════
+    //  HOMEPAGE — Programs & Classes grid
+    // ════════════════════════════════════════════════
+    async function renderHomePrograms() {
+      const $grid = document.getElementById('home-programs-grid');
+      if (!$grid) return;
+      const programs = await fetchPrograms();
+      if (!programs.length) {
+        $grid.innerHTML = '<p class="text-ink/40 text-sm italic text-center py-4">Programs coming soon.</p>';
+        return;
+      }
+      $grid.innerHTML = programs.map(p => `
+        <div class="hp-program-card">
+          <h3 class="hp-program-name">${esc(p.name)}</h3>
+          <p class="hp-program-desc">${esc(p.description || '')}</p>
+          <div class="hp-program-btns">
+            <button class="hp-program-btn-learn" data-slug="${esc(p.slug)}">Learn More</button>
+            <button class="hp-program-btn-enroll">Enroll Now</button>
+          </div>
+        </div>`).join('');
+      $grid.querySelectorAll('.hp-program-btn-learn').forEach(btn => {
+        btn.addEventListener('click', () => showView('programs', btn.dataset.slug));
+      });
+      $grid.querySelectorAll('.hp-program-btn-enroll').forEach(btn => {
+        btn.addEventListener('click', () => showView('register'));
+      });
+    }
+
     async function renderAdminContactInfo() {
       const ci = await fetchContactInfo();
       document.getElementById('ci-email').value    = ci.email    || '';
@@ -4971,7 +5322,15 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     renderHeroPhoto().catch(console.error);
     renderHomeContactInfo().catch(console.error);
     renderHomeFaq().catch(console.error);
+    renderHomeAboutFeatures().catch(console.error);
+    renderHomePrograms().catch(console.error);
     populateProgramsDropdown().catch(console.error);
+
+    // ── Gallery "View All" button ───────────────────
+    const $galleryViewAll = document.getElementById('hp-gallery-viewall-btn');
+    if ($galleryViewAll) {
+      $galleryViewAll.addEventListener('click', () => showView('gallery-page'));
+    }
   </script>
 </body>
 </html>
