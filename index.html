@@ -401,7 +401,7 @@
     .sec-carousel-slide { display: none; position: relative; }
     .sec-carousel-slide.active { display: block; }
     .sec-carousel-img {
-      width: 100%; max-height: 420px; object-fit: cover;
+      width: 100%;
       display: block; border-radius: 0.625rem;
     }
     .carousel-btn {
@@ -449,29 +449,26 @@
     body.edit-mode .carousel-add-btn { display: block; }
     .sec-linear-img { margin-bottom: 1rem; }
 
-    /* ── Side-by-side layout ──────────────────────── */
+    /* ── Side-by-side layout — hero split ───────────── */
     .sec-sidebyside {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 2rem; align-items: stretch;
+      display: grid; grid-template-columns: 5fr 7fr;
+      gap: 0; align-items: stretch; min-height: 420px;
     }
     .sec-sidebyside-img { display: flex; flex-direction: column; position: relative; }
-    .sec-sidebyside-img .sec-carousel { flex: 1; min-height: var(--sbs-img-h, 150px); max-height: var(--sbs-img-h, none); }
+    .sec-sidebyside-img .sec-carousel {
+      flex: 1; border-radius: 0; background: transparent; overflow: hidden;
+    }
     .sec-sidebyside-img .sec-carousel-track,
     .sec-sidebyside-img .sec-carousel-slide.active { height: 100%; }
     .sec-sidebyside-img .sec-carousel-img {
       width: 100%; height: 100%; max-height: none;
-      object-fit: contain; background: rgba(139,128,248,0.04);
+      object-fit: cover; border-radius: 0;
     }
-    .sec-sidebyside-text { display: flex; flex-direction: column; gap: 0.75rem; }
-    .sbs-resize-handle {
-      position: absolute; bottom: 6px; right: 6px; z-index: 10;
-      width: 22px; height: 22px; border-radius: 5px;
-      background: rgba(139,128,248,0.75); cursor: ns-resize;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; user-select: none; touch-action: none;
+    .sec-sidebyside-text {
+      display: flex; flex-direction: column; gap: 0.75rem;
+      padding: 2rem 2rem 2rem 2.5rem; justify-content: center;
     }
-    .sbs-resize-handle:hover { background: rgba(139,128,248,1); }
-    @media (max-width: 640px) { .sec-sidebyside { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) { .sec-sidebyside { grid-template-columns: 1fr; min-height: auto; } }
 
     /* ── Layout toggle bar ────────────────────────── */
     .layout-toggle-bar {
@@ -1163,6 +1160,7 @@
     body.edit-mode .editable-section .section-toolbar {
       display: flex !important;
     }
+    .editable-section.sbs-hero { padding: 0 !important; overflow: hidden; }
 
     /* ── Section toolbar (edit/delete/drag) ─────────── */
     .section-toolbar {
@@ -4435,13 +4433,11 @@
         const textHTML = `
           <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
           <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>`;
-        const imgH = s.img_height || '';
-        const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${s.id}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
         const bodyHTML = isSBS
-          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
+          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
           : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
         return `
-        <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8" data-section-id="${s.id}">
+        <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10${isSBS ? ' sbs-hero' : ' p-6 sm:p-8'}" data-section-id="${s.id}">
           <div class="section-toolbar">
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
@@ -4793,13 +4789,11 @@
         const textHTML = `
           <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
           <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>`;
-        const imgH = s.img_height || '';
-        const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${s.id}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
         const bodyHTML = isSBS
-          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
+          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
           : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
         return `
-        <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 reveal-left" data-section-id="${s.id}">
+        <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10${isSBS ? ' sbs-hero' : ' p-6 sm:p-8'} reveal-left" data-section-id="${s.id}">
           <div class="section-toolbar">
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
@@ -4948,13 +4942,11 @@
           const textHTML = `
             <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
             <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${esc(s.body)}</p>`;
-          const imgH = s.img_height || '';
-          const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${esc(s.id)}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
           const bodyHTML = isSBS
-            ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
+            ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
             : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
           return `
-          <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 reveal-left" data-section-id="${esc(s.id)}">
+          <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10${isSBS ? ' sbs-hero' : ' p-6 sm:p-8'} reveal-left" data-section-id="${esc(s.id)}">
             <div class="section-toolbar">
               <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
               <button class="edit-section-btn" title="Edit inline" data-edit-id="${esc(s.id)}">${SVG_PENCIL}</button>
