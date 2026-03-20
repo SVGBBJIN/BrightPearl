@@ -4348,6 +4348,39 @@
         }, { passive: true });
       });
     }
+    function fitSbsText(scope) {
+      const pairs = (scope || document).querySelectorAll('.sec-sidebyside');
+      if (!pairs.length) return;
+      function fit() {
+        pairs.forEach(el => {
+          const imgEl  = el.querySelector('.sec-sidebyside-img');
+          const textEl = el.querySelector('.sec-sidebyside-text');
+          if (!imgEl || !textEl) return;
+          textEl.style.fontSize = '';
+          const maxH = imgEl.offsetHeight;
+          if (!maxH) return;
+          let size = parseFloat(getComputedStyle(textEl).fontSize);
+          while (textEl.scrollHeight > maxH && size > 8) {
+            size -= 0.5;
+            textEl.style.fontSize = size + 'px';
+          }
+        });
+      }
+      requestAnimationFrame(() => {
+        fit();
+        (scope || document).querySelectorAll('.sec-sidebyside-img img').forEach(img => {
+          if (!img.complete) img.addEventListener('load', fit, { once: true });
+        });
+      });
+    }
+    (function() {
+      let _sbsTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(_sbsTimer);
+        _sbsTimer = setTimeout(() => fitSbsText(), 100);
+      });
+    })();
+
     function renderLayoutToggleBar(containerId, page) {
       document.getElementById('layout-bar-' + page)?.remove();
       const cur = getSectionLayout(page);
@@ -4411,6 +4444,7 @@
       }).join('');
 
       wireCarousels($container);
+      fitSbsText($container);
 
       // Carousel: add image
       $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
@@ -4766,6 +4800,7 @@
       }).join('');
 
       wireCarousels($container);
+      fitSbsText($container);
 
       // Carousel: add image to section
       $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
@@ -4918,6 +4953,7 @@
         }).join('');
 
         wireCarousels($container);
+        fitSbsText($container);
 
         // Carousel: add image
         $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
