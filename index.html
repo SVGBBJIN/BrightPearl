@@ -127,12 +127,10 @@
     }
     .hero-banner img.loaded { opacity: 1; }
     .hero-banner::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(180deg,
-        rgba(0,0,0,0.10) 0%,
-        rgba(0,0,0,0.25) 50%,
-        rgba(0,0,0,0.55) 100%);
-      pointer-events: none;
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 65%;
+      background: linear-gradient(to top, rgba(10,8,28,0.75) 0%, transparent 100%);
+      pointer-events: none; z-index: 1;
     }
     .hero-overlay {
       position: absolute; inset: 0; z-index: 2;
@@ -143,12 +141,11 @@
     }
     @media (min-width: 640px) { .hero-overlay { padding: 3rem 2rem 3.5rem; } }
     .hero-glass {
-      background: rgba(255,255,255,0.12);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,0.18);
+      background: transparent;
       border-radius: 1rem;
       padding: 2rem 2.5rem;
       max-width: 560px;
+      position: relative; z-index: 2;
     }
     @media (max-width: 639px) { .hero-glass { padding: 1.5rem 1.25rem; } }
     .hero-glass h1 { color: #fff; }
@@ -159,6 +156,10 @@
     }
     .hero-glass .btn-outline:hover {
       background: rgba(255,255,255,0.15); border-color: #fff;
+    }
+    .hero-rule {
+      width: 40px; height: 2px; background: #8B80F8; border-radius: 2px;
+      margin: 12px auto 16px; display: block;
     }
 
     /* ── Awards Strip ────────────────────────────── */
@@ -340,9 +341,9 @@
     }
     /* Eyebrow */
     .hp-feature-eyebrow {
-      display: block; font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 0.2em; text-transform: uppercase;
-      color: rgb(var(--imperial-rgb) / 0.7); margin-bottom: 0.85rem;
+      display: block; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(139,128,248,0.7); margin-bottom: 0.85rem;
     }
     /* Heading */
     .hp-feature-heading {
@@ -353,7 +354,7 @@
     /* Body */
     .hp-feature-body {
       font-size: 1rem; line-height: 1.8;
-      color: rgb(var(--ink-rgb) / 0.62); margin-bottom: 2rem;
+      color: rgba(255,255,255,0.65); margin-bottom: 2rem;
       white-space: pre-line;
     }
     /* AoPS pill CTA */
@@ -401,6 +402,7 @@
     .hp-feature-text-only {
       max-width: 68rem; margin: 0 auto; padding: 3rem 3rem;
       border-top: 1px solid rgb(var(--imperial-rgb) / 0.06);
+      border-left: 2px solid #8B80F8; padding-left: 20px;
     }
     .hp-feature-text-only:first-child { border-top: none; }
 
@@ -422,9 +424,19 @@
     .hp-values-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2.5rem; }
     @media (max-width: 900px) { .hp-values-grid { grid-template-columns: repeat(2,1fr); gap: 2rem; } }
     @media (max-width: 480px) { .hp-values-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
-    .hp-value-icon { width: 68px; height: 68px; margin-bottom: 1.25rem; }
+    .hp-value-card {
+      border-top: 2px solid rgba(139,128,248,0.35);
+      border-left: 1px solid rgba(139,128,248,0.12);
+      border-right: 1px solid rgba(139,128,248,0.12);
+      border-bottom: 1px solid rgba(139,128,248,0.12);
+    }
+    .hp-value-icon {
+      width: 68px; height: 68px; margin-bottom: 1.25rem;
+      background: rgba(139,128,248,0.1); border-radius: 10px;
+      padding: 10px; display: inline-flex;
+    }
     .hp-value-title {
-      font-size: 0.95rem; font-weight: 700;
+      font-size: 0.95rem; font-weight: 600;
       color: rgb(var(--ink-rgb)); margin-bottom: 0.5rem;
     }
     .hp-value-body {
@@ -445,13 +457,22 @@
     @media (max-width: 560px) { .hp-programs-grid { grid-template-columns: 1fr; } }
     .hp-program-card {
       background: rgb(var(--surface-rgb));
-      border: 1px solid rgb(var(--imperial-rgb) / 0.1);
-      border-radius: 1rem; padding: 2rem;
+      border: 1px solid rgba(139,128,248,0.25);
+      border-radius: 1rem; padding: 2rem; padding-top: 0;
       display: flex; flex-direction: column; gap: 0.75rem;
       box-shadow: 0 2px 12px rgb(var(--ink-rgb) / 0.05);
       transition: box-shadow 0.22s, transform 0.22s;
+      position: relative; overflow: hidden;
+    }
+    .hp-program-card::before {
+      content: ''; display: block; height: 3px;
+      background: #8B80F8; width: 100%; margin-bottom: 28px;
     }
     .hp-program-card:hover { box-shadow: 0 8px 28px rgb(var(--ink-rgb) / 0.1); transform: translateY(-3px); }
+    .hp-program-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(139,128,248,0.12); margin-bottom: 12px;
+    }
     .hp-program-name {
       font-family: 'Playfair Display', serif; font-size: 1.15rem;
       font-weight: 700; color: rgb(var(--ink-rgb));
@@ -459,10 +480,10 @@
     .hp-program-desc { font-size: 0.875rem; color: rgb(var(--ink-rgb) / 0.58); line-height: 1.65; flex: 1; }
     .hp-program-btns { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 0.75rem; }
     .hp-program-btn-learn {
-      padding: 0.5rem 1.2rem; border-radius: 9999px;
-      border: 1.5px solid rgb(var(--imperial-rgb) / 0.4);
+      padding: 0.5rem 1.2rem; border-radius: 100px;
+      border: 1px solid rgba(139,128,248,0.3);
       font-size: 0.75rem; font-weight: 600; color: rgb(var(--imperial-rgb));
-      background: transparent; cursor: pointer; transition: all 0.15s;
+      background: rgba(139,128,248,0.08); cursor: pointer; transition: all 0.15s;
     }
     .hp-program-btn-learn:hover { background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); border-color: rgb(var(--imperial-rgb)); }
     .hp-program-btn-enroll {
@@ -554,6 +575,7 @@
       background-color: rgb(var(--imperial-rgb));
       color: rgb(var(--cream-rgb));
       transition: background-color 0.2s;
+      border-radius: 100px !important;
     }
     .btn-imperial:hover    { background-color: rgb(var(--imperial-hover-rgb)); }
     .btn-imperial:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -561,6 +583,7 @@
       border: 1px solid rgb(var(--imperial-rgb));
       color: rgb(var(--imperial-rgb));
       transition: all 0.2s;
+      border-radius: 100px !important;
     }
     .btn-outline:hover { background-color: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); }
 
@@ -1274,12 +1297,13 @@
           <h1 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight mb-3">
             Where Tradition Meets<br/><em>Graceful Expression</em>
           </h1>
+          <div class="hero-rule"></div>
           <p class="hero-sub text-xs sm:text-sm leading-relaxed mb-5 max-w-md mx-auto">
             Bright Pearl Academy nurtures the art of Chinese dance, cultivating discipline, cultural pride, and artistic excellence in every student.
           </p>
           <div class="flex items-center justify-center gap-4 flex-wrap">
-            <button id="hero-cta-register" class="btn-imperial cta-glow px-7 py-3 rounded-lg text-sm font-semibold tracking-wide">Enroll Now</button>
-            <button id="hero-cta-about"    class="btn-outline border-2 px-7 py-3 rounded-lg text-sm font-semibold tracking-wide">Our Story</button>
+            <button id="hero-cta-register" class="btn-imperial cta-glow px-7 py-3 text-sm font-semibold tracking-wide">Enroll Now</button>
+            <button id="hero-cta-about"    class="btn-outline border-2 px-7 py-3 text-sm font-semibold tracking-wide">Our Story</button>
           </div>
         </div>
       </div>
@@ -3733,6 +3757,7 @@
       }
       $grid.innerHTML = programs.map(p => `
         <div class="hp-program-card">
+          <div class="hp-program-icon"></div>
           <h3 class="hp-program-name">${esc(p.name)}</h3>
           <p class="hp-program-desc">${esc(p.description || '')}</p>
           <div class="hp-program-btns">
