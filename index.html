@@ -189,10 +189,10 @@
       font-size: 0.7rem; font-weight: 600;
       color: rgb(var(--imperial-rgb));
       background: rgb(var(--imperial-rgb) / 0.08);
-      padding: 0.1rem 0.45rem; border-radius: 999px;
+      padding: 0.15rem 0.6rem; border-radius: 999px;
     }
     .award-chip-title {
-      font-size: 0.8rem; color: rgb(var(--ink-rgb) / 0.7); font-weight: 500;
+      font-size: 0.8rem; color: rgb(var(--ink-rgb) / 0.88); font-weight: 600;
     }
 
     /* ── CTA Glow ───────────────────────────────── */
@@ -231,17 +231,15 @@
     /* Home preview grid — keeps compact equal-size thumbnails */
     .gallery-cell {
       aspect-ratio: 4/3;
-      background: linear-gradient(135deg, #ece8df 0%, #e2ddd3 100%);
-      border: 1px solid rgb(var(--imperial-rgb) / 0.12);
+      background: rgb(var(--imperial-rgb) / 0.04);
+      border: 1px solid rgb(var(--imperial-rgb) / 0.15);
       display: flex; align-items: center; justify-content: center;
       transition: border-color 0.2s, transform 0.2s;
       overflow: hidden; cursor: pointer; border-radius: 0.5rem;
     }
-    @media (prefers-color-scheme: dark) {
-      .gallery-cell { background: linear-gradient(135deg, #1a1832 0%, #131128 100%); }
-    }
     .gallery-cell:hover { border-color: rgb(var(--imperial-rgb) / 0.4); transform: scale(1.02); }
-    .gallery-cell img   { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-cell img   { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+    .gallery-cell:hover img { transform: scale(1.03); }
 
     /* ── Full gallery page — masonry card layout ── */
     #gallery-page-grid {
@@ -342,8 +340,8 @@
     /* Eyebrow */
     .hp-feature-eyebrow {
       display: block; font-size: 11px; font-weight: 700;
-      letter-spacing: 0.16em; text-transform: uppercase;
-      color: rgba(139,128,248,0.7); margin-bottom: 0.85rem;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgb(var(--imperial-rgb) / 0.55); margin-bottom: 0.5rem;
     }
     /* Heading */
     .hp-feature-heading {
@@ -354,7 +352,7 @@
     /* Body */
     .hp-feature-body {
       font-size: 1rem; line-height: 1.8;
-      color: rgba(255,255,255,0.65); margin-bottom: 2rem;
+      color: rgb(var(--ink-rgb) / 0.7); margin-bottom: 2rem;
       white-space: pre-line;
     }
     /* AoPS pill CTA */
@@ -400,9 +398,10 @@
     .hp-feature-img.loaded { opacity: 1; }
     /* Text-only (no image) about block */
     .hp-feature-text-only {
-      max-width: 68rem; margin: 0 auto; padding: 3rem 3rem;
-      border-top: 1px solid rgb(var(--imperial-rgb) / 0.06);
-      border-left: 2px solid #8B80F8; padding-left: 20px;
+      max-width: 68rem; margin: 0 auto;
+      padding: 3rem 3rem 3rem 2rem;
+      border-top: none;
+      border-left: 3px solid rgb(var(--imperial-rgb) / 0.3);
     }
     .hp-feature-text-only:first-child { border-top: none; }
 
@@ -425,22 +424,33 @@
     @media (max-width: 900px) { .hp-values-grid { grid-template-columns: repeat(2,1fr); gap: 2rem; } }
     @media (max-width: 480px) { .hp-values-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
     .hp-value-card {
-      border-top: 2px solid rgba(139,128,248,0.35);
-      border-left: 1px solid rgba(139,128,248,0.12);
-      border-right: 1px solid rgba(139,128,248,0.12);
-      border-bottom: 1px solid rgba(139,128,248,0.12);
+      background: rgb(var(--surface-rgb));
+      border: 1px solid rgb(var(--imperial-rgb) / 0.1);
+      border-top: 3px solid rgb(var(--imperial-rgb) / 0.25);
+      border-radius: 1rem;
+      padding: 1.75rem;
+      transition: border-top-color 0.2s, box-shadow 0.2s;
+    }
+    .hp-value-card:hover {
+      border-top-color: rgb(var(--imperial-rgb) / 0.7);
+      box-shadow: 0 6px 20px rgb(var(--imperial-rgb) / 0.08);
     }
     .hp-value-icon {
-      width: 68px; height: 68px; margin-bottom: 1.25rem;
-      background: rgba(139,128,248,0.1); border-radius: 10px;
-      padding: 10px; display: inline-flex;
+      width: 40px; height: 40px; margin-bottom: 1rem;
+      background: rgb(var(--imperial-rgb) / 0.08); border-radius: 10px;
+      padding: 8px; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .hp-value-icon svg,
+    .hp-value-icon img {
+      width: 22px; height: 22px; opacity: 0.75;
     }
     .hp-value-title {
       font-size: 0.95rem; font-weight: 600;
       color: rgb(var(--ink-rgb)); margin-bottom: 0.5rem;
     }
     .hp-value-body {
-      font-size: 0.875rem; color: rgb(var(--ink-rgb) / 0.6); line-height: 1.7;
+      font-size: 0.875rem; color: rgb(var(--ink-rgb) / 0.68); line-height: 1.7;
     }
 
     /* ── Programs & Classes ──────────────────────── */
@@ -457,7 +467,7 @@
     @media (max-width: 560px) { .hp-programs-grid { grid-template-columns: 1fr; } }
     .hp-program-card {
       background: rgb(var(--surface-rgb));
-      border: 1px solid rgba(139,128,248,0.25);
+      border: 1px solid rgb(var(--imperial-rgb) / 0.18);
       border-radius: 1rem; padding: 2rem; padding-top: 0;
       display: flex; flex-direction: column; gap: 0.75rem;
       box-shadow: 0 2px 12px rgb(var(--ink-rgb) / 0.05);
@@ -466,18 +476,19 @@
     }
     .hp-program-card::before {
       content: ''; display: block; height: 3px;
-      background: #8B80F8; width: 100%; margin-bottom: 28px;
+      background: rgb(var(--imperial-rgb)); opacity: 0.7;
+      width: 100%; margin-bottom: 1.75rem;
     }
-    .hp-program-card:hover { box-shadow: 0 8px 28px rgb(var(--ink-rgb) / 0.1); transform: translateY(-3px); }
+    .hp-program-card:hover { box-shadow: 0 12px 32px rgb(var(--imperial-rgb) / 0.12); transform: translateY(-4px); }
     .hp-program-icon {
       width: 32px; height: 32px; border-radius: 8px;
       background: rgba(139,128,248,0.12); margin-bottom: 12px;
     }
     .hp-program-name {
-      font-family: 'Playfair Display', serif; font-size: 1.15rem;
+      font-family: 'Playfair Display', serif; font-size: 1.2rem;
       font-weight: 700; color: rgb(var(--ink-rgb));
     }
-    .hp-program-desc { font-size: 0.875rem; color: rgb(var(--ink-rgb) / 0.58); line-height: 1.65; flex: 1; }
+    .hp-program-desc { font-size: 0.875rem; color: rgb(var(--ink-rgb) / 0.68); line-height: 1.65; flex: 1; }
     .hp-program-btns { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 0.75rem; }
     .hp-program-btn-learn {
       padding: 0.5rem 1.2rem; border-radius: 100px;
