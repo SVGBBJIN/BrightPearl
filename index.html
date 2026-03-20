@@ -452,14 +452,26 @@
     /* ── Side-by-side layout ──────────────────────── */
     .sec-sidebyside {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 2rem; align-items: stretch;
+      gap: 2rem; align-items: start;
     }
     .sec-sidebyside-img { display: flex; flex-direction: column; }
-    .sec-sidebyside-img .sec-carousel { flex: 1; min-height: 200px; }
+    .sec-sidebyside-img .sec-carousel { height: var(--sbs-img-h, auto); min-height: 150px; }
     .sec-sidebyside-img .sec-carousel-track,
     .sec-sidebyside-img .sec-carousel-slide.active { height: 100%; }
-    .sec-sidebyside-img .sec-carousel-img { height: 100%; max-height: none; object-fit: cover; }
+    .sec-sidebyside-img .sec-carousel-img {
+      width: 100%; height: 100%; max-height: none;
+      object-fit: contain; background: rgba(139,128,248,0.04);
+    }
     .sec-sidebyside-text { display: flex; flex-direction: column; gap: 0.75rem; }
+    .sbs-scale-bar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 0; margin-top: 0.5rem;
+      font-size: 0.7rem; color: rgba(232,228,245,0.5);
+    }
+    .sbs-scale-bar input[type=range] {
+      flex: 1; accent-color: rgb(139,128,248); cursor: pointer;
+    }
+    .sbs-scale-val { min-width: 2.8rem; text-align: right; font-variant-numeric: tabular-nums; }
     @media (max-width: 640px) { .sec-sidebyside { grid-template-columns: 1fr; } }
 
     /* ── Layout toggle bar ────────────────────────── */
@@ -4352,6 +4364,23 @@
         }, { passive: true });
       });
     }
+    function wireSbsScaleSliders($container, updateFn) {
+      $container.querySelectorAll('.sbs-scale-slider').forEach(slider => {
+        const valEl = slider.parentElement.querySelector('.sbs-scale-val');
+        const imgEl = slider.closest('.editable-section')?.querySelector('.sec-sidebyside-img');
+        slider.addEventListener('input', () => {
+          const px = slider.value + 'px';
+          if (valEl) valEl.textContent = px;
+          if (imgEl) imgEl.style.setProperty('--sbs-img-h', px);
+        });
+        let _saveTimer;
+        slider.addEventListener('change', () => {
+          clearTimeout(_saveTimer);
+          _saveTimer = setTimeout(() => updateFn(slider.dataset.scaleId, { img_height: slider.value + 'px' }), 300);
+        });
+      });
+    }
+
     function renderLayoutToggleBar(containerId, page) {
       document.getElementById('layout-bar-' + page)?.remove();
       const cur = getSectionLayout(page);
@@ -4399,8 +4428,15 @@
         const textHTML = `
           <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
           <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>`;
+        const imgH = s.img_height || '';
+        const scaleSlider = (isSBS && editMode) ? `
+          <div class="sbs-scale-bar">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21H3M3 3v18M9 17V9m4 8V5m4 12v-6"/></svg>
+            <input type="range" class="sbs-scale-slider" min="150" max="800" value="${imgH ? parseInt(imgH) : 400}" data-scale-id="${s.id}" data-page="about">
+            <span class="sbs-scale-val">${imgH || '400px'}</span>
+          </div>` : '';
         const bodyHTML = isSBS
-          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
+          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>${scaleSlider}`
           : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
         return `
         <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8" data-section-id="${s.id}">
@@ -4415,6 +4451,7 @@
       }).join('');
 
       wireCarousels($container);
+      wireSbsScaleSliders($container, updateAboutSection);
 
       // Carousel: add image
       $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
@@ -4754,8 +4791,15 @@
         const textHTML = `
           <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
           <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>`;
+        const imgH = s.img_height || '';
+        const scaleSlider = (isSBS && editMode) ? `
+          <div class="sbs-scale-bar">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21H3M3 3v18M9 17V9m4 8V5m4 12v-6"/></svg>
+            <input type="range" class="sbs-scale-slider" min="150" max="800" value="${imgH ? parseInt(imgH) : 400}" data-scale-id="${s.id}" data-page="concert">
+            <span class="sbs-scale-val">${imgH || '400px'}</span>
+          </div>` : '';
         const bodyHTML = isSBS
-          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
+          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>${scaleSlider}`
           : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
         return `
         <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 reveal-left" data-section-id="${s.id}">
@@ -4770,6 +4814,7 @@
       }).join('');
 
       wireCarousels($container);
+      wireSbsScaleSliders($container, updateConcertSection);
 
       // Carousel: add image to section
       $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
@@ -4906,8 +4951,15 @@
           const textHTML = `
             <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
             <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${esc(s.body)}</p>`;
+          const imgH = s.img_height || '';
+          const scaleSlider = (isSBS && editMode) ? `
+            <div class="sbs-scale-bar">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21H3M3 3v18M9 17V9m4 8V5m4 12v-6"/></svg>
+              <input type="range" class="sbs-scale-slider" min="150" max="800" value="${imgH ? parseInt(imgH) : 400}" data-scale-id="${esc(s.id)}" data-page="program">
+              <span class="sbs-scale-val">${imgH || '400px'}</span>
+            </div>` : '';
           const bodyHTML = isSBS
-            ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
+            ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>${scaleSlider}`
             : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
           return `
           <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 reveal-left" data-section-id="${esc(s.id)}">
@@ -4922,6 +4974,7 @@
         }).join('');
 
         wireCarousels($container);
+        wireSbsScaleSliders($container, (id, fields) => updateProgramSection(currentProgram, id, fields));
 
         // Carousel: add image
         $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
