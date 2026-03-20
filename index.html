@@ -452,10 +452,10 @@
     /* ── Side-by-side layout ──────────────────────── */
     .sec-sidebyside {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 2rem; align-items: start;
+      gap: 2rem; align-items: stretch;
     }
-    .sec-sidebyside-img { display: flex; flex-direction: column; }
-    .sec-sidebyside-img .sec-carousel { height: var(--sbs-img-h, auto); min-height: 150px; }
+    .sec-sidebyside-img { display: flex; flex-direction: column; position: relative; }
+    .sec-sidebyside-img .sec-carousel { flex: 1; min-height: var(--sbs-img-h, 150px); max-height: var(--sbs-img-h, none); }
     .sec-sidebyside-img .sec-carousel-track,
     .sec-sidebyside-img .sec-carousel-slide.active { height: 100%; }
     .sec-sidebyside-img .sec-carousel-img {
@@ -463,15 +463,14 @@
       object-fit: contain; background: rgba(139,128,248,0.04);
     }
     .sec-sidebyside-text { display: flex; flex-direction: column; gap: 0.75rem; }
-    .sbs-scale-bar {
-      display: flex; align-items: center; gap: 0.5rem;
-      padding: 0.4rem 0; margin-top: 0.5rem;
-      font-size: 0.7rem; color: rgba(232,228,245,0.5);
+    .sbs-resize-handle {
+      position: absolute; bottom: 6px; right: 6px; z-index: 10;
+      width: 22px; height: 22px; border-radius: 5px;
+      background: rgba(139,128,248,0.75); cursor: ns-resize;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; user-select: none; touch-action: none;
     }
-    .sbs-scale-bar input[type=range] {
-      flex: 1; accent-color: rgb(139,128,248); cursor: pointer;
-    }
-    .sbs-scale-val { min-width: 2.8rem; text-align: right; font-variant-numeric: tabular-nums; }
+    .sbs-resize-handle:hover { background: rgba(139,128,248,1); }
     @media (max-width: 640px) { .sec-sidebyside { grid-template-columns: 1fr; } }
 
     /* ── Layout toggle bar ────────────────────────── */
@@ -4364,19 +4363,27 @@
         }, { passive: true });
       });
     }
-    function wireSbsScaleSliders($container, updateFn) {
-      $container.querySelectorAll('.sbs-scale-slider').forEach(slider => {
-        const valEl = slider.parentElement.querySelector('.sbs-scale-val');
-        const imgEl = slider.closest('.editable-section')?.querySelector('.sec-sidebyside-img');
-        slider.addEventListener('input', () => {
-          const px = slider.value + 'px';
-          if (valEl) valEl.textContent = px;
-          if (imgEl) imgEl.style.setProperty('--sbs-img-h', px);
-        });
-        let _saveTimer;
-        slider.addEventListener('change', () => {
-          clearTimeout(_saveTimer);
-          _saveTimer = setTimeout(() => updateFn(slider.dataset.scaleId, { img_height: slider.value + 'px' }), 300);
+    function wireSbsResizeHandles($container, updateFn) {
+      $container.querySelectorAll('.sbs-resize-handle').forEach(handle => {
+        const imgContainer = handle.closest('.sec-sidebyside-img');
+        const carousel = imgContainer?.querySelector('.sec-carousel');
+        const sectionId = handle.dataset.resizeId;
+        handle.addEventListener('mousedown', e => {
+          e.preventDefault(); e.stopPropagation();
+          const startY = e.clientY;
+          const startH = carousel ? carousel.offsetHeight : 300;
+          function onMove(e) {
+            const newH = Math.max(150, Math.min(900, startH + (e.clientY - startY)));
+            imgContainer.style.setProperty('--sbs-img-h', newH + 'px');
+          }
+          function onUp(e) {
+            const newH = Math.max(150, Math.min(900, startH + (e.clientY - startY)));
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            updateFn(sectionId, { img_height: newH + 'px' });
+          }
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
         });
       });
     }
@@ -4429,14 +4436,9 @@
           <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
           <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>`;
         const imgH = s.img_height || '';
-        const scaleSlider = (isSBS && editMode) ? `
-          <div class="sbs-scale-bar">
-            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21H3M3 3v18M9 17V9m4 8V5m4 12v-6"/></svg>
-            <input type="range" class="sbs-scale-slider" min="150" max="800" value="${imgH ? parseInt(imgH) : 400}" data-scale-id="${s.id}" data-page="about">
-            <span class="sbs-scale-val">${imgH || '400px'}</span>
-          </div>` : '';
+        const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${s.id}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
         const bodyHTML = isSBS
-          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>${scaleSlider}`
+          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
           : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
         return `
         <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8" data-section-id="${s.id}">
@@ -4451,7 +4453,7 @@
       }).join('');
 
       wireCarousels($container);
-      wireSbsScaleSliders($container, updateAboutSection);
+      wireSbsResizeHandles($container, updateAboutSection);
 
       // Carousel: add image
       $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
@@ -4792,14 +4794,9 @@
           <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
           <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>`;
         const imgH = s.img_height || '';
-        const scaleSlider = (isSBS && editMode) ? `
-          <div class="sbs-scale-bar">
-            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21H3M3 3v18M9 17V9m4 8V5m4 12v-6"/></svg>
-            <input type="range" class="sbs-scale-slider" min="150" max="800" value="${imgH ? parseInt(imgH) : 400}" data-scale-id="${s.id}" data-page="concert">
-            <span class="sbs-scale-val">${imgH || '400px'}</span>
-          </div>` : '';
+        const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${s.id}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
         const bodyHTML = isSBS
-          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>${scaleSlider}`
+          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
           : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
         return `
         <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 reveal-left" data-section-id="${s.id}">
@@ -4814,7 +4811,7 @@
       }).join('');
 
       wireCarousels($container);
-      wireSbsScaleSliders($container, updateConcertSection);
+      wireSbsResizeHandles($container, updateConcertSection);
 
       // Carousel: add image to section
       $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
@@ -4952,14 +4949,9 @@
             <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
             <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${esc(s.body)}</p>`;
           const imgH = s.img_height || '';
-          const scaleSlider = (isSBS && editMode) ? `
-            <div class="sbs-scale-bar">
-              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21H3M3 3v18M9 17V9m4 8V5m4 12v-6"/></svg>
-              <input type="range" class="sbs-scale-slider" min="150" max="800" value="${imgH ? parseInt(imgH) : 400}" data-scale-id="${esc(s.id)}" data-page="program">
-              <span class="sbs-scale-val">${imgH || '400px'}</span>
-            </div>` : '';
+          const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${esc(s.id)}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
           const bodyHTML = isSBS
-            ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>${scaleSlider}`
+            ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
             : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
           return `
           <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 reveal-left" data-section-id="${esc(s.id)}">
@@ -4974,7 +4966,7 @@
         }).join('');
 
         wireCarousels($container);
-        wireSbsScaleSliders($container, (id, fields) => updateProgramSection(currentProgram, id, fields));
+        wireSbsResizeHandles($container, (id, fields) => updateProgramSection(currentProgram, id, fields));
 
         // Carousel: add image
         $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
