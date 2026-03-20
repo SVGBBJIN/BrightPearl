@@ -391,6 +391,98 @@
       line-height: 1.8;
     }
 
+    /* ── Image Carousel ──────────────────────────── */
+    .sec-carousel {
+      position: relative; width: 100%; overflow: hidden;
+      border-radius: 0.625rem;
+      background: rgba(139, 128, 248, 0.06);
+    }
+    .sec-carousel-track { position: relative; width: 100%; }
+    .sec-carousel-slide { display: none; position: relative; }
+    .sec-carousel-slide.active { display: block; }
+    .sec-carousel-img {
+      width: 100%; max-height: 420px; object-fit: cover;
+      display: block; border-radius: 0.625rem;
+    }
+    .carousel-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(12, 11, 24, 0.65);
+      border: 1px solid rgba(139, 128, 248, 0.35);
+      color: rgb(232, 228, 245);
+      border-radius: 50%; width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 2;
+      transition: background 0.15s, border-color 0.15s;
+      backdrop-filter: blur(4px);
+    }
+    .carousel-btn:hover { background: rgba(139, 128, 248, 0.55); border-color: rgba(139, 128, 248, 0.7); }
+    .carousel-prev { left: 8px; }
+    .carousel-next { right: 8px; }
+    .carousel-dots {
+      position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px; z-index: 2;
+    }
+    .carousel-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.35); border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .carousel-dot.active { background: rgb(139, 128, 248); transform: scale(1.3); }
+    .carousel-remove-btn {
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(200, 40, 40, 0.85); color: white;
+      border: none; border-radius: 50%; width: 26px; height: 26px;
+      font-size: 1rem; font-weight: 700; line-height: 1;
+      cursor: pointer; z-index: 3;
+      display: none; align-items: center; justify-content: center;
+    }
+    body.edit-mode .carousel-remove-btn { display: flex; }
+    .carousel-add-btn {
+      display: none; width: 100%; margin-top: 0.5rem;
+      font-size: 0.75rem; color: rgb(139, 128, 248);
+      background: rgba(139, 128, 248, 0.08);
+      border: 1px dashed rgba(139, 128, 248, 0.4);
+      border-radius: 0.5rem; padding: 0.4rem 1rem;
+      cursor: pointer; transition: background 0.15s; text-align: center;
+    }
+    .carousel-add-btn:hover { background: rgba(139, 128, 248, 0.18); }
+    body.edit-mode .carousel-add-btn { display: block; }
+    .sec-linear-img { margin-bottom: 1rem; }
+
+    /* ── Side-by-side layout ──────────────────────── */
+    .sec-sidebyside {
+      display: grid; grid-template-columns: 44% 1fr;
+      gap: 2rem; align-items: start;
+    }
+    .sec-sidebyside-img .sec-carousel-img { max-height: 480px; }
+    .sec-sidebyside-text { display: flex; flex-direction: column; gap: 0.75rem; }
+    @media (max-width: 640px) { .sec-sidebyside { grid-template-columns: 1fr; } }
+
+    /* ── Layout toggle bar ────────────────────────── */
+    .layout-toggle-bar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 0; margin-bottom: 1rem; justify-content: flex-end;
+    }
+    .layout-toggle-label {
+      font-size: 0.72rem; color: rgba(232, 228, 245, 0.45);
+      font-weight: 500; margin-right: 0.25rem; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .layout-btn {
+      display: flex; align-items: center; gap: 0.35rem;
+      font-size: 0.72rem; font-weight: 500;
+      padding: 0.35rem 0.75rem; border-radius: 0.5rem;
+      border: 1px solid rgba(139, 128, 248, 0.22);
+      background: transparent; color: rgba(232, 228, 245, 0.55);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .layout-btn:hover { border-color: rgba(139, 128, 248, 0.5); color: rgba(232, 228, 245, 0.9); background: rgba(139, 128, 248, 0.08); }
+    .layout-btn.active { border-color: rgba(139, 128, 248, 0.7); color: rgb(190, 178, 255); background: rgba(139, 128, 248, 0.14); }
+    @media (prefers-color-scheme: light) {
+      .layout-toggle-label { color: rgba(26, 26, 26, 0.45); }
+      .layout-btn { color: rgba(26, 26, 26, 0.6); border-color: rgba(91, 79, 207, 0.22); }
+      .layout-btn.active { color: rgb(91, 79, 207); background: rgba(91, 79, 207, 0.08); border-color: rgba(91, 79, 207, 0.5); }
+    }
+
     /* ── Gallery ─────────────────────────────────── */
     /* Home preview grid — keeps compact equal-size thumbnails */
     .gallery-cell {
@@ -4191,6 +4283,96 @@
     }
 
     // ════════════════════════════════════════════════
+    // ════════════════════════════════════════════════
+    //  CAROUSEL & LAYOUT HELPERS
+    // ════════════════════════════════════════════════
+    const _sectionLayouts = JSON.parse(localStorage.getItem('bp_sec_layouts') || '{}');
+    function getSectionLayout(page) { return _sectionLayouts[page] || 'linear'; }
+    function setSectionLayout(page, mode) {
+      _sectionLayouts[page] = mode;
+      localStorage.setItem('bp_sec_layouts', JSON.stringify(_sectionLayouts));
+    }
+    function getSectionImages(s) {
+      if (Array.isArray(s.images) && s.images.length) return s.images;
+      if (s.image_url) return [s.image_url];
+      return [];
+    }
+    const _SVG_PREV = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>`;
+    const _SVG_NEXT = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
+    function buildCarouselHTML(images, sectionId, isEdit) {
+      if (!images.length) return '';
+      const slides = images.map((url, i) => `
+        <div class="sec-carousel-slide${i === 0 ? ' active' : ''}" data-slide="${i}">
+          <img src="${esc(url)}" alt="" loading="lazy" class="sec-carousel-img" />
+          <button class="carousel-remove-btn" data-cid="${esc(sectionId)}" data-sidx="${i}" title="Remove image">×</button>
+        </div>`).join('');
+      const nav = images.length > 1 ? `
+        <button class="carousel-btn carousel-prev" aria-label="Previous">${_SVG_PREV}</button>
+        <button class="carousel-btn carousel-next" aria-label="Next">${_SVG_NEXT}</button>` : '';
+      const dots = images.length > 1 ? `
+        <div class="carousel-dots">${images.map((_, i) =>
+          `<button class="carousel-dot${i === 0 ? ' active' : ''}" data-idx="${i}"></button>`).join('')}
+        </div>` : '';
+      return `
+        <div class="sec-carousel" data-cid="${esc(sectionId)}" data-cur="0">
+          <div class="sec-carousel-track">${slides}</div>${nav}${dots}
+        </div>
+        <button class="carousel-add-btn" data-cid="${esc(sectionId)}">+ Add another image</button>`;
+    }
+    function wireCarousels($container) {
+      $container.querySelectorAll('.sec-carousel').forEach(car => {
+        const slides = car.querySelectorAll('.sec-carousel-slide');
+        const dots   = car.querySelectorAll('.carousel-dot');
+        if (slides.length <= 1) return;
+        function goTo(n) {
+          const cur = parseInt(car.dataset.cur) || 0;
+          slides[cur].classList.remove('active'); dots[cur]?.classList.remove('active');
+          car.dataset.cur = n;
+          slides[n].classList.add('active');   dots[n]?.classList.add('active');
+        }
+        car.querySelector('.carousel-prev')?.addEventListener('click', e => {
+          e.stopPropagation();
+          const c = parseInt(car.dataset.cur) || 0; goTo((c - 1 + slides.length) % slides.length);
+        });
+        car.querySelector('.carousel-next')?.addEventListener('click', e => {
+          e.stopPropagation();
+          const c = parseInt(car.dataset.cur) || 0; goTo((c + 1) % slides.length);
+        });
+        dots.forEach((dot, i) => dot.addEventListener('click', e => { e.stopPropagation(); goTo(i); }));
+        // Touch swipe
+        let _sx = 0;
+        car.querySelector('.sec-carousel-track').addEventListener('touchstart', e => { _sx = e.touches[0].clientX; }, { passive: true });
+        car.querySelector('.sec-carousel-track').addEventListener('touchend', e => {
+          const dx = e.changedTouches[0].clientX - _sx;
+          if (Math.abs(dx) > 40) { const c = parseInt(car.dataset.cur) || 0; goTo(dx < 0 ? (c + 1) % slides.length : (c - 1 + slides.length) % slides.length); }
+        }, { passive: true });
+      });
+    }
+    function renderLayoutToggleBar(containerId, page) {
+      document.getElementById('layout-bar-' + page)?.remove();
+      const cur = getSectionLayout(page);
+      const bar = document.createElement('div');
+      bar.className = 'layout-toggle-bar'; bar.id = 'layout-bar-' + page;
+      bar.innerHTML = `
+        <span class="layout-toggle-label">View:</span>
+        <button class="layout-btn${cur === 'linear' ? ' active' : ''}" data-layout="linear" title="Stack image above text">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h10"/></svg> Linear
+        </button>
+        <button class="layout-btn${cur === 'sidebyside' ? ' active' : ''}" data-layout="sidebyside" title="Image left, text right">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="7" height="14" rx="1"/><path d="M14 7h7M14 11h7M14 15h4"/></svg> Side by side
+        </button>`;
+      bar.querySelectorAll('.layout-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          setSectionLayout(page, btn.dataset.layout);
+          if (page === 'concert') renderConcertPage();
+          else if (page === 'program') renderProgramPage(currentProgram);
+          else if (page === 'about') renderHomeAbout();
+        });
+      });
+      const $c = document.getElementById(containerId);
+      $c.parentNode.insertBefore(bar, $c);
+    }
+
     //  RENDER — ABOUT
     // ════════════════════════════════════════════════
     async function renderHomeAbout() {
@@ -4200,45 +4382,73 @@
       const sections   = await fetchAboutSections();
       if (!sections.length) { $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
-      $container.innerHTML = sections.map((s, idx) => {
-        const hasImage = s.image_url;
-        const imgSide = idx % 2 === 0 ? '' : 'image-right';
+      const layout = getSectionLayout('about');
+      const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
+      const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
+      const SVG_IMG_A  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
+      const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
+      $container.innerHTML = sections.map(s => {
+        const imgs    = getSectionImages(s);
+        const hasImgs = imgs.length > 0;
+        const isSBS   = layout === 'sidebyside' && hasImgs;
+        const carHTML = hasImgs ? buildCarouselHTML(imgs, s.id, editMode) : '';
+        const textHTML = `
+          <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
+          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>`;
+        const bodyHTML = isSBS
+          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
+          : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
         return `
         <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8" data-section-id="${s.id}">
-          <!-- Section toolbar (visible in edit mode) -->
           <div class="section-toolbar">
-            <div class="drag-handle" title="Drag to reorder">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>
-            </div>
-            <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
-            </button>
-            <button class="img-section-btn" title="Add/change image" data-imgbtn-id="${s.id}">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            </button>
-            <button class="del-section-btn" title="Delete section" data-delbtn-id="${s.id}">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
-            </button>
+            <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
+            <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
+            <button class="img-section-btn" title="Add/change image" data-imgbtn-id="${s.id}">${SVG_IMG_A}</button>
+            <button class="del-section-btn" title="Delete section" data-delbtn-id="${s.id}">${SVG_TRASH}</button>
           </div>
-          ${hasImage ? `
-          <div class="about-section-with-image ${imgSide}">
-            <div class="about-section-img relative">
-              <img src="${esc(s.image_url)}" alt="${esc(s.title)}" loading="lazy"/>
-              <div class="img-overlay-controls">
-                <button data-change-img="${s.id}">Change</button>
-                <button data-remove-img="${s.id}">Remove</button>
-              </div>
-            </div>
-            <div class="about-section-text">
-              <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
-              <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>
-            </div>
-          </div>` : `
-          <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
-          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>
-          `}
+          ${bodyHTML}
         </div>`;
       }).join('');
+
+      wireCarousels($container);
+
+      // Carousel: add image
+      $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.cid;
+          const inp = document.createElement('input');
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+          inp.onchange = async () => {
+            if (!inp.files.length) return;
+            const file = inp.files[0];
+            if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+            try {
+              const url = await uploadImageToStorage(file);
+              const secs = await fetchAboutSections();
+              const sec  = secs.find(s => s.id === id) || {};
+              const imgs = getSectionImages(sec); imgs.push(url);
+              await updateAboutSection(id, { images: imgs, image_url: imgs[0] });
+              await renderHomeAbout();
+              if (editMode) initAboutSortable();
+            } catch (err) { alert('Error: ' + err.message); }
+          };
+          inp.click();
+        });
+      });
+
+      // Carousel: remove image
+      $container.querySelectorAll('.carousel-remove-btn').forEach(btn => {
+        btn.addEventListener('click', async e => {
+          e.stopPropagation();
+          if (!confirm('Remove this image?')) return;
+          const id = btn.dataset.cid; const idx = parseInt(btn.dataset.sidx);
+          const secs = await fetchAboutSections();
+          const sec  = secs.find(s => s.id === id) || {};
+          const imgs = getSectionImages(sec); imgs.splice(idx, 1);
+          await updateAboutSection(id, { images: imgs, image_url: imgs[0] || null });
+          await renderHomeAbout();
+        });
+      });
 
       // Wire up edit mode buttons
       $container.querySelectorAll('.edit-section-btn').forEach(btn => {
@@ -4246,17 +4456,13 @@
           const id = btn.dataset.editId;
           const card = $container.querySelector(`[data-section-id="${id}"]`);
           const $title = card.querySelector('.editable-title');
-          const $body = card.querySelector('.editable-body');
+          const $body  = card.querySelector('.editable-body');
           if ($title.contentEditable === 'true') {
-            // Save
             $title.contentEditable = 'false'; $body.contentEditable = 'false';
-            const saveBtn = card.querySelector('.inline-save-btn');
-            if (saveBtn) saveBtn.remove();
+            const saveBtn = card.querySelector('.inline-save-btn'); if (saveBtn) saveBtn.remove();
             updateAboutSection(id, { title: $title.textContent.trim(), body: $body.textContent.trim() });
           } else {
-            $title.contentEditable = 'true'; $body.contentEditable = 'true';
-            $title.focus();
-            // Add save button
+            $title.contentEditable = 'true'; $body.contentEditable = 'true'; $title.focus();
             if (!card.querySelector('.inline-save-btn')) {
               const sb = document.createElement('button');
               sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
@@ -4270,7 +4476,7 @@
         });
       });
 
-      // Image buttons
+      // Primary image button — sets/replaces images[0]
       $container.querySelectorAll('.img-section-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.imgbtnId;
@@ -4282,7 +4488,11 @@
             if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
             try {
               const url = await uploadImageToStorage(file);
-              await updateAboutSection(id, { image_url: url });
+              const secs = await fetchAboutSections();
+              const sec  = secs.find(s => s.id === id) || {};
+              const imgs = getSectionImages(sec);
+              if (!imgs.length) imgs.push(url); else imgs[0] = url;
+              await updateAboutSection(id, { image_url: url, images: imgs });
               await renderHomeAbout();
               if (editMode) initAboutSortable();
             } catch (err) { alert('Error: ' + err.message); }
@@ -4301,32 +4511,7 @@
         });
       });
 
-      // Change/remove image overlays
-      $container.querySelectorAll('[data-change-img]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.dataset.changeImg;
-          const inp = document.createElement('input');
-          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
-          inp.onchange = async () => {
-            if (!inp.files.length) return;
-            try {
-              const url = await uploadImageToStorage(inp.files[0]);
-              await updateAboutSection(id, { image_url: url });
-              await renderHomeAbout();
-            } catch (err) { alert('Error: ' + err.message); }
-          };
-          inp.click();
-        });
-      });
-      $container.querySelectorAll('[data-remove-img]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if (!confirm('Remove this image?')) return;
-          await updateAboutSection(btn.dataset.removeImg, { image_url: null });
-          await renderHomeAbout();
-        });
-      });
-
-      // Re-init sortable if in edit mode
+      renderLayoutToggleBar('about-sections-container', 'about');
       if (editMode) { destroySortables(); initAboutSortable(); }
     }
 
@@ -4552,22 +4737,70 @@
       const sections   = await fetchConcertSections();
       if (!sections.length) { $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
+      const layout  = getSectionLayout('concert');
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
       const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_IMG_C  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
       const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
-      $container.innerHTML = sections.map(s => `
+      $container.innerHTML = sections.map(s => {
+        const imgs    = getSectionImages(s);
+        const hasImgs = imgs.length > 0;
+        const isSBS   = layout === 'sidebyside' && hasImgs;
+        const carHTML = hasImgs ? buildCarouselHTML(imgs, s.id, editMode) : '';
+        const textHTML = `
+          <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
+          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>`;
+        const bodyHTML = isSBS
+          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
+          : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
+        return `
         <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 reveal-left" data-section-id="${s.id}">
           <div class="section-toolbar">
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
-            <button class="img-concert-btn" title="${s.image_url ? 'Change image' : 'Add image'}" data-imgbtn-id="${s.id}">${SVG_IMG_C}</button>
+            <button class="img-concert-btn" title="${hasImgs ? 'Add/change image' : 'Add image'}" data-imgbtn-id="${s.id}">${SVG_IMG_C}</button>
             <button class="del-section-btn" title="Delete" data-delbtn-id="${s.id}">${SVG_TRASH}</button>
           </div>
-          <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
-          ${s.image_url ? `<div class="mb-4 rounded-lg overflow-hidden border border-imperial/15 bg-cream/30"><img src="${esc(s.image_url)}" alt="${esc(s.title || 'Concert section image')}" loading="lazy" class="w-full max-h-[420px] object-cover" /></div>` : ''}
-          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>
-        </div>`).join('');
+          ${bodyHTML}
+        </div>`;
+      }).join('');
+
+      wireCarousels($container);
+
+      // Carousel: add image to section
+      $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.cid;
+          const inp = document.createElement('input');
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+          inp.onchange = async () => {
+            if (!inp.files.length) return;
+            const file = inp.files[0];
+            if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+            try {
+              const url = await uploadImageToStorage(file);
+              const sec = (await fetchConcertSections()).find(s => s.id === id);
+              const imgs = getSectionImages(sec); imgs.push(url);
+              await updateConcertSection(id, { images: imgs, image_url: imgs[0] });
+              await renderConcertPage();
+            } catch (err) { alert('Error: ' + err.message); }
+          };
+          inp.click();
+        });
+      });
+
+      // Carousel: remove image from section
+      $container.querySelectorAll('.carousel-remove-btn').forEach(btn => {
+        btn.addEventListener('click', async e => {
+          e.stopPropagation();
+          if (!confirm('Remove this image?')) return;
+          const id = btn.dataset.cid; const idx = parseInt(btn.dataset.sidx);
+          const sec = (await fetchConcertSections()).find(s => s.id === id);
+          const imgs = getSectionImages(sec); imgs.splice(idx, 1);
+          await updateConcertSection(id, { images: imgs, image_url: imgs[0] || null });
+          await renderConcertPage();
+        });
+      });
 
       $container.querySelectorAll('.edit-section-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -4599,7 +4832,7 @@
           await renderConcertPage(); await renderAdminConcert();
         });
       });
-      // Image upload buttons
+      // Primary image button — sets/replaces images[0]
       $container.querySelectorAll('.img-concert-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.imgbtnId;
@@ -4611,13 +4844,17 @@
             if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
             try {
               const url = await uploadImageToStorage(file);
-              await updateConcertSection(id, { image_url: url });
+              const sec = (await fetchConcertSections()).find(s => s.id === id);
+              const imgs = getSectionImages(sec);
+              if (!imgs.length) imgs.push(url); else imgs[0] = url;
+              await updateConcertSection(id, { image_url: url, images: imgs });
               await renderConcertPage();
             } catch (err) { alert('Error: ' + err.message); }
           };
           inp.click();
         });
       });
+      renderLayoutToggleBar('concert-sections-container', 'concert');
       if (editMode) { destroySortables(); initConcertSortable(); }
       if (typeof initReveal === 'function') setTimeout(initReveal, 60);
     }
@@ -4656,18 +4893,72 @@
 
       if (sections.length) {
         $empty.classList.add('view-hidden');
-        $container.innerHTML = sections.map(s => `
+        const layout = getSectionLayout('program');
+        $container.innerHTML = sections.map(s => {
+          const imgs    = getSectionImages(s);
+          const hasImgs = imgs.length > 0;
+          const isSBS   = layout === 'sidebyside' && hasImgs;
+          const carHTML = hasImgs ? buildCarouselHTML(imgs, s.id, editMode) : '';
+          const textHTML = `
+            <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
+            <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${esc(s.body)}</p>`;
+          const bodyHTML = isSBS
+            ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img">${carHTML}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
+            : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
+          return `
           <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 reveal-left" data-section-id="${esc(s.id)}">
             <div class="section-toolbar">
               <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
               <button class="edit-section-btn" title="Edit inline" data-edit-id="${esc(s.id)}">${SVG_PENCIL}</button>
-              <button class="img-program-btn" title="${s.image_url ? 'Change image' : 'Add image'}" data-imgbtn-id="${esc(s.id)}">${SVG_IMG_P}</button>
+              <button class="img-program-btn" title="${hasImgs ? 'Add/change image' : 'Add image'}" data-imgbtn-id="${esc(s.id)}">${SVG_IMG_P}</button>
               <button class="del-section-btn" title="Delete section" data-delbtn-id="${esc(s.id)}">${SVG_TRASH}</button>
             </div>
-            <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
-            ${s.image_url ? `<div class="mb-4 rounded-lg overflow-hidden border border-imperial/15 bg-cream/30"><img src="${esc(s.image_url)}" alt="${esc(s.title || program.name || 'Program section image')}" loading="lazy" class="w-full max-h-[420px] object-cover" /></div>` : ''}
-            <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${esc(s.body)}</p>
-          </div>`).join('');
+            ${bodyHTML}
+          </div>`;
+        }).join('');
+
+        wireCarousels($container);
+
+        // Carousel: add image
+        $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.cid;
+            const inp = document.createElement('input');
+            inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+            inp.onchange = async () => {
+              if (!inp.files.length) return;
+              const file = inp.files[0];
+              if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+              try {
+                const url = await uploadImageToStorage(file);
+                const progs = await fetchPrograms(false);
+                const prog = progs.find(p => p.id === program.id);
+                const secs = Array.isArray(prog?.sections) ? prog.sections : [];
+                const sec  = secs.find(s => s.id === id) || {};
+                const imgs = getSectionImages(sec); imgs.push(url);
+                await updateProgramSection(program.id, id, { images: imgs, image_url: imgs[0] });
+                await renderProgramPage(slug);
+              } catch (err) { alert('Error: ' + err.message); }
+            };
+            inp.click();
+          });
+        });
+
+        // Carousel: remove image
+        $container.querySelectorAll('.carousel-remove-btn').forEach(btn => {
+          btn.addEventListener('click', async e => {
+            e.stopPropagation();
+            if (!confirm('Remove this image?')) return;
+            const id = btn.dataset.cid; const idx = parseInt(btn.dataset.sidx);
+            const progs = await fetchPrograms(false);
+            const prog = progs.find(p => p.id === program.id);
+            const secs = Array.isArray(prog?.sections) ? prog.sections : [];
+            const sec  = secs.find(s => s.id === id) || {};
+            const imgs = getSectionImages(sec); imgs.splice(idx, 1);
+            await updateProgramSection(program.id, id, { images: imgs, image_url: imgs[0] || null });
+            await renderProgramPage(slug);
+          });
+        });
 
         $container.querySelectorAll('.edit-section-btn').forEach(btn => {
           btn.addEventListener('click', () => {
@@ -4699,7 +4990,7 @@
             await renderProgramPage(slug);
           });
         });
-        // Image upload buttons
+        // Primary image button — sets/replaces images[0]
         $container.querySelectorAll('.img-program-btn').forEach(btn => {
           btn.addEventListener('click', () => {
             const id = btn.dataset.imgbtnId;
@@ -4711,13 +5002,20 @@
               if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
               try {
                 const url = await uploadImageToStorage(file);
-                await updateProgramSection(program.id, id, { image_url: url });
+                const progs = await fetchPrograms(false);
+                const prog = progs.find(p => p.id === program.id);
+                const secs = Array.isArray(prog?.sections) ? prog.sections : [];
+                const sec  = secs.find(s => s.id === id) || {};
+                const imgs = getSectionImages(sec);
+                if (!imgs.length) imgs.push(url); else imgs[0] = url;
+                await updateProgramSection(program.id, id, { image_url: url, images: imgs });
                 await renderProgramPage(slug);
               } catch (err) { alert('Error: ' + err.message); }
             };
             inp.click();
           });
         });
+        renderLayoutToggleBar('program-content-container', 'program');
       } else {
         $container.innerHTML = ''; $empty.classList.remove('view-hidden');
       }
