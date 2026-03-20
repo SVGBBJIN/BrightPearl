@@ -71,6 +71,27 @@
     /* ── Base ─────────────────────────────────────── */
     body { font-family: 'Inter', sans-serif; }
 
+    /* ── Ambient background animation ────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(139, 128, 248, 0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 70% at 90% 80%, rgba(210, 60, 180, 0.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+      animation: ambientShift 12s ease-in-out infinite alternate;
+    }
+    @keyframes ambientShift {
+      0%   { opacity: 0.6; transform: scale(1) translateY(0); }
+      100% { opacity: 1;   transform: scale(1.05) translateY(-20px); }
+    }
+    body > * { position: relative; z-index: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      body::before { animation: none; }
+    }
+
     /* ── Fixed Geometric Lotus Background ────────── */
     .lotus-bg {
       position: fixed; inset: 0; z-index: 0;
@@ -139,23 +160,34 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        135deg,
-        rgba(139, 128, 248, 0.12) 0%,
-        rgba(192, 75, 192, 0.08) 50%,
-        rgba(56, 178, 172, 0.06) 100%
-      );
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 50%, rgba(139, 128, 248, 0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 30%, rgba(210, 60, 180, 0.14) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 60% 80%, rgba(56, 178, 172, 0.10) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
     .hero-banner > * { position: relative; z-index: 1; }
-    /* Eyebrow label inside hero — gradient text */
+    /* Eyebrow label inside hero — vivid gradient text, override text-white/50 */
     .hero-banner [class*="uppercase"][class*="tracking"] {
-      background: linear-gradient(90deg, rgb(180, 170, 255), rgb(220, 140, 220));
+      background: linear-gradient(90deg, rgb(190, 178, 255) 0%, rgb(240, 110, 200) 60%, rgb(72, 220, 210) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.22em;
+      font-weight: 700;
+      opacity: 1;
+    }
+    /* Page h1 inside hero-banner — shimmer underline accent */
+    .hero-banner h1 { position: relative; }
+    .hero-banner h1::after {
+      content: '';
+      display: block;
+      width: 48px;
+      height: 3px;
+      margin: 14px auto 0;
+      border-radius: 2px;
+      background: linear-gradient(90deg, rgb(139, 128, 248), rgb(210, 60, 180));
     }
     .hero-banner::after {
       content: ''; position: absolute; bottom: 0; left: 0; right: 0;
@@ -264,63 +296,93 @@
 
     /* ── Card Accent ─────────────────────────────── */
     .card-accent {
-      border-left: 3px solid rgb(var(--imperial-rgb));
+      border-left: 4px solid rgb(var(--imperial-rgb));
+      border-top: 1px solid rgba(139, 128, 248, 0.15);
       border: 1px solid rgba(139, 128, 248, 0.2);
-      border-left-width: 3px;
+      border-left-width: 4px;
       transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-                  box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+                  box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                  background 0.22s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .card-accent:hover { transform: translateY(-3px); }
 
-    /* Cycle accent colors across cards */
+    /* Cycle accent colors — boosted tints + resting glow */
     .card-accent:nth-child(4n + 1) {
       border-left-color: rgb(139, 128, 248);
-      background: rgba(139, 128, 248, 0.06);
+      background: linear-gradient(135deg, rgba(139, 128, 248, 0.14) 0%, rgba(139, 128, 248, 0.06) 100%);
+      box-shadow: 0 0 0 1px rgba(139, 128, 248, 0.18), 0 4px 24px rgba(139, 128, 248, 0.08);
     }
     .card-accent:nth-child(4n + 2) {
       border-left-color: rgb(99, 102, 241);
-      background: rgba(99, 102, 241, 0.06);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.14) 0%, rgba(99, 102, 241, 0.06) 100%);
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.18), 0 4px 24px rgba(99, 102, 241, 0.08);
     }
     .card-accent:nth-child(4n + 3) {
-      border-left-color: rgb(192, 75, 192);
-      background: rgba(192, 75, 192, 0.06);
+      border-left-color: rgb(210, 60, 180);
+      background: linear-gradient(135deg, rgba(210, 60, 180, 0.14) 0%, rgba(210, 60, 180, 0.06) 100%);
+      box-shadow: 0 0 0 1px rgba(210, 60, 180, 0.18), 0 4px 24px rgba(210, 60, 180, 0.08);
     }
     .card-accent:nth-child(4n + 4) {
       border-left-color: rgb(56, 178, 172);
-      background: rgba(56, 178, 172, 0.06);
+      background: linear-gradient(135deg, rgba(56, 178, 172, 0.14) 0%, rgba(56, 178, 172, 0.06) 100%);
+      box-shadow: 0 0 0 1px rgba(56, 178, 172, 0.18), 0 4px 24px rgba(56, 178, 172, 0.08);
     }
 
-    /* Matching hover glow per variant */
-    .card-accent:nth-child(4n + 1):hover { box-shadow: 0 8px 32px rgba(139, 128, 248, 0.18); }
-    .card-accent:nth-child(4n + 2):hover { box-shadow: 0 8px 32px rgba(99, 102, 241, 0.18); }
-    .card-accent:nth-child(4n + 3):hover { box-shadow: 0 8px 32px rgba(192, 75, 192, 0.18); }
-    .card-accent:nth-child(4n + 4):hover { box-shadow: 0 8px 32px rgba(56, 178, 172, 0.18); }
+    /* Hover — boost glow + tint */
+    .card-accent:nth-child(4n + 1):hover {
+      box-shadow: 0 0 0 1px rgba(139, 128, 248, 0.35), 0 12px 40px rgba(139, 128, 248, 0.22);
+      background: linear-gradient(135deg, rgba(139, 128, 248, 0.2) 0%, rgba(139, 128, 248, 0.08) 100%);
+    }
+    .card-accent:nth-child(4n + 2):hover {
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.35), 0 12px 40px rgba(99, 102, 241, 0.22);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0.08) 100%);
+    }
+    .card-accent:nth-child(4n + 3):hover {
+      box-shadow: 0 0 0 1px rgba(210, 60, 180, 0.35), 0 12px 40px rgba(210, 60, 180, 0.22);
+      background: linear-gradient(135deg, rgba(210, 60, 180, 0.2) 0%, rgba(210, 60, 180, 0.08) 100%);
+    }
+    .card-accent:nth-child(4n + 4):hover {
+      box-shadow: 0 0 0 1px rgba(56, 178, 172, 0.35), 0 12px 40px rgba(56, 178, 172, 0.22);
+      background: linear-gradient(135deg, rgba(56, 178, 172, 0.2) 0%, rgba(56, 178, 172, 0.08) 100%);
+    }
 
-    /* Card heading color — match the card's accent color */
+    /* Card heading colors — bolder, more distinct */
     .card-accent:nth-child(4n + 1) h1,
     .card-accent:nth-child(4n + 1) h2,
-    .card-accent:nth-child(4n + 1) h3 { color: rgb(180, 170, 255); }
+    .card-accent:nth-child(4n + 1) h3 { color: rgb(190, 178, 255); font-weight: 700; }
     .card-accent:nth-child(4n + 2) h1,
     .card-accent:nth-child(4n + 2) h2,
-    .card-accent:nth-child(4n + 2) h3 { color: rgb(165, 168, 255); }
+    .card-accent:nth-child(4n + 2) h3 { color: rgb(140, 160, 255); font-weight: 700; }
     .card-accent:nth-child(4n + 3) h1,
     .card-accent:nth-child(4n + 3) h2,
-    .card-accent:nth-child(4n + 3) h3 { color: rgb(230, 130, 230); }
+    .card-accent:nth-child(4n + 3) h3 { color: rgb(240, 110, 200); font-weight: 700; }
     .card-accent:nth-child(4n + 4) h1,
     .card-accent:nth-child(4n + 4) h2,
-    .card-accent:nth-child(4n + 4) h3 { color: rgb(100, 210, 205); }
+    .card-accent:nth-child(4n + 4) h3 { color: rgb(72, 220, 210); font-weight: 700; }
+
+    /* Card spacing rhythm — separator between stacked cards */
+    .card-accent + .card-accent { margin-top: 1.5rem; }
+    .card-accent:not(:last-child)::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(139, 128, 248, 0.2) 30%, rgba(210, 60, 180, 0.15) 70%, transparent);
+      margin-top: 2rem;
+      width: 100%;
+    }
 
     /* Light mode overrides */
     @media (prefers-color-scheme: light) {
-      .card-accent:nth-child(4n + 1) { background: rgba(91, 79, 207, 0.04); border-left-color: rgb(91, 79, 207); }
-      .card-accent:nth-child(4n + 2) { background: rgba(79, 82, 200, 0.04); border-left-color: rgb(79, 82, 200); }
-      .card-accent:nth-child(4n + 3) { background: rgba(160, 50, 160, 0.04); border-left-color: rgb(160, 50, 160); }
-      .card-accent:nth-child(4n + 4) { background: rgba(38, 148, 143, 0.04); border-left-color: rgb(38, 148, 143); }
+      .card-accent:nth-child(4n + 1) { background: rgba(91, 79, 207, 0.04); border-left-color: rgb(91, 79, 207); box-shadow: none; }
+      .card-accent:nth-child(4n + 2) { background: rgba(79, 82, 200, 0.04); border-left-color: rgb(79, 82, 200); box-shadow: none; }
+      .card-accent:nth-child(4n + 3) { background: rgba(160, 50, 160, 0.04); border-left-color: rgb(160, 50, 160); box-shadow: none; }
+      .card-accent:nth-child(4n + 4) { background: rgba(38, 148, 143, 0.04); border-left-color: rgb(38, 148, 143); box-shadow: none; }
       .card-accent:nth-child(4n + 1) h1,.card-accent:nth-child(4n + 1) h2,.card-accent:nth-child(4n + 1) h3 { color: rgb(91, 79, 207); }
       .card-accent:nth-child(4n + 2) h1,.card-accent:nth-child(4n + 2) h2,.card-accent:nth-child(4n + 2) h3 { color: rgb(79, 82, 200); }
       .card-accent:nth-child(4n + 3) h1,.card-accent:nth-child(4n + 3) h2,.card-accent:nth-child(4n + 3) h3 { color: rgb(160, 50, 160); }
       .card-accent:nth-child(4n + 4) h1,.card-accent:nth-child(4n + 4) h2,.card-accent:nth-child(4n + 4) h3 { color: rgb(38, 148, 143); }
       .card-accent p { color: rgba(26, 26, 26, 0.78); }
+      .card-accent:not(:last-child)::after { display: none; }
     }
 
     /* Body text contrast inside cards */
@@ -622,6 +684,34 @@
         box-shadow: 0 12px 36px rgb(var(--imperial-rgb) / 0.18);
       }
     }
+    /* hp-program-card per-card color accent */
+    .hp-program-card:nth-child(3n + 1) {
+      border-top: 2px solid rgba(139, 128, 248, 0.6);
+      box-shadow: 0 0 0 1px rgba(139, 128, 248, 0.12), 0 4px 20px rgba(139, 128, 248, 0.08);
+    }
+    .hp-program-card:nth-child(3n + 2) {
+      border-top: 2px solid rgba(210, 60, 180, 0.6);
+      box-shadow: 0 0 0 1px rgba(210, 60, 180, 0.12), 0 4px 20px rgba(210, 60, 180, 0.08);
+    }
+    .hp-program-card:nth-child(3n + 3) {
+      border-top: 2px solid rgba(56, 178, 172, 0.6);
+      box-shadow: 0 0 0 1px rgba(56, 178, 172, 0.12), 0 4px 20px rgba(56, 178, 172, 0.08);
+    }
+    .hp-program-card:nth-child(3n + 1):hover { box-shadow: 0 0 0 1px rgba(139, 128, 248, 0.3), 0 12px 36px rgba(139, 128, 248, 0.18); }
+    .hp-program-card:nth-child(3n + 2):hover { box-shadow: 0 0 0 1px rgba(210, 60, 180, 0.3), 0 12px 36px rgba(210, 60, 180, 0.18); }
+    .hp-program-card:nth-child(3n + 3):hover { box-shadow: 0 0 0 1px rgba(56, 178, 172, 0.3), 0 12px 36px rgba(56, 178, 172, 0.18); }
+    .hp-program-card:nth-child(3n + 1) .hp-program-name { color: rgb(190, 178, 255); }
+    .hp-program-card:nth-child(3n + 2) .hp-program-name { color: rgb(240, 110, 200); }
+    .hp-program-card:nth-child(3n + 3) .hp-program-name { color: rgb(72, 220, 210); }
+    @media (prefers-color-scheme: light) {
+      .hp-program-card:nth-child(3n + 1) .hp-program-name { color: rgb(91, 79, 207); }
+      .hp-program-card:nth-child(3n + 2) .hp-program-name { color: rgb(160, 50, 160); }
+      .hp-program-card:nth-child(3n + 3) .hp-program-name { color: rgb(38, 148, 143); }
+      .hp-program-card:nth-child(3n + 1),
+      .hp-program-card:nth-child(3n + 2),
+      .hp-program-card:nth-child(3n + 3) { box-shadow: none; }
+    }
+
     .hp-program-icon {
       width: 32px; height: 32px; border-radius: 8px;
       background: rgba(139,128,248,0.12); margin-bottom: 12px;
