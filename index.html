@@ -401,7 +401,7 @@
     .sec-carousel-slide { display: none; position: relative; }
     .sec-carousel-slide.active { display: block; }
     .sec-carousel-img {
-      width: 100%; max-height: 420px; object-fit: cover;
+      width: 100%;
       display: block; border-radius: 0.625rem;
     }
     .carousel-btn {
@@ -4338,6 +4338,22 @@
       $container.querySelectorAll('.sec-carousel').forEach(car => {
         const slides = car.querySelectorAll('.sec-carousel-slide');
         const dots   = car.querySelectorAll('.carousel-dot');
+        // Auto-size SBS carousels to match the photo's natural aspect ratio when no height is saved
+        const sbsImgWrap = car.closest('.sec-sidebyside-img');
+        if (sbsImgWrap && !sbsImgWrap.style.getPropertyValue('--sbs-img-h')) {
+          const firstImg = car.querySelector('.sec-carousel-img');
+          if (firstImg) {
+            const autoSize = () => {
+              if (!firstImg.naturalWidth) return;
+              const ratio = firstImg.naturalHeight / firstImg.naturalWidth;
+              const w = car.offsetWidth || 300;
+              const h = Math.max(150, Math.min(900, Math.round(w * ratio)));
+              sbsImgWrap.style.setProperty('--sbs-img-h', h + 'px');
+            };
+            if (firstImg.complete && firstImg.naturalWidth) autoSize();
+            else firstImg.addEventListener('load', autoSize);
+          }
+        }
         if (slides.length <= 1) return;
         function goTo(n) {
           const cur = parseInt(car.dataset.cur) || 0;
