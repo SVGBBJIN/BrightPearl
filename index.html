@@ -452,9 +452,13 @@
     /* ── Side-by-side layout ──────────────────────── */
     .sec-sidebyside {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 2rem; align-items: start;
+      gap: 2rem; align-items: stretch;
     }
-    .sec-sidebyside-img .sec-carousel-img { max-height: 480px; }
+    .sec-sidebyside-img { display: flex; flex-direction: column; }
+    .sec-sidebyside-img .sec-carousel { flex: 1; min-height: 200px; }
+    .sec-sidebyside-img .sec-carousel-track,
+    .sec-sidebyside-img .sec-carousel-slide.active { height: 100%; }
+    .sec-sidebyside-img .sec-carousel-img { height: 100%; max-height: none; object-fit: cover; }
     .sec-sidebyside-text { display: flex; flex-direction: column; gap: 0.75rem; }
     @media (max-width: 640px) { .sec-sidebyside { grid-template-columns: 1fr; } }
 
@@ -4348,39 +4352,6 @@
         }, { passive: true });
       });
     }
-    function fitSbsText(scope) {
-      const pairs = (scope || document).querySelectorAll('.sec-sidebyside');
-      if (!pairs.length) return;
-      function fit() {
-        pairs.forEach(el => {
-          const imgEl  = el.querySelector('.sec-sidebyside-img');
-          const textEl = el.querySelector('.sec-sidebyside-text');
-          if (!imgEl || !textEl) return;
-          textEl.style.fontSize = '';
-          const maxH = imgEl.offsetHeight;
-          if (!maxH) return;
-          let size = parseFloat(getComputedStyle(textEl).fontSize);
-          while (textEl.scrollHeight > maxH && size > 8) {
-            size -= 0.5;
-            textEl.style.fontSize = size + 'px';
-          }
-        });
-      }
-      requestAnimationFrame(() => {
-        fit();
-        (scope || document).querySelectorAll('.sec-sidebyside-img img').forEach(img => {
-          if (!img.complete) img.addEventListener('load', fit, { once: true });
-        });
-      });
-    }
-    (function() {
-      let _sbsTimer;
-      window.addEventListener('resize', () => {
-        clearTimeout(_sbsTimer);
-        _sbsTimer = setTimeout(() => fitSbsText(), 100);
-      });
-    })();
-
     function renderLayoutToggleBar(containerId, page) {
       document.getElementById('layout-bar-' + page)?.remove();
       const cur = getSectionLayout(page);
@@ -4444,7 +4415,6 @@
       }).join('');
 
       wireCarousels($container);
-      fitSbsText($container);
 
       // Carousel: add image
       $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
@@ -4800,7 +4770,6 @@
       }).join('');
 
       wireCarousels($container);
-      fitSbsText($container);
 
       // Carousel: add image to section
       $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
@@ -4953,7 +4922,6 @@
         }).join('');
 
         wireCarousels($container);
-        fitSbsText($container);
 
         // Carousel: add image
         $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
