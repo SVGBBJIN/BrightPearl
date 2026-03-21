@@ -462,7 +462,9 @@
       width: 100%; height: 100%; max-height: none;
       object-fit: contain; background: rgba(139,128,248,0.04);
     }
-    .sec-sidebyside-text { display: flex; flex-direction: column; gap: 0.75rem; }
+    .sec-sidebyside-text { display: flex; flex-direction: column; gap: 0.75rem; position: relative; }
+    .sec-sbs-section { position: relative; }
+    .sbs-container-full { max-width: none !important; }
     .sbs-resize-handle {
       position: absolute; bottom: 6px; right: 6px; z-index: 10;
       width: 22px; height: 22px; border-radius: 5px;
@@ -4781,6 +4783,7 @@
       if (!sections.length) { $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       const layout  = getSectionLayout('concert');
+      $container.classList.toggle('sbs-container-full', layout === 'sidebyside');
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
       const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_IMG_C  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
@@ -4795,17 +4798,17 @@
           <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>`;
         const imgH = s.img_height || '';
         const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${s.id}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
-        const bodyHTML = isSBS
-          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
-          : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
-        return `
-        <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 reveal-left" data-section-id="${s.id}">
-          <div class="section-toolbar">
+        const tbHTML = `
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
             <button class="img-concert-btn" title="${hasImgs ? 'Add/change image' : 'Add image'}" data-imgbtn-id="${s.id}">${SVG_IMG_C}</button>
-            <button class="del-section-btn" title="Delete" data-delbtn-id="${s.id}">${SVG_TRASH}</button>
-          </div>
+            <button class="del-section-btn" title="Delete" data-delbtn-id="${s.id}">${SVG_TRASH}</button>`;
+        const bodyHTML = isSBS
+          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8"><div class="section-toolbar">${tbHTML}</div>${textHTML}</div></div>`
+          : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
+        return `
+        <div class="editable-section ${isSBS ? 'sec-sbs-section' : 'card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8'} reveal-left" data-section-id="${s.id}">
+          ${isSBS ? '' : `<div class="section-toolbar">${tbHTML}</div>`}
           ${bodyHTML}
         </div>`;
       }).join('');
@@ -4940,6 +4943,7 @@
       if (sections.length) {
         $empty.classList.add('view-hidden');
         const layout = getSectionLayout('program');
+        $container.classList.toggle('sbs-container-full', layout === 'sidebyside');
         $container.innerHTML = sections.map(s => {
           const imgs    = getSectionImages(s);
           const hasImgs = imgs.length > 0;
@@ -4950,17 +4954,17 @@
             <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${esc(s.body)}</p>`;
           const imgH = s.img_height || '';
           const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${esc(s.id)}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
-          const bodyHTML = isSBS
-            ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
-            : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
-          return `
-          <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 reveal-left" data-section-id="${esc(s.id)}">
-            <div class="section-toolbar">
+          const tbHTMLp = `
               <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
               <button class="edit-section-btn" title="Edit inline" data-edit-id="${esc(s.id)}">${SVG_PENCIL}</button>
               <button class="img-program-btn" title="${hasImgs ? 'Add/change image' : 'Add image'}" data-imgbtn-id="${esc(s.id)}">${SVG_IMG_P}</button>
-              <button class="del-section-btn" title="Delete section" data-delbtn-id="${esc(s.id)}">${SVG_TRASH}</button>
-            </div>
+              <button class="del-section-btn" title="Delete section" data-delbtn-id="${esc(s.id)}">${SVG_TRASH}</button>`;
+          const bodyHTML = isSBS
+            ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8"><div class="section-toolbar">${tbHTMLp}</div>${textHTML}</div></div>`
+            : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
+          return `
+          <div class="editable-section ${isSBS ? 'sec-sbs-section' : 'card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8'} reveal-left" data-section-id="${esc(s.id)}">
+            ${isSBS ? '' : `<div class="section-toolbar">${tbHTMLp}</div>`}
             ${bodyHTML}
           </div>`;
         }).join('');
