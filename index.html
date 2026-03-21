@@ -451,8 +451,13 @@
 
     /* ── Side-by-side layout ──────────────────────── */
     .sec-sidebyside {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 2rem; align-items: stretch;
+      display: grid; grid-template-columns: 55% 1fr;
+      gap: 0; align-items: stretch;
+    }
+    /* Card containing sidebyside: strip padding so image goes edge-to-edge */
+    .editable-section:has(.sec-sidebyside) {
+      padding: 0 !important;
+      overflow: hidden;
     }
     .sec-sidebyside-img { display: flex; flex-direction: column; position: relative; }
     .sec-sidebyside-img .sec-carousel { flex: 1; min-height: var(--sbs-img-h, 150px); max-height: var(--sbs-img-h, none); }
@@ -462,7 +467,11 @@
       width: 100%; height: 100%; max-height: none;
       object-fit: contain; background: rgba(139,128,248,0.04);
     }
-    .sec-sidebyside-text { display: flex; flex-direction: column; gap: 0.75rem; }
+    .sec-sidebyside-text { display: flex; flex-direction: column; gap: 0.75rem; padding: 1.5rem 1.75rem; }
+    @media (max-width: 640px) {
+      .sec-sidebyside { grid-template-columns: 1fr; }
+      .sec-sidebyside-text { padding: 1.25rem 1.5rem; }
+    }
     .sbs-resize-handle {
       position: absolute; bottom: 6px; right: 6px; z-index: 10;
       width: 22px; height: 22px; border-radius: 5px;
@@ -471,7 +480,6 @@
       color: #fff; user-select: none; touch-action: none;
     }
     .sbs-resize-handle:hover { background: rgba(139,128,248,1); }
-    @media (max-width: 640px) { .sec-sidebyside { grid-template-columns: 1fr; } }
 
     /* ── Layout toggle bar ────────────────────────── */
     .layout-toggle-bar {
