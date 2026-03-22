@@ -399,11 +399,24 @@
     }
     .sec-carousel-track { position: relative; width: 100%; }
     .sec-carousel-slide { display: none; position: relative; }
-    .sec-carousel-slide.active { display: block; }
+    .sec-carousel-slide.active { display: block; animation: carousel-fade-in 0.35s ease; }
+    @keyframes carousel-fade-in {
+      from { opacity: 0; transform: translateX(8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
     .sec-carousel-img {
       width: 100%; max-height: 420px; object-fit: cover;
       display: block; border-radius: 0.625rem;
     }
+    .sec-carousel-video {
+      width: 100%; max-height: 420px; display: block;
+      border-radius: 0.625rem; background: #000;
+    }
+    .gallery-cell video { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-card-img-wrap video {
+      width: 100%; display: block; transition: transform 0.4s ease;
+    }
+    .gallery-card:hover .gallery-card-img-wrap video { transform: scale(1.04); }
     .carousel-btn {
       position: absolute; top: 50%; transform: translateY(-50%);
       background: rgba(12, 11, 24, 0.65);
@@ -2334,9 +2347,9 @@
         <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5">
           <div id="upload-drop-zone" class="drop-zone mb-4">
             <svg class="mx-auto mb-2 w-8 h-8 text-imperial/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            <p class="text-ink/50 text-sm">Drop images here or <span class="text-imperial font-medium">click to browse</span></p>
-            <p class="text-ink/30 text-xs mt-1">JPEG, PNG, WebP, GIF &middot; Max 5 MB each &middot; Multiple files supported</p>
-            <input id="upload-file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple class="hidden" />
+            <p class="text-ink/50 text-sm">Drop images or videos here or <span class="text-imperial font-medium">click to browse</span></p>
+            <p class="text-ink/30 text-xs mt-1">JPEG, PNG, WebP, GIF, MP4, WebM &middot; Max 50 MB each &middot; Multiple files supported</p>
+            <input id="upload-file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg" multiple class="hidden" />
           </div>
           <!-- Bulk preview thumbnails -->
           <div id="bulk-preview-strip" class="view-hidden flex flex-wrap gap-2 mb-3"></div>
@@ -2346,7 +2359,7 @@
               <input id="upload-caption" type="text" placeholder="Describe this photo…"
                 class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
             </div>
-            <button id="upload-btn" disabled class="btn-imperial px-5 py-2 rounded text-sm font-medium">Upload Image…</button>
+            <button id="upload-btn" disabled class="btn-imperial px-5 py-2 rounded text-sm font-medium">Upload…</button>
           </div>
           <div id="upload-status" class="mt-3 view-hidden">
             <div class="upload-progress"><div id="upload-progress-bar" class="upload-progress-bar" style="width:0%"></div></div>
@@ -2682,6 +2695,8 @@
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <button class="lightbox-close" id="lightbox-close">&times;</button>
     <img id="lightbox-img" src="" alt="" />
+    <video id="lightbox-video" src="" controls autoplay playsinline class="view-hidden"
+      style="max-width:90vw;max-height:85vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.4)"></video>
     <div class="lightbox-caption" id="lightbox-caption"></div>
   </div>
 
@@ -3649,28 +3664,35 @@
     $fi.addEventListener('change',    () => { if ($fi.files.length) pickFiles(Array.from($fi.files)); });
     function pickFiles(files) {
       const valid = files.filter(f => {
-        if (f.size > 5*1024*1024) { alert(`"${f.name}" is too large (max 5 MB) and was skipped.`); return false; }
+        const maxSize = f.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024;
+        const maxLabel = f.type.startsWith('video/') ? '50 MB' : '5 MB';
+        if (f.size > maxSize) { alert(`"${f.name}" is too large (max ${maxLabel}) and was skipped.`); return false; }
         return true;
       });
       if (!valid.length) return;
       selectedFiles = valid;
       selectedFile = valid[0]; // keep backward compat for single-file path
-      if (valid.length === 1) {
-        $fn.textContent = `Selected: ${valid[0].name}`;
-        $fn.classList.remove('view-hidden');
-        $ub.textContent = 'Upload Image…';
+      const isMulti = valid.length > 1;
+      const label = valid.length === 1
+        ? (valid[0].type.startsWith('video/') ? `Selected: ${valid[0].name}` : `Selected: ${valid[0].name}`)
+        : `${valid.length} files selected`;
+      $fn.textContent = label;
+      $fn.classList.remove('view-hidden');
+      if (!isMulti) {
+        $ub.textContent = 'Upload…';
         $bulkStrip.classList.add('view-hidden');
         $bulkStrip.innerHTML = '';
         document.getElementById('upload-caption').closest('.flex').querySelector('label').textContent = 'Caption (optional)';
       } else {
-        $fn.textContent = `${valid.length} images selected`;
-        $fn.classList.remove('view-hidden');
-        $ub.textContent = `Upload ${valid.length} Images to Gallery`;
-        // Show thumbnail strip
-        $bulkStrip.innerHTML = valid.map((f, i) =>
-          `<div class="relative group"><img src="${URL.createObjectURL(f)}" class="w-14 h-14 object-cover rounded border border-imperial/20" title="${esc(f.name)}" />` +
-          `<button type="button" data-bulk-remove="${i}" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs leading-none flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">&times;</button></div>`
-        ).join('');
+        $ub.textContent = `Upload ${valid.length} Files to Gallery`;
+        // Show thumbnail strip (image preview or video icon)
+        $bulkStrip.innerHTML = valid.map((f, i) => {
+          const thumb = f.type.startsWith('video/')
+            ? `<div class="w-14 h-14 flex items-center justify-center rounded border border-imperial/20 bg-ink/10 text-imperial text-xs font-bold" title="${esc(f.name)}">▶ VID</div>`
+            : `<img src="${URL.createObjectURL(f)}" class="w-14 h-14 object-cover rounded border border-imperial/20" title="${esc(f.name)}" />`;
+          return `<div class="relative group">${thumb}` +
+            `<button type="button" data-bulk-remove="${i}" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs leading-none flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">&times;</button></div>`;
+        }).join('');
         $bulkStrip.classList.remove('view-hidden');
         $bulkStrip.querySelectorAll('[data-bulk-remove]').forEach(btn => {
           btn.addEventListener('click', () => {
@@ -3685,7 +3707,7 @@
     }
     function clearGalleryPicker() {
       selectedFiles = []; selectedFile = null; $fi.value = '';
-      $fn.classList.add('view-hidden'); $ub.disabled = true; $ub.textContent = 'Upload Image…';
+      $fn.classList.add('view-hidden'); $ub.disabled = true; $ub.textContent = 'Upload…';
       $bulkStrip.classList.add('view-hidden'); $bulkStrip.innerHTML = '';
     }
     $ub.addEventListener('click', async () => {
@@ -3710,7 +3732,7 @@
           } catch (err) { errors.push(file.name + ': ' + err.message); }
         }
         $br.style.width = '100%';
-        $tx.textContent = errors.length ? `Done with ${errors.length} error(s): ${errors.join('; ')}` : `${done} image${done !== 1 ? 's' : ''} uploaded!`;
+        $tx.textContent = errors.length ? `Done with ${errors.length} error(s): ${errors.join('; ')}` : `${done} file${done !== 1 ? 's' : ''} uploaded!`;
         clearGalleryPicker();
         document.getElementById('upload-caption').value = '';
         await renderAdminGallery(); await renderHomeGallery(); await renderHeroPhoto();
@@ -3870,10 +3892,13 @@
         $grid.innerHTML = Array.from({length:6},(_,i)=>`<div class="gallery-cell rounded-lg"><span class="text-ink/20 text-xs font-medium">Photo ${i+1}</span></div>`).join('');
         return;
       }
-      $grid.innerHTML = photos.map(p => `
-        <div class="gallery-cell rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
-          <img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />
-        </div>`).join('');
+      $grid.innerHTML = photos.map(p => {
+        const isVid = isVideoUrl(p.image_url);
+        const mediaEl = isVid
+          ? `<video src="${esc(p.image_url)}" muted playsinline preload="metadata" loop></video>`
+          : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
+        return `<div class="gallery-cell rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">${mediaEl}</div>`;
+      }).join('');
       $grid.querySelectorAll('[data-lburl]').forEach(c => {
         c.addEventListener('click', () => openLightbox(c.dataset.lburl, c.dataset.lbcap));
       });
@@ -4318,11 +4343,16 @@
     const _SVG_NEXT = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
     function buildCarouselHTML(images, sectionId, isEdit) {
       if (!images.length) return '';
-      const slides = images.map((url, i) => `
+      const slides = images.map((url, i) => {
+        const mediaEl = isVideoUrl(url)
+          ? `<video src="${esc(url)}" class="sec-carousel-video" controls playsinline muted preload="metadata"></video>`
+          : `<img src="${esc(url)}" alt="" loading="lazy" class="sec-carousel-img" />`;
+        return `
         <div class="sec-carousel-slide${i === 0 ? ' active' : ''}" data-slide="${i}">
-          <img src="${esc(url)}" alt="" loading="lazy" class="sec-carousel-img" />
+          ${mediaEl}
           <button class="carousel-remove-btn" data-cid="${esc(sectionId)}" data-sidx="${i}" title="Remove image">×</button>
-        </div>`).join('');
+        </div>`;
+      }).join('');
       const nav = images.length > 1 ? `
         <button class="carousel-btn carousel-prev" aria-label="Previous">${_SVG_PREV}</button>
         <button class="carousel-btn carousel-next" aria-label="Next">${_SVG_NEXT}</button>` : '';
@@ -4334,7 +4364,7 @@
         <div class="sec-carousel" data-cid="${esc(sectionId)}" data-cur="0">
           <div class="sec-carousel-track">${slides}</div>${nav}${dots}
         </div>
-        <button class="carousel-add-btn" data-cid="${esc(sectionId)}">+ Add another image</button>`;
+        <button class="carousel-add-btn" data-cid="${esc(sectionId)}">+ Add image or video</button>`;
     }
     function wireCarousels($container) {
       $container.querySelectorAll('.sec-carousel').forEach(car => {
@@ -4346,22 +4376,42 @@
           slides[cur].classList.remove('active'); dots[cur]?.classList.remove('active');
           car.dataset.cur = n;
           slides[n].classList.add('active');   dots[n]?.classList.add('active');
+          // Preload next slide media
+          const next = slides[(n + 1) % slides.length];
+          const preloadEl = next?.querySelector('img, video');
+          if (preloadEl && !preloadEl.src) preloadEl.src = preloadEl.dataset.src || preloadEl.src;
         }
+        // Autoscroll
+        let _autoTimer = null;
+        function startAuto() {
+          clearInterval(_autoTimer);
+          _autoTimer = setInterval(() => {
+            const c = parseInt(car.dataset.cur) || 0;
+            goTo((c + 1) % slides.length);
+          }, 4000);
+        }
+        function stopAuto() { clearInterval(_autoTimer); _autoTimer = null; }
+        startAuto();
+        car.addEventListener('mouseenter', stopAuto);
+        car.addEventListener('mouseleave', startAuto);
         car.querySelector('.carousel-prev')?.addEventListener('click', e => {
-          e.stopPropagation();
+          e.stopPropagation(); stopAuto();
           const c = parseInt(car.dataset.cur) || 0; goTo((c - 1 + slides.length) % slides.length);
+          startAuto();
         });
         car.querySelector('.carousel-next')?.addEventListener('click', e => {
-          e.stopPropagation();
+          e.stopPropagation(); stopAuto();
           const c = parseInt(car.dataset.cur) || 0; goTo((c + 1) % slides.length);
+          startAuto();
         });
-        dots.forEach((dot, i) => dot.addEventListener('click', e => { e.stopPropagation(); goTo(i); }));
+        dots.forEach((dot, i) => dot.addEventListener('click', e => { e.stopPropagation(); stopAuto(); goTo(i); startAuto(); }));
         // Touch swipe
         let _sx = 0;
-        car.querySelector('.sec-carousel-track').addEventListener('touchstart', e => { _sx = e.touches[0].clientX; }, { passive: true });
+        car.querySelector('.sec-carousel-track').addEventListener('touchstart', e => { _sx = e.touches[0].clientX; stopAuto(); }, { passive: true });
         car.querySelector('.sec-carousel-track').addEventListener('touchend', e => {
           const dx = e.changedTouches[0].clientX - _sx;
           if (Math.abs(dx) > 40) { const c = parseInt(car.dataset.cur) || 0; goTo(dx < 0 ? (c + 1) % slides.length : (c - 1 + slides.length) % slides.length); }
+          setTimeout(startAuto, 3000);
         }, { passive: true });
       });
     }
@@ -4462,11 +4512,11 @@
         btn.addEventListener('click', () => {
           const id = btn.dataset.cid;
           const inp = document.createElement('input');
-          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
           inp.onchange = async () => {
             if (!inp.files.length) return;
             const file = inp.files[0];
-            if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+            if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
             try {
               const url = await uploadImageToStorage(file);
               const secs = await fetchAboutSections();
@@ -4526,11 +4576,11 @@
         btn.addEventListener('click', () => {
           const id = btn.dataset.imgbtnId;
           const inp = document.createElement('input');
-          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
           inp.onchange = async () => {
             if (!inp.files.length) return;
             const file = inp.files[0];
-            if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+            if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
             try {
               const url = await uploadImageToStorage(file);
               const secs = await fetchAboutSections();
@@ -4821,11 +4871,11 @@
         btn.addEventListener('click', () => {
           const id = btn.dataset.cid;
           const inp = document.createElement('input');
-          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
           inp.onchange = async () => {
             if (!inp.files.length) return;
             const file = inp.files[0];
-            if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+            if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
             try {
               const url = await uploadImageToStorage(file);
               const sec = (await fetchConcertSections()).find(s => s.id === id);
@@ -4886,11 +4936,11 @@
         btn.addEventListener('click', () => {
           const id = btn.dataset.imgbtnId;
           const inp = document.createElement('input');
-          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
           inp.onchange = async () => {
             if (!inp.files.length) return;
             const file = inp.files[0];
-            if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+            if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
             try {
               const url = await uploadImageToStorage(file);
               const sec = (await fetchConcertSections()).find(s => s.id === id);
@@ -4977,11 +5027,11 @@
           btn.addEventListener('click', () => {
             const id = btn.dataset.cid;
             const inp = document.createElement('input');
-            inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+            inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
             inp.onchange = async () => {
               if (!inp.files.length) return;
               const file = inp.files[0];
-              if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+              if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
               try {
                 const url = await uploadImageToStorage(file);
                 const progs = await fetchPrograms(false);
@@ -5048,11 +5098,11 @@
           btn.addEventListener('click', () => {
             const id = btn.dataset.imgbtnId;
             const inp = document.createElement('input');
-            inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+            inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
             inp.onchange = async () => {
               if (!inp.files.length) return;
               const file = inp.files[0];
-              if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+              if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
               try {
                 const url = await uploadImageToStorage(file);
                 const progs = await fetchPrograms(false);
@@ -5107,15 +5157,18 @@
       const SVG_PENCIL = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_TRASH  = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
 
-      $grid.innerHTML = photos.map(p => `
+      $grid.innerHTML = photos.map(p => {
+        const mediaEl = isVideoUrl(p.image_url)
+          ? `<video src="${esc(p.image_url)}" muted playsinline preload="metadata" loop></video>`
+          : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
+        return `
         <div class="gallery-card" data-photo-id="${esc(p.id)}" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
           <button class="gallery-card-delete-btn" data-del-id="${esc(p.id)}" data-del-url="${esc(p.image_url)}" title="Delete photo">${SVG_TRASH}</button>
           <button class="gallery-card-edit-btn" title="Edit caption">${SVG_PENCIL}</button>
-          <div class="gallery-card-img-wrap">
-            <img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />
-          </div>
+          <div class="gallery-card-img-wrap">${mediaEl}</div>
           ${p.caption ? `<div class="gallery-card-caption">${esc(p.caption)}</div>` : ''}
-        </div>`).join('');
+        </div>`;
+      }).join('');
 
       // Lightbox on image click
       $grid.querySelectorAll('.gallery-card').forEach(card => {
@@ -5684,12 +5737,17 @@
       const $empty = document.getElementById('admin-gallery-empty');
       if (!photos.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
-      $tbody.innerHTML = photos.map(p => `<tr>
-        <td class="px-4 py-3"><img src="${esc(p.image_url)}" class="w-14 h-10 object-cover rounded border border-imperial/10"/></td>
+      $tbody.innerHTML = photos.map(p => {
+        const thumb = isVideoUrl(p.image_url)
+          ? `<div class="w-14 h-10 flex items-center justify-center rounded border border-imperial/10 bg-ink/5 text-imperial text-xs font-bold">▶ VID</div>`
+          : `<img src="${esc(p.image_url)}" class="w-14 h-10 object-cover rounded border border-imperial/10"/>`;
+        return `<tr>
+        <td class="px-4 py-3">${thumb}</td>
         <td class="px-4 py-3 text-ink/60">${esc(p.caption||'—')}</td>
         <td class="px-4 py-3 text-ink/40 text-xs">${new Date(p.created_at).toLocaleDateString()}</td>
         <td class="px-4 py-3 text-center"><button data-del-gal="${p.id}" data-gal-url="${esc(p.image_url)}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
-      </tr>`).join('');
+      </tr>`;
+      }).join('');
       $tbody.querySelectorAll('[data-del-gal]').forEach(b => b.addEventListener('click', async () => {
         if (!confirm('Delete this photo?')) return;
         if (await deleteGalleryItem(b.dataset.delGal, b.dataset.galUrl)) { await renderAdminGallery(); await renderHomeGallery(); await renderHeroPhoto(); }
@@ -5832,7 +5890,7 @@
     $aboutImgDrop.addEventListener('drop', e => { e.preventDefault(); $aboutImgDrop.classList.remove('dragover'); if (e.dataTransfer.files.length) pickAboutImg(e.dataTransfer.files[0]); });
     $aboutImgInput.addEventListener('change', () => { if ($aboutImgInput.files.length) pickAboutImg($aboutImgInput.files[0]); });
     function pickAboutImg(file) {
-      if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+      if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
       selectedAboutImg = file;
       document.getElementById('about-img-thumb').src = URL.createObjectURL(file);
       document.getElementById('about-img-preview').classList.remove('view-hidden');
@@ -6192,12 +6250,25 @@
     // ════════════════════════════════════════════════
     const $lb = document.getElementById('lightbox');
     function openLightbox(url, cap) {
-      document.getElementById('lightbox-img').src = url;
+      const $img = document.getElementById('lightbox-img');
+      const $vid = document.getElementById('lightbox-video');
+      if (isVideoUrl(url)) {
+        $img.classList.add('view-hidden'); $img.src = '';
+        $vid.src = url; $vid.classList.remove('view-hidden');
+      } else {
+        $vid.classList.add('view-hidden'); $vid.pause(); $vid.src = '';
+        $img.src = url; $img.classList.remove('view-hidden');
+      }
       document.getElementById('lightbox-caption').textContent = cap || '';
       document.getElementById('lightbox-caption').classList.toggle('view-hidden', !cap);
       $lb.classList.add('active'); $lb.setAttribute('aria-hidden','false');
     }
-    function closeLightbox() { $lb.classList.remove('active'); $lb.setAttribute('aria-hidden','true'); }
+    function closeLightbox() {
+      const $vid = document.getElementById('lightbox-video');
+      $vid.pause(); $vid.src = '';
+      document.getElementById('lightbox-video').classList.add('view-hidden');
+      $lb.classList.remove('active'); $lb.setAttribute('aria-hidden','true');
+    }
     document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
     $lb.addEventListener('click', e => { if (e.target === $lb) closeLightbox(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
@@ -6297,6 +6368,7 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
 
     // ── Utility ────────────────────────────────────
     function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+    function isVideoUrl(url) { return /\.(mp4|webm|mov|ogg)(\?|$)/i.test(url || ''); }
 
     // ── Init ───────────────────────────────────────
     showView('home');
