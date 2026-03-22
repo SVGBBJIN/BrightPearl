@@ -1250,6 +1250,7 @@
       color: rgb(var(--ink-rgb)); transition: background 0.15s;
     }
     .format-btn:hover { background: rgb(var(--imperial-rgb) / 0.1); }
+    .format-sep { width: 1px; background: rgb(var(--imperial-rgb) / 0.2); align-self: stretch; margin: 2px 2px; }
 
     /* ── Tables in formatted body content ─────────── */
     .editable-body table, .haf-body table, .hp-feature-body table {
@@ -6679,7 +6680,10 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
         <button class="format-btn" data-cmd="bold" title="Bold"><b>B</b></button>
         <button class="format-btn" data-cmd="italic" title="Italic"><i>I</i></button>
         <button class="format-btn" data-cmd="insertUnorderedList" title="Bullet list">&#8226; List</button>
-        <button class="format-btn" data-cmd="table" title="Insert table">&#9783; Table</button>`;
+        <button class="format-btn" data-cmd="table" title="Insert table">&#9783; Table</button>
+        <span class="format-sep"></span>
+        <button class="format-btn" data-cmd="table-remove-row" title="Remove row (click inside a table row first)">&#8722; Row</button>
+        <button class="format-btn" data-cmd="table-remove-col" title="Remove column (click inside a table cell first)">&#8722; Col</button>`;
       toolbar.addEventListener('mousedown', e => {
         e.preventDefault();
         const btn = e.target.closest('[data-cmd]');
@@ -6691,6 +6695,33 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
             '<table><thead><tr><th>Header 1</th><th>Header 2</th><th>Header 3</th></tr></thead>' +
             '<tbody><tr><td>Cell</td><td>Cell</td><td>Cell</td></tr>' +
             '<tr><td>Cell</td><td>Cell</td><td>Cell</td></tr></tbody></table>');
+        } else if (cmd === 'table-remove-row') {
+          const sel = window.getSelection();
+          const node = sel.rangeCount ? sel.getRangeAt(0).startContainer : null;
+          const cell = node ? (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement)?.closest('td,th') : null;
+          if (cell) {
+            const row = cell.closest('tr');
+            const table = row?.closest('table');
+            if (row && table) {
+              if (table.querySelectorAll('tr').length > 1) row.remove();
+              else table.remove();
+            }
+          }
+        } else if (cmd === 'table-remove-col') {
+          const sel = window.getSelection();
+          const node = sel.rangeCount ? sel.getRangeAt(0).startContainer : null;
+          const cell = node ? (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement)?.closest('td,th') : null;
+          if (cell) {
+            const colIdx = cell.cellIndex;
+            const table = cell.closest('table');
+            if (table) {
+              Array.from(table.querySelectorAll('tr')).forEach(tr => {
+                if (tr.cells[colIdx]) tr.cells[colIdx].remove();
+              });
+              const firstRow = table.querySelector('tr');
+              if (!firstRow || firstRow.cells.length === 0) table.remove();
+            }
+          }
         } else {
           document.execCommand(cmd, false, null);
         }
