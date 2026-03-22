@@ -399,11 +399,45 @@
     }
     .sec-carousel-track { position: relative; width: 100%; }
     .sec-carousel-slide { display: none; position: relative; }
-    .sec-carousel-slide.active { display: block; }
+    .sec-carousel-slide.active { display: block; animation: carousel-fade-in 0.5s ease; }
+    .sec-carousel-slide.carousel-fade-out {
+      display: block !important; position: absolute; top: 0; left: 0; width: 100%;
+      animation: carousel-fade-out 0.5s ease forwards; pointer-events: none; z-index: 2;
+    }
+    @keyframes carousel-fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes carousel-fade-out {
+      from { opacity: 1; }
+      to   { opacity: 0; }
+    }
     .sec-carousel-img {
       width: 100%; max-height: 420px; object-fit: cover;
       display: block; border-radius: 0.625rem;
     }
+    .sec-carousel-yt {
+      width: 100%; height: 420px; display: block;
+      border-radius: 0.625rem; border: none; background: #000;
+    }
+    .yt-thumb-wrap { position: relative; width: 100%; height: 100%; overflow: hidden; }
+    .yt-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+    .gallery-cell:hover .yt-thumb-wrap img,
+    .gallery-card:hover .yt-thumb-wrap img { transform: scale(1.04); }
+    .yt-play-overlay {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.22); transition: background 0.2s;
+    }
+    .yt-play-overlay::after {
+      content: ''; display: block; width: 54px; height: 38px; border-radius: 10px;
+      background: #ff0000;
+    }
+    .yt-play-overlay::before {
+      content: '▶'; position: absolute; color: white; font-size: 18px; z-index: 1; margin-left: 4px;
+    }
+    .gallery-cell:hover .yt-play-overlay,
+    .gallery-card:hover .yt-play-overlay { background: rgba(0,0,0,0.42); }
+    .yt-admin-thumb { width: 56px; height: 40px; object-fit: cover; border-radius: 3px; border: 1px solid rgb(var(--imperial-rgb)/0.1); }
     .carousel-btn {
       position: absolute; top: 50%; transform: translateY(-50%);
       background: rgba(12, 11, 24, 0.65);
@@ -2335,7 +2369,7 @@
           <div id="upload-drop-zone" class="drop-zone mb-4">
             <svg class="mx-auto mb-2 w-8 h-8 text-imperial/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             <p class="text-ink/50 text-sm">Drop images here or <span class="text-imperial font-medium">click to browse</span></p>
-            <p class="text-ink/30 text-xs mt-1">JPEG, PNG, WebP, GIF &middot; Max 5 MB each &middot; Multiple files supported</p>
+            <p class="text-ink/30 text-xs mt-1">JPEG, PNG, WebP, GIF &middot; Max 5 MB each &middot; Use YouTube below for videos</p>
             <input id="upload-file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple class="hidden" />
           </div>
           <!-- Bulk preview thumbnails -->
@@ -2346,13 +2380,28 @@
               <input id="upload-caption" type="text" placeholder="Describe this photo…"
                 class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
             </div>
-            <button id="upload-btn" disabled class="btn-imperial px-5 py-2 rounded text-sm font-medium">Upload Image…</button>
+            <button id="upload-btn" disabled class="btn-imperial px-5 py-2 rounded text-sm font-medium">Upload…</button>
           </div>
           <div id="upload-status" class="mt-3 view-hidden">
             <div class="upload-progress"><div id="upload-progress-bar" class="upload-progress-bar" style="width:0%"></div></div>
             <p id="upload-status-text" class="text-xs text-ink/50 mt-1"></p>
           </div>
           <p id="upload-filename" class="view-hidden text-xs text-imperial mt-2"></p>
+          <!-- ── Add YouTube Video ── -->
+          <div class="border-t border-imperial/10 mt-4 pt-4">
+            <p class="text-xs font-medium text-ink/60 mb-2">Or add a YouTube video:</p>
+            <div class="flex gap-2 items-start">
+              <div class="flex-1 space-y-2">
+                <input id="yt-url-input" type="url" placeholder="https://www.youtube.com/watch?v=…"
+                  class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+                <input id="yt-caption-input" type="text" placeholder="Caption (optional)"
+                  class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+              </div>
+              <button id="yt-add-btn" class="btn-imperial px-4 py-2 rounded text-sm font-medium shrink-0">Add Video</button>
+            </div>
+            <div id="yt-url-preview" class="mt-2 hidden rounded overflow-hidden w-40 relative" style="height:90px"></div>
+            <p id="yt-url-error" class="text-red-400 text-xs mt-1 hidden">Invalid YouTube URL — try https://youtube.com/watch?v=… or https://youtu.be/…</p>
+          </div>
         </div>
         <div class="overflow-x-auto rounded-lg border border-imperial/10">
           <table class="admin-table w-full text-sm">
@@ -2682,6 +2731,10 @@
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <button class="lightbox-close" id="lightbox-close">&times;</button>
     <img id="lightbox-img" src="" alt="" />
+    <iframe id="lightbox-yt" src="" frameborder="0" allowfullscreen
+      allow="autoplay; encrypted-media; picture-in-picture"
+      class="view-hidden"
+      style="width:min(854px,90vw);height:min(480px,50vh);border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.4)"></iframe>
     <div class="lightbox-caption" id="lightbox-caption"></div>
   </div>
 
@@ -3655,18 +3708,15 @@
       if (!valid.length) return;
       selectedFiles = valid;
       selectedFile = valid[0]; // keep backward compat for single-file path
+      $fn.textContent = valid.length === 1 ? `Selected: ${valid[0].name}` : `${valid.length} images selected`;
+      $fn.classList.remove('view-hidden');
       if (valid.length === 1) {
-        $fn.textContent = `Selected: ${valid[0].name}`;
-        $fn.classList.remove('view-hidden');
         $ub.textContent = 'Upload Image…';
         $bulkStrip.classList.add('view-hidden');
         $bulkStrip.innerHTML = '';
         document.getElementById('upload-caption').closest('.flex').querySelector('label').textContent = 'Caption (optional)';
       } else {
-        $fn.textContent = `${valid.length} images selected`;
-        $fn.classList.remove('view-hidden');
         $ub.textContent = `Upload ${valid.length} Images to Gallery`;
-        // Show thumbnail strip
         $bulkStrip.innerHTML = valid.map((f, i) =>
           `<div class="relative group"><img src="${URL.createObjectURL(f)}" class="w-14 h-14 object-cover rounded border border-imperial/20" title="${esc(f.name)}" />` +
           `<button type="button" data-bulk-remove="${i}" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs leading-none flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">&times;</button></div>`
@@ -3723,6 +3773,41 @@
         document.getElementById('upload-caption').value = '';
       }
     });
+
+    // ── YouTube URL add to gallery ─────────────────────
+    (function wireYouTubeGalleryAdd() {
+      const $ytIn  = document.getElementById('yt-url-input');
+      const $ytCap = document.getElementById('yt-caption-input');
+      const $ytBtn = document.getElementById('yt-add-btn');
+      const $ytPrv = document.getElementById('yt-url-preview');
+      const $ytErr = document.getElementById('yt-url-error');
+      if (!$ytIn) return;
+      $ytIn.addEventListener('input', () => {
+        const id = getYouTubeId($ytIn.value.trim());
+        if (id) {
+          $ytErr.classList.add('hidden');
+          $ytPrv.innerHTML = `<img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" style="width:100%;height:100%;object-fit:cover;" /><div class="yt-play-overlay"></div>`;
+          $ytPrv.classList.remove('hidden');
+        } else {
+          $ytPrv.classList.add('hidden');
+          if ($ytIn.value.trim()) $ytErr.classList.remove('hidden'); else $ytErr.classList.add('hidden');
+        }
+      });
+      $ytBtn.addEventListener('click', async () => {
+        const url = $ytIn.value.trim();
+        const id  = getYouTubeId(url);
+        if (!id) { $ytErr.classList.remove('hidden'); return; }
+        $ytBtn.disabled = true; $ytBtn.textContent = 'Adding…';
+        const { error } = await supabase.from('gallery').insert({ image_url: url, caption: $ytCap.value.trim() || null });
+        if (error) { alert('Error: ' + error.message); }
+        else {
+          $ytIn.value = ''; $ytCap.value = '';
+          $ytPrv.classList.add('hidden');
+          await renderAdminGallery(); await renderHomeGallery();
+        }
+        $ytBtn.disabled = false; $ytBtn.textContent = 'Add Video';
+      });
+    })();
 
     // Hero image drop zone (admin dashboard)
     const $hdz = document.getElementById('hero-drop-zone');
@@ -3870,10 +3955,13 @@
         $grid.innerHTML = Array.from({length:6},(_,i)=>`<div class="gallery-cell rounded-lg"><span class="text-ink/20 text-xs font-medium">Photo ${i+1}</span></div>`).join('');
         return;
       }
-      $grid.innerHTML = photos.map(p => `
-        <div class="gallery-cell rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
-          <img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />
-        </div>`).join('');
+      $grid.innerHTML = photos.map(p => {
+        const ytId = getYouTubeId(p.image_url);
+        const mediaEl = ytId
+          ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="lazy" /><div class="yt-play-overlay"></div></div>`
+          : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
+        return `<div class="gallery-cell rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">${mediaEl}</div>`;
+      }).join('');
       $grid.querySelectorAll('[data-lburl]').forEach(c => {
         c.addEventListener('click', () => openLightbox(c.dataset.lburl, c.dataset.lbcap));
       });
@@ -3944,6 +4032,7 @@
       const SVG_TRASH  = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
       const SVG_IMG    = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
       const SVG_CAM    = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>`;
+      const SVG_VID    = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
 
       const addRowHtml = `
         <div class="home-about-add-row">
@@ -3959,6 +4048,14 @@
               <div id="haf-img-preview" class="view-hidden flex items-center gap-2">
                 <img id="haf-img-thumb" class="w-12 h-8 object-cover rounded border border-imperial/10" src="" alt=""/>
                 <button type="button" id="haf-img-clear" class="text-imperial text-xs hover:underline">Clear</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem;">
+              <input id="haf-yt-url" type="url" placeholder="Or paste a YouTube URL (optional)"
+                style="flex:1;padding:0.4rem 0.6rem;border:1px solid rgb(var(--imperial-rgb)/0.2);border-radius:0.375rem;font-size:0.8rem;background:transparent;color:inherit;" />
+              <div id="haf-yt-preview" class="view-hidden" style="width:60px;height:36px;border-radius:4px;overflow:hidden;position:relative;flex-shrink:0;">
+                <img id="haf-yt-thumb" src="" style="width:100%;height:100%;object-fit:cover;" alt="" />
+                <div class="yt-play-overlay" style="transform:scale(0.55);"></div>
               </div>
             </div>
             <div class="home-about-add-form-btns">
@@ -3981,7 +4078,8 @@
           <div class="section-toolbar" style="position:absolute;top:0.5rem;right:0.5rem;">
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="haf-edit-btn" data-edit-id="${esc(s.id)}" title="Edit text">${SVG_PENCIL}</button>
-            ${s.image_url ? `<button class="haf-img-btn" data-img-id="${esc(s.id)}" title="Change photo">${SVG_IMG}</button>` : `<button class="haf-img-btn" data-img-id="${esc(s.id)}" title="Add photo">${SVG_IMG}</button>`}
+            <button class="haf-img-btn" data-img-id="${esc(s.id)}" title="${s.image_url && !isVideoUrl(s.image_url) ? 'Change photo' : 'Add photo'}">${SVG_IMG}</button>
+            <button class="haf-vid-btn" data-vid-id="${esc(s.id)}" title="${isVideoUrl(s.image_url) ? 'Change video' : 'Add YouTube video'}">${SVG_VID}</button>
             <button class="haf-del-btn" data-del-id="${esc(s.id)}" title="Delete section">${SVG_TRASH}</button>
           </div>`;
 
@@ -3995,6 +4093,16 @@
             </div>`;
         }
 
+        const isVid = isVideoUrl(s.image_url);
+        const ytId  = isVid ? getYouTubeId(s.image_url) : null;
+        const mediaEl = isVid
+          ? `<div class="yt-thumb-wrap" style="border-radius:0.75rem;overflow:hidden;cursor:pointer" data-lburl="${esc(s.image_url)}">
+               <img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(s.title)}" loading="lazy" />
+               <div class="yt-play-overlay"></div>
+             </div>`
+          : `<img class="hp-feature-img" src="${esc(s.image_url)}" alt="${esc(s.title)}" loading="lazy" />
+             <div class="hp-photo-upload-overlay">${SVG_CAM}<span>Change photo</span></div>
+             <input class="haf-photo-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" />`;
         return `
           <div class="hp-feature${flip ? ' hp-feature--flip' : ''}" data-section-id="${esc(s.id)}" style="position:relative">
             ${toolbar}
@@ -4003,13 +4111,11 @@
               <h2 class="hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h2>
               <p class="hp-feature-body haf-body" data-id="${esc(s.id)}">${esc(s.body)}</p>
             </div>
-            <div class="hp-feature-photo-wrap" data-upload-sid="${esc(s.id)}">
+            <div class="hp-feature-photo-wrap"${isVid ? '' : ` data-upload-sid="${esc(s.id)}"`}>
               <div class="hp-deco-circle hp-deco-circle--primary"></div>
               <div class="hp-deco-circle hp-deco-circle--accent"></div>
               <div class="hp-deco-dash-box"></div>
-              <img class="hp-feature-img" src="${esc(s.image_url)}" alt="${esc(s.title)}" loading="lazy" />
-              <div class="hp-photo-upload-overlay">${SVG_CAM}<span>Change photo</span></div>
-              <input class="haf-photo-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" />
+              ${mediaEl}
             </div>
           </div>`;
       }).join('') + addRowHtml;
@@ -4113,6 +4219,25 @@
         });
       });
 
+      // YouTube video button on toolbar
+      $container.querySelectorAll('.haf-vid-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id  = btn.dataset.vidId;
+          const raw = prompt('Paste a YouTube URL:');
+          if (raw === null) return;
+          const ytId = getYouTubeId(raw.trim());
+          if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+          updateAboutSection(id, { image_url: raw.trim() }).then(ok => {
+            if (ok) renderHomeAboutFeatures();
+          });
+        });
+      });
+
+      // Lightbox clicks on YouTube thumbnails in feature cards
+      $container.querySelectorAll('.yt-thumb-wrap[data-lburl]').forEach(el => {
+        el.addEventListener('click', () => openLightbox(el.dataset.lburl, ''));
+      });
+
       // Wire add-section form
       wireHomeAboutAddForm();
 
@@ -4133,17 +4258,28 @@
       const $prev   = document.getElementById('haf-img-preview');
       const $thumb  = document.getElementById('haf-img-thumb');
       const $clear  = document.getElementById('haf-img-clear');
+      const $ytUrl  = document.getElementById('haf-yt-url');
+      const $ytPrev = document.getElementById('haf-yt-preview');
+      const $ytThm  = document.getElementById('haf-yt-thumb');
       if (!$btn || !$form) return;
       let _file = null;
 
       $btn.addEventListener('click', () => { $form.classList.toggle('open'); if ($form.classList.contains('open')) document.getElementById('haf-title')?.focus(); });
-      $cancel.addEventListener('click', () => { $form.classList.remove('open'); _file = null; $imgIn.value = ''; $prev.classList.add('view-hidden'); });
+      $cancel.addEventListener('click', () => {
+        $form.classList.remove('open'); _file = null; $imgIn.value = ''; $prev.classList.add('view-hidden');
+        $ytUrl.value = ''; $ytPrev.classList.add('view-hidden'); $ytThm.src = '';
+      });
       $drop.addEventListener('click', () => $imgIn.click());
       $drop.addEventListener('dragover', e => { e.preventDefault(); $drop.classList.add('dragover'); });
       $drop.addEventListener('dragleave', () => $drop.classList.remove('dragover'));
       $drop.addEventListener('drop', e => { e.preventDefault(); $drop.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) { _file = f; $thumb.src = URL.createObjectURL(f); $prev.classList.remove('view-hidden'); } });
       $imgIn.addEventListener('change', () => { if ($imgIn.files[0]) { _file = $imgIn.files[0]; $thumb.src = URL.createObjectURL(_file); $prev.classList.remove('view-hidden'); } });
       $clear.addEventListener('click', () => { _file = null; $imgIn.value = ''; $prev.classList.add('view-hidden'); });
+      $ytUrl.addEventListener('input', () => {
+        const id = getYouTubeId($ytUrl.value.trim());
+        if (id) { $ytThm.src = `https://img.youtube.com/vi/${id}/mqdefault.jpg`; $ytPrev.classList.remove('view-hidden'); }
+        else { $ytPrev.classList.add('view-hidden'); $ytThm.src = ''; }
+      });
 
       $submit.addEventListener('click', async () => {
         const title = document.getElementById('haf-title').value.trim();
@@ -4151,7 +4287,14 @@
         if (!title || !body) { alert('Title and body are required.'); return; }
         $submit.disabled = true; $submit.textContent = 'Adding…';
         let imageUrl = null;
-        if (_file) { try { imageUrl = await uploadImageToStorage(_file); } catch (err) { alert('Image upload failed: ' + err.message); $submit.disabled = false; $submit.textContent = 'Add Section'; return; } }
+        const ytRaw = $ytUrl.value.trim();
+        const ytId  = getYouTubeId(ytRaw);
+        if (ytId) {
+          imageUrl = ytRaw;
+        } else if (_file) {
+          try { imageUrl = await uploadImageToStorage(_file); }
+          catch (err) { alert('Image upload failed: ' + err.message); $submit.disabled = false; $submit.textContent = 'Add Section'; return; }
+        }
         const order = await fetchAboutSections().then(s => s.length);
         if (await addAboutSection(title, body, order, imageUrl)) {
           await renderHomeAboutFeatures();
@@ -4159,6 +4302,7 @@
           await renderAdminAbout();
         }
         $submit.disabled = false; $submit.textContent = 'Add Section';
+        $ytUrl.value = ''; $ytPrev.classList.add('view-hidden'); $ytThm.src = '';
       });
     }
 
@@ -4318,11 +4462,17 @@
     const _SVG_NEXT = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
     function buildCarouselHTML(images, sectionId, isEdit) {
       if (!images.length) return '';
-      const slides = images.map((url, i) => `
-        <div class="sec-carousel-slide${i === 0 ? ' active' : ''}" data-slide="${i}">
-          <img src="${esc(url)}" alt="" loading="lazy" class="sec-carousel-img" />
-          <button class="carousel-remove-btn" data-cid="${esc(sectionId)}" data-sidx="${i}" title="Remove image">×</button>
-        </div>`).join('');
+      const slides = images.map((url, i) => {
+        const ytId = getYouTubeId(url);
+        const mediaEl = ytId
+          ? `<iframe src="https://www.youtube.com/embed/${ytId}" class="sec-carousel-yt" frameborder="0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>`
+          : `<img src="${esc(url)}" alt="" loading="lazy" class="sec-carousel-img" />`;
+        return `
+        <div class="sec-carousel-slide${i === 0 ? ' active' : ''}" data-slide="${i}" data-is-yt="${ytId ? '1' : '0'}">
+          ${mediaEl}
+          <button class="carousel-remove-btn" data-cid="${esc(sectionId)}" data-sidx="${i}" title="Remove">×</button>
+        </div>`;
+      }).join('');
       const nav = images.length > 1 ? `
         <button class="carousel-btn carousel-prev" aria-label="Previous">${_SVG_PREV}</button>
         <button class="carousel-btn carousel-next" aria-label="Next">${_SVG_NEXT}</button>` : '';
@@ -4334,7 +4484,9 @@
         <div class="sec-carousel" data-cid="${esc(sectionId)}" data-cur="0">
           <div class="sec-carousel-track">${slides}</div>${nav}${dots}
         </div>
-        <button class="carousel-add-btn" data-cid="${esc(sectionId)}">+ Add another image</button>`;
+        ${isEdit ? `
+        <button class="carousel-add-btn carousel-add-img" data-cid="${esc(sectionId)}">+ Add image</button>
+        <button class="carousel-add-btn carousel-add-yt" data-cid="${esc(sectionId)}" style="margin-top:0.25rem">▶ Add YouTube video</button>` : ''}`;
     }
     function wireCarousels($container) {
       $container.querySelectorAll('.sec-carousel').forEach(car => {
@@ -4343,25 +4495,56 @@
         if (slides.length <= 1) return;
         function goTo(n) {
           const cur = parseInt(car.dataset.cur) || 0;
-          slides[cur].classList.remove('active'); dots[cur]?.classList.remove('active');
+          if (cur === n) return;
+          // Fade out the current slide
+          const curSlide = slides[cur];
+          curSlide.classList.add('carousel-fade-out');
+          dots[cur]?.classList.remove('active');
+          curSlide.addEventListener('animationend', () => {
+            curSlide.classList.remove('active', 'carousel-fade-out');
+          }, { once: true });
+          // Fade in the new slide
           car.dataset.cur = n;
-          slides[n].classList.add('active');   dots[n]?.classList.add('active');
+          slides[n].classList.add('active');
+          dots[n]?.classList.add('active');
+          // Pause autoscroll if target slide has a YouTube iframe
+          if (slides[n]?.dataset.isYt === '1') stopAuto();
+          // Preload next slide image
+          const next = slides[(n + 1) % slides.length];
+          const preloadEl = next?.querySelector('img');
+          if (preloadEl && !preloadEl.src) preloadEl.src = preloadEl.dataset.src || preloadEl.src;
         }
+        // Autoscroll
+        let _autoTimer = null;
+        function startAuto() {
+          clearInterval(_autoTimer);
+          _autoTimer = setInterval(() => {
+            const c = parseInt(car.dataset.cur) || 0;
+            goTo((c + 1) % slides.length);
+          }, 5000);
+        }
+        function stopAuto() { clearInterval(_autoTimer); _autoTimer = null; }
+        startAuto();
+        car.addEventListener('mouseenter', stopAuto);
+        car.addEventListener('mouseleave', startAuto);
         car.querySelector('.carousel-prev')?.addEventListener('click', e => {
-          e.stopPropagation();
+          e.stopPropagation(); stopAuto();
           const c = parseInt(car.dataset.cur) || 0; goTo((c - 1 + slides.length) % slides.length);
+          startAuto();
         });
         car.querySelector('.carousel-next')?.addEventListener('click', e => {
-          e.stopPropagation();
+          e.stopPropagation(); stopAuto();
           const c = parseInt(car.dataset.cur) || 0; goTo((c + 1) % slides.length);
+          startAuto();
         });
-        dots.forEach((dot, i) => dot.addEventListener('click', e => { e.stopPropagation(); goTo(i); }));
+        dots.forEach((dot, i) => dot.addEventListener('click', e => { e.stopPropagation(); stopAuto(); goTo(i); startAuto(); }));
         // Touch swipe
         let _sx = 0;
-        car.querySelector('.sec-carousel-track').addEventListener('touchstart', e => { _sx = e.touches[0].clientX; }, { passive: true });
+        car.querySelector('.sec-carousel-track').addEventListener('touchstart', e => { _sx = e.touches[0].clientX; stopAuto(); }, { passive: true });
         car.querySelector('.sec-carousel-track').addEventListener('touchend', e => {
           const dx = e.changedTouches[0].clientX - _sx;
           if (Math.abs(dx) > 40) { const c = parseInt(car.dataset.cur) || 0; goTo(dx < 0 ? (c + 1) % slides.length : (c - 1 + slides.length) % slides.length); }
+          setTimeout(startAuto, 3000);
         }, { passive: true });
       });
     }
@@ -4392,6 +4575,7 @@
 
     function renderLayoutToggleBar(containerId, page) {
       document.getElementById('layout-bar-' + page)?.remove();
+      if (!session) return;
       const cur = getSectionLayout(page);
       const bar = document.createElement('div');
       bar.className = 'layout-toggle-bar'; bar.id = 'layout-bar-' + page;
@@ -4428,6 +4612,7 @@
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
       const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_IMG_A  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
+      const SVG_VID_A  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
       const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
       $container.innerHTML = sections.map(s => {
         const imgs    = getSectionImages(s);
@@ -4448,6 +4633,7 @@
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
             <button class="img-section-btn" title="Add/change image" data-imgbtn-id="${s.id}">${SVG_IMG_A}</button>
+            <button class="vid-section-btn" title="Add YouTube video" data-vidbtn-id="${s.id}">${SVG_VID_A}</button>
             <button class="del-section-btn" title="Delete section" data-delbtn-id="${s.id}">${SVG_TRASH}</button>
           </div>
           ${bodyHTML}
@@ -4458,7 +4644,7 @@
       wireSbsResizeHandles($container, updateAboutSection);
 
       // Carousel: add image
-      $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
+      $container.querySelectorAll('.carousel-add-img').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.cid;
           const inp = document.createElement('input');
@@ -4478,6 +4664,43 @@
             } catch (err) { alert('Error: ' + err.message); }
           };
           inp.click();
+        });
+      });
+      // Carousel: add YouTube video
+      $container.querySelectorAll('.carousel-add-yt').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.cid;
+          const raw = prompt('Enter YouTube URL:');
+          if (!raw) return;
+          const ytId = getYouTubeId(raw.trim());
+          if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+          try {
+            const secs = await fetchAboutSections();
+            const sec  = secs.find(s => s.id === id) || {};
+            const imgs = getSectionImages(sec); imgs.push(raw.trim());
+            await updateAboutSection(id, { images: imgs, image_url: imgs[0] });
+            await renderHomeAbout();
+            if (editMode) initAboutSortable();
+          } catch (err) { alert('Error: ' + err.message); }
+        });
+      });
+
+      // Toolbar: add YouTube video to section
+      $container.querySelectorAll('.vid-section-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id  = btn.dataset.vidbtnId;
+          const raw = prompt('Enter YouTube URL:');
+          if (!raw) return;
+          const ytId = getYouTubeId(raw.trim());
+          if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+          try {
+            const secs = await fetchAboutSections();
+            const sec  = secs.find(s => s.id === id) || {};
+            const imgs = getSectionImages(sec); imgs.push(raw.trim());
+            await updateAboutSection(id, { images: imgs, image_url: imgs[0] });
+            await renderHomeAbout();
+            if (editMode) initAboutSortable();
+          } catch (err) { alert('Error: ' + err.message); }
         });
       });
 
@@ -4526,7 +4749,7 @@
         btn.addEventListener('click', () => {
           const id = btn.dataset.imgbtnId;
           const inp = document.createElement('input');
-          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
           inp.onchange = async () => {
             if (!inp.files.length) return;
             const file = inp.files[0];
@@ -4787,6 +5010,7 @@
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
       const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_IMG_C  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
+      const SVG_VID_C  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
       const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
       $container.innerHTML = sections.map(s => {
         const imgs    = getSectionImages(s);
@@ -4802,6 +5026,7 @@
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
             <button class="img-concert-btn" title="${hasImgs ? 'Add/change image' : 'Add image'}" data-imgbtn-id="${s.id}">${SVG_IMG_C}</button>
+            <button class="vid-concert-btn" title="Add YouTube video" data-vidbtn-id="${s.id}">${SVG_VID_C}</button>
             <button class="del-section-btn" title="Delete" data-delbtn-id="${s.id}">${SVG_TRASH}</button>`;
         const bodyHTML = isSBS
           ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8"><div class="section-toolbar">${tbHTML}</div>${textHTML}</div></div>`
@@ -4817,7 +5042,7 @@
       wireSbsResizeHandles($container, updateConcertSection);
 
       // Carousel: add image to section
-      $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
+      $container.querySelectorAll('.carousel-add-img').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.cid;
           const inp = document.createElement('input');
@@ -4835,6 +5060,39 @@
             } catch (err) { alert('Error: ' + err.message); }
           };
           inp.click();
+        });
+      });
+      // Carousel: add YouTube video to section
+      $container.querySelectorAll('.carousel-add-yt').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.cid;
+          const raw = prompt('Enter YouTube URL:');
+          if (!raw) return;
+          const ytId = getYouTubeId(raw.trim());
+          if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+          try {
+            const sec = (await fetchConcertSections()).find(s => s.id === id);
+            const imgs = getSectionImages(sec); imgs.push(raw.trim());
+            await updateConcertSection(id, { images: imgs, image_url: imgs[0] });
+            await renderConcertPage();
+          } catch (err) { alert('Error: ' + err.message); }
+        });
+      });
+
+      // Toolbar: add YouTube video to section
+      $container.querySelectorAll('.vid-concert-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id  = btn.dataset.vidbtnId;
+          const raw = prompt('Enter YouTube URL:');
+          if (!raw) return;
+          const ytId = getYouTubeId(raw.trim());
+          if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+          try {
+            const sec = (await fetchConcertSections()).find(s => s.id === id);
+            const imgs = getSectionImages(sec); imgs.push(raw.trim());
+            await updateConcertSection(id, { images: imgs, image_url: imgs[0] });
+            await renderConcertPage();
+          } catch (err) { alert('Error: ' + err.message); }
         });
       });
 
@@ -4886,7 +5144,7 @@
         btn.addEventListener('click', () => {
           const id = btn.dataset.imgbtnId;
           const inp = document.createElement('input');
-          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
           inp.onchange = async () => {
             if (!inp.files.length) return;
             const file = inp.files[0];
@@ -4938,6 +5196,7 @@
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
       const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_IMG_P  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
+      const SVG_VID_P  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
       const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
 
       if (sections.length) {
@@ -4958,6 +5217,7 @@
               <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
               <button class="edit-section-btn" title="Edit inline" data-edit-id="${esc(s.id)}">${SVG_PENCIL}</button>
               <button class="img-program-btn" title="${hasImgs ? 'Add/change image' : 'Add image'}" data-imgbtn-id="${esc(s.id)}">${SVG_IMG_P}</button>
+              <button class="vid-program-btn" title="Add YouTube video" data-vidbtn-id="${esc(s.id)}">${SVG_VID_P}</button>
               <button class="del-section-btn" title="Delete section" data-delbtn-id="${esc(s.id)}">${SVG_TRASH}</button>`;
           const bodyHTML = isSBS
             ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8"><div class="section-toolbar">${tbHTMLp}</div>${textHTML}</div></div>`
@@ -4973,7 +5233,7 @@
         wireSbsResizeHandles($container, (id, fields) => updateProgramSection(currentProgram, id, fields));
 
         // Carousel: add image
-        $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
+        $container.querySelectorAll('.carousel-add-img').forEach(btn => {
           btn.addEventListener('click', () => {
             const id = btn.dataset.cid;
             const inp = document.createElement('input');
@@ -4994,6 +5254,45 @@
               } catch (err) { alert('Error: ' + err.message); }
             };
             inp.click();
+          });
+        });
+        // Carousel: add YouTube video
+        $container.querySelectorAll('.carousel-add-yt').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.dataset.cid;
+            const raw = prompt('Enter YouTube URL:');
+            if (!raw) return;
+            const ytId = getYouTubeId(raw.trim());
+            if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+            try {
+              const progs = await fetchPrograms(false);
+              const prog = progs.find(p => p.id === program.id);
+              const secs = Array.isArray(prog?.sections) ? prog.sections : [];
+              const sec  = secs.find(s => s.id === id) || {};
+              const imgs = getSectionImages(sec); imgs.push(raw.trim());
+              await updateProgramSection(program.id, id, { images: imgs, image_url: imgs[0] });
+              await renderProgramPage(slug);
+            } catch (err) { alert('Error: ' + err.message); }
+          });
+        });
+
+        // Toolbar: add YouTube video to section
+        $container.querySelectorAll('.vid-program-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id  = btn.dataset.vidbtnId;
+            const raw = prompt('Enter YouTube URL:');
+            if (!raw) return;
+            const ytId = getYouTubeId(raw.trim());
+            if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+            try {
+              const progs = await fetchPrograms(false);
+              const prog  = progs.find(p => p.id === program.id);
+              const secs  = Array.isArray(prog?.sections) ? prog.sections : [];
+              const sec   = secs.find(s => s.id === id) || {};
+              const imgs  = getSectionImages(sec); imgs.push(raw.trim());
+              await updateProgramSection(program.id, id, { images: imgs, image_url: imgs[0] });
+              await renderProgramPage(slug);
+            } catch (err) { alert('Error: ' + err.message); }
           });
         });
 
@@ -5048,7 +5347,7 @@
           btn.addEventListener('click', () => {
             const id = btn.dataset.imgbtnId;
             const inp = document.createElement('input');
-            inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
+            inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
             inp.onchange = async () => {
               if (!inp.files.length) return;
               const file = inp.files[0];
@@ -5107,15 +5406,19 @@
       const SVG_PENCIL = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_TRASH  = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
 
-      $grid.innerHTML = photos.map(p => `
+      $grid.innerHTML = photos.map(p => {
+        const ytId = getYouTubeId(p.image_url);
+        const mediaEl = ytId
+          ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="lazy" /><div class="yt-play-overlay"></div></div>`
+          : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
+        return `
         <div class="gallery-card" data-photo-id="${esc(p.id)}" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
           <button class="gallery-card-delete-btn" data-del-id="${esc(p.id)}" data-del-url="${esc(p.image_url)}" title="Delete photo">${SVG_TRASH}</button>
           <button class="gallery-card-edit-btn" title="Edit caption">${SVG_PENCIL}</button>
-          <div class="gallery-card-img-wrap">
-            <img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />
-          </div>
+          <div class="gallery-card-img-wrap">${mediaEl}</div>
           ${p.caption ? `<div class="gallery-card-caption">${esc(p.caption)}</div>` : ''}
-        </div>`).join('');
+        </div>`;
+      }).join('');
 
       // Lightbox on image click
       $grid.querySelectorAll('.gallery-card').forEach(card => {
@@ -5684,12 +5987,18 @@
       const $empty = document.getElementById('admin-gallery-empty');
       if (!photos.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
-      $tbody.innerHTML = photos.map(p => `<tr>
-        <td class="px-4 py-3"><img src="${esc(p.image_url)}" class="w-14 h-10 object-cover rounded border border-imperial/10"/></td>
+      $tbody.innerHTML = photos.map(p => {
+        const ytId = getYouTubeId(p.image_url);
+        const thumb = ytId
+          ? `<img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" class="yt-admin-thumb" alt="video"/>`
+          : `<img src="${esc(p.image_url)}" class="w-14 h-10 object-cover rounded border border-imperial/10"/>`;
+        return `<tr>
+        <td class="px-4 py-3">${thumb}</td>
         <td class="px-4 py-3 text-ink/60">${esc(p.caption||'—')}</td>
         <td class="px-4 py-3 text-ink/40 text-xs">${new Date(p.created_at).toLocaleDateString()}</td>
         <td class="px-4 py-3 text-center"><button data-del-gal="${p.id}" data-gal-url="${esc(p.image_url)}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
-      </tr>`).join('');
+      </tr>`;
+      }).join('');
       $tbody.querySelectorAll('[data-del-gal]').forEach(b => b.addEventListener('click', async () => {
         if (!confirm('Delete this photo?')) return;
         if (await deleteGalleryItem(b.dataset.delGal, b.dataset.galUrl)) { await renderAdminGallery(); await renderHomeGallery(); await renderHeroPhoto(); }
@@ -6192,12 +6501,26 @@
     // ════════════════════════════════════════════════
     const $lb = document.getElementById('lightbox');
     function openLightbox(url, cap) {
-      document.getElementById('lightbox-img').src = url;
+      const $img = document.getElementById('lightbox-img');
+      const $yt  = document.getElementById('lightbox-yt');
+      const ytId = getYouTubeId(url);
+      if (ytId) {
+        $img.classList.add('view-hidden'); $img.src = '';
+        $yt.src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+        $yt.classList.remove('view-hidden');
+      } else {
+        $yt.classList.add('view-hidden'); $yt.src = '';
+        $img.src = url; $img.classList.remove('view-hidden');
+      }
       document.getElementById('lightbox-caption').textContent = cap || '';
       document.getElementById('lightbox-caption').classList.toggle('view-hidden', !cap);
       $lb.classList.add('active'); $lb.setAttribute('aria-hidden','false');
     }
-    function closeLightbox() { $lb.classList.remove('active'); $lb.setAttribute('aria-hidden','true'); }
+    function closeLightbox() {
+      document.getElementById('lightbox-yt').src = '';
+      document.getElementById('lightbox-yt').classList.add('view-hidden');
+      $lb.classList.remove('active'); $lb.setAttribute('aria-hidden','true');
+    }
     document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
     $lb.addEventListener('click', e => { if (e.target === $lb) closeLightbox(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
@@ -6297,6 +6620,14 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
 
     // ── Utility ────────────────────────────────────
     function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+    function getYouTubeId(url) {
+      const m = (url || '').match(
+        /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+      );
+      return m ? m[1] : null;
+    }
+    function isYouTubeUrl(url) { return !!getYouTubeId(url); }
+    function isVideoUrl(url) { return isYouTubeUrl(url); }
 
     // ── Init ───────────────────────────────────────
     showView('home');
