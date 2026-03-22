@@ -399,10 +399,18 @@
     }
     .sec-carousel-track { position: relative; width: 100%; }
     .sec-carousel-slide { display: none; position: relative; }
-    .sec-carousel-slide.active { display: block; animation: carousel-fade-in 0.35s ease; }
+    .sec-carousel-slide.active { display: block; animation: carousel-fade-in 0.5s ease; }
+    .sec-carousel-slide.carousel-fade-out {
+      display: block !important; position: absolute; top: 0; left: 0; width: 100%;
+      animation: carousel-fade-out 0.5s ease forwards; pointer-events: none; z-index: 2;
+    }
     @keyframes carousel-fade-in {
-      from { opacity: 0; transform: translateX(8px); }
-      to   { opacity: 1; transform: translateX(0); }
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes carousel-fade-out {
+      from { opacity: 1; }
+      to   { opacity: 0; }
     }
     .sec-carousel-img {
       width: 100%; max-height: 420px; object-fit: cover;
@@ -4476,8 +4484,9 @@
         <div class="sec-carousel" data-cid="${esc(sectionId)}" data-cur="0">
           <div class="sec-carousel-track">${slides}</div>${nav}${dots}
         </div>
+        ${isEdit ? `
         <button class="carousel-add-btn carousel-add-img" data-cid="${esc(sectionId)}">+ Add image</button>
-        <button class="carousel-add-btn carousel-add-yt" data-cid="${esc(sectionId)}" style="margin-top:0.25rem">▶ Add YouTube video</button>`;
+        <button class="carousel-add-btn carousel-add-yt" data-cid="${esc(sectionId)}" style="margin-top:0.25rem">▶ Add YouTube video</button>` : ''}`;
     }
     function wireCarousels($container) {
       $container.querySelectorAll('.sec-carousel').forEach(car => {
@@ -4486,9 +4495,18 @@
         if (slides.length <= 1) return;
         function goTo(n) {
           const cur = parseInt(car.dataset.cur) || 0;
-          slides[cur].classList.remove('active'); dots[cur]?.classList.remove('active');
+          if (cur === n) return;
+          // Fade out the current slide
+          const curSlide = slides[cur];
+          curSlide.classList.add('carousel-fade-out');
+          dots[cur]?.classList.remove('active');
+          curSlide.addEventListener('animationend', () => {
+            curSlide.classList.remove('active', 'carousel-fade-out');
+          }, { once: true });
+          // Fade in the new slide
           car.dataset.cur = n;
-          slides[n].classList.add('active');   dots[n]?.classList.add('active');
+          slides[n].classList.add('active');
+          dots[n]?.classList.add('active');
           // Pause autoscroll if target slide has a YouTube iframe
           if (slides[n]?.dataset.isYt === '1') stopAuto();
           // Preload next slide image
@@ -4557,6 +4575,7 @@
 
     function renderLayoutToggleBar(containerId, page) {
       document.getElementById('layout-bar-' + page)?.remove();
+      if (!session) return;
       const cur = getSectionLayout(page);
       const bar = document.createElement('div');
       bar.className = 'layout-toggle-bar'; bar.id = 'layout-bar-' + page;
