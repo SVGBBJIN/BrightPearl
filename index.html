@@ -1236,6 +1236,44 @@
     }
     .inline-save-btn:hover { background: rgb(var(--imperial-hover-rgb)); }
 
+    /* ── Rich text format toolbar ──────────────────── */
+    .format-toolbar {
+      display: flex; gap: 4px; padding: 4px 6px;
+      background: rgb(var(--surface-rgb, 255 255 255));
+      border: 1px solid rgb(var(--imperial-rgb) / 0.2);
+      border-radius: 6px; margin-bottom: 6px; flex-wrap: wrap;
+    }
+    .format-btn {
+      padding: 2px 9px; border-radius: 4px;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.25);
+      background: transparent; cursor: pointer; font-size: 0.82rem; line-height: 1.6;
+      color: rgb(var(--ink-rgb)); transition: background 0.15s;
+    }
+    .format-btn:hover { background: rgb(var(--imperial-rgb) / 0.1); }
+    .format-sep { width: 1px; background: rgb(var(--imperial-rgb) / 0.2); align-self: stretch; margin: 2px 2px; }
+
+    /* ── Tables in formatted body content ─────────── */
+    .editable-body table, .haf-body table, .hp-feature-body table {
+      border-collapse: collapse; width: 100%; margin: 0.5rem 0;
+    }
+    .editable-body td, .editable-body th,
+    .haf-body td, .haf-body th,
+    .hp-feature-body td, .hp-feature-body th {
+      border: 1px solid rgb(var(--imperial-rgb) / 0.3);
+      padding: 6px 10px; text-align: left; font-size: inherit;
+    }
+    .editable-body th, .haf-body th, .hp-feature-body th {
+      background: rgb(var(--imperial-rgb) / 0.07); font-weight: 600;
+    }
+
+    /* ── Lists in formatted body content ──────────── */
+    .editable-body ul, .editable-body ol,
+    .haf-body ul, .haf-body ol,
+    .hp-feature-body ul, .hp-feature-body ol {
+      padding-left: 1.4rem; margin: 0.35rem 0;
+    }
+    .editable-body li, .haf-body li, .hp-feature-body li { margin: 0.1rem 0; }
+
     /* ── About section with image ──────────────────── */
     .about-section-with-image {
       display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;
@@ -4089,7 +4127,7 @@
               ${toolbar}
               <span class="hp-feature-eyebrow">Our Story</span>
               <h2 class="hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h2>
-              <p class="hp-feature-body haf-body" data-id="${esc(s.id)}">${esc(s.body)}</p>
+              <p class="hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</p>
             </div>`;
         }
 
@@ -4109,7 +4147,7 @@
             <div class="hp-feature-text">
               <span class="hp-feature-eyebrow">Our Story</span>
               <h2 class="hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h2>
-              <p class="hp-feature-body haf-body" data-id="${esc(s.id)}">${esc(s.body)}</p>
+              <p class="hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</p>
             </div>
             <div class="hp-feature-photo-wrap"${isVid ? '' : ` data-upload-sid="${esc(s.id)}"`}>
               <div class="hp-deco-circle hp-deco-circle--primary"></div>
@@ -4136,16 +4174,19 @@
           if ($title.contentEditable === 'true') {
             [$title, $body].forEach(el => el.contentEditable = 'false');
             const sb = block.querySelector('.inline-save-btn'); if (sb) sb.remove();
-            updateAboutSection(id, { title: $title.textContent.trim(), body: $body.textContent.trim() })
+            block.querySelector('.format-toolbar')?.remove();
+            updateAboutSection(id, { title: $title.textContent.trim(), body: sanitizeHtml($body.innerHTML.trim()) })
               .then(() => renderHomeAboutFeatures());
           } else {
             [$title, $body].forEach(el => el.contentEditable = 'true'); $title.focus();
+            showFormatToolbar($body);
             if (!block.querySelector('.inline-save-btn')) {
               const sb = document.createElement('button');
               sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
               sb.addEventListener('click', async () => {
-                await updateAboutSection(id, { title: $title.textContent.trim(), body: $body.textContent.trim() });
+                await updateAboutSection(id, { title: $title.textContent.trim(), body: sanitizeHtml($body.innerHTML.trim()) });
                 [$title, $body].forEach(el => el.contentEditable = 'false');
+                block.querySelector('.format-toolbar')?.remove();
                 sb.remove();
                 await renderHomeAboutFeatures();
               });
@@ -4621,7 +4662,7 @@
         const carHTML = hasImgs ? buildCarouselHTML(imgs, s.id, editMode) : '';
         const textHTML = `
           <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
-          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>`;
+          <div class="text-ink/65 leading-relaxed text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${sanitizeHtml(s.body)}</div>`;
         const imgH = s.img_height || '';
         const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${s.id}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
         const bodyHTML = isSBS
@@ -4728,15 +4769,18 @@
           if ($title.contentEditable === 'true') {
             $title.contentEditable = 'false'; $body.contentEditable = 'false';
             const saveBtn = card.querySelector('.inline-save-btn'); if (saveBtn) saveBtn.remove();
-            updateAboutSection(id, { title: $title.textContent.trim(), body: $body.textContent.trim() });
+            card.querySelector('.format-toolbar')?.remove();
+            updateAboutSection(id, { title: $title.textContent.trim(), body: sanitizeHtml($body.innerHTML.trim()) });
           } else {
             $title.contentEditable = 'true'; $body.contentEditable = 'true'; $title.focus();
+            showFormatToolbar($body);
             if (!card.querySelector('.inline-save-btn')) {
               const sb = document.createElement('button');
               sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
               sb.addEventListener('click', async () => {
-                await updateAboutSection(id, { title: $title.textContent.trim(), body: $body.textContent.trim() });
-                $title.contentEditable = 'false'; $body.contentEditable = 'false'; sb.remove();
+                await updateAboutSection(id, { title: $title.textContent.trim(), body: sanitizeHtml($body.innerHTML.trim()) });
+                $title.contentEditable = 'false'; $body.contentEditable = 'false';
+                card.querySelector('.format-toolbar')?.remove(); sb.remove();
               });
               card.appendChild(sb);
             }
@@ -5019,7 +5063,7 @@
         const carHTML = hasImgs ? buildCarouselHTML(imgs, s.id, editMode) : '';
         const textHTML = `
           <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
-          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${esc(s.body)}</p>`;
+          <div class="text-ink/65 leading-relaxed text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${sanitizeHtml(s.body)}</div>`;
         const imgH = s.img_height || '';
         const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${s.id}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
         const tbHTML = `
@@ -5117,15 +5161,18 @@
           if ($t.contentEditable === 'true') {
             $t.contentEditable = 'false'; $b.contentEditable = 'false';
             const sb = card.querySelector('.inline-save-btn'); if (sb) sb.remove();
-            updateConcertSection(id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
+            card.querySelector('.format-toolbar')?.remove();
+            updateConcertSection(id, { title: $t.textContent.trim(), body: sanitizeHtml($b.innerHTML.trim()) });
           } else {
             $t.contentEditable = 'true'; $b.contentEditable = 'true'; $t.focus();
+            showFormatToolbar($b);
             if (!card.querySelector('.inline-save-btn')) {
               const sb = document.createElement('button');
               sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
               sb.addEventListener('click', async () => {
-                await updateConcertSection(id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
-                $t.contentEditable = 'false'; $b.contentEditable = 'false'; sb.remove();
+                await updateConcertSection(id, { title: $t.textContent.trim(), body: sanitizeHtml($b.innerHTML.trim()) });
+                $t.contentEditable = 'false'; $b.contentEditable = 'false';
+                card.querySelector('.format-toolbar')?.remove(); sb.remove();
               });
               card.appendChild(sb);
             }
@@ -5210,7 +5257,7 @@
           const carHTML = hasImgs ? buildCarouselHTML(imgs, s.id, editMode) : '';
           const textHTML = `
             <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
-            <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${esc(s.body)}</p>`;
+            <div class="text-ink/65 leading-relaxed text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>`;
           const imgH = s.img_height || '';
           const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${esc(s.id)}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
           const tbHTMLp = `
@@ -5320,15 +5367,18 @@
             if ($t.contentEditable === 'true') {
               $t.contentEditable = 'false'; $b.contentEditable = 'false';
               const sb = card.querySelector('.inline-save-btn'); if (sb) sb.remove();
-              updateProgramSection(program.id, id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
+              card.querySelector('.format-toolbar')?.remove();
+              updateProgramSection(program.id, id, { title: $t.textContent.trim(), body: sanitizeHtml($b.innerHTML.trim()) });
             } else {
               $t.contentEditable = 'true'; $b.contentEditable = 'true'; $t.focus();
+              showFormatToolbar($b);
               if (!card.querySelector('.inline-save-btn')) {
                 const sb = document.createElement('button');
                 sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
                 sb.addEventListener('click', async () => {
-                  await updateProgramSection(program.id, id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
-                  $t.contentEditable = 'false'; $b.contentEditable = 'false'; sb.remove();
+                  await updateProgramSection(program.id, id, { title: $t.textContent.trim(), body: sanitizeHtml($b.innerHTML.trim()) });
+                  $t.contentEditable = 'false'; $b.contentEditable = 'false';
+                  card.querySelector('.format-toolbar')?.remove(); sb.remove();
                 });
                 card.appendChild(sb);
               }
@@ -5526,7 +5576,7 @@
             <button class="del-section-btn" title="Delete section" data-delbtn-id="${esc(s.id)}">${SVG_TRASH}</button>
           </div>
           <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
-          <p class="text-ink/65 leading-relaxed whitespace-pre-line text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${esc(s.body)}</p>
+          <div class="text-ink/65 leading-relaxed text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
         </div>`).join('');
 
       $container.querySelectorAll('.edit-section-btn').forEach(btn => {
@@ -5537,15 +5587,18 @@
           if ($t.contentEditable === 'true') {
             $t.contentEditable = 'false'; $b.contentEditable = 'false';
             const sb = card.querySelector('.inline-save-btn'); if (sb) sb.remove();
-            updateTosSection(id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
+            card.querySelector('.format-toolbar')?.remove();
+            updateTosSection(id, { title: $t.textContent.trim(), body: sanitizeHtml($b.innerHTML.trim()) });
           } else {
             $t.contentEditable = 'true'; $b.contentEditable = 'true'; $t.focus();
+            showFormatToolbar($b);
             if (!card.querySelector('.inline-save-btn')) {
               const sb = document.createElement('button');
               sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
               sb.addEventListener('click', async () => {
-                await updateTosSection(id, { title: $t.textContent.trim(), body: $b.textContent.trim() });
-                $t.contentEditable = 'false'; $b.contentEditable = 'false'; sb.remove();
+                await updateTosSection(id, { title: $t.textContent.trim(), body: sanitizeHtml($b.innerHTML.trim()) });
+                $t.contentEditable = 'false'; $b.contentEditable = 'false';
+                card.querySelector('.format-toolbar')?.remove(); sb.remove();
               });
               card.appendChild(sb);
             }
@@ -6618,8 +6671,103 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     }
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+    // ── Rich text formatting toolbar ────────────────
+    function showFormatToolbar($body) {
+      if ($body.previousElementSibling?.classList.contains('format-toolbar')) return;
+      const toolbar = document.createElement('div');
+      toolbar.className = 'format-toolbar';
+      toolbar.innerHTML = `
+        <button class="format-btn" data-cmd="bold" title="Bold"><b>B</b></button>
+        <button class="format-btn" data-cmd="italic" title="Italic"><i>I</i></button>
+        <button class="format-btn" data-cmd="insertUnorderedList" title="Bullet list">&#8226; List</button>
+        <button class="format-btn" data-cmd="table" title="Insert table">&#9783; Table</button>
+        <span class="format-sep"></span>
+        <button class="format-btn" data-cmd="table-add-row" title="Add row below (cursor must be in a table)">+ Row</button>
+        <button class="format-btn" data-cmd="table-add-col" title="Add column to the right (cursor must be in a table)">+ Col</button>
+        <button class="format-btn" data-cmd="table-remove-row" title="Remove current row">&#8722; Row</button>
+        <button class="format-btn" data-cmd="table-remove-col" title="Remove current column">&#8722; Col</button>
+        <button class="format-btn" data-cmd="table-delete" title="Delete entire table">&#128465; Table</button>`;
+      toolbar.addEventListener('mousedown', e => {
+        e.preventDefault();
+        const btn = e.target.closest('[data-cmd]');
+        if (!btn) return;
+        const cmd = btn.dataset.cmd;
+        $body.focus();
+        if (cmd === 'table') {
+          document.execCommand('insertHTML', false,
+            '<table><thead><tr><th>Header 1</th><th>Header 2</th><th>Header 3</th></tr></thead>' +
+            '<tbody><tr><td>Cell</td><td>Cell</td><td>Cell</td></tr>' +
+            '<tr><td>Cell</td><td>Cell</td><td>Cell</td></tr></tbody></table>');
+        } else {
+          const sel = window.getSelection();
+          const node = sel.rangeCount ? sel.getRangeAt(0).startContainer : null;
+          const cell = node ? (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement)?.closest('td,th') : null;
+          const table = cell?.closest('table');
+          if (cmd === 'table-add-row') {
+            if (cell) {
+              const row = cell.closest('tr');
+              const colCount = row.cells.length;
+              const newRow = document.createElement('tr');
+              for (let i = 0; i < colCount; i++) {
+                const td = document.createElement('td'); td.textContent = 'Cell'; newRow.appendChild(td);
+              }
+              row.after(newRow);
+            }
+          } else if (cmd === 'table-add-col') {
+            if (table && cell) {
+              const colIdx = cell.cellIndex;
+              Array.from(table.querySelectorAll('tr')).forEach((tr, i) => {
+                const newCell = document.createElement(i === 0 && tr.closest('thead') ? 'th' : 'td');
+                newCell.textContent = i === 0 && tr.closest('thead') ? 'Header' : 'Cell';
+                if (tr.cells[colIdx]) tr.cells[colIdx].after(newCell);
+                else tr.appendChild(newCell);
+              });
+            }
+          } else if (cmd === 'table-remove-row') {
+            if (cell) {
+              const row = cell.closest('tr');
+              if (table.querySelectorAll('tr').length > 1) row.remove();
+              else table.remove();
+            }
+          } else if (cmd === 'table-remove-col') {
+            if (table && cell) {
+              const colIdx = cell.cellIndex;
+              Array.from(table.querySelectorAll('tr')).forEach(tr => {
+                if (tr.cells[colIdx]) tr.cells[colIdx].remove();
+              });
+              if (!table.querySelector('td,th')) table.remove();
+            }
+          } else if (cmd === 'table-delete') {
+            if (table) table.remove();
+          } else {
+            document.execCommand(cmd, false, null);
+          }
+        }
+      });
+      $body.parentNode.insertBefore(toolbar, $body);
+    }
+
     // ── Utility ────────────────────────────────────
     function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+    function sanitizeHtml(html) {
+      if (!html) return '';
+      const allowed = new Set(['b','i','em','strong','ul','ol','li','br','p','table','thead','tbody','tr','td','th']);
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      (function clean(node) {
+        Array.from(node.childNodes).forEach(child => {
+          if (child.nodeType === Node.ELEMENT_NODE) {
+            if (!allowed.has(child.tagName.toLowerCase())) {
+              child.replaceWith(...child.childNodes);
+            } else {
+              Array.from(child.attributes).forEach(a => child.removeAttribute(a.name));
+              clean(child);
+            }
+          }
+        });
+      })(tmp);
+      return tmp.innerHTML;
+    }
     function getYouTubeId(url) {
       const m = (url || '').match(
         /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
