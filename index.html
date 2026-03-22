@@ -4024,6 +4024,7 @@
       const SVG_TRASH  = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
       const SVG_IMG    = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
       const SVG_CAM    = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>`;
+      const SVG_VID    = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
 
       const addRowHtml = `
         <div class="home-about-add-row">
@@ -4039,6 +4040,14 @@
               <div id="haf-img-preview" class="view-hidden flex items-center gap-2">
                 <img id="haf-img-thumb" class="w-12 h-8 object-cover rounded border border-imperial/10" src="" alt=""/>
                 <button type="button" id="haf-img-clear" class="text-imperial text-xs hover:underline">Clear</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem;">
+              <input id="haf-yt-url" type="url" placeholder="Or paste a YouTube URL (optional)"
+                style="flex:1;padding:0.4rem 0.6rem;border:1px solid rgb(var(--imperial-rgb)/0.2);border-radius:0.375rem;font-size:0.8rem;background:transparent;color:inherit;" />
+              <div id="haf-yt-preview" class="view-hidden" style="width:60px;height:36px;border-radius:4px;overflow:hidden;position:relative;flex-shrink:0;">
+                <img id="haf-yt-thumb" src="" style="width:100%;height:100%;object-fit:cover;" alt="" />
+                <div class="yt-play-overlay" style="transform:scale(0.55);"></div>
               </div>
             </div>
             <div class="home-about-add-form-btns">
@@ -4061,7 +4070,8 @@
           <div class="section-toolbar" style="position:absolute;top:0.5rem;right:0.5rem;">
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="haf-edit-btn" data-edit-id="${esc(s.id)}" title="Edit text">${SVG_PENCIL}</button>
-            ${s.image_url ? `<button class="haf-img-btn" data-img-id="${esc(s.id)}" title="Change photo">${SVG_IMG}</button>` : `<button class="haf-img-btn" data-img-id="${esc(s.id)}" title="Add photo">${SVG_IMG}</button>`}
+            <button class="haf-img-btn" data-img-id="${esc(s.id)}" title="${s.image_url && !isVideoUrl(s.image_url) ? 'Change photo' : 'Add photo'}">${SVG_IMG}</button>
+            <button class="haf-vid-btn" data-vid-id="${esc(s.id)}" title="${isVideoUrl(s.image_url) ? 'Change video' : 'Add YouTube video'}">${SVG_VID}</button>
             <button class="haf-del-btn" data-del-id="${esc(s.id)}" title="Delete section">${SVG_TRASH}</button>
           </div>`;
 
@@ -4075,6 +4085,16 @@
             </div>`;
         }
 
+        const isVid = isVideoUrl(s.image_url);
+        const ytId  = isVid ? getYouTubeId(s.image_url) : null;
+        const mediaEl = isVid
+          ? `<div class="yt-thumb-wrap" style="border-radius:0.75rem;overflow:hidden;cursor:pointer" data-lburl="${esc(s.image_url)}">
+               <img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(s.title)}" loading="lazy" />
+               <div class="yt-play-overlay"></div>
+             </div>`
+          : `<img class="hp-feature-img" src="${esc(s.image_url)}" alt="${esc(s.title)}" loading="lazy" />
+             <div class="hp-photo-upload-overlay">${SVG_CAM}<span>Change photo</span></div>
+             <input class="haf-photo-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" />`;
         return `
           <div class="hp-feature${flip ? ' hp-feature--flip' : ''}" data-section-id="${esc(s.id)}" style="position:relative">
             ${toolbar}
@@ -4083,13 +4103,11 @@
               <h2 class="hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h2>
               <p class="hp-feature-body haf-body" data-id="${esc(s.id)}">${esc(s.body)}</p>
             </div>
-            <div class="hp-feature-photo-wrap" data-upload-sid="${esc(s.id)}">
+            <div class="hp-feature-photo-wrap"${isVid ? '' : ` data-upload-sid="${esc(s.id)}"`}>
               <div class="hp-deco-circle hp-deco-circle--primary"></div>
               <div class="hp-deco-circle hp-deco-circle--accent"></div>
               <div class="hp-deco-dash-box"></div>
-              <img class="hp-feature-img" src="${esc(s.image_url)}" alt="${esc(s.title)}" loading="lazy" />
-              <div class="hp-photo-upload-overlay">${SVG_CAM}<span>Change photo</span></div>
-              <input class="haf-photo-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" />
+              ${mediaEl}
             </div>
           </div>`;
       }).join('') + addRowHtml;
@@ -4193,6 +4211,25 @@
         });
       });
 
+      // YouTube video button on toolbar
+      $container.querySelectorAll('.haf-vid-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id  = btn.dataset.vidId;
+          const raw = prompt('Paste a YouTube URL:');
+          if (raw === null) return;
+          const ytId = getYouTubeId(raw.trim());
+          if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+          updateAboutSection(id, { image_url: raw.trim() }).then(ok => {
+            if (ok) renderHomeAboutFeatures();
+          });
+        });
+      });
+
+      // Lightbox clicks on YouTube thumbnails in feature cards
+      $container.querySelectorAll('.yt-thumb-wrap[data-lburl]').forEach(el => {
+        el.addEventListener('click', () => openLightbox(el.dataset.lburl, ''));
+      });
+
       // Wire add-section form
       wireHomeAboutAddForm();
 
@@ -4213,17 +4250,28 @@
       const $prev   = document.getElementById('haf-img-preview');
       const $thumb  = document.getElementById('haf-img-thumb');
       const $clear  = document.getElementById('haf-img-clear');
+      const $ytUrl  = document.getElementById('haf-yt-url');
+      const $ytPrev = document.getElementById('haf-yt-preview');
+      const $ytThm  = document.getElementById('haf-yt-thumb');
       if (!$btn || !$form) return;
       let _file = null;
 
       $btn.addEventListener('click', () => { $form.classList.toggle('open'); if ($form.classList.contains('open')) document.getElementById('haf-title')?.focus(); });
-      $cancel.addEventListener('click', () => { $form.classList.remove('open'); _file = null; $imgIn.value = ''; $prev.classList.add('view-hidden'); });
+      $cancel.addEventListener('click', () => {
+        $form.classList.remove('open'); _file = null; $imgIn.value = ''; $prev.classList.add('view-hidden');
+        $ytUrl.value = ''; $ytPrev.classList.add('view-hidden'); $ytThm.src = '';
+      });
       $drop.addEventListener('click', () => $imgIn.click());
       $drop.addEventListener('dragover', e => { e.preventDefault(); $drop.classList.add('dragover'); });
       $drop.addEventListener('dragleave', () => $drop.classList.remove('dragover'));
       $drop.addEventListener('drop', e => { e.preventDefault(); $drop.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) { _file = f; $thumb.src = URL.createObjectURL(f); $prev.classList.remove('view-hidden'); } });
       $imgIn.addEventListener('change', () => { if ($imgIn.files[0]) { _file = $imgIn.files[0]; $thumb.src = URL.createObjectURL(_file); $prev.classList.remove('view-hidden'); } });
       $clear.addEventListener('click', () => { _file = null; $imgIn.value = ''; $prev.classList.add('view-hidden'); });
+      $ytUrl.addEventListener('input', () => {
+        const id = getYouTubeId($ytUrl.value.trim());
+        if (id) { $ytThm.src = `https://img.youtube.com/vi/${id}/mqdefault.jpg`; $ytPrev.classList.remove('view-hidden'); }
+        else { $ytPrev.classList.add('view-hidden'); $ytThm.src = ''; }
+      });
 
       $submit.addEventListener('click', async () => {
         const title = document.getElementById('haf-title').value.trim();
@@ -4231,7 +4279,14 @@
         if (!title || !body) { alert('Title and body are required.'); return; }
         $submit.disabled = true; $submit.textContent = 'Adding…';
         let imageUrl = null;
-        if (_file) { try { imageUrl = await uploadImageToStorage(_file); } catch (err) { alert('Image upload failed: ' + err.message); $submit.disabled = false; $submit.textContent = 'Add Section'; return; } }
+        const ytRaw = $ytUrl.value.trim();
+        const ytId  = getYouTubeId(ytRaw);
+        if (ytId) {
+          imageUrl = ytRaw;
+        } else if (_file) {
+          try { imageUrl = await uploadImageToStorage(_file); }
+          catch (err) { alert('Image upload failed: ' + err.message); $submit.disabled = false; $submit.textContent = 'Add Section'; return; }
+        }
         const order = await fetchAboutSections().then(s => s.length);
         if (await addAboutSection(title, body, order, imageUrl)) {
           await renderHomeAboutFeatures();
@@ -4239,6 +4294,7 @@
           await renderAdminAbout();
         }
         $submit.disabled = false; $submit.textContent = 'Add Section';
+        $ytUrl.value = ''; $ytPrev.classList.add('view-hidden'); $ytThm.src = '';
       });
     }
 
