@@ -6682,8 +6682,11 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
         <button class="format-btn" data-cmd="insertUnorderedList" title="Bullet list">&#8226; List</button>
         <button class="format-btn" data-cmd="table" title="Insert table">&#9783; Table</button>
         <span class="format-sep"></span>
-        <button class="format-btn" data-cmd="table-remove-row" title="Remove row (click inside a table row first)">&#8722; Row</button>
-        <button class="format-btn" data-cmd="table-remove-col" title="Remove column (click inside a table cell first)">&#8722; Col</button>`;
+        <button class="format-btn" data-cmd="table-add-row" title="Add row below (cursor must be in a table)">+ Row</button>
+        <button class="format-btn" data-cmd="table-add-col" title="Add column to the right (cursor must be in a table)">+ Col</button>
+        <button class="format-btn" data-cmd="table-remove-row" title="Remove current row">&#8722; Row</button>
+        <button class="format-btn" data-cmd="table-remove-col" title="Remove current column">&#8722; Col</button>
+        <button class="format-btn" data-cmd="table-delete" title="Delete entire table">&#128465; Table</button>`;
       toolbar.addEventListener('mousedown', e => {
         e.preventDefault();
         const btn = e.target.closest('[data-cmd]');
@@ -6695,35 +6698,50 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
             '<table><thead><tr><th>Header 1</th><th>Header 2</th><th>Header 3</th></tr></thead>' +
             '<tbody><tr><td>Cell</td><td>Cell</td><td>Cell</td></tr>' +
             '<tr><td>Cell</td><td>Cell</td><td>Cell</td></tr></tbody></table>');
-        } else if (cmd === 'table-remove-row') {
+        } else {
           const sel = window.getSelection();
           const node = sel.rangeCount ? sel.getRangeAt(0).startContainer : null;
           const cell = node ? (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement)?.closest('td,th') : null;
-          if (cell) {
-            const row = cell.closest('tr');
-            const table = row?.closest('table');
-            if (row && table) {
+          const table = cell?.closest('table');
+          if (cmd === 'table-add-row') {
+            if (cell) {
+              const row = cell.closest('tr');
+              const colCount = row.cells.length;
+              const newRow = document.createElement('tr');
+              for (let i = 0; i < colCount; i++) {
+                const td = document.createElement('td'); td.textContent = 'Cell'; newRow.appendChild(td);
+              }
+              row.after(newRow);
+            }
+          } else if (cmd === 'table-add-col') {
+            if (table && cell) {
+              const colIdx = cell.cellIndex;
+              Array.from(table.querySelectorAll('tr')).forEach((tr, i) => {
+                const newCell = document.createElement(i === 0 && tr.closest('thead') ? 'th' : 'td');
+                newCell.textContent = i === 0 && tr.closest('thead') ? 'Header' : 'Cell';
+                if (tr.cells[colIdx]) tr.cells[colIdx].after(newCell);
+                else tr.appendChild(newCell);
+              });
+            }
+          } else if (cmd === 'table-remove-row') {
+            if (cell) {
+              const row = cell.closest('tr');
               if (table.querySelectorAll('tr').length > 1) row.remove();
               else table.remove();
             }
-          }
-        } else if (cmd === 'table-remove-col') {
-          const sel = window.getSelection();
-          const node = sel.rangeCount ? sel.getRangeAt(0).startContainer : null;
-          const cell = node ? (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement)?.closest('td,th') : null;
-          if (cell) {
-            const colIdx = cell.cellIndex;
-            const table = cell.closest('table');
-            if (table) {
+          } else if (cmd === 'table-remove-col') {
+            if (table && cell) {
+              const colIdx = cell.cellIndex;
               Array.from(table.querySelectorAll('tr')).forEach(tr => {
                 if (tr.cells[colIdx]) tr.cells[colIdx].remove();
               });
-              const firstRow = table.querySelector('tr');
-              if (!firstRow || firstRow.cells.length === 0) table.remove();
+              if (!table.querySelector('td,th')) table.remove();
             }
+          } else if (cmd === 'table-delete') {
+            if (table) table.remove();
+          } else {
+            document.execCommand(cmd, false, null);
           }
-        } else {
-          document.execCommand(cmd, false, null);
         }
       });
       $body.parentNode.insertBefore(toolbar, $body);
