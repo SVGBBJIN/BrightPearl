@@ -4503,7 +4503,7 @@
           _autoTimer = setInterval(() => {
             const c = parseInt(car.dataset.cur) || 0;
             goTo((c + 1) % slides.length);
-          }, 4000);
+          }, 5000);
         }
         function stopAuto() { clearInterval(_autoTimer); _autoTimer = null; }
         startAuto();
@@ -4593,6 +4593,7 @@
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
       const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_IMG_A  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
+      const SVG_VID_A  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
       const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
       $container.innerHTML = sections.map(s => {
         const imgs    = getSectionImages(s);
@@ -4613,6 +4614,7 @@
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
             <button class="img-section-btn" title="Add/change image" data-imgbtn-id="${s.id}">${SVG_IMG_A}</button>
+            <button class="vid-section-btn" title="Add YouTube video" data-vidbtn-id="${s.id}">${SVG_VID_A}</button>
             <button class="del-section-btn" title="Delete section" data-delbtn-id="${s.id}">${SVG_TRASH}</button>
           </div>
           ${bodyHTML}
@@ -4649,6 +4651,25 @@
       $container.querySelectorAll('.carousel-add-yt').forEach(btn => {
         btn.addEventListener('click', async () => {
           const id = btn.dataset.cid;
+          const raw = prompt('Enter YouTube URL:');
+          if (!raw) return;
+          const ytId = getYouTubeId(raw.trim());
+          if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+          try {
+            const secs = await fetchAboutSections();
+            const sec  = secs.find(s => s.id === id) || {};
+            const imgs = getSectionImages(sec); imgs.push(raw.trim());
+            await updateAboutSection(id, { images: imgs, image_url: imgs[0] });
+            await renderHomeAbout();
+            if (editMode) initAboutSortable();
+          } catch (err) { alert('Error: ' + err.message); }
+        });
+      });
+
+      // Toolbar: add YouTube video to section
+      $container.querySelectorAll('.vid-section-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id  = btn.dataset.vidbtnId;
           const raw = prompt('Enter YouTube URL:');
           if (!raw) return;
           const ytId = getYouTubeId(raw.trim());
@@ -4970,6 +4991,7 @@
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
       const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_IMG_C  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
+      const SVG_VID_C  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
       const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
       $container.innerHTML = sections.map(s => {
         const imgs    = getSectionImages(s);
@@ -4985,6 +5007,7 @@
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
             <button class="img-concert-btn" title="${hasImgs ? 'Add/change image' : 'Add image'}" data-imgbtn-id="${s.id}">${SVG_IMG_C}</button>
+            <button class="vid-concert-btn" title="Add YouTube video" data-vidbtn-id="${s.id}">${SVG_VID_C}</button>
             <button class="del-section-btn" title="Delete" data-delbtn-id="${s.id}">${SVG_TRASH}</button>`;
         const bodyHTML = isSBS
           ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8"><div class="section-toolbar">${tbHTML}</div>${textHTML}</div></div>`
@@ -5024,6 +5047,23 @@
       $container.querySelectorAll('.carousel-add-yt').forEach(btn => {
         btn.addEventListener('click', async () => {
           const id = btn.dataset.cid;
+          const raw = prompt('Enter YouTube URL:');
+          if (!raw) return;
+          const ytId = getYouTubeId(raw.trim());
+          if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+          try {
+            const sec = (await fetchConcertSections()).find(s => s.id === id);
+            const imgs = getSectionImages(sec); imgs.push(raw.trim());
+            await updateConcertSection(id, { images: imgs, image_url: imgs[0] });
+            await renderConcertPage();
+          } catch (err) { alert('Error: ' + err.message); }
+        });
+      });
+
+      // Toolbar: add YouTube video to section
+      $container.querySelectorAll('.vid-concert-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id  = btn.dataset.vidbtnId;
           const raw = prompt('Enter YouTube URL:');
           if (!raw) return;
           const ytId = getYouTubeId(raw.trim());
@@ -5137,6 +5177,7 @@
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
       const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_IMG_P  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
+      const SVG_VID_P  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
       const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
 
       if (sections.length) {
@@ -5157,6 +5198,7 @@
               <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
               <button class="edit-section-btn" title="Edit inline" data-edit-id="${esc(s.id)}">${SVG_PENCIL}</button>
               <button class="img-program-btn" title="${hasImgs ? 'Add/change image' : 'Add image'}" data-imgbtn-id="${esc(s.id)}">${SVG_IMG_P}</button>
+              <button class="vid-program-btn" title="Add YouTube video" data-vidbtn-id="${esc(s.id)}">${SVG_VID_P}</button>
               <button class="del-section-btn" title="Delete section" data-delbtn-id="${esc(s.id)}">${SVG_TRASH}</button>`;
           const bodyHTML = isSBS
             ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8"><div class="section-toolbar">${tbHTMLp}</div>${textHTML}</div></div>`
@@ -5209,6 +5251,26 @@
               const secs = Array.isArray(prog?.sections) ? prog.sections : [];
               const sec  = secs.find(s => s.id === id) || {};
               const imgs = getSectionImages(sec); imgs.push(raw.trim());
+              await updateProgramSection(program.id, id, { images: imgs, image_url: imgs[0] });
+              await renderProgramPage(slug);
+            } catch (err) { alert('Error: ' + err.message); }
+          });
+        });
+
+        // Toolbar: add YouTube video to section
+        $container.querySelectorAll('.vid-program-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id  = btn.dataset.vidbtnId;
+            const raw = prompt('Enter YouTube URL:');
+            if (!raw) return;
+            const ytId = getYouTubeId(raw.trim());
+            if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+            try {
+              const progs = await fetchPrograms(false);
+              const prog  = progs.find(p => p.id === program.id);
+              const secs  = Array.isArray(prog?.sections) ? prog.sections : [];
+              const sec   = secs.find(s => s.id === id) || {};
+              const imgs  = getSectionImages(sec); imgs.push(raw.trim());
               await updateProgramSection(program.id, id, { images: imgs, image_url: imgs[0] });
               await renderProgramPage(slug);
             } catch (err) { alert('Error: ' + err.message); }
