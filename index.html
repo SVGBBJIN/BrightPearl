@@ -408,15 +408,28 @@
       width: 100%; max-height: 420px; object-fit: cover;
       display: block; border-radius: 0.625rem;
     }
-    .sec-carousel-video {
-      width: 100%; max-height: 420px; display: block;
-      border-radius: 0.625rem; background: #000;
+    .sec-carousel-yt {
+      width: 100%; height: 420px; display: block;
+      border-radius: 0.625rem; border: none; background: #000;
     }
-    .gallery-cell video { width: 100%; height: 100%; object-fit: cover; }
-    .gallery-card-img-wrap video {
-      width: 100%; display: block; transition: transform 0.4s ease;
+    .yt-thumb-wrap { position: relative; width: 100%; height: 100%; overflow: hidden; }
+    .yt-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+    .gallery-cell:hover .yt-thumb-wrap img,
+    .gallery-card:hover .yt-thumb-wrap img { transform: scale(1.04); }
+    .yt-play-overlay {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.22); transition: background 0.2s;
     }
-    .gallery-card:hover .gallery-card-img-wrap video { transform: scale(1.04); }
+    .yt-play-overlay::after {
+      content: ''; display: block; width: 54px; height: 38px; border-radius: 10px;
+      background: #ff0000;
+    }
+    .yt-play-overlay::before {
+      content: '▶'; position: absolute; color: white; font-size: 18px; z-index: 1; margin-left: 4px;
+    }
+    .gallery-cell:hover .yt-play-overlay,
+    .gallery-card:hover .yt-play-overlay { background: rgba(0,0,0,0.42); }
+    .yt-admin-thumb { width: 56px; height: 40px; object-fit: cover; border-radius: 3px; border: 1px solid rgb(var(--imperial-rgb)/0.1); }
     .carousel-btn {
       position: absolute; top: 50%; transform: translateY(-50%);
       background: rgba(12, 11, 24, 0.65);
@@ -2347,9 +2360,9 @@
         <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5">
           <div id="upload-drop-zone" class="drop-zone mb-4">
             <svg class="mx-auto mb-2 w-8 h-8 text-imperial/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            <p class="text-ink/50 text-sm">Drop images or videos here or <span class="text-imperial font-medium">click to browse</span></p>
-            <p class="text-ink/30 text-xs mt-1">JPEG, PNG, WebP, GIF, MP4, WebM &middot; Max 50 MB each &middot; Multiple files supported</p>
-            <input id="upload-file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg" multiple class="hidden" />
+            <p class="text-ink/50 text-sm">Drop images here or <span class="text-imperial font-medium">click to browse</span></p>
+            <p class="text-ink/30 text-xs mt-1">JPEG, PNG, WebP, GIF &middot; Max 5 MB each &middot; Use YouTube below for videos</p>
+            <input id="upload-file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple class="hidden" />
           </div>
           <!-- Bulk preview thumbnails -->
           <div id="bulk-preview-strip" class="view-hidden flex flex-wrap gap-2 mb-3"></div>
@@ -2366,6 +2379,21 @@
             <p id="upload-status-text" class="text-xs text-ink/50 mt-1"></p>
           </div>
           <p id="upload-filename" class="view-hidden text-xs text-imperial mt-2"></p>
+          <!-- ── Add YouTube Video ── -->
+          <div class="border-t border-imperial/10 mt-4 pt-4">
+            <p class="text-xs font-medium text-ink/60 mb-2">Or add a YouTube video:</p>
+            <div class="flex gap-2 items-start">
+              <div class="flex-1 space-y-2">
+                <input id="yt-url-input" type="url" placeholder="https://www.youtube.com/watch?v=…"
+                  class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+                <input id="yt-caption-input" type="text" placeholder="Caption (optional)"
+                  class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+              </div>
+              <button id="yt-add-btn" class="btn-imperial px-4 py-2 rounded text-sm font-medium shrink-0">Add Video</button>
+            </div>
+            <div id="yt-url-preview" class="mt-2 hidden rounded overflow-hidden w-40 relative" style="height:90px"></div>
+            <p id="yt-url-error" class="text-red-400 text-xs mt-1 hidden">Invalid YouTube URL — try https://youtube.com/watch?v=… or https://youtu.be/…</p>
+          </div>
         </div>
         <div class="overflow-x-auto rounded-lg border border-imperial/10">
           <table class="admin-table w-full text-sm">
@@ -2695,8 +2723,10 @@
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <button class="lightbox-close" id="lightbox-close">&times;</button>
     <img id="lightbox-img" src="" alt="" />
-    <video id="lightbox-video" src="" controls autoplay playsinline class="view-hidden"
-      style="max-width:90vw;max-height:85vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.4)"></video>
+    <iframe id="lightbox-yt" src="" frameborder="0" allowfullscreen
+      allow="autoplay; encrypted-media; picture-in-picture"
+      class="view-hidden"
+      style="width:min(854px,90vw);height:min(480px,50vh);border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.4)"></iframe>
     <div class="lightbox-caption" id="lightbox-caption"></div>
   </div>
 
@@ -3664,35 +3694,25 @@
     $fi.addEventListener('change',    () => { if ($fi.files.length) pickFiles(Array.from($fi.files)); });
     function pickFiles(files) {
       const valid = files.filter(f => {
-        const maxSize = f.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024;
-        const maxLabel = f.type.startsWith('video/') ? '50 MB' : '5 MB';
-        if (f.size > maxSize) { alert(`"${f.name}" is too large (max ${maxLabel}) and was skipped.`); return false; }
+        if (f.size > 5*1024*1024) { alert(`"${f.name}" is too large (max 5 MB) and was skipped.`); return false; }
         return true;
       });
       if (!valid.length) return;
       selectedFiles = valid;
       selectedFile = valid[0]; // keep backward compat for single-file path
-      const isMulti = valid.length > 1;
-      const label = valid.length === 1
-        ? (valid[0].type.startsWith('video/') ? `Selected: ${valid[0].name}` : `Selected: ${valid[0].name}`)
-        : `${valid.length} files selected`;
-      $fn.textContent = label;
+      $fn.textContent = valid.length === 1 ? `Selected: ${valid[0].name}` : `${valid.length} images selected`;
       $fn.classList.remove('view-hidden');
-      if (!isMulti) {
-        $ub.textContent = 'Upload…';
+      if (valid.length === 1) {
+        $ub.textContent = 'Upload Image…';
         $bulkStrip.classList.add('view-hidden');
         $bulkStrip.innerHTML = '';
         document.getElementById('upload-caption').closest('.flex').querySelector('label').textContent = 'Caption (optional)';
       } else {
-        $ub.textContent = `Upload ${valid.length} Files to Gallery`;
-        // Show thumbnail strip (image preview or video icon)
-        $bulkStrip.innerHTML = valid.map((f, i) => {
-          const thumb = f.type.startsWith('video/')
-            ? `<div class="w-14 h-14 flex items-center justify-center rounded border border-imperial/20 bg-ink/10 text-imperial text-xs font-bold" title="${esc(f.name)}">▶ VID</div>`
-            : `<img src="${URL.createObjectURL(f)}" class="w-14 h-14 object-cover rounded border border-imperial/20" title="${esc(f.name)}" />`;
-          return `<div class="relative group">${thumb}` +
-            `<button type="button" data-bulk-remove="${i}" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs leading-none flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">&times;</button></div>`;
-        }).join('');
+        $ub.textContent = `Upload ${valid.length} Images to Gallery`;
+        $bulkStrip.innerHTML = valid.map((f, i) =>
+          `<div class="relative group"><img src="${URL.createObjectURL(f)}" class="w-14 h-14 object-cover rounded border border-imperial/20" title="${esc(f.name)}" />` +
+          `<button type="button" data-bulk-remove="${i}" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs leading-none flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">&times;</button></div>`
+        ).join('');
         $bulkStrip.classList.remove('view-hidden');
         $bulkStrip.querySelectorAll('[data-bulk-remove]').forEach(btn => {
           btn.addEventListener('click', () => {
@@ -3707,7 +3727,7 @@
     }
     function clearGalleryPicker() {
       selectedFiles = []; selectedFile = null; $fi.value = '';
-      $fn.classList.add('view-hidden'); $ub.disabled = true; $ub.textContent = 'Upload…';
+      $fn.classList.add('view-hidden'); $ub.disabled = true; $ub.textContent = 'Upload Image…';
       $bulkStrip.classList.add('view-hidden'); $bulkStrip.innerHTML = '';
     }
     $ub.addEventListener('click', async () => {
@@ -3732,7 +3752,7 @@
           } catch (err) { errors.push(file.name + ': ' + err.message); }
         }
         $br.style.width = '100%';
-        $tx.textContent = errors.length ? `Done with ${errors.length} error(s): ${errors.join('; ')}` : `${done} file${done !== 1 ? 's' : ''} uploaded!`;
+        $tx.textContent = errors.length ? `Done with ${errors.length} error(s): ${errors.join('; ')}` : `${done} image${done !== 1 ? 's' : ''} uploaded!`;
         clearGalleryPicker();
         document.getElementById('upload-caption').value = '';
         await renderAdminGallery(); await renderHomeGallery(); await renderHeroPhoto();
@@ -3745,6 +3765,41 @@
         document.getElementById('upload-caption').value = '';
       }
     });
+
+    // ── YouTube URL add to gallery ─────────────────────
+    (function wireYouTubeGalleryAdd() {
+      const $ytIn  = document.getElementById('yt-url-input');
+      const $ytCap = document.getElementById('yt-caption-input');
+      const $ytBtn = document.getElementById('yt-add-btn');
+      const $ytPrv = document.getElementById('yt-url-preview');
+      const $ytErr = document.getElementById('yt-url-error');
+      if (!$ytIn) return;
+      $ytIn.addEventListener('input', () => {
+        const id = getYouTubeId($ytIn.value.trim());
+        if (id) {
+          $ytErr.classList.add('hidden');
+          $ytPrv.innerHTML = `<img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" style="width:100%;height:100%;object-fit:cover;" /><div class="yt-play-overlay"></div>`;
+          $ytPrv.classList.remove('hidden');
+        } else {
+          $ytPrv.classList.add('hidden');
+          if ($ytIn.value.trim()) $ytErr.classList.remove('hidden'); else $ytErr.classList.add('hidden');
+        }
+      });
+      $ytBtn.addEventListener('click', async () => {
+        const url = $ytIn.value.trim();
+        const id  = getYouTubeId(url);
+        if (!id) { $ytErr.classList.remove('hidden'); return; }
+        $ytBtn.disabled = true; $ytBtn.textContent = 'Adding…';
+        const { error } = await supabase.from('gallery').insert({ image_url: url, caption: $ytCap.value.trim() || null });
+        if (error) { alert('Error: ' + error.message); }
+        else {
+          $ytIn.value = ''; $ytCap.value = '';
+          $ytPrv.classList.add('hidden');
+          await renderAdminGallery(); await renderHomeGallery();
+        }
+        $ytBtn.disabled = false; $ytBtn.textContent = 'Add Video';
+      });
+    })();
 
     // Hero image drop zone (admin dashboard)
     const $hdz = document.getElementById('hero-drop-zone');
@@ -3893,9 +3948,9 @@
         return;
       }
       $grid.innerHTML = photos.map(p => {
-        const isVid = isVideoUrl(p.image_url);
-        const mediaEl = isVid
-          ? `<video src="${esc(p.image_url)}" muted playsinline preload="metadata" loop></video>`
+        const ytId = getYouTubeId(p.image_url);
+        const mediaEl = ytId
+          ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="lazy" /><div class="yt-play-overlay"></div></div>`
           : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
         return `<div class="gallery-cell rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">${mediaEl}</div>`;
       }).join('');
@@ -4344,13 +4399,14 @@
     function buildCarouselHTML(images, sectionId, isEdit) {
       if (!images.length) return '';
       const slides = images.map((url, i) => {
-        const mediaEl = isVideoUrl(url)
-          ? `<video src="${esc(url)}" class="sec-carousel-video" controls playsinline muted preload="metadata"></video>`
+        const ytId = getYouTubeId(url);
+        const mediaEl = ytId
+          ? `<iframe src="https://www.youtube.com/embed/${ytId}" class="sec-carousel-yt" frameborder="0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>`
           : `<img src="${esc(url)}" alt="" loading="lazy" class="sec-carousel-img" />`;
         return `
-        <div class="sec-carousel-slide${i === 0 ? ' active' : ''}" data-slide="${i}">
+        <div class="sec-carousel-slide${i === 0 ? ' active' : ''}" data-slide="${i}" data-is-yt="${ytId ? '1' : '0'}">
           ${mediaEl}
-          <button class="carousel-remove-btn" data-cid="${esc(sectionId)}" data-sidx="${i}" title="Remove image">×</button>
+          <button class="carousel-remove-btn" data-cid="${esc(sectionId)}" data-sidx="${i}" title="Remove">×</button>
         </div>`;
       }).join('');
       const nav = images.length > 1 ? `
@@ -4364,7 +4420,8 @@
         <div class="sec-carousel" data-cid="${esc(sectionId)}" data-cur="0">
           <div class="sec-carousel-track">${slides}</div>${nav}${dots}
         </div>
-        <button class="carousel-add-btn" data-cid="${esc(sectionId)}">+ Add image or video</button>`;
+        <button class="carousel-add-btn carousel-add-img" data-cid="${esc(sectionId)}">+ Add image</button>
+        <button class="carousel-add-btn carousel-add-yt" data-cid="${esc(sectionId)}" style="margin-top:0.25rem">▶ Add YouTube video</button>`;
     }
     function wireCarousels($container) {
       $container.querySelectorAll('.sec-carousel').forEach(car => {
@@ -4376,9 +4433,11 @@
           slides[cur].classList.remove('active'); dots[cur]?.classList.remove('active');
           car.dataset.cur = n;
           slides[n].classList.add('active');   dots[n]?.classList.add('active');
-          // Preload next slide media
+          // Pause autoscroll if target slide has a YouTube iframe
+          if (slides[n]?.dataset.isYt === '1') stopAuto();
+          // Preload next slide image
           const next = slides[(n + 1) % slides.length];
-          const preloadEl = next?.querySelector('img, video');
+          const preloadEl = next?.querySelector('img');
           if (preloadEl && !preloadEl.src) preloadEl.src = preloadEl.dataset.src || preloadEl.src;
         }
         // Autoscroll
@@ -4508,15 +4567,15 @@
       wireSbsResizeHandles($container, updateAboutSection);
 
       // Carousel: add image
-      $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
+      $container.querySelectorAll('.carousel-add-img').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.cid;
           const inp = document.createElement('input');
-          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
           inp.onchange = async () => {
             if (!inp.files.length) return;
             const file = inp.files[0];
-            if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
+            if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
             try {
               const url = await uploadImageToStorage(file);
               const secs = await fetchAboutSections();
@@ -4528,6 +4587,24 @@
             } catch (err) { alert('Error: ' + err.message); }
           };
           inp.click();
+        });
+      });
+      // Carousel: add YouTube video
+      $container.querySelectorAll('.carousel-add-yt').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.cid;
+          const raw = prompt('Enter YouTube URL:');
+          if (!raw) return;
+          const ytId = getYouTubeId(raw.trim());
+          if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+          try {
+            const secs = await fetchAboutSections();
+            const sec  = secs.find(s => s.id === id) || {};
+            const imgs = getSectionImages(sec); imgs.push(raw.trim());
+            await updateAboutSection(id, { images: imgs, image_url: imgs[0] });
+            await renderHomeAbout();
+            if (editMode) initAboutSortable();
+          } catch (err) { alert('Error: ' + err.message); }
         });
       });
 
@@ -4580,7 +4657,7 @@
           inp.onchange = async () => {
             if (!inp.files.length) return;
             const file = inp.files[0];
-            if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
+            if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
             try {
               const url = await uploadImageToStorage(file);
               const secs = await fetchAboutSections();
@@ -4867,15 +4944,15 @@
       wireSbsResizeHandles($container, updateConcertSection);
 
       // Carousel: add image to section
-      $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
+      $container.querySelectorAll('.carousel-add-img').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.cid;
           const inp = document.createElement('input');
-          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
+          inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
           inp.onchange = async () => {
             if (!inp.files.length) return;
             const file = inp.files[0];
-            if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
+            if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
             try {
               const url = await uploadImageToStorage(file);
               const sec = (await fetchConcertSections()).find(s => s.id === id);
@@ -4885,6 +4962,22 @@
             } catch (err) { alert('Error: ' + err.message); }
           };
           inp.click();
+        });
+      });
+      // Carousel: add YouTube video to section
+      $container.querySelectorAll('.carousel-add-yt').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.cid;
+          const raw = prompt('Enter YouTube URL:');
+          if (!raw) return;
+          const ytId = getYouTubeId(raw.trim());
+          if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+          try {
+            const sec = (await fetchConcertSections()).find(s => s.id === id);
+            const imgs = getSectionImages(sec); imgs.push(raw.trim());
+            await updateConcertSection(id, { images: imgs, image_url: imgs[0] });
+            await renderConcertPage();
+          } catch (err) { alert('Error: ' + err.message); }
         });
       });
 
@@ -4940,7 +5033,7 @@
           inp.onchange = async () => {
             if (!inp.files.length) return;
             const file = inp.files[0];
-            if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
+            if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
             try {
               const url = await uploadImageToStorage(file);
               const sec = (await fetchConcertSections()).find(s => s.id === id);
@@ -5023,15 +5116,15 @@
         wireSbsResizeHandles($container, (id, fields) => updateProgramSection(currentProgram, id, fields));
 
         // Carousel: add image
-        $container.querySelectorAll('.carousel-add-btn').forEach(btn => {
+        $container.querySelectorAll('.carousel-add-img').forEach(btn => {
           btn.addEventListener('click', () => {
             const id = btn.dataset.cid;
             const inp = document.createElement('input');
-            inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime,video/ogg';
+            inp.type = 'file'; inp.accept = 'image/jpeg,image/png,image/webp,image/gif';
             inp.onchange = async () => {
               if (!inp.files.length) return;
               const file = inp.files[0];
-              if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
+              if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
               try {
                 const url = await uploadImageToStorage(file);
                 const progs = await fetchPrograms(false);
@@ -5044,6 +5137,25 @@
               } catch (err) { alert('Error: ' + err.message); }
             };
             inp.click();
+          });
+        });
+        // Carousel: add YouTube video
+        $container.querySelectorAll('.carousel-add-yt').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.dataset.cid;
+            const raw = prompt('Enter YouTube URL:');
+            if (!raw) return;
+            const ytId = getYouTubeId(raw.trim());
+            if (!ytId) { alert('Invalid YouTube URL. Please use a youtube.com or youtu.be link.'); return; }
+            try {
+              const progs = await fetchPrograms(false);
+              const prog = progs.find(p => p.id === program.id);
+              const secs = Array.isArray(prog?.sections) ? prog.sections : [];
+              const sec  = secs.find(s => s.id === id) || {};
+              const imgs = getSectionImages(sec); imgs.push(raw.trim());
+              await updateProgramSection(program.id, id, { images: imgs, image_url: imgs[0] });
+              await renderProgramPage(slug);
+            } catch (err) { alert('Error: ' + err.message); }
           });
         });
 
@@ -5102,7 +5214,7 @@
             inp.onchange = async () => {
               if (!inp.files.length) return;
               const file = inp.files[0];
-              if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
+              if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
               try {
                 const url = await uploadImageToStorage(file);
                 const progs = await fetchPrograms(false);
@@ -5158,8 +5270,9 @@
       const SVG_TRASH  = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
 
       $grid.innerHTML = photos.map(p => {
-        const mediaEl = isVideoUrl(p.image_url)
-          ? `<video src="${esc(p.image_url)}" muted playsinline preload="metadata" loop></video>`
+        const ytId = getYouTubeId(p.image_url);
+        const mediaEl = ytId
+          ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="lazy" /><div class="yt-play-overlay"></div></div>`
           : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
         return `
         <div class="gallery-card" data-photo-id="${esc(p.id)}" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
@@ -5738,8 +5851,9 @@
       if (!photos.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $tbody.innerHTML = photos.map(p => {
-        const thumb = isVideoUrl(p.image_url)
-          ? `<div class="w-14 h-10 flex items-center justify-center rounded border border-imperial/10 bg-ink/5 text-imperial text-xs font-bold">▶ VID</div>`
+        const ytId = getYouTubeId(p.image_url);
+        const thumb = ytId
+          ? `<img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" class="yt-admin-thumb" alt="video"/>`
           : `<img src="${esc(p.image_url)}" class="w-14 h-10 object-cover rounded border border-imperial/10"/>`;
         return `<tr>
         <td class="px-4 py-3">${thumb}</td>
@@ -5890,7 +6004,7 @@
     $aboutImgDrop.addEventListener('drop', e => { e.preventDefault(); $aboutImgDrop.classList.remove('dragover'); if (e.dataTransfer.files.length) pickAboutImg(e.dataTransfer.files[0]); });
     $aboutImgInput.addEventListener('change', () => { if ($aboutImgInput.files.length) pickAboutImg($aboutImgInput.files[0]); });
     function pickAboutImg(file) {
-      if (file.size > (file.type.startsWith('video/') ? 50*1024*1024 : 5*1024*1024)) { alert(`Max ${file.type.startsWith('video/') ? '50' : '5'} MB`); return; }
+      if (file.size > 5*1024*1024) { alert('Max 5 MB'); return; }
       selectedAboutImg = file;
       document.getElementById('about-img-thumb').src = URL.createObjectURL(file);
       document.getElementById('about-img-preview').classList.remove('view-hidden');
@@ -6251,12 +6365,14 @@
     const $lb = document.getElementById('lightbox');
     function openLightbox(url, cap) {
       const $img = document.getElementById('lightbox-img');
-      const $vid = document.getElementById('lightbox-video');
-      if (isVideoUrl(url)) {
+      const $yt  = document.getElementById('lightbox-yt');
+      const ytId = getYouTubeId(url);
+      if (ytId) {
         $img.classList.add('view-hidden'); $img.src = '';
-        $vid.src = url; $vid.classList.remove('view-hidden');
+        $yt.src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+        $yt.classList.remove('view-hidden');
       } else {
-        $vid.classList.add('view-hidden'); $vid.pause(); $vid.src = '';
+        $yt.classList.add('view-hidden'); $yt.src = '';
         $img.src = url; $img.classList.remove('view-hidden');
       }
       document.getElementById('lightbox-caption').textContent = cap || '';
@@ -6264,9 +6380,8 @@
       $lb.classList.add('active'); $lb.setAttribute('aria-hidden','false');
     }
     function closeLightbox() {
-      const $vid = document.getElementById('lightbox-video');
-      $vid.pause(); $vid.src = '';
-      document.getElementById('lightbox-video').classList.add('view-hidden');
+      document.getElementById('lightbox-yt').src = '';
+      document.getElementById('lightbox-yt').classList.add('view-hidden');
       $lb.classList.remove('active'); $lb.setAttribute('aria-hidden','true');
     }
     document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
@@ -6368,7 +6483,14 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
 
     // ── Utility ────────────────────────────────────
     function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
-    function isVideoUrl(url) { return /\.(mp4|webm|mov|ogg)(\?|$)/i.test(url || ''); }
+    function getYouTubeId(url) {
+      const m = (url || '').match(
+        /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+      );
+      return m ? m[1] : null;
+    }
+    function isYouTubeUrl(url) { return !!getYouTubeId(url); }
+    function isVideoUrl(url) { return isYouTubeUrl(url); }
 
     // ── Init ───────────────────────────────────────
     showView('home');
