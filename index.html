@@ -509,30 +509,6 @@
     .sbs-resize-handle:hover { background: rgba(139,128,248,1); }
     @media (max-width: 640px) { .sec-sidebyside { grid-template-columns: 1fr; } }
 
-    /* ── Layout toggle bar ────────────────────────── */
-    .layout-toggle-bar {
-      display: flex; align-items: center; gap: 0.5rem;
-      padding: 0.5rem 0; margin-bottom: 1rem; justify-content: flex-end;
-    }
-    .layout-toggle-label {
-      font-size: 0.72rem; color: rgba(232, 228, 245, 0.45);
-      font-weight: 500; margin-right: 0.25rem; text-transform: uppercase; letter-spacing: 0.08em;
-    }
-    .layout-btn {
-      display: flex; align-items: center; gap: 0.35rem;
-      font-size: 0.72rem; font-weight: 500;
-      padding: 0.35rem 0.75rem; border-radius: 0.5rem;
-      border: 1px solid rgba(139, 128, 248, 0.22);
-      background: transparent; color: rgba(232, 228, 245, 0.55);
-      cursor: pointer; transition: all 0.15s;
-    }
-    .layout-btn:hover { border-color: rgba(139, 128, 248, 0.5); color: rgba(232, 228, 245, 0.9); background: rgba(139, 128, 248, 0.08); }
-    .layout-btn.active { border-color: rgba(139, 128, 248, 0.7); color: rgb(190, 178, 255); background: rgba(139, 128, 248, 0.14); }
-    @media (prefers-color-scheme: light) {
-      .layout-toggle-label { color: rgba(26, 26, 26, 0.45); }
-      .layout-btn { color: rgba(26, 26, 26, 0.6); border-color: rgba(91, 79, 207, 0.22); }
-      .layout-btn.active { color: rgb(91, 79, 207); background: rgba(91, 79, 207, 0.08); border-color: rgba(91, 79, 207, 0.5); }
-    }
 
     /* ── Gallery ─────────────────────────────────── */
     /* Home preview grid — keeps compact equal-size thumbnails */
@@ -4488,12 +4464,7 @@
     // ════════════════════════════════════════════════
     //  CAROUSEL & LAYOUT HELPERS
     // ════════════════════════════════════════════════
-    const _sectionLayouts = JSON.parse(localStorage.getItem('bp_sec_layouts') || '{}');
-    function getSectionLayout(page) { return _sectionLayouts[page] || 'linear'; }
-    function setSectionLayout(page, mode) {
-      _sectionLayouts[page] = mode;
-      localStorage.setItem('bp_sec_layouts', JSON.stringify(_sectionLayouts));
-    }
+    function getSectionLayout() { return 'sidebyside'; }
     function getSectionImages(s) {
       if (Array.isArray(s.images) && s.images.length) return s.images;
       if (s.image_url) return [s.image_url];
@@ -4614,31 +4585,6 @@
       });
     }
 
-    function renderLayoutToggleBar(containerId, page) {
-      document.getElementById('layout-bar-' + page)?.remove();
-      if (!session) return;
-      const cur = getSectionLayout(page);
-      const bar = document.createElement('div');
-      bar.className = 'layout-toggle-bar'; bar.id = 'layout-bar-' + page;
-      bar.innerHTML = `
-        <span class="layout-toggle-label">View:</span>
-        <button class="layout-btn${cur === 'linear' ? ' active' : ''}" data-layout="linear" title="Stack image above text">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h10"/></svg> Linear
-        </button>
-        <button class="layout-btn${cur === 'sidebyside' ? ' active' : ''}" data-layout="sidebyside" title="Image left, text right">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="7" height="14" rx="1"/><path d="M14 7h7M14 11h7M14 15h4"/></svg> Side by side
-        </button>`;
-      bar.querySelectorAll('.layout-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          setSectionLayout(page, btn.dataset.layout);
-          if (page === 'concert') renderConcertPage();
-          else if (page === 'program') renderProgramPage(currentProgram);
-          else if (page === 'about') renderHomeAbout();
-        });
-      });
-      const $c = document.getElementById(containerId);
-      $c.parentNode.insertBefore(bar, $c);
-    }
 
     //  RENDER — ABOUT
     // ════════════════════════════════════════════════
@@ -4823,7 +4769,6 @@
         });
       });
 
-      renderLayoutToggleBar('about-sections-container', 'about');
       if (editMode) { destroySortables(); initAboutSortable(); }
     }
 
@@ -5208,7 +5153,6 @@
           inp.click();
         });
       });
-      renderLayoutToggleBar('concert-sections-container', 'concert');
       if (editMode) { destroySortables(); initConcertSortable(); }
       if (typeof initReveal === 'function') setTimeout(initReveal, 60);
     }
@@ -5417,7 +5361,6 @@
             inp.click();
           });
         });
-        renderLayoutToggleBar('program-content-container', 'program');
       } else {
         $container.innerHTML = ''; $empty.classList.remove('view-hidden');
       }
