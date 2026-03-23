@@ -3388,9 +3388,10 @@
       if (error) { alert('Error: ' + error.message); return false; } return true;
     }
     async function submitRegistration(payload) {
-      const { data, error } = await supabase.from('registrations').insert(payload).select('id').single();
+      const id = crypto.randomUUID();
+      const { error } = await supabase.from('registrations').insert({ ...payload, id });
       if (error) throw new Error(error.message);
-      return data.id;
+      return id;
     }
     async function updateRegStatus(id, status) {
       const { error } = await supabase.from('registrations').update({ status }).eq('id', id);
