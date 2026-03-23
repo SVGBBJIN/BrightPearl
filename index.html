@@ -170,13 +170,35 @@
     .hero-banner > * { position: relative; z-index: 1; }
     /* Eyebrow label inside hero — vivid gradient text, override text-white/50 */
     .hero-banner [class*="uppercase"][class*="tracking"] {
-      background: linear-gradient(90deg, rgb(190, 178, 255) 0%, rgb(240, 110, 200) 60%, rgb(72, 220, 210) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
       letter-spacing: 0.22em;
       font-weight: 700;
       opacity: 1;
+    }
+    #hero-est-text {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.45rem 0.9rem;
+      margin-inline: auto;
+      border-radius: 999px;
+      isolation: isolate;
+      background-image: linear-gradient(90deg, rgb(190, 178, 255) 0%, rgb(240, 110, 200) 60%, rgb(72, 220, 210) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    #hero-est-text::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: inherit;
+      background: rgba(16, 12, 34, 0.28);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(5, 8, 20, 0.18);
     }
     /* Page h1 inside hero-banner — shimmer underline accent */
     .hero-banner h1 { position: relative; }
