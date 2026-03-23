@@ -45,17 +45,17 @@
     :root {
       --cream-rgb:           249 247 242;   /* #f9f7f2  warm cream        */
       --ink-rgb:             26  26  26;    /* #1a1a1a  near-black         */
-      --imperial-rgb:        91  79  207;   /* #5b4fcf  blue-purple        */
-      --imperial-hover-rgb:  74  61  191;   /* #4a3dbf  darker hover       */
+      --imperial-rgb:        196 69  105;   /* #C44569  warm rose          */
+      --imperial-hover-rgb:  176 49  85;    /* #B03155  darker rose hover  */
       --surface-rgb:         255 255 255;   /* white cards                 */
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --cream-rgb:           12  11  24;   /* #0c0b18  deep dark          */
-        --ink-rgb:             232 228 245;  /* #e8e4f5  light lavender     */
-        --imperial-rgb:        139 128 248;  /* #8b80f8  lighter purple     */
-        --imperial-hover-rgb:  160 151 252;  /* #a097fc  light hover        */
-        --surface-rgb:         28  25  52;   /* #1c1934  dark card surface  */
+        --cream-rgb:           24  12  17;   /* #180c11  deep dark rose     */
+        --ink-rgb:             245 228 234;  /* #f5e4ea  light rose-white   */
+        --imperial-rgb:        230 110 145;  /* #e66e91  lighter rose dark  */
+        --imperial-hover-rgb:  245 130 165;  /* #f582a5  lighter hover dark */
+        --surface-rgb:         42  20  28;   /* #2a141c  dark card surface  */
       }
     }
 
@@ -304,8 +304,6 @@
                   box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
                   background 0.22s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .card-accent:hover { transform: translateY(-3px); }
-
     /* Cycle accent colors — boosted tints + resting glow */
     .card-accent:nth-child(4n + 1) {
       border-left-color: rgb(139, 128, 248);
@@ -950,7 +948,12 @@
       transition: all 0.2s;
       border-radius: 100px !important;
     }
-    .btn-outline:hover { background-color: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); }
+    .btn-outline:hover  { background-color: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); }
+    .btn-outline:active { transform: scale(0.97); }
+
+    /* ── Form validation ──────────────────────────── */
+    .reg-field-error { border-color: #f87171 !important; box-shadow: 0 0 0 2px rgba(248,113,113,0.2) !important; }
+    .reg-field-err-msg { color: #ef4444; font-size: 0.72rem; margin-top: 0.3rem; }
 
     /* ── Scrollbar ────────────────────────────────── */
     ::-webkit-scrollbar { width: 6px; }
@@ -1331,12 +1334,45 @@
 
     /* ── Nav scrollable items row ────────────────── */
     .nav-scroll-items {
-      display: flex; align-items: center; gap: 0.25rem;
+      display: none; align-items: center; gap: 0.25rem;
       overflow-x: auto; -webkit-overflow-scrolling: touch;
       scrollbar-width: none; -ms-overflow-style: none;
     }
     .nav-scroll-items::-webkit-scrollbar { display: none; }
+    @media (min-width: 768px) { .nav-scroll-items { display: flex; } }
     @media (min-width: 640px) { .nav-scroll-items { gap: 0.5rem; } }
+
+    /* ── Mobile drawer ──────────────────────────── */
+    .mobile-drawer {
+      position: fixed; top: 64px; right: 0; bottom: 0; z-index: 49;
+      width: min(280px, 80vw);
+      background: rgb(var(--surface-rgb));
+      box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.22,1,0.36,1);
+      overflow-y: auto;
+    }
+    .mobile-drawer.open { transform: translateX(0); }
+    .mobile-drawer-inner { padding: 1rem 0.5rem; display: flex; flex-direction: column; gap: 0.15rem; }
+    .mobile-nav-item {
+      display: block; width: 100%; text-align: left;
+      padding: 0.7rem 1rem; border-radius: 0.5rem;
+      font-size: 0.9rem; font-weight: 500; color: rgb(var(--ink-rgb));
+      transition: background 0.15s, color 0.15s; cursor: pointer;
+    }
+    .mobile-nav-item:hover { background: rgb(var(--imperial-rgb) / 0.08); color: rgb(var(--imperial-rgb)); }
+    .mobile-nav-item:disabled { opacity: 0.4; cursor: default; }
+    .mobile-nav-highlight { color: rgb(var(--imperial-rgb)); font-weight: 600; }
+    .mobile-nav-section-hdr { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; padding: 0.5rem 1rem 0.25rem; }
+    .mobile-programs-list { padding-left: 0.5rem; }
+    .mobile-programs-list button { font-size: 0.85rem; }
+    .mobile-drawer-divider { height: 1px; background: rgb(var(--imperial-rgb) / 0.1); margin: 0.5rem 0.75rem; }
+    .mobile-drawer-backdrop {
+      display: none; position: fixed; inset: 0; z-index: 48;
+      background: rgba(0,0,0,0.25);
+    }
+    .mobile-drawer-backdrop.open { display: block; }
+    @media (min-width: 768px) { .mobile-drawer, .mobile-drawer-backdrop, #nav-hamburger { display: none !important; } }
 
     /* ── Programs Nav Dropdown ───────────────────── */
     .programs-dropdown-menu {
@@ -1584,12 +1620,27 @@
     .reveal-left.is-visible { opacity: 1; transform: translateX(0); }
     .reveal-group.is-visible > .reveal-left { opacity: 1; transform: translateX(0); }
 
+    /* ── Micro-interactions ───────────────────────── */
+    /* Card hover: lift + shadow */
+    .card-accent:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 8px 28px rgb(var(--imperial-rgb) / 0.14);
+    }
+    /* Input / select / textarea focus glow */
+    input:focus, select:focus, textarea:focus {
+      box-shadow: 0 0 0 3px rgb(var(--imperial-rgb) / 0.18);
+    }
+    /* View fade-in on navigation */
+    @keyframes view-fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    main:not(.view-hidden) { animation: view-fade-in 0.22s ease-out both; }
+
     @media (prefers-reduced-motion: reduce) {
       .reveal, .reveal-left, .reveal-group > * {
         opacity: 1;
         transform: none;
         transition: none;
       }
+      main:not(.view-hidden) { animation: none; }
     }
   </style>
 </head>
@@ -1626,12 +1677,35 @@
         <button id="nav-admin"        class="btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Admin</button>
         <button id="nav-logout"       class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Logout</button>
       </div>
+      <!-- Hamburger button — visible only on mobile -->
+      <button id="nav-hamburger" class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-ink hover:text-imperial transition-colors shrink-0" aria-label="Open menu">
+        <svg id="hamburger-icon-open"  width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg id="hamburger-icon-close" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
       <!-- Programs dropdown: outside the overflow container so it isn't clipped -->
       <div id="programs-dropdown" class="programs-dropdown-menu">
         <!-- Populated dynamically by JS -->
       </div>
     </div>
   </nav>
+
+  <!-- ═══ Mobile Navigation Drawer ═══ -->
+  <div id="mobile-nav-drawer" class="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-inner">
+      <button id="mob-nav-home"         class="mobile-nav-item">Home</button>
+      <button id="mob-nav-concert"      class="mobile-nav-item">Concert</button>
+      <button id="mob-nav-programs-hdr" class="mobile-nav-item mobile-nav-section-hdr" disabled>Programs</button>
+      <div id="mob-programs-list" class="mobile-programs-list"></div>
+      <button id="mob-nav-faculty"      class="mobile-nav-item">Faculty</button>
+      <button id="mob-nav-gallery"      class="mobile-nav-item">Gallery</button>
+      <button id="mob-nav-register"     class="mobile-nav-item mobile-nav-highlight">Registration</button>
+      <button id="mob-nav-tos"          class="mobile-nav-item">Terms</button>
+      <div class="mobile-drawer-divider"></div>
+      <button id="mob-nav-admin"        class="mobile-nav-item">Admin</button>
+      <button id="mob-nav-logout"       class="mobile-nav-item view-hidden">Logout</button>
+    </div>
+  </div>
+  <div id="mobile-nav-backdrop" class="mobile-drawer-backdrop"></div>
 
   <!-- ═══ Visual Edit Toolbar (admin only) ═══ -->
   <div id="visual-edit-toolbar" class="visual-edit-toolbar">
@@ -2864,6 +2938,17 @@
     // ════════════════════════════════════════════════
     //  VIEW SWITCHING
     // ════════════════════════════════════════════════
+    function checkSessionExpiry() {
+      const start = parseInt(localStorage.getItem('bp_session_start') || '0', 10);
+      if (start && Date.now() - start > 4 * 60 * 60 * 1000) {
+        supabase.auth.signOut().catch(() => {});
+        localStorage.removeItem('bp_session_start');
+        session = null;
+        return true;
+      }
+      return false;
+    }
+
     function _syncNavSession() {
       if (session) { $navLogout.classList.remove('view-hidden'); $navAdmin.classList.remove('view-hidden'); }
       else { $navLogout.classList.add('view-hidden'); $navAdmin.classList.remove('view-hidden'); }
@@ -2888,6 +2973,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       if (view === 'admin') {
+        if (session) checkSessionExpiry();
         const loggedIn = !!session;
         $adminLogin.classList.toggle('view-hidden',     loggedIn);
         $adminDashboard.classList.toggle('view-hidden', !loggedIn);
@@ -2920,30 +3006,42 @@
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'About Page'; }
         else { $toolbar.classList.remove('visible'); }
       } else if (view === 'register') {
-        $navLogout.classList.add('view-hidden');
-        $navAdmin.classList.remove('view-hidden');
+        _syncNavSession();
         $toolbar.classList.remove('visible');
         if (editMode) toggleEditMode();
+        // Reset to step-1 state every time the view is entered
+        document.getElementById('reg-form').classList.remove('view-hidden');
+        document.getElementById('reg-payment-step').classList.add('view-hidden');
+        document.getElementById('reg-success').classList.add('view-hidden');
+        document.getElementById('step-1-dot').classList.remove('opacity-35');
+        document.getElementById('step-2-dot').classList.add('opacity-35');
+        document.getElementById('step-2-num').className =
+          'w-7 h-7 rounded-full border-2 border-imperial/40 text-ink/40 flex items-center justify-center text-xs font-semibold';
         populateClassDropdown();
+        if (typeof initReveal === 'function') setTimeout(initReveal, 60);
       } else if (view === 'faculty') {
         _syncNavSession();
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Faculty Page'; }
         else $toolbar.classList.remove('visible');
+        if (typeof initReveal === 'function') setTimeout(initReveal, 60);
         renderFacultyPage();
       } else if (view === 'concert') {
         _syncNavSession();
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Concert Page'; }
         else $toolbar.classList.remove('visible');
+        if (typeof initReveal === 'function') setTimeout(initReveal, 60);
         renderConcertPage();
       } else if (view === 'programs') {
         _syncNavSession();
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Programs Page'; }
         else $toolbar.classList.remove('visible');
+        if (typeof initReveal === 'function') setTimeout(initReveal, 60);
         renderProgramPage(currentProgram);
       } else if (view === 'gallery-page') {
         _syncNavSession();
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Gallery Page'; }
         else $toolbar.classList.remove('visible');
+        if (typeof initReveal === 'function') setTimeout(initReveal, 60);
         renderGalleryPage();
       } else if (view === 'tos') {
         _syncNavSession();
@@ -2972,6 +3070,7 @@
     document.getElementById('hero-cta-about').addEventListener('click',    () => showView('about'));
     document.getElementById('nav-logout').addEventListener('click', async () => {
       try { await supabase.auth.signOut(); } catch (err) { console.error(err); }
+      localStorage.removeItem('bp_session_start');
       session = null; showView('home');
     });
 
@@ -2997,6 +3096,52 @@
     document.addEventListener('click', () => closeProgramsDropdown());
     $programsDropdownMenu.addEventListener('click', e => e.stopPropagation());
 
+    // ── Mobile hamburger drawer ─────────────────────
+    const $drawer   = document.getElementById('mobile-nav-drawer');
+    const $backdrop = document.getElementById('mobile-nav-backdrop');
+    const $hambBtn  = document.getElementById('nav-hamburger');
+    const $hambOpen = document.getElementById('hamburger-icon-open');
+    const $hambClose= document.getElementById('hamburger-icon-close');
+
+    function openDrawer() {
+      $drawer.classList.add('open');
+      $backdrop.classList.add('open');
+      $drawer.setAttribute('aria-hidden', 'false');
+      $hambOpen.style.display  = 'none';
+      $hambClose.style.display = '';
+      // Sync logout/admin visibility in drawer
+      const loggedIn = !!session;
+      document.getElementById('mob-nav-logout').classList.toggle('view-hidden', !loggedIn);
+    }
+    function closeDrawer() {
+      $drawer.classList.remove('open');
+      $backdrop.classList.remove('open');
+      $drawer.setAttribute('aria-hidden', 'true');
+      $hambOpen.style.display  = '';
+      $hambClose.style.display = 'none';
+    }
+    $hambBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      $drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+    });
+    $backdrop.addEventListener('click', closeDrawer);
+    window.addEventListener('resize', () => { if (window.innerWidth >= 768) closeDrawer(); });
+
+    function mobNavigate(view) { closeDrawer(); showView(view); }
+    document.getElementById('mob-nav-home').addEventListener('click',     () => mobNavigate('home'));
+    document.getElementById('mob-nav-concert').addEventListener('click',  () => mobNavigate('concert'));
+    document.getElementById('mob-nav-faculty').addEventListener('click',  () => mobNavigate('faculty'));
+    document.getElementById('mob-nav-gallery').addEventListener('click',  () => mobNavigate('gallery-page'));
+    document.getElementById('mob-nav-register').addEventListener('click', () => mobNavigate('register'));
+    document.getElementById('mob-nav-tos').addEventListener('click',      () => mobNavigate('tos'));
+    document.getElementById('mob-nav-admin').addEventListener('click',    () => mobNavigate('admin'));
+    document.getElementById('mob-nav-logout').addEventListener('click', async () => {
+      closeDrawer();
+      try { await supabase.auth.signOut(); } catch (err) { console.error(err); }
+      localStorage.removeItem('bp_session_start');
+      session = null; showView('home');
+    });
+
     // ── Auth ───────────────────────────────────────
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -3007,6 +3152,7 @@
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) { $error.textContent = error.message; $error.classList.remove('view-hidden'); return; }
       session = data.session;
+      localStorage.setItem('bp_session_start', Date.now().toString());
       showView('admin');
     });
 
@@ -3242,9 +3388,10 @@
       if (error) { alert('Error: ' + error.message); return false; } return true;
     }
     async function submitRegistration(payload) {
-      const { data, error } = await supabase.from('registrations').insert(payload).select('id').single();
+      const id = crypto.randomUUID();
+      const { error } = await supabase.from('registrations').insert({ ...payload, id });
       if (error) throw new Error(error.message);
-      return data.id;
+      return id;
     }
     async function updateRegStatus(id, status) {
       const { error } = await supabase.from('registrations').update({ status }).eq('id', id);
@@ -4890,6 +5037,9 @@
           </div>`;
       }).join('');
 
+      // Trigger reveal animations for the category grid (always present)
+      if (typeof initReveal === 'function') setTimeout(initReveal, 60);
+
       // Faculty sections — only for categories with members
       const presentCats = ALL_CATS.filter(cat => members.some(m => effCat(m) === cat.key));
       if (!presentCats.length) { $sections.innerHTML = ''; return; }
@@ -5564,8 +5714,10 @@
     async function populateProgramsDropdown() {
       const programs  = await fetchPrograms();
       const $dropdown = document.getElementById('programs-dropdown');
+      const $mobList  = document.getElementById('mob-programs-list');
       if (!programs.length) {
         $dropdown.innerHTML = '<span class="programs-dropdown-item opacity-50 cursor-default">No programs added yet</span>';
+        if ($mobList) $mobList.innerHTML = '';
         return;
       }
       $dropdown.innerHTML = programs.map(p =>
@@ -5577,6 +5729,18 @@
           showView('programs', btn.dataset.programSlug);
         });
       });
+      // Mirror into mobile drawer
+      if ($mobList) {
+        $mobList.innerHTML = programs.map(p =>
+          `<button class="mobile-nav-item" data-mob-program-slug="${esc(p.slug)}">${esc(p.name)}</button>`
+        ).join('');
+        $mobList.querySelectorAll('[data-mob-program-slug]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            closeDrawer();
+            showView('programs', btn.dataset.mobProgramSlug);
+          });
+        });
+      }
     }
 
     // ════════════════════════════════════════════════
@@ -6061,12 +6225,48 @@
         classes.map(c => `<option value="${esc(c.id)}" data-name="${esc(c.name)}">${esc(c.name)}${c.schedule_time?' — '+esc(c.schedule_time):''}</option>`).join('');
     }
 
+    // ── Form validation helpers ─────────────────────
+    function _setFieldError(id, msg) {
+      const el = document.getElementById(id);
+      el.classList.add('reg-field-error');
+      let errEl = el.parentElement.querySelector('.reg-field-err-msg');
+      if (!errEl) { errEl = document.createElement('p'); errEl.className = 'reg-field-err-msg'; el.parentElement.appendChild(errEl); }
+      errEl.textContent = msg;
+    }
+    function _clearFieldError(id) {
+      const el = document.getElementById(id);
+      el.classList.remove('reg-field-error');
+      const errEl = el.parentElement.querySelector('.reg-field-err-msg');
+      if (errEl) errEl.remove();
+    }
+    // Clear errors on user input
+    ['reg-student-name','reg-parent-name','reg-email','reg-phone'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => _clearFieldError(id));
+    });
+
     // ── Form handlers ──────────────────────────────
     document.getElementById('reg-form').addEventListener('submit', async e => {
       e.preventDefault();
       const $btn = document.getElementById('reg-submit');
       const $err = document.getElementById('reg-error');
-      $err.classList.add('view-hidden'); $btn.disabled = true; $btn.textContent = 'Submitting…';
+      $err.classList.add('view-hidden');
+
+      // Custom validation
+      const requiredFields = [
+        { id: 'reg-student-name', label: 'Student name is required' },
+        { id: 'reg-parent-name',  label: 'Parent / guardian name is required' },
+        { id: 'reg-email',        label: 'Email address is required' },
+        { id: 'reg-phone',        label: 'Phone number is required' },
+      ];
+      let firstError = null;
+      requiredFields.forEach(({ id, label }) => {
+        const val = document.getElementById(id).value.trim();
+        if (!val) { _setFieldError(id, label); if (!firstError) firstError = id; }
+        else _clearFieldError(id);
+      });
+      if (firstError) { document.getElementById(firstError).focus(); return; }
+
+      $btn.disabled = true; $btn.textContent = 'Submitting…';
       const sel = document.getElementById('reg-class');
       try {
         const regId = await submitRegistration({
