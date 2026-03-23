@@ -1248,12 +1248,21 @@
     /* ── Lists in formatted body content ──────────── */
     .editable-body ul, .editable-body ol,
     .haf-body ul, .haf-body ol,
-    .hp-feature-body ul, .hp-feature-body ol {
+    .hp-feature-body ul, .hp-feature-body ol,
+    .sec-sidebyside-text ul, .sec-sidebyside-text ol,
+    .about-section-text ul, .about-section-text ol {
       padding-left: 1.4rem; margin: 0.35rem 0;
     }
-    .editable-body ul, .haf-body ul, .hp-feature-body ul { list-style-type: disc; }
-    .editable-body ol, .haf-body ol, .hp-feature-body ol { list-style-type: decimal; }
-    .editable-body li, .haf-body li, .hp-feature-body li { margin: 0.1rem 0; display: list-item; }
+    .editable-body ul, .haf-body ul, .hp-feature-body ul,
+    .sec-sidebyside-text ul, .about-section-text ul { list-style-type: disc; }
+    .editable-body ol, .haf-body ol, .hp-feature-body ol,
+    .sec-sidebyside-text ol, .about-section-text ol { list-style-type: decimal; }
+    .editable-body li, .haf-body li, .hp-feature-body li,
+    .sec-sidebyside-text li, .about-section-text li { margin: 0.1rem 0; display: list-item !important; }
+    /* Ensure nested lists also render correctly */
+    .editable-body ul ul, .haf-body ul ul, .hp-feature-body ul ul,
+    .sec-sidebyside-text ul ul, .about-section-text ul ul { list-style-type: circle; padding-left: 1.2rem; }
+    .editable-body ul ul ul, .haf-body ul ul ul, .hp-feature-body ul ul ul { list-style-type: square; }
 
     /* ── About section with image ──────────────────── */
     .about-section-with-image {
@@ -1560,6 +1569,37 @@
       color: rgb(var(--imperial-rgb) / 0.6); border: 1px solid rgb(var(--imperial-rgb) / 0.2);
       border-radius: 9999px; padding: 0.15rem 0.65rem; white-space: nowrap;
     }
+
+    /* ── Testimonials ────────────────────────────── */
+    .testimonial-card {
+      background: rgb(var(--surface-rgb) / 0.65); backdrop-filter: blur(8px);
+      border: 1px solid rgb(var(--imperial-rgb) / 0.12); border-radius: 1rem;
+      padding: 1.75rem; display: flex; flex-direction: column; gap: 1rem;
+      position: relative; overflow: hidden;
+    }
+    .testimonial-card::before {
+      content: '\201C'; font-family: 'Playfair Display', serif;
+      font-size: 5rem; line-height: 1; color: rgb(var(--imperial-rgb) / 0.15);
+      position: absolute; top: 0.5rem; left: 1rem; pointer-events: none;
+    }
+    .testimonial-quote {
+      font-size: 0.9rem; line-height: 1.65; color: rgb(var(--ink-rgb) / 0.75);
+      font-style: italic; padding-top: 1.5rem;
+    }
+    .testimonial-attribution {
+      font-size: 0.78rem; font-weight: 600; color: rgb(var(--imperial-rgb));
+      letter-spacing: 0.02em;
+    }
+    .testimonial-program {
+      font-size: 0.72rem; color: rgb(var(--ink-rgb) / 0.45); font-style: normal;
+    }
+
+    /* ── Tuition table ───────────────────────────── */
+    .tuition-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .tuition-table th { text-align: left; padding: 0.6rem 0.85rem; background: rgb(var(--imperial-rgb)/0.08); font-weight: 600; color: rgb(var(--ink-rgb)/0.7); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .tuition-table td { padding: 0.6rem 0.85rem; border-bottom: 1px solid rgb(var(--imperial-rgb)/0.08); vertical-align: top; }
+    .tuition-table tr:last-child td { border-bottom: none; }
+    .tuition-table .rate { font-weight: 700; color: rgb(var(--imperial-rgb)); font-size: 1rem; white-space: nowrap; }
 
     /* ── Program page content ────────────────────── */
     .program-content-section {
@@ -1953,6 +1993,16 @@
       </div>
     </section>
 
+    <!-- Testimonials -->
+    <section id="section-testimonials" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center mb-10 reveal">
+        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Community</p>
+        <h2 class="font-display text-2xl sm:text-3xl text-ink mb-2">What Families Say</h2>
+        <div class="ink-divider mt-6"></div>
+      </div>
+      <div id="testimonials-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 reveal-group"></div>
+    </section>
+
     <!-- Photo Gallery -->
     <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
@@ -2021,10 +2071,47 @@
   <main id="register-view" class="view-hidden relative z-10">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
 
-      <div class="text-center mb-10 reveal">
+      <div class="text-center mb-8 reveal">
         <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Join Us</p>
         <h2 class="font-display text-3xl sm:text-4xl text-ink mb-3">Enroll at Bright Pearl</h2>
         <div class="ink-divider mt-6"></div>
+      </div>
+
+      <!-- Tuition Details (collapsible) -->
+      <div id="reg-tuition-block" class="view-hidden mb-8">
+        <button id="tuition-toggle" class="w-full flex items-center justify-between px-5 py-3.5 bg-surface/60 backdrop-blur border border-imperial/10 rounded-xl text-sm font-medium text-ink hover:border-imperial/30 transition-colors">
+          <span>💰 View Tuition &amp; Pricing Details</span>
+          <span id="tuition-arrow" class="text-ink/40 transition-transform">▼</span>
+        </button>
+        <div id="tuition-details" class="view-hidden mt-2 bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-5">
+          <div id="tuition-table-wrap" class="overflow-x-auto"></div>
+          <p class="text-xs text-ink/45 mt-4 italic">Tuition is billed monthly. A registration deposit is required to hold your spot. Contact us for sibling discounts.</p>
+          <p class="text-xs text-ink/40 mt-1">Questions? <button class="text-imperial hover:underline" onclick="showView('home')">Contact us →</button></p>
+        </div>
+      </div>
+
+      <!-- Register / Status Tabs -->
+      <div class="flex gap-1 bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-1 mb-8">
+        <button id="reg-tab-register" class="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium bg-imperial text-cream transition-all">Register</button>
+        <button id="reg-tab-status"   class="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium text-ink/60 hover:text-ink transition-all">Check Enrollment Status</button>
+      </div>
+
+      <!-- Status Lookup Panel -->
+      <div id="reg-status-panel" class="view-hidden">
+        <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 space-y-5">
+          <div class="text-center mb-2">
+            <h3 class="font-display text-xl text-ink mb-1">Check Your Enrollment Status</h3>
+            <p class="text-sm text-ink/55">Enter the email and reference code from your registration confirmation.</p>
+          </div>
+          <div class="space-y-3">
+            <input id="lookup-email" type="email" placeholder="Parent email address *"
+              class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
+            <input id="lookup-code" type="text" placeholder="Reference code (e.g. BP-2026-12345) *"
+              class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20 font-mono" />
+          </div>
+          <button id="lookup-submit" class="btn-imperial w-full py-3 rounded-lg text-sm font-medium">Check Status</button>
+          <div id="lookup-result" class="view-hidden rounded-xl border p-5 text-center space-y-1"></div>
+        </div>
       </div>
 
       <!-- Step Indicator -->
@@ -2047,6 +2134,11 @@
         </div>
         <h2 class="font-display text-2xl text-ink mb-2">You're All Set!</h2>
         <p class="text-ink/55 text-sm mb-2">Payment submitted. We'll verify and confirm your enrollment within 1–2 business days.</p>
+        <div id="reg-ref-code-wrap" class="bg-imperial/5 border border-imperial/15 rounded-xl px-6 py-3 inline-block mb-4">
+          <p class="text-xs text-ink/50 mb-1">Your Reference Code — save this!</p>
+          <p id="reg-ref-code-val" class="font-mono font-bold text-imperial text-lg tracking-widest"></p>
+          <p class="text-xs text-ink/40 mt-1">Use this code to check your enrollment status.</p>
+        </div>
         <p class="text-ink/40 text-xs mb-6">Check your email for updates.</p>
         <button id="reg-another" class="btn-outline px-6 py-2.5 rounded-lg text-sm font-medium">Submit Another</button>
       </div>
@@ -2236,6 +2328,25 @@
           </table>
         </div>
         <p id="admin-pending-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No pending registrations.</p>
+      </div>
+
+      <!-- ── Email Notifications (Web3Forms) ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Email Notifications
+        </h3>
+        <form id="web3forms-settings-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+          <p class="text-xs text-ink/55">Get an email whenever a registration is submitted. Uses <strong>Web3Forms</strong> — free, no backend needed. Sign up at <span class="text-imperial font-medium">web3forms.com</span> to get your access key.</p>
+          <div>
+            <label class="block text-xs font-medium text-ink/70 mb-1.5">Web3Forms Access Key</label>
+            <input id="w3f-key" type="text" placeholder="Paste your Web3Forms access key here"
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial font-mono" />
+          </div>
+          <div class="flex items-center gap-4">
+            <button type="submit" class="btn-imperial px-6 py-2 rounded text-sm font-medium">Save Key</button>
+            <p id="w3f-status" class="view-hidden text-sm text-imperial font-medium"></p>
+          </div>
+        </form>
       </div>
 
       <!-- ── Payment Settings ── -->
@@ -2687,6 +2798,41 @@
         </form>
       </div>
 
+      <!-- ── Testimonials ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Testimonials
+        </h3>
+        <div class="overflow-x-auto rounded-lg border border-imperial/10 mb-4">
+          <table class="admin-table w-full text-sm">
+            <thead><tr>
+              <th class="text-left px-4 py-3 rounded-tl-lg">Quote</th>
+              <th class="text-left px-4 py-3">Family</th>
+              <th class="text-left px-4 py-3">Program</th>
+              <th class="text-left px-4 py-3 text-center">Order</th>
+              <th class="text-left px-4 py-3 text-center">Active</th>
+              <th class="px-4 py-3 rounded-tr-lg w-24">Actions</th>
+            </tr></thead>
+            <tbody id="admin-testimonials-tbody" class="bg-surface/40"></tbody>
+          </table>
+        </div>
+        <p id="admin-testimonials-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No testimonials yet.</p>
+        <form id="add-testimonial-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+          <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Add New Testimonial</p>
+          <textarea id="testimonial-quote" rows="3" placeholder="Quote *" required
+            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          <div class="grid sm:grid-cols-3 gap-3">
+            <input id="testimonial-parent" type="text" placeholder="Family Name *" required
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="testimonial-program" type="text" placeholder="Program (e.g. Company A)"
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="testimonial-order" type="number" placeholder="Display Order (0, 1, 2…)"
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          </div>
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Testimonial</button>
+        </form>
+      </div>
+
       <!-- ── Quick FAQ ── -->
       <div class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
@@ -2706,6 +2852,49 @@
         </form>
       </div>
 
+      <!-- ── Tuition / Pricing ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Tuition &amp; Pricing
+        </h3>
+        <div class="overflow-x-auto rounded-lg border border-imperial/10 mb-4">
+          <table class="admin-table w-full text-sm">
+            <thead><tr>
+              <th class="text-left px-4 py-3 rounded-tl-lg">Program / Class</th>
+              <th class="text-left px-4 py-3">Monthly Rate</th>
+              <th class="text-left px-4 py-3">Included</th>
+              <th class="text-left px-4 py-3">Additional Fees</th>
+              <th class="text-left px-4 py-3 text-center">Active</th>
+              <th class="px-4 py-3 rounded-tr-lg w-24">Actions</th>
+            </tr></thead>
+            <tbody id="admin-tuition-tbody" class="bg-surface/40"></tbody>
+          </table>
+        </div>
+        <p id="admin-tuition-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No tuition entries yet.</p>
+        <form id="add-tuition-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+          <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Add Tuition Entry</p>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <input id="tuition-class" type="text" placeholder="Program / Class Name *" required
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="tuition-rate" type="text" placeholder="Monthly Rate (e.g. $150)" required
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          </div>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <textarea id="tuition-included" rows="2" placeholder="What's included"
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+            <textarea id="tuition-fees" rows="2" placeholder="Additional fees"
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <textarea id="tuition-notes" rows="2" placeholder="Notes (optional)"
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+            <input id="tuition-order" type="number" placeholder="Display Order (0, 1, 2…)"
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          </div>
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Entry</button>
+        </form>
+      </div>
+
       <!-- ── Registrations ── -->
       <div class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
@@ -2721,6 +2910,7 @@
               <th class="text-left px-4 py-3">Class</th>
               <th class="text-left px-4 py-3">Exp.</th>
               <th class="text-left px-4 py-3">Submitted</th>
+              <th class="text-left px-4 py-3">Ref Code</th>
               <th class="text-left px-4 py-3">Status</th>
               <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
             </tr></thead>
@@ -2789,6 +2979,7 @@
     </div>
     <div class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 space-y-6" id="program-content-container"></div>
     <p id="program-content-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Content for this program is coming soon.</p>
+    <div id="class-schedule-block" class="view-hidden max-w-3xl mx-auto px-4 sm:px-6 pb-16"></div>
     <footer class="border-t border-imperial/10 mt-6">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
         &copy; 2026 Bright Pearl Academy. All rights reserved.
@@ -2985,6 +3176,7 @@
           document.getElementById('admin-email-badge').textContent = session.user.email;
           renderAdminPendingRegistrations();
           renderAdminPaymentSettings();
+          loadWeb3FormsKey();
           renderAdminHeroPreview();
           renderAdminAwards();
           renderAdminClasses();
@@ -2998,6 +3190,8 @@
           renderAdminTosSettings();
           renderAdminContactInfo();
           renderAdminFaq();
+          renderAdminTestimonials();
+          renderAdminTuition();
         }
       } else if (view === 'about') {
         _syncNavSession();
@@ -3018,6 +3212,7 @@
         document.getElementById('step-2-num').className =
           'w-7 h-7 rounded-full border-2 border-imperial/40 text-ink/40 flex items-center justify-center text-xs font-semibold';
         populateClassDropdown();
+        renderTuitionDetails();
         if (typeof initReveal === 'function') setTimeout(initReveal, 60);
       } else if (view === 'faculty') {
         _syncNavSession();
@@ -3067,7 +3262,15 @@
     document.getElementById('nav-tos').addEventListener('click',           () => showView('tos'));
     document.getElementById('nav-admin').addEventListener('click',         () => showView('admin'));
     document.getElementById('hero-cta-register').addEventListener('click', () => showView('register'));
-    document.getElementById('hero-cta-about').addEventListener('click',    () => showView('about'));
+    document.getElementById('hero-cta-about').addEventListener('click', () => {
+      if (currentView !== 'home') {
+        showView('home');
+        setTimeout(() => document.getElementById('home-about-section')
+          .scrollIntoView({ behavior: 'smooth' }), 350);
+      } else {
+        document.getElementById('home-about-section').scrollIntoView({ behavior: 'smooth' });
+      }
+    });
     document.getElementById('nav-logout').addEventListener('click', async () => {
       try { await supabase.auth.signOut(); } catch (err) { console.error(err); }
       localStorage.removeItem('bp_session_start');
@@ -3388,10 +3591,12 @@
       if (error) { alert('Error: ' + error.message); return false; } return true;
     }
     async function submitRegistration(payload) {
-      const id = crypto.randomUUID();
-      const { error } = await supabase.from('registrations').insert({ ...payload, id });
+      const id   = crypto.randomUUID();
+      const year = new Date().getFullYear();
+      const code = `BP-${year}-${Math.floor(10000 + Math.random() * 90000)}`;
+      const { error } = await supabase.from('registrations').insert({ ...payload, id, reference_code: code });
       if (error) throw new Error(error.message);
-      return id;
+      return { id, reference_code: code };
     }
     async function updateRegStatus(id, status) {
       const { error } = await supabase.from('registrations').update({ status }).eq('id', id);
@@ -4155,6 +4360,115 @@
       return list.length ? list.sort((a, b) => (a.display_order || 0) - (b.display_order || 0)) : DEFAULT_FAQ;
     }
 
+    // ── Testimonials CRUD (stored as JSON in site_settings) ──
+    const DEFAULT_TESTIMONIALS = [
+      { id: 'default-t-1', quote: 'My daughter found her confidence and her love of performance here. The instructors are incredibly dedicated.', parent_name: 'The Chen Family', program: 'Company A', display_order: 0, active: true },
+      { id: 'default-t-2', quote: 'The integration of dance, culture, and academics is unlike anything else in the area.', parent_name: 'The Park Family', program: 'Afterschool Enrichment', display_order: 1, active: true },
+    ];
+    async function fetchTestimonials() {
+      const data = await fetchSetting('testimonials_data');
+      return Array.isArray(data) && data.length ? data.sort((a,b) => (a.display_order||0)-(b.display_order||0)) : DEFAULT_TESTIMONIALS;
+    }
+    async function addTestimonial(quote, parent_name, program, display_order) {
+      const items = await fetchTestimonials();
+      const real  = items.filter(t => !t.id.startsWith('default-'));
+      real.push({ id: crypto.randomUUID(), quote, parent_name, program: program||'', display_order: display_order||0, active: true });
+      await saveSetting('testimonials_data', real); return true;
+    }
+    async function deleteTestimonial(id) {
+      const items = await fetchTestimonials();
+      await saveSetting('testimonials_data', items.filter(t => t.id !== id)); return true;
+    }
+    async function updateTestimonial(id, fields) {
+      const items = await fetchTestimonials();
+      const updated = items.map(t => t.id === id ? { ...t, ...fields } : t);
+      await saveSetting('testimonials_data', updated); return true;
+    }
+    async function renderHomeTestimonials() {
+      const $grid = document.getElementById('testimonials-grid');
+      if (!$grid) return;
+      const items = await fetchTestimonials();
+      const active = items.filter(t => t.active !== false);
+      if (!active.length) { $grid.closest('section').classList.add('view-hidden'); return; }
+      $grid.closest('section').classList.remove('view-hidden');
+      $grid.innerHTML = active.map(t => `
+        <div class="testimonial-card reveal">
+          <p class="testimonial-quote">${esc(t.quote)}</p>
+          <div>
+            <p class="testimonial-attribution">— ${esc(t.parent_name)}</p>
+            ${t.program ? `<p class="testimonial-program">${esc(t.program)}</p>` : ''}
+          </div>
+        </div>`).join('');
+      if (typeof initReveal === 'function') setTimeout(initReveal, 60);
+    }
+
+    // ── Tuition CRUD (stored as JSON in site_settings) ──
+    async function fetchTuition() {
+      const data = await fetchSetting('tuition_data');
+      return Array.isArray(data) ? data.sort((a,b) => (a.display_order||0)-(b.display_order||0)) : [];
+    }
+    async function addTuition(class_name, monthly_rate, included, additional_fees, notes, display_order) {
+      const items = await fetchTuition();
+      items.push({ id: crypto.randomUUID(), class_name, monthly_rate, included: included||'', additional_fees: additional_fees||'', notes: notes||'', display_order: display_order||0, active: true });
+      await saveSetting('tuition_data', items); return true;
+    }
+    async function deleteTuition(id) {
+      const items = await fetchTuition();
+      await saveSetting('tuition_data', items.filter(t => t.id !== id)); return true;
+    }
+    async function updateTuition(id, fields) {
+      const items = await fetchTuition();
+      const updated = items.map(t => t.id === id ? { ...t, ...fields } : t);
+      await saveSetting('tuition_data', updated); return true;
+    }
+    async function renderAdminTuition() {
+      const items  = await fetchTuition();
+      const $tbody = document.getElementById('admin-tuition-tbody');
+      const $empty = document.getElementById('admin-tuition-empty');
+      if (!items.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $tbody.innerHTML = items.map(t => `<tr>
+        <td class="px-4 py-3 font-medium">${esc(t.class_name)}</td>
+        <td class="px-4 py-3 text-imperial font-bold">${esc(t.monthly_rate)}</td>
+        <td class="px-4 py-3 text-ink/60 text-xs">${esc(t.included||'—')}</td>
+        <td class="px-4 py-3 text-ink/60 text-xs">${esc(t.additional_fees||'—')}</td>
+        <td class="px-4 py-3 text-center">
+          <input type="checkbox" ${t.active!==false?'checked':''} data-toggle-tuition="${esc(t.id)}" class="w-4 h-4 accent-imperial rounded" />
+        </td>
+        <td class="px-4 py-3 text-center">
+          <button data-del-tuition="${esc(t.id)}" class="text-imperial hover:underline text-xs font-medium">Delete</button>
+        </td>
+      </tr>`).join('');
+      $tbody.querySelectorAll('[data-toggle-tuition]').forEach(cb => cb.addEventListener('change', async () => {
+        await updateTuition(cb.dataset.toggleTuition, { active: cb.checked });
+        await renderTuitionDetails();
+      }));
+      $tbody.querySelectorAll('[data-del-tuition]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this tuition entry?')) return;
+        if (await deleteTuition(b.dataset.delTuition)) { await renderAdminTuition(); await renderTuitionDetails(); }
+      }));
+    }
+    async function renderTuitionDetails() {
+      const $block = document.getElementById('reg-tuition-block');
+      if (!$block) return;
+      const items = await fetchTuition();
+      const active = items.filter(t => t.active !== false);
+      if (!active.length) { $block.classList.add('view-hidden'); return; }
+      $block.classList.remove('view-hidden');
+      const $wrap = document.getElementById('tuition-table-wrap');
+      if ($wrap) {
+        $wrap.innerHTML = `<table class="tuition-table">
+          <thead><tr><th>Program</th><th>Monthly</th><th>Included</th><th>Additional</th></tr></thead>
+          <tbody>${active.map(t => `<tr>
+            <td class="font-medium">${esc(t.class_name)}</td>
+            <td class="rate">${esc(t.monthly_rate)}</td>
+            <td>${esc(t.included||'—')}</td>
+            <td>${esc(t.additional_fees||'—')}</td>
+          </tr>${t.notes?`<tr><td colspan="4" class="text-xs text-ink/45 pb-2 italic">${esc(t.notes)}</td></tr>`:''}`).join('')}</tbody>
+        </table>`;
+      }
+    }
+
     async function renderHomeContactInfo() {
       const ci   = await fetchContactInfo();
       const $card = document.getElementById('contact-info-card');
@@ -4235,7 +4549,10 @@
       }
 
       $container.innerHTML = sections.map((s, idx) => {
-        const flip = idx % 2 !== 0;
+        const flip = s.image_position === 'right' ? true
+                   : s.image_position === 'left'  ? false
+                   : idx % 2 !== 0;
+        const curPos = s.image_position || 'auto';
 
         const toolbar = `
           <div class="section-toolbar" style="position:absolute;top:0.5rem;right:0.5rem;">
@@ -4243,6 +4560,7 @@
             <button class="haf-edit-btn" data-edit-id="${esc(s.id)}" title="Edit text">${SVG_PENCIL}</button>
             <button class="haf-img-btn" data-img-id="${esc(s.id)}" title="${s.image_url && !isVideoUrl(s.image_url) ? 'Change photo' : 'Add photo'}">${SVG_IMG}</button>
             <button class="haf-vid-btn" data-vid-id="${esc(s.id)}" title="${isVideoUrl(s.image_url) ? 'Change video' : 'Add YouTube video'}">${SVG_VID}</button>
+            ${s.image_url ? `<button class="haf-flip-btn" data-flip-id="${esc(s.id)}" data-flip-pos="${esc(curPos)}" title="Toggle image side" style="font-size:0.65rem;padding:2px 5px;border-radius:3px;">${flip ? '&#9664; Left' : 'Right &#9654;'}</button>` : ''}
             <button class="haf-del-btn" data-del-id="${esc(s.id)}" title="Delete section">${SVG_TRASH}</button>
           </div>`;
 
@@ -4332,6 +4650,18 @@
             await renderHomeAbout();
             await renderAdminAbout();
           }
+        });
+      });
+
+      // Image left/right flip toggle (admin-only, visible via section-toolbar)
+      $container.querySelectorAll('.haf-flip-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id  = btn.dataset.flipId;
+          const cur = btn.dataset.flipPos; // 'auto', 'left', or 'right'
+          // Cycle: auto→right→left→right (manual toggle)
+          const next = cur === 'right' ? 'left' : 'right';
+          await updateAboutSection(id, { image_position: next });
+          await renderHomeAboutFeatures();
         });
       });
 
@@ -4510,6 +4840,35 @@
     }
 
     let faqAdminSortable = null;
+    async function renderAdminTestimonials() {
+      const items  = await fetchTestimonials();
+      const real   = items.filter(t => !t.id.startsWith('default-'));
+      const $tbody = document.getElementById('admin-testimonials-tbody');
+      const $empty = document.getElementById('admin-testimonials-empty');
+      if (!real.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $tbody.innerHTML = real.map(t => `<tr data-t-row="${esc(t.id)}">
+        <td class="px-4 py-3 text-ink/70 text-xs max-w-[200px] truncate">${esc(t.quote.substring(0,80))}${t.quote.length>80?'…':''}</td>
+        <td class="px-4 py-3 font-medium text-sm">${esc(t.parent_name)}</td>
+        <td class="px-4 py-3 text-ink/60 text-sm">${esc(t.program||'—')}</td>
+        <td class="px-4 py-3 text-center text-ink/50 text-sm">${t.display_order||0}</td>
+        <td class="px-4 py-3 text-center">
+          <input type="checkbox" ${t.active!==false?'checked':''} data-toggle-t="${esc(t.id)}" class="w-4 h-4 accent-imperial rounded" />
+        </td>
+        <td class="px-4 py-3 text-center">
+          <button data-del-t="${esc(t.id)}" class="text-imperial hover:underline text-xs font-medium">Delete</button>
+        </td>
+      </tr>`).join('');
+      $tbody.querySelectorAll('[data-toggle-t]').forEach(cb => cb.addEventListener('change', async () => {
+        await updateTestimonial(cb.dataset.toggleT, { active: cb.checked });
+        await renderHomeTestimonials();
+      }));
+      $tbody.querySelectorAll('[data-del-t]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this testimonial?')) return;
+        if (await deleteTestimonial(b.dataset.delT)) { await renderAdminTestimonials(); await renderHomeTestimonials(); }
+      }));
+    }
+
     async function renderAdminFaq() {
       const raw   = await fetchSetting('faq_data');
       const items = Array.isArray(raw) ? raw.sort((a, b) => (a.display_order || 0) - (b.display_order || 0)) : [];
@@ -4967,6 +5326,17 @@
       const $sections = document.getElementById('faculty-sections-container');
       const $empty    = document.getElementById('faculty-list-empty');
       renderSkeletonCards('faculty-sections-container', 4);
+
+      // Pre-seed Joanna Jin if no faculty exist yet
+      const _existing = await fetchFaculty();
+      if (!_existing.length) {
+        await addFacultyMember(
+          'Joanna Jin (周娜)', 'Artistic Director',
+          'Joanna Jin is the founder and Artistic Director of Bright Pearl Academy. A classically trained dancer with decades of performance and teaching experience, Joanna has dedicated her career to preserving and sharing the rich traditions of Chinese classical dance while nurturing the next generation of performers. She leads the Elite Dance Program and oversees all artistic programming at the Academy.',
+          null, 0, 'Dance'
+        );
+      }
+
       const members   = await fetchFaculty();
       $empty.classList.add('view-hidden');
 
@@ -5516,6 +5886,42 @@
       } else {
         $container.innerHTML = ''; $empty.classList.remove('view-hidden');
       }
+      // ── Class Schedule + iCal block ────────────────
+      const $schedBlock = document.getElementById('class-schedule-block');
+      if ($schedBlock) {
+        const allClasses = await fetchClasses();
+        if (allClasses.length) {
+          $schedBlock.classList.remove('view-hidden');
+          $schedBlock.innerHTML = `
+            <div class="card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
+              <div style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+                <h3 class="font-display text-xl text-ink">Class Schedule 2025–2026</h3>
+                <button id="ical-export-btn" class="btn-imperial px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5">
+                  📅 Add to Calendar
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="admin-table w-full text-sm">
+                  <thead><tr>
+                    <th class="text-left px-4 py-3">Class</th>
+                    <th class="text-left px-4 py-3">Schedule</th>
+                    <th class="text-left px-4 py-3">Level</th>
+                  </tr></thead>
+                  <tbody>${allClasses.map(c => `<tr>
+                    <td class="px-4 py-3 font-medium">${esc(c.name)}</td>
+                    <td class="px-4 py-3 text-ink/70">${esc(c.schedule_time||'TBD')}</td>
+                    <td class="px-4 py-3 text-ink/60">${esc(c.level||'All levels')}</td>
+                  </tr>`).join('')}</tbody>
+                </table>
+              </div>
+              <p class="text-xs text-ink/40 mt-3 italic">Location: 61 Chestnut St, Newton, MA 02465</p>
+            </div>`;
+          document.getElementById('ical-export-btn').addEventListener('click', () => generateIcal(allClasses));
+        } else {
+          $schedBlock.classList.add('view-hidden');
+        }
+      }
+
       _applyProgramEditMode();
       if (editMode) { destroySortables(); initProgramSortable(); }
       if (typeof initReveal === 'function') setTimeout(initReveal, 60);
@@ -6169,14 +6575,20 @@
 
     const STATUS_STYLES = {
       pending:                'bg-amber-50  text-amber-700  border border-amber-200',
+      under_review:           'bg-amber-50  text-amber-700  border border-amber-200',
       awaiting_verification:  'bg-blue-50   text-blue-700   border border-blue-200',
       confirmed:              'bg-green-50  text-green-700  border border-green-200',
+      waitlisted:             'bg-purple-50 text-purple-700 border border-purple-200',
+      info_needed:            'bg-orange-50 text-orange-700 border border-orange-200',
       cancelled:              'bg-red-50    text-red-700    border border-red-200',
     };
     const STATUS_LABELS = {
       pending:               'Pending',
+      under_review:          'Under Review',
       awaiting_verification: 'Awaiting Verification',
       confirmed:             'Confirmed',
+      waitlisted:            'Waitlisted',
+      info_needed:           'Info Needed',
       cancelled:             'Cancelled',
     };
 
@@ -6197,11 +6609,15 @@
         <td class="px-4 py-3 text-ink/60">${esc(r.class_name||'—')}</td>
         <td class="px-4 py-3 text-ink/60 capitalize">${esc(r.experience_level||'—')}</td>
         <td class="px-4 py-3 text-ink/40 text-xs whitespace-nowrap">${new Date(r.created_at).toLocaleDateString()}</td>
+        <td class="px-4 py-3 font-mono text-xs text-ink/50">${esc(r.reference_code||'—')}</td>
         <td class="px-4 py-3">
           <select data-status-reg="${r.id}" class="text-xs px-2 py-1 rounded-full font-medium focus:outline-none ${STATUS_STYLES[r.status]||''}">
             <option value="pending"                ${r.status==='pending'               ?'selected':''}>Pending</option>
+            <option value="under_review"           ${r.status==='under_review'          ?'selected':''}>Under Review</option>
             <option value="awaiting_verification"  ${r.status==='awaiting_verification' ?'selected':''}>Awaiting Verification</option>
             <option value="confirmed"              ${r.status==='confirmed'             ?'selected':''}>Confirmed</option>
+            <option value="waitlisted"             ${r.status==='waitlisted'            ?'selected':''}>Waitlisted</option>
+            <option value="info_needed"            ${r.status==='info_needed'           ?'selected':''}>Info Needed</option>
             <option value="cancelled"              ${r.status==='cancelled'             ?'selected':''}>Cancelled</option>
           </select>
         </td>
@@ -6268,18 +6684,44 @@
 
       $btn.disabled = true; $btn.textContent = 'Submitting…';
       const sel = document.getElementById('reg-class');
+      const _sName  = document.getElementById('reg-student-name').value.trim();
+      const _pName  = document.getElementById('reg-parent-name').value.trim();
+      const _email  = document.getElementById('reg-email').value.trim();
+      const _phone  = document.getElementById('reg-phone').value.trim();
+      const _cls    = sel.value ? sel.options[sel.selectedIndex].dataset.name : null;
+      const _exp    = document.getElementById('reg-experience').value || null;
+      const _notes  = document.getElementById('reg-notes').value.trim() || null;
       try {
-        const regId = await submitRegistration({
-          student_name:     document.getElementById('reg-student-name').value.trim(),
-          parent_name:      document.getElementById('reg-parent-name').value.trim(),
-          email:            document.getElementById('reg-email').value.trim(),
-          phone:            document.getElementById('reg-phone').value.trim(),
+        const { id: regId, reference_code: refCode } = await submitRegistration({
+          student_name:     _sName,
+          parent_name:      _pName,
+          email:            _email,
+          phone:            _phone,
           date_of_birth:    document.getElementById('reg-dob').value || null,
           class_id:         sel.value || null,
-          class_name:       sel.value ? sel.options[sel.selectedIndex].dataset.name : null,
-          experience_level: document.getElementById('reg-experience').value || null,
-          notes:            document.getElementById('reg-notes').value.trim() || null,
+          class_name:       _cls,
+          experience_level: _exp,
+          notes:            _notes,
         });
+        // Store reference code for display on success screen
+        const $refEl = document.getElementById('reg-ref-code-val');
+        if ($refEl) $refEl.textContent = refCode;
+        // Fire-and-forget Web3Forms notification
+        fetchSetting('web3forms_key').then(w3key => {
+          if (!w3key) return;
+          fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              access_key: w3key,
+              subject: `New Registration — ${_sName} for ${_cls || 'Unspecified Class'}`,
+              from_name: 'Bright Pearl Academy',
+              email: _email,
+              replyto: _email,
+              message: `Student: ${_sName}\nParent: ${_pName}\nEmail: ${_email}\nPhone: ${_phone}\nClass: ${_cls||'—'}\nExperience: ${_exp||'—'}\nNotes: ${_notes||'—'}`
+            })
+          }).catch(() => {});
+        }).catch(() => {});
         e.target.reset();
         // Activate step-2 indicator
         document.getElementById('step-1-dot').classList.add('opacity-35');
@@ -6515,6 +6957,20 @@
       } catch (err) { alert('Error: ' + err.message); }
     });
 
+    document.getElementById('add-testimonial-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const quote   = document.getElementById('testimonial-quote').value.trim();
+      const parent  = document.getElementById('testimonial-parent').value.trim();
+      const program = document.getElementById('testimonial-program').value.trim();
+      const order   = parseInt(document.getElementById('testimonial-order').value) || 0;
+      if (!quote || !parent) return;
+      if (await addTestimonial(quote, parent, program, order)) {
+        ['testimonial-quote','testimonial-parent','testimonial-program','testimonial-order'].forEach(id => document.getElementById(id).value = '');
+        await renderAdminTestimonials();
+        await renderHomeTestimonials();
+      }
+    });
+
     // ════════════════════════════════════════════════
     //  PAYMENT — DATA + RENDER
     // ════════════════════════════════════════════════
@@ -6617,7 +7073,7 @@
     async function renderAdminPendingRegistrations() {
       const { data: regs, error } = await supabase.from('registrations')
         .select('*')
-        .in('status', ['pending', 'awaiting_verification'])
+        .in('status', ['pending', 'under_review', 'awaiting_verification', 'info_needed'])
         .order('created_at', { ascending: false });
       if (error) { console.error(error); return; }
       const $tbody = document.getElementById('admin-pending-tbody');
@@ -6659,6 +7115,53 @@
         }
       }));
     }
+
+    document.getElementById('add-tuition-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const cname  = document.getElementById('tuition-class').value.trim();
+      const rate   = document.getElementById('tuition-rate').value.trim();
+      const incl   = document.getElementById('tuition-included').value.trim();
+      const fees   = document.getElementById('tuition-fees').value.trim();
+      const notes  = document.getElementById('tuition-notes').value.trim();
+      const order  = parseInt(document.getElementById('tuition-order').value) || 0;
+      if (!cname || !rate) return;
+      if (await addTuition(cname, rate, incl, fees, notes, order)) {
+        ['tuition-class','tuition-rate','tuition-included','tuition-fees','tuition-notes','tuition-order'].forEach(id => document.getElementById(id).value = '');
+        await renderAdminTuition();
+        await renderTuitionDetails();
+      }
+    });
+
+    // Tuition toggle button on registration page
+    const $tuitionToggle  = document.getElementById('tuition-toggle');
+    const $tuitionDetails = document.getElementById('tuition-details');
+    const $tuitionArrow   = document.getElementById('tuition-arrow');
+    if ($tuitionToggle) {
+      $tuitionToggle.addEventListener('click', () => {
+        const open = !$tuitionDetails.classList.contains('view-hidden');
+        $tuitionDetails.classList.toggle('view-hidden', open);
+        $tuitionArrow.style.transform = open ? '' : 'rotate(180deg)';
+      });
+    }
+
+    // ════════════════════════════════════════════════
+    //  WEB3FORMS SETTINGS
+    // ════════════════════════════════════════════════
+    async function loadWeb3FormsKey() {
+      const key = await fetchSetting('web3forms_key');
+      if (key) document.getElementById('w3f-key').value = key;
+    }
+    document.getElementById('web3forms-settings-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const $status = document.getElementById('w3f-status');
+      const key = document.getElementById('w3f-key').value.trim();
+      try {
+        await saveSetting('web3forms_key', key || null);
+        $status.textContent = key ? 'Key saved!' : 'Key cleared.';
+        $status.classList.remove('view-hidden');
+        setTimeout(() => $status.classList.add('view-hidden'), 3000);
+      } catch (err) { alert('Save failed: ' + err.message); }
+    });
 
     // ════════════════════════════════════════════════
     //  ADMIN — PAYMENT SETTINGS
@@ -6922,6 +7425,87 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     function isYouTubeUrl(url) { return !!getYouTubeId(url); }
     function isVideoUrl(url) { return isYouTubeUrl(url); }
 
+    // ── iCal Export ─────────────────────────────────
+    function generateIcal(classes) {
+      const DAYS = { sunday:0, monday:1, tuesday:2, wednesday:3, thursday:4, friday:5, saturday:6 };
+      const LOCATION = '61 Chestnut St\\, Newton\\, MA 02465';
+
+      function parseScheduleTime(schedText) {
+        if (!schedText) return null;
+        const txt = schedText.toLowerCase();
+        let dayNum = null;
+        for (const [name, num] of Object.entries(DAYS)) {
+          if (txt.includes(name)) { dayNum = num; break; }
+        }
+        if (dayNum === null) return null;
+        // Extract start and end times like "4:00 PM" or "16:00"
+        const timeRx = /(\d{1,2}):(\d{2})\s*(am|pm)?/gi;
+        const matches = [...schedText.matchAll(timeRx)];
+        if (!matches.length) return null;
+        function toMins(m) {
+          let h = parseInt(m[1]), mn = parseInt(m[2]);
+          const meridiem = (m[3] || '').toLowerCase();
+          if (meridiem === 'pm' && h < 12) h += 12;
+          if (meridiem === 'am' && h === 12) h = 0;
+          return h * 60 + mn;
+        }
+        const startMins = toMins(matches[0]);
+        const endMins   = matches.length > 1 ? toMins(matches[1]) : startMins + 60;
+        return { dayNum, startMins, endMins };
+      }
+
+      function nextWeekday(dayNum) {
+        const now = new Date();
+        const diff = (dayNum - now.getDay() + 7) % 7;
+        const d = new Date(now);
+        d.setDate(d.getDate() + (diff === 0 ? 7 : diff));
+        d.setSeconds(0); d.setMilliseconds(0);
+        return d;
+      }
+
+      function formatDT(date, mins) {
+        const d = new Date(date);
+        d.setHours(Math.floor(mins / 60), mins % 60, 0, 0);
+        const pad = n => String(n).padStart(2, '0');
+        return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+      }
+
+      const now = new Date();
+      const stamp = now.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+      const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Bright Pearl Academy//BrightPearl//EN',
+                     'X-WR-CALNAME:Bright Pearl Academy 2025-2026', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+
+      classes.forEach(c => {
+        const parsed = parseScheduleTime(c.schedule_time);
+        if (!parsed) return; // skip unparseable schedules
+        const startDate = nextWeekday(parsed.dayNum);
+        const dtStart = formatDT(startDate, parsed.startMins);
+        const dtEnd   = formatDT(startDate, parsed.endMins);
+        const uid     = `bp-${c.id}@brightpearlacademy.com`;
+        lines.push(
+          'BEGIN:VEVENT',
+          `UID:${uid}`,
+          `DTSTAMP:${stamp}`,
+          `DTSTART:${dtStart}`,
+          `DTEND:${dtEnd}`,
+          `RRULE:FREQ=WEEKLY`,
+          `SUMMARY:${(c.name || '').replace(/,/g, '\\,')}`,
+          `LOCATION:${LOCATION}`,
+          c.description ? `DESCRIPTION:${c.description.replace(/\n/g, '\\n').replace(/,/g, '\\,')}` : '',
+          'END:VEVENT'
+        ).filter(l => l !== '');
+      });
+
+      lines.push('END:VCALENDAR');
+      const icsContent = lines.join('\r\n');
+      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'BrightPearl-2025-2026-Schedule.ics';
+      document.body.appendChild(a); a.click();
+      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
+    }
+
     // ── Init ───────────────────────────────────────
     showView('home');
     renderHomeAwards().catch(console.error);
@@ -6931,6 +7515,7 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     renderHomeFaq().catch(console.error);
     renderHomeAboutFeatures().catch(console.error);
     renderHomePrograms().catch(console.error);
+    renderHomeTestimonials().catch(console.error);
     populateProgramsDropdown().catch(console.error);
 
     // ── Gallery "View All" button ───────────────────
@@ -6938,6 +7523,75 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     if ($galleryViewAll) {
       $galleryViewAll.addEventListener('click', () => showView('gallery-page'));
     }
+
+    // ── Registration Tabs (Register / Check Status) ──
+    const $tabReg    = document.getElementById('reg-tab-register');
+    const $tabStatus = document.getElementById('reg-tab-status');
+    const $regPanel  = document.getElementById('reg-step-indicator');  // wraps all the form UI
+    const $statusPanel = document.getElementById('reg-status-panel');
+
+    function _switchRegTab(tab) {
+      const isStatus = tab === 'status';
+      $tabReg.className    = `flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${isStatus ? 'text-ink/60 hover:text-ink' : 'bg-imperial text-cream'}`;
+      $tabStatus.className = `flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${isStatus ? 'bg-imperial text-cream' : 'text-ink/60 hover:text-ink'}`;
+      $statusPanel.classList.toggle('view-hidden', !isStatus);
+      // Hide the form flow (step indicator + form + success + payment) when on status tab
+      ['reg-step-indicator','reg-success','reg-form','reg-payment-step'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('view-hidden', isStatus);
+      });
+      // Also hide the tuition block when on status tab
+      const $tuition = document.getElementById('reg-tuition-block');
+      if ($tuition) $tuition.classList.toggle('view-hidden', isStatus);
+    }
+
+    $tabReg.addEventListener('click', () => _switchRegTab('register'));
+    $tabStatus.addEventListener('click', () => _switchRegTab('status'));
+
+    // ── Enrollment Status Lookup ──────────────────
+    document.getElementById('lookup-submit').addEventListener('click', async () => {
+      const email = document.getElementById('lookup-email').value.trim();
+      const code  = document.getElementById('lookup-code').value.trim().toUpperCase();
+      const $res  = document.getElementById('lookup-result');
+      const $btn  = document.getElementById('lookup-submit');
+      if (!email || !code) {
+        $res.className = 'rounded-xl border border-amber-200 bg-amber-50 p-5 text-center space-y-1 text-amber-700';
+        $res.innerHTML = '<p class="font-medium">Please enter both email and reference code.</p>';
+        $res.classList.remove('view-hidden'); return;
+      }
+      $btn.disabled = true; $btn.textContent = 'Looking up…';
+      try {
+        const { data, error } = await supabase.from('registrations')
+          .select('student_name, class_name, status, reference_code')
+          .ilike('email', email)
+          .eq('reference_code', code)
+          .maybeSingle();
+        if (error) throw error;
+        $res.classList.remove('view-hidden');
+        if (!data) {
+          $res.className = 'rounded-xl border border-imperial/20 bg-imperial/5 p-5 text-center space-y-1';
+          $res.innerHTML = `<p class="text-xl">❌</p><p class="font-medium text-ink">No application found.</p><p class="text-xs text-ink/50">Check your email for your reference code, or contact us.</p>`;
+        } else {
+          const STATUS_MSG = {
+            confirmed:              { icon: '✅', label: 'Confirmed', msg: `Welcome! <strong>${esc(data.student_name)}</strong> is enrolled${data.class_name ? ' in <strong>' + esc(data.class_name) + '</strong>' : ''}. Check your email for next steps.`, cls: 'border-green-200 bg-green-50 text-green-800' },
+            pending:                { icon: '⏳', label: 'Under Review', msg: 'Your application is being reviewed. We\'ll contact you within 1–2 business days.', cls: 'border-amber-200 bg-amber-50 text-amber-800' },
+            under_review:           { icon: '⏳', label: 'Under Review', msg: 'Your application is being reviewed. We\'ll contact you within 1–2 business days.', cls: 'border-amber-200 bg-amber-50 text-amber-800' },
+            awaiting_verification:  { icon: '⏳', label: 'Awaiting Verification', msg: 'We\'re verifying your payment. This usually takes 1–2 business days.', cls: 'border-amber-200 bg-amber-50 text-amber-800' },
+            waitlisted:             { icon: '📋', label: 'Waitlisted', msg: `You're on the waitlist for <strong>${esc(data.class_name||'the class')}</strong>. We'll notify you if a spot opens.`, cls: 'border-blue-200 bg-blue-50 text-blue-800' },
+            info_needed:            { icon: '📋', label: 'Info Needed', msg: 'Please contact us — we need a bit more info to complete your enrollment.', cls: 'border-orange-200 bg-orange-50 text-orange-800' },
+            cancelled:              { icon: '❌', label: 'Cancelled', msg: 'This application has been cancelled. Contact us if you believe this is an error.', cls: 'border-red-200 bg-red-50 text-red-800' },
+          };
+          const s = STATUS_MSG[data.status] || STATUS_MSG['pending'];
+          $res.className = `rounded-xl border ${s.cls} p-5 text-center space-y-1`;
+          $res.innerHTML = `<p class="text-2xl">${s.icon}</p><p class="font-semibold text-sm uppercase tracking-wide">${s.label}</p><p class="text-sm mt-1">${s.msg}</p>`;
+        }
+      } catch (err) {
+        $res.className = 'rounded-xl border border-red-200 bg-red-50 text-red-700 p-5 text-center';
+        $res.innerHTML = `<p class="text-sm">Lookup failed: ${esc(err.message)}</p>`;
+        $res.classList.remove('view-hidden');
+      }
+      $btn.disabled = false; $btn.textContent = 'Check Status';
+    });
 
     // ── Scroll Reveal ───────────────────────────────
     const revealObserver = new IntersectionObserver(
