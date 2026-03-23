@@ -182,23 +182,19 @@
       padding: 0.45rem 0.9rem;
       margin-inline: auto;
       border-radius: 999px;
-      isolation: isolate;
-      background-image: linear-gradient(90deg, rgb(190, 178, 255) 0%, rgb(240, 110, 200) 60%, rgb(72, 220, 210) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    #hero-est-text::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: -1;
       border: 1px solid rgba(255,255,255,0.18);
-      border-radius: inherit;
       background: rgba(16, 12, 34, 0.28);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       box-shadow: 0 10px 30px rgba(5, 8, 20, 0.18);
+    }
+    #hero-est-text span {
+      position: relative;
+      z-index: 1;
+      background-image: linear-gradient(90deg, rgb(190, 178, 255) 0%, rgb(240, 110, 200) 60%, rgb(72, 220, 210) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     /* Page h1 inside hero-banner — shimmer underline accent */
     .hero-banner h1 { position: relative; }
@@ -1271,11 +1267,11 @@
     .editable-body ul, .editable-body ol,
     .haf-body ul, .haf-body ol,
     .hp-feature-body ul, .hp-feature-body ol {
-      padding-left: 1.4rem; margin: 0.35rem 0;
+      padding-left: 1.4rem; margin: 0.35rem 0; white-space: normal;
     }
     .editable-body ul, .haf-body ul, .hp-feature-body ul { list-style-type: disc; }
     .editable-body ol, .haf-body ol, .hp-feature-body ol { list-style-type: decimal; }
-    .editable-body li, .haf-body li, .hp-feature-body li { margin: 0.1rem 0; display: list-item; }
+    .editable-body li, .haf-body li, .hp-feature-body li { margin: 0.1rem 0; display: list-item; white-space: normal; }
 
     /* ── About section with image ──────────────────── */
     .about-section-with-image {
@@ -1854,7 +1850,7 @@
       </div>
       <div class="hero-overlay">
         <div class="hero-glass">
-          <p id="hero-est-text" class="uppercase tracking-[0.25em] text-white/50 text-xs font-semibold mb-3">Est. 2008</p>
+          <p id="hero-est-text" class="uppercase tracking-[0.25em] text-xs font-semibold mb-3"><span>Est. 2008</span></p>
           <h1 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight mb-3">
             Where Tradition Meets<br/><em>Graceful Expression</em>
           </h1>
@@ -3096,7 +3092,7 @@
     document.getElementById('nav-tos').addEventListener('click',           () => showView('tos'));
     document.getElementById('nav-admin').addEventListener('click',         () => showView('admin'));
     document.getElementById('hero-cta-register').addEventListener('click', () => showView('register'));
-    document.getElementById('hero-cta-about').addEventListener('click',    () => showView('about'));
+    document.getElementById('hero-cta-about').addEventListener('click',    () => document.getElementById('home-about-section').scrollIntoView({ behavior: 'smooth' }));
     document.getElementById('nav-logout').addEventListener('click', async () => {
       try { await supabase.auth.signOut(); } catch (err) { console.error(err); }
       localStorage.removeItem('bp_session_start');
@@ -4303,9 +4299,9 @@
           return `
             <div class="hp-feature-text-only reveal" data-section-id="${esc(s.id)}" style="position:relative">
               ${toolbar}
-              <span class="hp-feature-eyebrow">Our Story</span>
+              <span class="hp-feature-eyebrow haf-eyebrow" data-id="${esc(s.id)}">${esc(s.eyebrow || 'Our Story')}</span>
               <h2 class="hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h2>
-              <p class="hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</p>
+              <div class="hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
             </div>`;
         }
 
@@ -4323,9 +4319,9 @@
           <div class="hp-feature${flip ? ' hp-feature--flip' : ''}" data-section-id="${esc(s.id)}" style="position:relative">
             ${toolbar}
             <div class="hp-feature-text">
-              <span class="hp-feature-eyebrow">Our Story</span>
+              <span class="hp-feature-eyebrow haf-eyebrow" data-id="${esc(s.id)}">${esc(s.eyebrow || 'Our Story')}</span>
               <h2 class="hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h2>
-              <p class="hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</p>
+              <div class="hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
             </div>
             <div class="hp-feature-photo-wrap"${isVid ? '' : ` data-upload-sid="${esc(s.id)}"`}>
               <div class="hp-deco-circle hp-deco-circle--primary"></div>
@@ -4345,25 +4341,26 @@
       // Inline text editing
       $container.querySelectorAll('.haf-edit-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          const id     = btn.dataset.editId;
-          const block  = $container.querySelector(`[data-section-id="${id}"]`);
-          const $title = block.querySelector('.haf-title');
-          const $body  = block.querySelector('.haf-body');
+          const id       = btn.dataset.editId;
+          const block    = $container.querySelector(`[data-section-id="${id}"]`);
+          const $eyebrow = block.querySelector('.haf-eyebrow');
+          const $title   = block.querySelector('.haf-title');
+          const $body    = block.querySelector('.haf-body');
           if ($title.contentEditable === 'true') {
-            [$title, $body].forEach(el => el.contentEditable = 'false');
+            [$eyebrow, $title, $body].forEach(el => el.contentEditable = 'false');
             const sb = block.querySelector('.inline-save-btn'); if (sb) sb.remove();
             block.querySelector('.format-toolbar')?.remove();
-            updateAboutSection(id, { title: $title.textContent.trim(), body: sanitizeHtml($body.innerHTML.trim()) })
+            updateAboutSection(id, { eyebrow: $eyebrow.textContent.trim(), title: $title.textContent.trim(), body: sanitizeHtml($body.innerHTML.trim()) })
               .then(() => renderHomeAboutFeatures());
           } else {
-            [$title, $body].forEach(el => el.contentEditable = 'true'); $title.focus();
+            [$eyebrow, $title, $body].forEach(el => el.contentEditable = 'true'); $eyebrow.focus();
             showFormatToolbar($body);
             if (!block.querySelector('.inline-save-btn')) {
               const sb = document.createElement('button');
               sb.className = 'inline-save-btn'; sb.textContent = 'Save Changes';
               sb.addEventListener('click', async () => {
-                await updateAboutSection(id, { title: $title.textContent.trim(), body: sanitizeHtml($body.innerHTML.trim()) });
-                [$title, $body].forEach(el => el.contentEditable = 'false');
+                await updateAboutSection(id, { eyebrow: $eyebrow.textContent.trim(), title: $title.textContent.trim(), body: sanitizeHtml($body.innerHTML.trim()) });
+                [$eyebrow, $title, $body].forEach(el => el.contentEditable = 'false');
                 block.querySelector('.format-toolbar')?.remove();
                 sb.remove();
                 await renderHomeAboutFeatures();
