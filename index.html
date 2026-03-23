@@ -3092,7 +3092,7 @@
     document.getElementById('nav-tos').addEventListener('click',           () => showView('tos'));
     document.getElementById('nav-admin').addEventListener('click',         () => showView('admin'));
     document.getElementById('hero-cta-register').addEventListener('click', () => showView('register'));
-    document.getElementById('hero-cta-about').addEventListener('click',    () => showView('about'));
+    document.getElementById('hero-cta-about').addEventListener('click',    () => document.getElementById('home-about-section').scrollIntoView({ behavior: 'smooth' }));
     document.getElementById('nav-logout').addEventListener('click', async () => {
       try { await supabase.auth.signOut(); } catch (err) { console.error(err); }
       localStorage.removeItem('bp_session_start');
