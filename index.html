@@ -170,13 +170,35 @@
     .hero-banner > * { position: relative; z-index: 1; }
     /* Eyebrow label inside hero — vivid gradient text, override text-white/50 */
     .hero-banner [class*="uppercase"][class*="tracking"] {
-      background: linear-gradient(90deg, rgb(190, 178, 255) 0%, rgb(240, 110, 200) 60%, rgb(72, 220, 210) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
       letter-spacing: 0.22em;
       font-weight: 700;
       opacity: 1;
+    }
+    #hero-est-text {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.45rem 0.9rem;
+      margin-inline: auto;
+      border-radius: 999px;
+      isolation: isolate;
+      background-image: linear-gradient(90deg, rgb(190, 178, 255) 0%, rgb(240, 110, 200) 60%, rgb(72, 220, 210) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    #hero-est-text::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: inherit;
+      background: rgba(16, 12, 34, 0.28);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(5, 8, 20, 0.18);
     }
     /* Page h1 inside hero-banner — shimmer underline accent */
     .hero-banner h1 { position: relative; }
@@ -1832,7 +1854,7 @@
       </div>
       <div class="hero-overlay">
         <div class="hero-glass">
-          <p class="uppercase tracking-[0.25em] text-white/50 text-xs font-semibold mb-3">Est. 2018</p>
+          <p id="hero-est-text" class="uppercase tracking-[0.25em] text-white/50 text-xs font-semibold mb-3">Est. 2008</p>
           <h1 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight mb-3">
             Where Tradition Meets<br/><em>Graceful Expression</em>
           </h1>
@@ -2284,9 +2306,16 @@
       <!-- ── Hero Image ── -->
       <div class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
-          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Hero Banner Image
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Hero Banner
         </h3>
-        <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5">
+        <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-5">
+          <div class="grid sm:grid-cols-[minmax(0,1fr)_auto] gap-3 items-end">
+            <label class="block">
+              <span class="block text-xs font-semibold uppercase tracking-[0.2em] text-ink/45 mb-2">Established label</span>
+              <input id="hero-est-input" type="text" value="Est. 2008" placeholder="Est. 2008" class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </label>
+            <button id="hero-est-save-btn" type="button" class="btn-imperial px-4 py-2 rounded text-sm font-medium">Save Hero Label</button>
+          </div>
           <div class="flex items-start gap-5">
             <div id="hero-admin-preview" class="w-40 h-28 rounded-lg border border-imperial/10 overflow-hidden bg-cream flex items-center justify-center flex-shrink-0">
               <span class="text-ink/30 text-xs">No hero image</span>
@@ -2985,7 +3014,7 @@
           document.getElementById('admin-email-badge').textContent = session.user.email;
           renderAdminPendingRegistrations();
           renderAdminPaymentSettings();
-          renderAdminHeroPreview();
+          renderAdminHeroSettings();
           renderAdminAwards();
           renderAdminClasses();
           renderAdminAbout();
@@ -4065,6 +4094,22 @@
       `).join('');
     }
 
+    async function fetchHeroContentSetting() {
+      const data = await fetchSetting('hero_content');
+      return {
+        estLabel: data && typeof data === 'object' && typeof data.estLabel === 'string' && data.estLabel.trim()
+          ? data.estLabel.trim()
+          : 'Est. 2008'
+      };
+    }
+
+    async function renderHeroContent() {
+      const $est = document.getElementById('hero-est-text');
+      if (!$est) return;
+      const heroContent = await fetchHeroContentSetting();
+      $est.textContent = heroContent.estLabel;
+    }
+
     async function renderHeroPhoto() {
       const $img = document.getElementById('hero-photo-img');
       if (!$img) return;
@@ -4080,6 +4125,14 @@
       if (!photos.length) return;
       $img.onload = () => $img.classList.add('loaded');
       $img.src = photos[0].image_url;
+    }
+
+    async function renderAdminHeroSettings() {
+      const $input = document.getElementById('hero-est-input');
+      if (!$input) return;
+      const heroContent = await fetchHeroContentSetting();
+      $input.value = heroContent.estLabel;
+      await renderAdminHeroPreview();
     }
 
     async function renderAdminHeroPreview() {
@@ -6305,6 +6358,21 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
+    document.getElementById('hero-est-save-btn').addEventListener('click', async () => {
+      const $btn = document.getElementById('hero-est-save-btn');
+      const $input = document.getElementById('hero-est-input');
+      const estLabel = $input.value.trim() || 'Est. 2008';
+      $btn.disabled = true;
+      try {
+        await saveSetting('hero_content', { estLabel });
+        await renderHeroContent();
+        $input.value = estLabel;
+      } catch (err) {
+        alert('Error saving hero label: ' + err.message);
+      }
+      $btn.disabled = false;
+    });
+
     document.getElementById('add-award-form').addEventListener('submit', async e => {
       e.preventDefault();
       const title = document.getElementById('award-title').value.trim();
@@ -6927,6 +6995,7 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     renderHomeAwards().catch(console.error);
     renderHomeGallery().catch(console.error);
     renderHeroPhoto().catch(console.error);
+    renderHeroContent().catch(console.error);
     renderHomeContactInfo().catch(console.error);
     renderHomeFaq().catch(console.error);
     renderHomeAboutFeatures().catch(console.error);
