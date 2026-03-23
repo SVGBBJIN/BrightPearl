@@ -182,23 +182,19 @@
       padding: 0.45rem 0.9rem;
       margin-inline: auto;
       border-radius: 999px;
-      isolation: isolate;
-      background-image: linear-gradient(90deg, rgb(190, 178, 255) 0%, rgb(240, 110, 200) 60%, rgb(72, 220, 210) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    #hero-est-text::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: -1;
       border: 1px solid rgba(255,255,255,0.18);
-      border-radius: inherit;
       background: rgba(16, 12, 34, 0.28);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       box-shadow: 0 10px 30px rgba(5, 8, 20, 0.18);
+    }
+    #hero-est-text span {
+      position: relative;
+      z-index: 1;
+      background-image: linear-gradient(90deg, rgb(190, 178, 255) 0%, rgb(240, 110, 200) 60%, rgb(72, 220, 210) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     /* Page h1 inside hero-banner — shimmer underline accent */
     .hero-banner h1 { position: relative; }
@@ -1854,7 +1850,7 @@
       </div>
       <div class="hero-overlay">
         <div class="hero-glass">
-          <p id="hero-est-text" class="uppercase tracking-[0.25em] text-white/50 text-xs font-semibold mb-3">Est. 2008</p>
+          <p id="hero-est-text" class="uppercase tracking-[0.25em] text-xs font-semibold mb-3"><span>Est. 2008</span></p>
           <h1 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight mb-3">
             Where Tradition Meets<br/><em>Graceful Expression</em>
           </h1>
