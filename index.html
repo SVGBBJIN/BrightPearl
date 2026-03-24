@@ -2224,8 +2224,8 @@
     </section>
 
     <!-- Admin Dashboard -->
-    <section id="admin-dashboard" class="view-hidden max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="flex items-center justify-between mb-10">
+    <section id="admin-dashboard" class="view-hidden max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex items-center justify-between mb-5">
         <div>
           <h2 class="font-display text-2xl sm:text-3xl text-ink">Dashboard</h2>
           <p class="text-ink/50 text-sm">Manage content, classes, gallery &amp; registrations</p>
@@ -2234,34 +2234,39 @@
       </div>
 
       <!-- ── Pending Registrations ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="pending">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Pending Registrations
           <span id="pending-reg-badge" class="view-hidden text-xs bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium ml-1"></span>
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="pending">▾</span>
         </h3>
-        <div class="overflow-x-auto rounded-lg border border-imperial/10">
-          <table class="admin-table w-full text-sm">
-            <thead><tr>
-              <th class="text-left px-4 py-3 rounded-tl-lg">Student</th>
-              <th class="text-left px-4 py-3">Parent</th>
-              <th class="text-left px-4 py-3">Contact</th>
-              <th class="text-left px-4 py-3">Class</th>
-              <th class="text-left px-4 py-3">Status</th>
-              <th class="text-left px-4 py-3">Submitted</th>
-              <th class="px-4 py-3 rounded-tr-lg">Actions</th>
-            </tr></thead>
-            <tbody id="admin-pending-tbody" class="bg-surface/40"></tbody>
-          </table>
+        <div data-admin-section="pending">
+          <div class="overflow-x-auto rounded-lg border border-imperial/10">
+            <table class="admin-table w-full text-sm">
+              <thead><tr>
+                <th class="text-left px-3 py-2 rounded-tl-lg">Student</th>
+                <th class="text-left px-3 py-2">Parent</th>
+                <th class="text-left px-3 py-2">Contact</th>
+                <th class="text-left px-3 py-2">Class</th>
+                <th class="text-left px-3 py-2">Status</th>
+                <th class="text-left px-3 py-2">Submitted</th>
+                <th class="px-3 py-2 rounded-tr-lg">Actions</th>
+              </tr></thead>
+              <tbody id="admin-pending-tbody" class="bg-surface/40"></tbody>
+            </table>
+          </div>
+          <p id="admin-pending-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No pending registrations.</p>
         </div>
-        <p id="admin-pending-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No pending registrations.</p>
       </div>
 
       <!-- ── Payment Settings ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="payment">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Payment Settings
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="payment">▸</span>
         </h3>
-        <form id="payment-settings-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-4">
+        <div data-admin-section="payment" class="view-hidden">
+        <form id="payment-settings-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 space-y-4">
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-medium text-ink/70 mb-1.5">Payment Method</label>
@@ -2297,14 +2302,17 @@
             <p id="ps-status" class="view-hidden text-sm text-imperial font-medium"></p>
           </div>
         </form>
+        </div>
       </div>
 
       <!-- ── Hero Image ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="hero">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Hero Banner
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="hero">▸</span>
         </h3>
-        <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-5">
+        <div data-admin-section="hero" class="view-hidden">
+        <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 mb-3 space-y-5">
           <div class="grid sm:grid-cols-[minmax(0,1fr)_auto] gap-3 items-end">
             <label class="block">
               <span class="block text-xs font-semibold uppercase tracking-[0.2em] text-ink/45 mb-2">Established label</span>
@@ -2332,14 +2340,17 @@
             </div>
           </div>
         </div>
+        </div>
       </div>
 
       <!-- ── Awards ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="awards">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Awards
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="awards">▸</span>
         </h3>
-        <form id="add-award-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 grid sm:grid-cols-4 gap-3">
+        <div data-admin-section="awards" class="view-hidden">
+        <form id="add-award-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 mb-3 grid sm:grid-cols-4 gap-3">
           <input id="award-title" type="text" placeholder="Title *" required class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           <input id="award-year"  type="text" placeholder="Year" maxlength="4" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           <input id="award-desc"  type="text" placeholder="Description" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
@@ -2348,23 +2359,26 @@
         <div class="overflow-x-auto rounded-lg border border-imperial/10">
           <table class="admin-table w-full text-sm">
             <thead><tr>
-              <th class="text-left px-4 py-3 rounded-tl-lg">Title</th>
-              <th class="text-left px-4 py-3">Year</th>
-              <th class="text-left px-4 py-3">Description</th>
-              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+              <th class="text-left px-3 py-2 rounded-tl-lg">Title</th>
+              <th class="text-left px-3 py-2">Year</th>
+              <th class="text-left px-3 py-2">Description</th>
+              <th class="px-3 py-2 rounded-tr-lg w-20">Action</th>
             </tr></thead>
             <tbody id="admin-awards-tbody" class="bg-surface/40"></tbody>
           </table>
         </div>
         <p id="admin-awards-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No awards yet.</p>
+        </div>
       </div>
 
       <!-- ── Classes ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="classes">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Classes
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="classes">▸</span>
         </h3>
-        <form id="add-class-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 grid sm:grid-cols-5 gap-3">
+        <div data-admin-section="classes" class="view-hidden">
+        <form id="add-class-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 mb-3 grid sm:grid-cols-5 gap-3">
           <input id="class-name"  type="text" placeholder="Class Name *" required class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           <input id="class-time"  type="text" placeholder="Schedule" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           <input id="class-level" type="text" placeholder="Level" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
@@ -2374,24 +2388,27 @@
         <div class="overflow-x-auto rounded-lg border border-imperial/10">
           <table class="admin-table w-full text-sm">
             <thead><tr>
-              <th class="text-left px-4 py-3 rounded-tl-lg">Name</th>
-              <th class="text-left px-4 py-3">Schedule</th>
-              <th class="text-left px-4 py-3">Level</th>
-              <th class="text-left px-4 py-3">Description</th>
-              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+              <th class="text-left px-3 py-2 rounded-tl-lg">Name</th>
+              <th class="text-left px-3 py-2">Schedule</th>
+              <th class="text-left px-3 py-2">Level</th>
+              <th class="text-left px-3 py-2">Description</th>
+              <th class="px-3 py-2 rounded-tr-lg w-20">Action</th>
             </tr></thead>
             <tbody id="admin-classes-tbody" class="bg-surface/40"></tbody>
           </table>
         </div>
         <p id="admin-classes-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No classes yet.</p>
+        </div>
       </div>
 
       <!-- ── About Sections ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="about">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>About Page Sections
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="about">▸</span>
         </h3>
-        <form id="add-about-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
+        <div data-admin-section="about" class="view-hidden">
+        <form id="add-about-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 mb-3 space-y-3">
           <div class="grid sm:grid-cols-4 gap-3">
             <input id="about-title-input" type="text" placeholder="Section Title *" required
               class="sm:col-span-3 px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
@@ -2415,24 +2432,27 @@
         <div class="overflow-x-auto rounded-lg border border-imperial/10">
           <table class="admin-table w-full text-sm">
             <thead><tr>
-              <th class="text-left px-4 py-3 rounded-tl-lg w-16">Image</th>
-              <th class="text-left px-4 py-3">Title</th>
-              <th class="text-left px-4 py-3">Preview</th>
-              <th class="text-center px-4 py-3 w-20">Order</th>
-              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+              <th class="text-left px-3 py-2 rounded-tl-lg w-16">Image</th>
+              <th class="text-left px-3 py-2">Title</th>
+              <th class="text-left px-3 py-2">Preview</th>
+              <th class="text-center px-3 py-2 w-20">Order</th>
+              <th class="px-3 py-2 rounded-tr-lg w-20">Action</th>
             </tr></thead>
             <tbody id="admin-about-tbody" class="bg-surface/40"></tbody>
           </table>
         </div>
         <p id="admin-about-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No about sections yet.</p>
+        </div>
       </div>
 
       <!-- ── PDF Downloads ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="pdfs">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>PDF Downloads
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="pdfs">▸</span>
         </h3>
-        <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5">
+        <div data-admin-section="pdfs" class="view-hidden">
+        <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 mb-3">
           <div id="pdf-drop-zone" class="drop-zone mb-4">
             <svg class="mx-auto mb-2 w-8 h-8 text-imperial/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
@@ -2463,24 +2483,27 @@
         <div class="overflow-x-auto rounded-lg border border-imperial/10">
           <table class="admin-table w-full text-sm">
             <thead><tr>
-              <th class="text-left px-4 py-3 rounded-tl-lg">Title</th>
-              <th class="text-left px-4 py-3">Description</th>
-              <th class="text-center px-4 py-3 w-16">Order</th>
-              <th class="text-left px-4 py-3">Uploaded</th>
-              <th class="px-4 py-3 rounded-tr-lg w-28">Actions</th>
+              <th class="text-left px-3 py-2 rounded-tl-lg">Title</th>
+              <th class="text-left px-3 py-2">Description</th>
+              <th class="text-center px-3 py-2 w-16">Order</th>
+              <th class="text-left px-3 py-2">Uploaded</th>
+              <th class="px-3 py-2 rounded-tr-lg w-28">Actions</th>
             </tr></thead>
             <tbody id="admin-pdf-tbody" class="bg-surface/40"></tbody>
           </table>
         </div>
         <p id="admin-pdf-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No PDFs uploaded yet.</p>
+        </div>
       </div>
 
       <!-- ── Gallery Photos ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="gallery">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Gallery Photos
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="gallery">▸</span>
         </h3>
-        <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5">
+        <div data-admin-section="gallery" class="view-hidden">
+        <div class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 mb-3">
           <div id="upload-drop-zone" class="drop-zone mb-4">
             <svg class="mx-auto mb-2 w-8 h-8 text-imperial/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             <p class="text-ink/50 text-sm">Drop images here or <span class="text-imperial font-medium">click to browse</span></p>
@@ -2521,23 +2544,26 @@
         <div class="overflow-x-auto rounded-lg border border-imperial/10">
           <table class="admin-table w-full text-sm">
             <thead><tr>
-              <th class="text-left px-4 py-3 rounded-tl-lg w-20">Preview</th>
-              <th class="text-left px-4 py-3">Caption</th>
-              <th class="text-left px-4 py-3">Uploaded</th>
-              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+              <th class="text-left px-3 py-2 rounded-tl-lg w-20">Preview</th>
+              <th class="text-left px-3 py-2">Caption</th>
+              <th class="text-left px-3 py-2">Uploaded</th>
+              <th class="px-3 py-2 rounded-tr-lg w-20">Action</th>
             </tr></thead>
             <tbody id="admin-gallery-tbody" class="bg-surface/40"></tbody>
           </table>
         </div>
         <p id="admin-gallery-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No photos yet.</p>
+        </div>
       </div>
 
       <!-- ── Faculty ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="faculty">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Faculty
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="faculty">▸</span>
         </h3>
-        <form id="add-faculty-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
+        <div data-admin-section="faculty" class="view-hidden">
+        <form id="add-faculty-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 mb-3 space-y-3">
           <div class="grid sm:grid-cols-2 gap-3">
             <input id="faculty-name" type="text" placeholder="Full Name *" required
               class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
@@ -2573,28 +2599,31 @@
         <div class="overflow-x-auto rounded-lg border border-imperial/10">
           <table class="admin-table w-full text-sm">
             <thead><tr>
-              <th class="text-left px-4 py-3 rounded-tl-lg w-14">Photo</th>
-              <th class="text-left px-4 py-3">Name</th>
-              <th class="text-left px-4 py-3">Title</th>
-              <th class="text-left px-4 py-3">Category</th>
-              <th class="text-left px-4 py-3">Bio Preview</th>
-              <th class="text-center px-4 py-3 w-16">Order</th>
-              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+              <th class="text-left px-3 py-2 rounded-tl-lg w-14">Photo</th>
+              <th class="text-left px-3 py-2">Name</th>
+              <th class="text-left px-3 py-2">Title</th>
+              <th class="text-left px-3 py-2">Category</th>
+              <th class="text-left px-3 py-2">Bio Preview</th>
+              <th class="text-center px-3 py-2 w-16">Order</th>
+              <th class="px-3 py-2 rounded-tr-lg w-20">Action</th>
             </tr></thead>
             <tbody id="admin-faculty-tbody" class="bg-surface/40"></tbody>
           </table>
         </div>
         <p id="admin-faculty-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No faculty members yet.</p>
+        </div>
       </div>
 
       <!-- ── Programs ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="programs">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Programs
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="programs">▸</span>
         </h3>
+        <div data-admin-section="programs" class="view-hidden">
         <p class="text-ink/50 text-xs mb-4">Each program is a subpage accessible from the Programs nav menu. Add sections inside each program to build out its content.</p>
         <!-- Create new program -->
-        <form id="add-program-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
+        <form id="add-program-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 mb-3 space-y-3">
           <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Create New Program (Subpage)</p>
           <div class="grid sm:grid-cols-3 gap-3">
             <input id="program-name" type="text" placeholder="Program Name *" required
@@ -2611,14 +2640,17 @@
         <!-- Programs list with expandable section editors -->
         <div id="admin-programs-list" class="space-y-3 mb-3"></div>
         <p id="admin-programs-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No programs yet. Create one above.</p>
+        </div>
       </div>
 
       <!-- ── Concert Page ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="concert">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Concert Page
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="concert">▸</span>
         </h3>
-        <form id="add-concert-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
+        <div data-admin-section="concert" class="view-hidden">
+        <form id="add-concert-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 mb-3 space-y-3">
           <div class="grid sm:grid-cols-4 gap-3">
             <input id="concert-title" type="text" placeholder="Section Title *" required
               class="sm:col-span-3 px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
@@ -2632,24 +2664,27 @@
         <div class="overflow-x-auto rounded-lg border border-imperial/10">
           <table class="admin-table w-full text-sm">
             <thead><tr>
-              <th class="text-left px-4 py-3 rounded-tl-lg">Title</th>
-              <th class="text-left px-4 py-3">Preview</th>
-              <th class="text-center px-4 py-3 w-16">Order</th>
-              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
+              <th class="text-left px-3 py-2 rounded-tl-lg">Title</th>
+              <th class="text-left px-3 py-2">Preview</th>
+              <th class="text-center px-3 py-2 w-16">Order</th>
+              <th class="px-3 py-2 rounded-tr-lg w-20">Action</th>
             </tr></thead>
             <tbody id="admin-concert-tbody" class="bg-surface/40"></tbody>
           </table>
         </div>
         <p id="admin-concert-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No concert sections yet.</p>
+        </div>
       </div>
 
       <!-- ── Terms of Service Page ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="tos">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Terms of Service Page
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="tos">▸</span>
         </h3>
+        <div data-admin-section="tos" class="view-hidden">
         <!-- Page meta (title / subtitle) -->
-        <form id="tos-settings-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
+        <form id="tos-settings-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 mb-3 space-y-3">
           <input id="tos-title" type="text" placeholder="Page title"
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           <input id="tos-subtitle" type="text" placeholder="Subtitle / intro"
@@ -2666,7 +2701,7 @@
           <p id="admin-tos-sections-empty" class="view-hidden text-ink/40 italic text-sm py-2">No sections yet — add one below.</p>
         </div>
         <!-- Add new TOS section -->
-        <form id="add-tos-section-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+        <form id="add-tos-section-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 space-y-3">
           <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Add New Section</p>
           <input id="tos-section-title" type="text" placeholder="Section title *" required
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
@@ -2674,14 +2709,17 @@
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
           <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Section</button>
         </form>
+        </div>
       </div>
 
       <!-- ── Contact & Enrollment Info ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="contact">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Contact &amp; Enrollment Info
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="contact">▸</span>
         </h3>
-        <form id="contact-info-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+        <div data-admin-section="contact" class="view-hidden">
+        <form id="contact-info-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 space-y-3">
           <p class="text-ink/50 text-xs">This information is displayed in the Contact &amp; Enrollment Help box on the home page.</p>
           <div class="grid sm:grid-cols-2 gap-3">
             <div>
@@ -2710,18 +2748,21 @@
             <p id="ci-status" class="view-hidden text-sm text-imperial font-medium"></p>
           </div>
         </form>
+        </div>
       </div>
 
       <!-- ── Quick FAQ ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="faq">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Quick FAQ
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="faq">▸</span>
         </h3>
+        <div data-admin-section="faq" class="view-hidden">
         <div class="mb-4">
           <div id="admin-faq-list" class="space-y-2 mb-3"></div>
           <p id="admin-faq-empty" class="view-hidden text-ink/40 italic text-sm py-2">No FAQ items yet — add one below.</p>
         </div>
-        <form id="add-faq-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+        <form id="add-faq-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-4 space-y-3">
           <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Add New FAQ Item</p>
           <input id="faq-question" type="text" placeholder="Question *" required
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
@@ -2729,30 +2770,34 @@
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
           <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add FAQ Item</button>
         </form>
+        </div>
       </div>
 
       <!-- ── Registrations ── -->
-      <div class="mb-14">
-        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+      <div class="mb-6">
+        <h3 class="font-display text-xl text-ink mb-2 flex items-center gap-2 cursor-pointer select-none" data-admin-toggle="registrations">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Registrations
           <span id="reg-count-badge" class="view-hidden text-xs bg-imperial/10 text-imperial px-2 py-0.5 rounded-full font-medium ml-1"></span>
+          <span class="ml-auto text-ink/35 text-sm" data-admin-toggle-icon="registrations">▾</span>
         </h3>
-        <div class="overflow-x-auto rounded-lg border border-imperial/10">
-          <table class="admin-table w-full text-sm">
-            <thead><tr>
-              <th class="text-left px-4 py-3 rounded-tl-lg">Student</th>
-              <th class="text-left px-4 py-3">Parent</th>
-              <th class="text-left px-4 py-3">Contact</th>
-              <th class="text-left px-4 py-3">Class</th>
-              <th class="text-left px-4 py-3">Exp.</th>
-              <th class="text-left px-4 py-3">Submitted</th>
-              <th class="text-left px-4 py-3">Status</th>
-              <th class="px-4 py-3 rounded-tr-lg w-20">Action</th>
-            </tr></thead>
-            <tbody id="admin-reg-tbody" class="bg-surface/40"></tbody>
-          </table>
+        <div data-admin-section="registrations">
+          <div class="overflow-x-auto rounded-lg border border-imperial/10">
+            <table class="admin-table w-full text-sm">
+              <thead><tr>
+                <th class="text-left px-3 py-2 rounded-tl-lg">Student</th>
+                <th class="text-left px-3 py-2">Parent</th>
+                <th class="text-left px-3 py-2">Contact</th>
+                <th class="text-left px-3 py-2">Class</th>
+                <th class="text-left px-3 py-2">Exp.</th>
+                <th class="text-left px-3 py-2">Submitted</th>
+                <th class="text-left px-3 py-2">Status</th>
+                <th class="px-3 py-2 rounded-tr-lg w-20">Action</th>
+              </tr></thead>
+              <tbody id="admin-reg-tbody" class="bg-surface/40"></tbody>
+            </table>
+          </div>
+          <p id="admin-reg-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No registrations yet.</p>
         </div>
-        <p id="admin-reg-empty" class="view-hidden text-ink/40 italic text-sm text-center py-4">No registrations yet.</p>
       </div>
     </section>
   </main>
@@ -3006,6 +3051,7 @@
         $navAdmin.classList.toggle('view-hidden',   loggedIn);
         $toolbar.classList.remove('visible');
         if (editMode) toggleEditMode();
+        initAdminSectionToggles();
         if (loggedIn) {
           document.getElementById('admin-email-badge').textContent = session.user.email;
           renderAdminPendingRegistrations();
@@ -5803,15 +5849,15 @@
       if (!members.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $tbody.innerHTML = members.map(m => `<tr>
-        <td class="px-4 py-3">${m.photo_url
+        <td class="px-3 py-2">${m.photo_url
           ? `<img src="${esc(m.photo_url)}" class="w-10 h-10 object-cover rounded-full border border-imperial/10"/>`
           : '<span class="text-ink/25 text-xs">—</span>'}</td>
-        <td class="px-4 py-3 font-medium">${esc(m.name)}</td>
-        <td class="px-4 py-3 text-ink/60">${esc(m.title||'')}</td>
-        <td class="px-4 py-3">${m.category ? `<span class="faculty-category-badge">${esc(m.category)}</span>` : '<span class="text-ink/25 text-xs">—</span>'}</td>
-        <td class="px-4 py-3 text-ink/60 text-xs">${esc((m.bio||'').substring(0,80))}${(m.bio||'').length>80?'…':''}</td>
-        <td class="px-4 py-3 text-ink/50 text-center">${m.display_order||0}</td>
-        <td class="px-4 py-3 text-center"><button data-del-faculty="${m.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+        <td class="px-3 py-2 font-medium">${esc(m.name)}</td>
+        <td class="px-3 py-2 text-ink/60">${esc(m.title||'')}</td>
+        <td class="px-3 py-2">${m.category ? `<span class="faculty-category-badge">${esc(m.category)}</span>` : '<span class="text-ink/25 text-xs">—</span>'}</td>
+        <td class="px-3 py-2 text-ink/60 text-xs">${esc((m.bio||'').substring(0,80))}${(m.bio||'').length>80?'…':''}</td>
+        <td class="px-3 py-2 text-ink/50 text-center">${m.display_order||0}</td>
+        <td class="px-3 py-2 text-center"><button data-del-faculty="${m.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
       </tr>`).join('');
       $tbody.querySelectorAll('[data-del-faculty]').forEach(b => b.addEventListener('click', async () => {
         if (!confirm('Delete this faculty member?')) return;
@@ -5845,7 +5891,7 @@
         return `
         <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 overflow-hidden">
           <!-- Program header row -->
-          <div class="flex items-center gap-3 px-4 py-3">
+          <div class="flex items-center gap-3 px-3 py-2">
             <div class="flex-1 min-w-0">
               <p class="font-medium text-ink text-sm">${esc(p.name)}</p>
               <p class="text-xs text-ink/50 font-mono">${esc(p.slug||'')}${p.description ? ' · ' + esc(p.description.substring(0,50)) : ''}</p>
@@ -5980,10 +6026,10 @@
       if (!sections.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $tbody.innerHTML = sections.map(s => `<tr>
-        <td class="px-4 py-3 font-medium">${esc(s.title)}</td>
-        <td class="px-4 py-3 text-ink/60 text-xs">${esc((s.body||'').substring(0,90))}${(s.body||'').length>90?'…':''}</td>
-        <td class="px-4 py-3 text-ink/50 text-center">${s.display_order||0}</td>
-        <td class="px-4 py-3 text-center"><button data-del-concert="${s.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+        <td class="px-3 py-2 font-medium">${esc(s.title)}</td>
+        <td class="px-3 py-2 text-ink/60 text-xs">${esc((s.body||'').substring(0,90))}${(s.body||'').length>90?'…':''}</td>
+        <td class="px-3 py-2 text-ink/50 text-center">${s.display_order||0}</td>
+        <td class="px-3 py-2 text-center"><button data-del-concert="${s.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
       </tr>`).join('');
       $tbody.querySelectorAll('[data-del-concert]').forEach(b => b.addEventListener('click', async () => {
         if (!confirm('Delete this concert section?')) return;
@@ -6024,6 +6070,78 @@
     }
 
     // ════════════════════════════════════════════════
+    //  ADMIN UTILITIES
+    // ════════════════════════════════════════════════
+
+    // Collapsible section toggles — call once when admin view is shown
+    let _adminTogglesInit = false;
+    function initAdminSectionToggles() {
+      if (_adminTogglesInit) return;
+      _adminTogglesInit = true;
+      const OPEN_KEY = 'adminOpenSections';
+      const defaults = new Set(['pending', 'registrations']);
+      let open = (() => {
+        try { return new Set(JSON.parse(sessionStorage.getItem(OPEN_KEY))); }
+        catch { return new Set(defaults); }
+      })();
+      function apply() {
+        document.querySelectorAll('[data-admin-section]').forEach(el => {
+          const name = el.dataset.adminSection;
+          el.classList.toggle('view-hidden', !open.has(name));
+          const icon = document.querySelector(`[data-admin-toggle-icon="${name}"]`);
+          if (icon) icon.textContent = open.has(name) ? '▾' : '▸';
+        });
+        sessionStorage.setItem(OPEN_KEY, JSON.stringify([...open]));
+      }
+      document.querySelectorAll('[data-admin-toggle]').forEach(h => {
+        h.addEventListener('click', () => {
+          const name = h.dataset.adminToggle;
+          open.has(name) ? open.delete(name) : open.add(name);
+          apply();
+        });
+      });
+      apply();
+    }
+
+    // Shared inline row-edit handler for admin tables
+    function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+    function attachInlineEditHandlers(tbody, entity, fields, opts) {
+      const E = entity;
+      tbody.querySelectorAll(`[data-edit-${E}]`).forEach(b => {
+        b.addEventListener('click', () => {
+          const id = b.dataset[`edit${cap(E)}`];
+          tbody.querySelector(`[data-${E}-row="${id}"]`).classList.add('view-hidden');
+          tbody.querySelector(`[data-${E}-edit-row="${id}"]`).classList.remove('view-hidden');
+        });
+      });
+      tbody.querySelectorAll(`[data-cancel-${E}]`).forEach(b => {
+        b.addEventListener('click', () => {
+          const id = b.dataset[`cancel${cap(E)}`];
+          tbody.querySelector(`[data-${E}-row="${id}"]`).classList.remove('view-hidden');
+          tbody.querySelector(`[data-${E}-edit-row="${id}"]`).classList.add('view-hidden');
+        });
+      });
+      tbody.querySelectorAll(`[data-save-${E}]`).forEach(b => {
+        b.addEventListener('click', async () => {
+          const id = b.dataset[`save${cap(E)}`];
+          const vals = {};
+          fields.forEach(f => {
+            vals[f] = tbody.querySelector(`[data-${E}-input-${f}="${id}"]`).value.trim();
+          });
+          if (!vals[fields[0]]) return;
+          b.textContent = 'Saving…'; b.disabled = true;
+          if (await opts.update(id, vals)) { await opts.onSaved(); }
+          else { b.textContent = 'Save'; b.disabled = false; }
+        });
+      });
+      tbody.querySelectorAll(`[data-del-${E}]`).forEach(b => {
+        b.addEventListener('click', async () => {
+          if (!confirm(opts.confirmMsg)) return;
+          if (await opts.delete(b.dataset[`del${cap(E)}`])) await opts.onSaved();
+        });
+      });
+    }
+
     //  RENDER — ADMIN
     // ════════════════════════════════════════════════
     async function renderAdminAwards() {
@@ -6033,10 +6151,10 @@
       if (!awards.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $tbody.innerHTML = awards.map(a => `<tr data-award-row="${a.id}">
-        <td class="px-4 py-3 font-medium" data-award-display-title="${a.id}">${esc(a.title)}</td>
-        <td class="px-4 py-3 text-ink/60" data-award-display-year="${a.id}">${esc(a.year||'')}</td>
-        <td class="px-4 py-3 text-ink/60" data-award-display-desc="${a.id}">${esc(a.description||'')}</td>
-        <td class="px-4 py-3 text-center space-x-2">
+        <td class="px-3 py-2 font-medium" data-award-display-title="${a.id}">${esc(a.title)}</td>
+        <td class="px-3 py-2 text-ink/60" data-award-display-year="${a.id}">${esc(a.year||'')}</td>
+        <td class="px-3 py-2 text-ink/60" data-award-display-desc="${a.id}">${esc(a.description||'')}</td>
+        <td class="px-3 py-2 text-center space-x-2">
           <button data-edit-award="${a.id}" class="text-imperial hover:underline text-xs font-medium">Edit</button>
           <button data-del-award="${a.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button>
         </td>
@@ -6050,37 +6168,12 @@
           <button data-cancel-award="${a.id}" class="px-2 py-1 rounded text-xs font-medium border border-imperial/20 text-ink/60 hover:border-imperial/40">Cancel</button>
         </td>
       </tr>`).join('');
-      $tbody.querySelectorAll('[data-edit-award]').forEach(b => {
-        b.addEventListener('click', () => {
-          const id = b.dataset.editAward;
-          $tbody.querySelector(`[data-award-row="${id}"]`).classList.add('view-hidden');
-          $tbody.querySelector(`[data-award-edit-row="${id}"]`).classList.remove('view-hidden');
-        });
+      attachInlineEditHandlers($tbody, 'award', ['title', 'year', 'desc'], {
+        update: (id, vals) => updateAward(id, { title: vals.title, year: vals.year||null, description: vals.desc||null }),
+        delete: deleteAward,
+        confirmMsg: 'Delete this award?',
+        onSaved: async () => { await renderAdminAwards(); await renderHomeAwards(); }
       });
-      $tbody.querySelectorAll('[data-cancel-award]').forEach(b => {
-        b.addEventListener('click', () => {
-          const id = b.dataset.cancelAward;
-          $tbody.querySelector(`[data-award-row="${id}"]`).classList.remove('view-hidden');
-          $tbody.querySelector(`[data-award-edit-row="${id}"]`).classList.add('view-hidden');
-        });
-      });
-      $tbody.querySelectorAll('[data-save-award]').forEach(b => {
-        b.addEventListener('click', async () => {
-          const id    = b.dataset.saveAward;
-          const title = $tbody.querySelector(`[data-award-input-title="${id}"]`).value.trim();
-          const year  = $tbody.querySelector(`[data-award-input-year="${id}"]`).value.trim();
-          const desc  = $tbody.querySelector(`[data-award-input-desc="${id}"]`).value.trim();
-          if (!title) return;
-          b.textContent = 'Saving…'; b.disabled = true;
-          if (await updateAward(id, { title, year: year||null, description: desc||null })) {
-            await renderAdminAwards(); await renderHomeAwards();
-          } else { b.textContent = 'Save'; b.disabled = false; }
-        });
-      });
-      $tbody.querySelectorAll('[data-del-award]').forEach(b => b.addEventListener('click', async () => {
-        if (!confirm('Delete this award?')) return;
-        if (await deleteAward(b.dataset.delAward)) { await renderAdminAwards(); await renderHomeAwards(); }
-      }));
     }
 
     async function renderAdminClasses() {
@@ -6090,11 +6183,11 @@
       if (!classes.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $tbody.innerHTML = classes.map(c => `<tr data-class-row="${c.id}">
-        <td class="px-4 py-3 font-medium" data-class-display-name="${c.id}">${esc(c.name)}</td>
-        <td class="px-4 py-3 text-ink/60" data-class-display-time="${c.id}">${esc(c.schedule_time||'')}</td>
-        <td class="px-4 py-3 text-ink/60" data-class-display-level="${c.id}">${esc(c.level||'')}</td>
-        <td class="px-4 py-3 text-ink/60" data-class-display-desc="${c.id}">${esc(c.description||'')}</td>
-        <td class="px-4 py-3 text-center space-x-2">
+        <td class="px-3 py-2 font-medium" data-class-display-name="${c.id}">${esc(c.name)}</td>
+        <td class="px-3 py-2 text-ink/60" data-class-display-time="${c.id}">${esc(c.schedule_time||'')}</td>
+        <td class="px-3 py-2 text-ink/60" data-class-display-level="${c.id}">${esc(c.level||'')}</td>
+        <td class="px-3 py-2 text-ink/60" data-class-display-desc="${c.id}">${esc(c.description||'')}</td>
+        <td class="px-3 py-2 text-center space-x-2">
           <button data-edit-class="${c.id}" class="text-imperial hover:underline text-xs font-medium">Edit</button>
           <button data-del-class="${c.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button>
         </td>
@@ -6109,38 +6202,12 @@
           <button data-cancel-class="${c.id}" class="px-2 py-1 rounded text-xs font-medium border border-imperial/20 text-ink/60 hover:border-imperial/40">Cancel</button>
         </td>
       </tr>`).join('');
-      $tbody.querySelectorAll('[data-edit-class]').forEach(b => {
-        b.addEventListener('click', () => {
-          const id = b.dataset.editClass;
-          $tbody.querySelector(`[data-class-row="${id}"]`).classList.add('view-hidden');
-          $tbody.querySelector(`[data-class-edit-row="${id}"]`).classList.remove('view-hidden');
-        });
+      attachInlineEditHandlers($tbody, 'class', ['name', 'time', 'level', 'desc'], {
+        update: (id, vals) => updateClass(id, { name: vals.name, schedule_time: vals.time||null, level: vals.level||null, description: vals.desc||null }),
+        delete: deleteClass,
+        confirmMsg: 'Delete this class?',
+        onSaved: async () => { await renderAdminClasses(); }
       });
-      $tbody.querySelectorAll('[data-cancel-class]').forEach(b => {
-        b.addEventListener('click', () => {
-          const id = b.dataset.cancelClass;
-          $tbody.querySelector(`[data-class-row="${id}"]`).classList.remove('view-hidden');
-          $tbody.querySelector(`[data-class-edit-row="${id}"]`).classList.add('view-hidden');
-        });
-      });
-      $tbody.querySelectorAll('[data-save-class]').forEach(b => {
-        b.addEventListener('click', async () => {
-          const id    = b.dataset.saveClass;
-          const name  = $tbody.querySelector(`[data-class-input-name="${id}"]`).value.trim();
-          const time  = $tbody.querySelector(`[data-class-input-time="${id}"]`).value.trim();
-          const level = $tbody.querySelector(`[data-class-input-level="${id}"]`).value.trim();
-          const desc  = $tbody.querySelector(`[data-class-input-desc="${id}"]`).value.trim();
-          if (!name) return;
-          b.textContent = 'Saving…'; b.disabled = true;
-          if (await updateClass(id, { name, schedule_time: time||null, level: level||null, description: desc||null })) {
-            await renderAdminClasses();
-          } else { b.textContent = 'Save'; b.disabled = false; }
-        });
-      });
-      $tbody.querySelectorAll('[data-del-class]').forEach(b => b.addEventListener('click', async () => {
-        if (!confirm('Delete this class?')) return;
-        if (await deleteClass(b.dataset.delClass)) await renderAdminClasses();
-      }));
     }
 
     async function renderAdminAbout() {
@@ -6150,11 +6217,11 @@
       if (!sections.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $tbody.innerHTML = sections.map(s => `<tr>
-        <td class="px-4 py-3">${s.image_url ? `<img src="${esc(s.image_url)}" class="w-12 h-8 object-cover rounded border border-imperial/10"/>` : '<span class="text-ink/25 text-xs">—</span>'}</td>
-        <td class="px-4 py-3 font-medium">${esc(s.title)}</td>
-        <td class="px-4 py-3 text-ink/60 text-xs">${esc(s.body.substring(0,90))}${s.body.length>90?'…':''}</td>
-        <td class="px-4 py-3 text-ink/50 text-center">${s.display_order}</td>
-        <td class="px-4 py-3 text-center">
+        <td class="px-3 py-2">${s.image_url ? `<img src="${esc(s.image_url)}" class="w-12 h-8 object-cover rounded border border-imperial/10"/>` : '<span class="text-ink/25 text-xs">—</span>'}</td>
+        <td class="px-3 py-2 font-medium">${esc(s.title)}</td>
+        <td class="px-3 py-2 text-ink/60 text-xs">${esc(s.body.substring(0,90))}${s.body.length>90?'…':''}</td>
+        <td class="px-3 py-2 text-ink/50 text-center">${s.display_order}</td>
+        <td class="px-3 py-2 text-center">
           <button data-del-about="${s.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button>
         </td>
       </tr>`).join('');
@@ -6175,11 +6242,11 @@
       if (!pdfs.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $tbody.innerHTML = pdfs.map(p => `<tr>
-        <td class="px-4 py-3 font-medium">${esc(p.title)}</td>
-        <td class="px-4 py-3 text-ink/60 text-xs">${esc(p.description||'—')}</td>
-        <td class="px-4 py-3 text-ink/50 text-center text-xs">${p.display_order}</td>
-        <td class="px-4 py-3 text-ink/40 text-xs">${new Date(p.created_at).toLocaleDateString()}</td>
-        <td class="px-4 py-3 text-center text-xs">
+        <td class="px-3 py-2 font-medium">${esc(p.title)}</td>
+        <td class="px-3 py-2 text-ink/60 text-xs">${esc(p.description||'—')}</td>
+        <td class="px-3 py-2 text-ink/50 text-center text-xs">${p.display_order}</td>
+        <td class="px-3 py-2 text-ink/40 text-xs">${new Date(p.created_at).toLocaleDateString()}</td>
+        <td class="px-3 py-2 text-center text-xs">
           <a href="${esc(p.file_url)}" target="_blank" class="text-imperial hover:underline mr-3">View</a>
           <button data-del-pdf="${p.id}" data-pdf-url="${esc(p.file_url)}" class="text-imperial hover:underline font-medium">Delete</button>
         </td>
@@ -6205,10 +6272,10 @@
           ? `<img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" class="yt-admin-thumb" alt="video"/>`
           : `<img src="${esc(p.image_url)}" class="w-14 h-10 object-cover rounded border border-imperial/10"/>`;
         return `<tr>
-        <td class="px-4 py-3">${thumb}</td>
-        <td class="px-4 py-3 text-ink/60">${esc(p.caption||'—')}</td>
-        <td class="px-4 py-3 text-ink/40 text-xs">${new Date(p.created_at).toLocaleDateString()}</td>
-        <td class="px-4 py-3 text-center"><button data-del-gal="${p.id}" data-gal-url="${esc(p.image_url)}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+        <td class="px-3 py-2">${thumb}</td>
+        <td class="px-3 py-2 text-ink/60">${esc(p.caption||'—')}</td>
+        <td class="px-3 py-2 text-ink/40 text-xs">${new Date(p.created_at).toLocaleDateString()}</td>
+        <td class="px-3 py-2 text-center"><button data-del-gal="${p.id}" data-gal-url="${esc(p.image_url)}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
       </tr>`;
       }).join('');
       $tbody.querySelectorAll('[data-del-gal]').forEach(b => b.addEventListener('click', async () => {
@@ -6241,13 +6308,13 @@
       if (!regs.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $tbody.innerHTML = regs.map(r => `<tr>
-        <td class="px-4 py-3 font-medium">${esc(r.student_name)}${r.date_of_birth?`<div class="text-xs text-ink/40">${new Date(r.date_of_birth).toLocaleDateString()}</div>`:''}</td>
-        <td class="px-4 py-3 text-ink/70">${esc(r.parent_name)}</td>
-        <td class="px-4 py-3 text-ink/60 text-xs"><div>${esc(r.email)}</div><div>${esc(r.phone)}</div></td>
-        <td class="px-4 py-3 text-ink/60">${esc(r.class_name||'—')}</td>
-        <td class="px-4 py-3 text-ink/60 capitalize">${esc(r.experience_level||'—')}</td>
-        <td class="px-4 py-3 text-ink/40 text-xs whitespace-nowrap">${new Date(r.created_at).toLocaleDateString()}</td>
-        <td class="px-4 py-3">
+        <td class="px-3 py-2 font-medium">${esc(r.student_name)}${r.date_of_birth?`<div class="text-xs text-ink/40">${new Date(r.date_of_birth).toLocaleDateString()}</div>`:''}</td>
+        <td class="px-3 py-2 text-ink/70">${esc(r.parent_name)}</td>
+        <td class="px-3 py-2 text-ink/60 text-xs"><div>${esc(r.email)}</div><div>${esc(r.phone)}</div></td>
+        <td class="px-3 py-2 text-ink/60">${esc(r.class_name||'—')}</td>
+        <td class="px-3 py-2 text-ink/60 capitalize">${esc(r.experience_level||'—')}</td>
+        <td class="px-3 py-2 text-ink/40 text-xs whitespace-nowrap">${new Date(r.created_at).toLocaleDateString()}</td>
+        <td class="px-3 py-2">
           <select data-status-reg="${r.id}" class="text-xs px-2 py-1 rounded-full font-medium focus:outline-none ${STATUS_STYLES[r.status]||''}">
             <option value="pending"                ${r.status==='pending'               ?'selected':''}>Pending</option>
             <option value="awaiting_verification"  ${r.status==='awaiting_verification' ?'selected':''}>Awaiting Verification</option>
@@ -6255,7 +6322,7 @@
             <option value="cancelled"              ${r.status==='cancelled'             ?'selected':''}>Cancelled</option>
           </select>
         </td>
-        <td class="px-4 py-3 text-center"><button data-del-reg="${r.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
+        <td class="px-3 py-2 text-center"><button data-del-reg="${r.id}" class="text-imperial hover:underline text-xs font-medium">Delete</button></td>
       </tr>`).join('');
       $tbody.querySelectorAll('[data-status-reg]').forEach(sel => sel.addEventListener('change', async () => {
         if (await updateRegStatus(sel.dataset.statusReg, sel.value))
@@ -6695,17 +6762,17 @@
       $empty.classList.add('view-hidden');
       $badge.textContent = `${regs.length} pending`; $badge.classList.remove('view-hidden');
       $tbody.innerHTML = regs.map(r => `<tr>
-        <td class="px-4 py-3 font-medium">${esc(r.student_name)}</td>
-        <td class="px-4 py-3 text-ink/70">${esc(r.parent_name)}</td>
-        <td class="px-4 py-3 text-ink/60 text-xs"><div>${esc(r.email)}</div><div>${esc(r.phone)}</div></td>
-        <td class="px-4 py-3 text-ink/60 text-xs">${esc(r.class_name||'—')}</td>
-        <td class="px-4 py-3">
+        <td class="px-3 py-2 font-medium">${esc(r.student_name)}</td>
+        <td class="px-3 py-2 text-ink/70">${esc(r.parent_name)}</td>
+        <td class="px-3 py-2 text-ink/60 text-xs"><div>${esc(r.email)}</div><div>${esc(r.phone)}</div></td>
+        <td class="px-3 py-2 text-ink/60 text-xs">${esc(r.class_name||'—')}</td>
+        <td class="px-3 py-2">
           <span class="text-xs px-2 py-1 rounded-full font-medium ${STATUS_STYLES[r.status]||''}">
             ${STATUS_LABELS[r.status]||r.status}
           </span>
         </td>
-        <td class="px-4 py-3 text-ink/40 text-xs whitespace-nowrap">${new Date(r.created_at).toLocaleDateString()}</td>
-        <td class="px-4 py-3 text-center whitespace-nowrap">
+        <td class="px-3 py-2 text-ink/40 text-xs whitespace-nowrap">${new Date(r.created_at).toLocaleDateString()}</td>
+        <td class="px-3 py-2 text-center whitespace-nowrap">
           <button data-approve-reg="${r.id}" class="btn-imperial text-xs px-3 py-1.5 rounded-lg font-medium mr-2">Approve</button>
           <button data-deny-reg="${r.id}"    class="text-imperial hover:underline text-xs font-medium">Deny</button>
         </td>
