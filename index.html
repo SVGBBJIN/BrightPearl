@@ -71,26 +71,7 @@
     /* ── Base ─────────────────────────────────────── */
     body { font-family: 'Inter', sans-serif; }
 
-    /* ── Ambient background animation ────────────── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(139, 128, 248, 0.07) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 70% at 90% 80%, rgba(210, 60, 180, 0.06) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
-      animation: ambientShift 12s ease-in-out infinite alternate;
-    }
-    @keyframes ambientShift {
-      0%   { opacity: 0.6; transform: scale(1) translateY(0); }
-      100% { opacity: 1;   transform: scale(1.05) translateY(-20px); }
-    }
     body > * { position: relative; z-index: 1; }
-    @media (prefers-reduced-motion: reduce) {
-      body::before { animation: none; }
-    }
 
     /* ── Fixed Geometric Lotus Background ────────── */
     .lotus-bg {
@@ -160,17 +141,13 @@
       content: '';
       position: absolute;
       inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 20% 50%, rgba(139, 128, 248, 0.18) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 80% 30%, rgba(210, 60, 180, 0.14) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 40% at 60% 80%, rgba(56, 178, 172, 0.10) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
     .hero-banner > * { position: relative; z-index: 1; }
     /* Eyebrow label inside hero — vivid gradient text, override text-white/50 */
     .hero-banner [class*="uppercase"][class*="tracking"] {
-      letter-spacing: 0.22em;
+      letter-spacing: 0.08em;
       font-weight: 700;
       opacity: 1;
     }
@@ -233,10 +210,11 @@
     .hero-glass h1 em { color: #ffd6d6; font-style: italic; }
     .hero-glass .hero-sub { color: rgba(255,255,255,0.78); }
     .hero-glass .btn-outline {
-      color: #fff; border-color: rgba(255,255,255,0.55);
+      color: rgb(var(--imperial-rgb)); border-color: rgb(var(--imperial-rgb) / 0.7);
+      background: transparent;
     }
     .hero-glass .btn-outline:hover {
-      background: rgba(255,255,255,0.15); border-color: #fff;
+      background: rgb(var(--imperial-rgb) / 0.12); border-color: rgb(var(--imperial-rgb));
     }
     .hero-rule {
       width: 40px; height: 2px; background: #8B80F8; border-radius: 2px;
@@ -254,7 +232,7 @@
     }
     .awards-strip-label {
       flex-shrink: 0;
-      text-transform: uppercase; letter-spacing: 0.12em;
+      text-transform: uppercase; letter-spacing: 0.08em;
       font-size: 0.68rem; font-weight: 600;
       color: rgb(var(--ink-rgb) / 0.45);
       white-space: nowrap;
@@ -284,18 +262,10 @@
       }
     }
 
-    /* ── CTA Glow ───────────────────────────────── */
-    @keyframes cta-glow {
-      0%, 100% {
-        box-shadow: 0 4px 16px rgb(var(--imperial-rgb) / 0.25),
-                    0 0 0 0 rgb(var(--imperial-rgb) / 0.15);
-      }
-      50% {
-        box-shadow: 0 6px 28px rgb(var(--imperial-rgb) / 0.5),
-                    0 0 0 4px rgb(var(--imperial-rgb) / 0.08);
-      }
+    /* ── CTA hover shadow ───────────────────────── */
+    .btn-imperial:hover {
+      box-shadow: 0 4px 16px rgb(var(--imperial-rgb) / 0.35);
     }
-    .cta-glow { animation: cta-glow 2.5s ease-in-out infinite; }
 
     /* ── Ink-brush Divider ───────────────────────── */
     .ink-divider {
@@ -312,6 +282,15 @@
     /* ── View Transitions ────────────────────────── */
     .view-hidden { display: none !important; }
 
+    /* ── Reduced motion accessibility ───────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
     /* ── Card Accent ─────────────────────────────── */
     .card-accent {
       border-left: 4px solid rgb(var(--imperial-rgb));
@@ -322,59 +301,19 @@
                   box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
                   background 0.22s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    /* Cycle accent colors — boosted tints + resting glow */
-    .card-accent:nth-child(4n + 1) {
-      border-left-color: rgb(139, 128, 248);
-      background: linear-gradient(135deg, rgba(139, 128, 248, 0.14) 0%, rgba(139, 128, 248, 0.06) 100%);
-      box-shadow: 0 0 0 1px rgba(139, 128, 248, 0.18), 0 4px 24px rgba(139, 128, 248, 0.08);
+    /* Unified brand rose accent — all cards use the same imperial color */
+    .card-accent {
+      border-left-color: rgb(var(--imperial-rgb));
+      background: linear-gradient(135deg, rgb(var(--imperial-rgb) / 0.10) 0%, rgb(var(--imperial-rgb) / 0.04) 100%);
+      box-shadow: 0 0 0 1px rgb(var(--imperial-rgb) / 0.15), 0 4px 24px rgb(var(--imperial-rgb) / 0.07);
     }
-    .card-accent:nth-child(4n + 2) {
-      border-left-color: rgb(99, 102, 241);
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.14) 0%, rgba(99, 102, 241, 0.06) 100%);
-      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.18), 0 4px 24px rgba(99, 102, 241, 0.08);
+    .card-accent:hover {
+      box-shadow: 0 0 0 1px rgb(var(--imperial-rgb) / 0.3), 0 12px 40px rgb(var(--imperial-rgb) / 0.18);
+      background: linear-gradient(135deg, rgb(var(--imperial-rgb) / 0.15) 0%, rgb(var(--imperial-rgb) / 0.06) 100%);
     }
-    .card-accent:nth-child(4n + 3) {
-      border-left-color: rgb(210, 60, 180);
-      background: linear-gradient(135deg, rgba(210, 60, 180, 0.14) 0%, rgba(210, 60, 180, 0.06) 100%);
-      box-shadow: 0 0 0 1px rgba(210, 60, 180, 0.18), 0 4px 24px rgba(210, 60, 180, 0.08);
+    .card-accent h1, .card-accent h2, .card-accent h3 {
+      color: rgb(var(--imperial-rgb)); font-weight: 700;
     }
-    .card-accent:nth-child(4n + 4) {
-      border-left-color: rgb(56, 178, 172);
-      background: linear-gradient(135deg, rgba(56, 178, 172, 0.14) 0%, rgba(56, 178, 172, 0.06) 100%);
-      box-shadow: 0 0 0 1px rgba(56, 178, 172, 0.18), 0 4px 24px rgba(56, 178, 172, 0.08);
-    }
-
-    /* Hover — boost glow + tint */
-    .card-accent:nth-child(4n + 1):hover {
-      box-shadow: 0 0 0 1px rgba(139, 128, 248, 0.35), 0 12px 40px rgba(139, 128, 248, 0.22);
-      background: linear-gradient(135deg, rgba(139, 128, 248, 0.2) 0%, rgba(139, 128, 248, 0.08) 100%);
-    }
-    .card-accent:nth-child(4n + 2):hover {
-      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.35), 0 12px 40px rgba(99, 102, 241, 0.22);
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0.08) 100%);
-    }
-    .card-accent:nth-child(4n + 3):hover {
-      box-shadow: 0 0 0 1px rgba(210, 60, 180, 0.35), 0 12px 40px rgba(210, 60, 180, 0.22);
-      background: linear-gradient(135deg, rgba(210, 60, 180, 0.2) 0%, rgba(210, 60, 180, 0.08) 100%);
-    }
-    .card-accent:nth-child(4n + 4):hover {
-      box-shadow: 0 0 0 1px rgba(56, 178, 172, 0.35), 0 12px 40px rgba(56, 178, 172, 0.22);
-      background: linear-gradient(135deg, rgba(56, 178, 172, 0.2) 0%, rgba(56, 178, 172, 0.08) 100%);
-    }
-
-    /* Card heading colors — bolder, more distinct */
-    .card-accent:nth-child(4n + 1) h1,
-    .card-accent:nth-child(4n + 1) h2,
-    .card-accent:nth-child(4n + 1) h3 { color: rgb(190, 178, 255); font-weight: 700; }
-    .card-accent:nth-child(4n + 2) h1,
-    .card-accent:nth-child(4n + 2) h2,
-    .card-accent:nth-child(4n + 2) h3 { color: rgb(140, 160, 255); font-weight: 700; }
-    .card-accent:nth-child(4n + 3) h1,
-    .card-accent:nth-child(4n + 3) h2,
-    .card-accent:nth-child(4n + 3) h3 { color: rgb(240, 110, 200); font-weight: 700; }
-    .card-accent:nth-child(4n + 4) h1,
-    .card-accent:nth-child(4n + 4) h2,
-    .card-accent:nth-child(4n + 4) h3 { color: rgb(72, 220, 210); font-weight: 700; }
 
     /* Card spacing rhythm — separator between stacked cards */
     .card-accent + .card-accent { margin-top: 1.5rem; }
@@ -382,21 +321,15 @@
       content: '';
       display: block;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(139, 128, 248, 0.2) 30%, rgba(210, 60, 180, 0.15) 70%, transparent);
+      background: linear-gradient(90deg, transparent, rgb(var(--imperial-rgb) / 0.2) 40%, rgb(var(--imperial-rgb) / 0.2) 60%, transparent);
       margin-top: 2rem;
       width: 100%;
     }
 
     /* Light mode overrides */
     @media (prefers-color-scheme: light) {
-      .card-accent:nth-child(4n + 1) { background: rgba(91, 79, 207, 0.04); border-left-color: rgb(91, 79, 207); box-shadow: none; }
-      .card-accent:nth-child(4n + 2) { background: rgba(79, 82, 200, 0.04); border-left-color: rgb(79, 82, 200); box-shadow: none; }
-      .card-accent:nth-child(4n + 3) { background: rgba(160, 50, 160, 0.04); border-left-color: rgb(160, 50, 160); box-shadow: none; }
-      .card-accent:nth-child(4n + 4) { background: rgba(38, 148, 143, 0.04); border-left-color: rgb(38, 148, 143); box-shadow: none; }
-      .card-accent:nth-child(4n + 1) h1,.card-accent:nth-child(4n + 1) h2,.card-accent:nth-child(4n + 1) h3 { color: rgb(91, 79, 207); }
-      .card-accent:nth-child(4n + 2) h1,.card-accent:nth-child(4n + 2) h2,.card-accent:nth-child(4n + 2) h3 { color: rgb(79, 82, 200); }
-      .card-accent:nth-child(4n + 3) h1,.card-accent:nth-child(4n + 3) h2,.card-accent:nth-child(4n + 3) h3 { color: rgb(160, 50, 160); }
-      .card-accent:nth-child(4n + 4) h1,.card-accent:nth-child(4n + 4) h2,.card-accent:nth-child(4n + 4) h3 { color: rgb(38, 148, 143); }
+      .card-accent { background: rgb(var(--imperial-rgb) / 0.04); box-shadow: none; }
+      .card-accent h1, .card-accent h2, .card-accent h3 { color: rgb(var(--imperial-hover-rgb)); }
       .card-accent p { color: rgba(26, 26, 26, 0.78); }
       .card-accent:not(:last-child)::after { display: none; }
     }
@@ -640,7 +573,7 @@
     /* Eyebrow */
     .hp-feature-eyebrow {
       display: block; font-size: 11px; font-weight: 700;
-      letter-spacing: 0.22em; text-transform: uppercase;
+      letter-spacing: 0.08em; text-transform: uppercase;
       color: rgb(var(--imperial-rgb) / 0.55); margin-bottom: 0.5rem;
     }
     /* Heading */
@@ -660,7 +593,7 @@
       display: inline-flex; align-items: center;
       padding: 0.8rem 2.2rem; border-radius: 9999px;
       border: 2px solid rgb(var(--ink-rgb) / 0.22);
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.13em;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
       text-transform: uppercase; cursor: pointer; background: transparent;
       color: rgb(var(--ink-rgb)); transition: border-color 0.2s, color 0.2s;
     }
@@ -1691,8 +1624,7 @@
         <button id="nav-faculty"      class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Faculty</button>
         <button id="nav-gallery-page" class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Gallery</button>
         <button id="nav-register"     class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Registration</button>
-        <button id="nav-tos"          class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Terms</button>
-        <button id="nav-admin"        class="btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Admin</button>
+        <button id="nav-admin"        class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Admin</button>
         <button id="nav-logout"       class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Logout</button>
       </div>
       <!-- Hamburger button — visible only on mobile -->
@@ -1717,9 +1649,8 @@
       <button id="mob-nav-faculty"      class="mobile-nav-item">Faculty</button>
       <button id="mob-nav-gallery"      class="mobile-nav-item">Gallery</button>
       <button id="mob-nav-register"     class="mobile-nav-item mobile-nav-highlight">Registration</button>
-      <button id="mob-nav-tos"          class="mobile-nav-item">Terms</button>
       <div class="mobile-drawer-divider"></div>
-      <button id="mob-nav-admin"        class="mobile-nav-item">Admin</button>
+      <button id="mob-nav-admin"        class="mobile-nav-item view-hidden">Admin</button>
       <button id="mob-nav-logout"       class="mobile-nav-item view-hidden">Logout</button>
     </div>
   </div>
@@ -1850,7 +1781,7 @@
       </div>
       <div class="hero-overlay">
         <div class="hero-glass">
-          <p id="hero-est-text" class="uppercase tracking-[0.25em] text-xs font-semibold mb-3"><span>Est. 2008</span></p>
+          <p id="hero-est-text" class="uppercase tracking-[0.08em] text-xs font-semibold mb-3"><span>Est. 2008</span></p>
           <h1 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight mb-3">
             Where Tradition Meets<br/><em>Graceful Expression</em>
           </h1>
@@ -1859,8 +1790,8 @@
             Bright Pearl Academy nurtures the art of Chinese dance, cultivating discipline, cultural pride, and artistic excellence in every student.
           </p>
           <div class="flex items-center justify-center gap-4 flex-wrap">
-            <button id="hero-cta-register" class="btn-imperial cta-glow px-7 py-3 text-sm font-semibold tracking-wide">Enroll Now</button>
-            <button id="hero-cta-about"    class="btn-outline border-2 px-7 py-3 text-sm font-semibold tracking-wide">Our Story</button>
+            <button id="hero-cta-register" class="btn-imperial px-7 py-3 text-sm font-semibold tracking-wide">Enroll Now</button>
+            <button id="hero-cta-about"    class="btn-outline px-7 py-3 text-sm font-semibold tracking-wide">Our Story</button>
           </div>
         </div>
       </div>
@@ -1992,6 +1923,8 @@
     <footer class="border-t border-imperial/10 mt-8">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
         &copy; 2026 Bright Pearl Academy. All rights reserved.
+        &nbsp;&middot;&nbsp;
+        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
       </div>
     </footer>
   </main>
@@ -2029,6 +1962,8 @@
     <footer class="border-t border-imperial/10 mt-6">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
         &copy; 2026 Bright Pearl Academy. All rights reserved.
+        &nbsp;&middot;&nbsp;
+        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
       </div>
     </footer>
   </main>
@@ -2777,6 +2712,8 @@
     <footer class="border-t border-imperial/10 mt-8">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
         &copy; 2026 Bright Pearl Academy. All rights reserved.
+        &nbsp;&middot;&nbsp;
+        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
       </div>
     </footer>
   </main>
@@ -2798,6 +2735,8 @@
     <footer class="border-t border-imperial/10 mt-6">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
         &copy; 2026 Bright Pearl Academy. All rights reserved.
+        &nbsp;&middot;&nbsp;
+        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
       </div>
     </footer>
   </main>
@@ -2817,6 +2756,8 @@
     <footer class="border-t border-imperial/10 mt-6">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
         &copy; 2026 Bright Pearl Academy. All rights reserved.
+        &nbsp;&middot;&nbsp;
+        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
       </div>
     </footer>
   </main>
@@ -2838,6 +2779,8 @@
     <footer class="border-t border-imperial/10">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
         &copy; 2026 Bright Pearl Academy. All rights reserved.
+        &nbsp;&middot;&nbsp;
+        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
       </div>
     </footer>
   </main>
@@ -2976,7 +2919,7 @@
 
     function _syncNavSession() {
       if (session) { $navLogout.classList.remove('view-hidden'); $navAdmin.classList.remove('view-hidden'); }
-      else { $navLogout.classList.add('view-hidden'); $navAdmin.classList.remove('view-hidden'); }
+      else { $navLogout.classList.add('view-hidden'); $navAdmin.classList.add('view-hidden'); }
     }
 
     function showView(view, subview) {
@@ -3089,8 +3032,8 @@
     document.getElementById('nav-faculty').addEventListener('click',       () => showView('faculty'));
     document.getElementById('nav-gallery-page').addEventListener('click',  () => showView('gallery-page'));
     document.getElementById('nav-register').addEventListener('click',      () => showView('register'));
-    document.getElementById('nav-tos').addEventListener('click',           () => showView('tos'));
     document.getElementById('nav-admin').addEventListener('click',         () => showView('admin'));
+    document.querySelectorAll('.footer-tos-link').forEach(el => el.addEventListener('click', () => showView('tos')));
     document.getElementById('hero-cta-register').addEventListener('click', () => showView('register'));
     document.getElementById('hero-cta-about').addEventListener('click',    () => document.getElementById('home-about-section').scrollIntoView({ behavior: 'smooth' }));
     document.getElementById('nav-logout').addEventListener('click', async () => {
@@ -3137,6 +3080,7 @@
       // Sync logout/admin visibility in drawer
       const loggedIn = !!session;
       document.getElementById('mob-nav-logout').classList.toggle('view-hidden', !loggedIn);
+      document.getElementById('mob-nav-admin').classList.toggle('view-hidden', !loggedIn);
     }
     function closeDrawer() {
       $drawer.classList.remove('open');
@@ -3158,7 +3102,6 @@
     document.getElementById('mob-nav-faculty').addEventListener('click',  () => mobNavigate('faculty'));
     document.getElementById('mob-nav-gallery').addEventListener('click',  () => mobNavigate('gallery-page'));
     document.getElementById('mob-nav-register').addEventListener('click', () => mobNavigate('register'));
-    document.getElementById('mob-nav-tos').addEventListener('click',      () => mobNavigate('tos'));
     document.getElementById('mob-nav-admin').addEventListener('click',    () => mobNavigate('admin'));
     document.getElementById('mob-nav-logout').addEventListener('click', async () => {
       closeDrawer();
