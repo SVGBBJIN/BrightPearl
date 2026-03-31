@@ -1005,6 +1005,8 @@
     body.edit-mode .editable-section .section-toolbar {
       display: flex !important;
     }
+    body.edit-mode .footer-social-links { outline: 2px dashed rgb(var(--imperial-rgb) / 0.3); outline-offset: 4px; border-radius: 4px; cursor: pointer; position: relative; }
+    body.edit-mode .footer-social-links:hover { outline-color: rgb(var(--imperial-rgb) / 0.6); }
 
     /* ── Section toolbar (edit/delete/drag) ─────────── */
     .section-toolbar {
@@ -1831,6 +1833,17 @@
       <div class="hp-gallery-viewall">
         <button id="hp-gallery-viewall-btn">View Full Gallery →</button>
       </div>
+    </section>
+
+    <!-- ── Parent Testimonials ── -->
+    <section id="testimonials-section" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center mb-12">
+        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">From Our Families</p>
+        <h2 class="font-display text-3xl sm:text-4xl text-ink mb-4">What Parents Say</h2>
+        <div class="ink-divider mt-6"></div>
+      </div>
+      <div id="testimonials-grid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <p id="testimonials-empty" class="view-hidden text-center text-ink/40 italic py-8">No testimonials yet.</p>
     </section>
 
     <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
@@ -2750,6 +2763,38 @@
         </form>
       </div>
 
+      <!-- ── Parent Testimonials ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Parent Testimonials
+        </h3>
+        <div class="mb-4">
+          <div id="admin-testimonials-list" class="space-y-2 mb-3"></div>
+          <p id="admin-testimonials-empty" class="view-hidden text-ink/40 italic text-sm py-2">No testimonials yet — add one below.</p>
+        </div>
+        <form id="add-testimonial-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+          <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Add New Testimonial</p>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div>
+              <label for="tm-name" class="block text-xs font-medium text-ink/70 mb-1.5">Parent Name *</label>
+              <input id="tm-name" type="text" placeholder="e.g. Jennifer L." required
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+            <div>
+              <label for="tm-role" class="block text-xs font-medium text-ink/70 mb-1.5">Role / Title <span class="text-ink/35">(optional)</span></label>
+              <input id="tm-role" type="text" placeholder="e.g. Parent of 3-year student"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+          </div>
+          <div>
+            <label for="tm-quote" class="block text-xs font-medium text-ink/70 mb-1.5">Quote *</label>
+            <textarea id="tm-quote" rows="3" placeholder="Their testimonial…" required
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          </div>
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Testimonial</button>
+        </form>
+      </div>
+
       <!-- ── Registrations ── -->
       <div class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
@@ -3097,6 +3142,7 @@
           renderAdminTosSettings();
           renderAdminContactInfo();
           renderAdminFaq();
+          renderAdminTestimonials();
         }
       } else if (view === 'about') {
         _syncNavSession();
@@ -3158,6 +3204,7 @@
         _syncNavSession();
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Home Page'; }
         else { $toolbar.classList.remove('visible'); }
+        renderTestimonials();
       }
     }
 
@@ -3698,6 +3745,7 @@
       if (editMode && currentView === 'home') {
         initGallerySortable();
         initHomeAboutSortable();
+        renderTestimonials();
       }
 
       // Refresh program edit controls when toggling on programs page
@@ -3803,6 +3851,17 @@
     // ── Edit toolbar buttons ───────────────────────
     document.getElementById('edit-mode-toggle').addEventListener('click', toggleEditMode);
     document.getElementById('edit-back-dashboard').addEventListener('click', () => showView('admin'));
+
+    document.addEventListener('click', e => {
+      const $fsl = e.target.closest('.footer-social-links');
+      if ($fsl && editMode) {
+        e.preventDefault();
+        showView('admin');
+        setTimeout(() => {
+          document.getElementById('contact-info-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      }
+    });
 
     // ── Hero change button (in edit mode overlay) ──
     document.getElementById('hero-change-btn').addEventListener('click', () => {
@@ -4367,6 +4426,17 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
           </a>` : ''}
         </div>` : ''}`;
+      renderFooterSocial(ci);
+    }
+
+    function renderFooterSocial(ci) {
+      const FB_SVG  = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`;
+      const YT_SVG  = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`;
+      const html = [
+        ci.facebook ? `<a href="${esc(ci.facebook)}" target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="Facebook">${FB_SVG}</a>` : '',
+        ci.youtube  ? `<a href="${esc(ci.youtube)}"  target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="YouTube">${YT_SVG}</a>`  : '',
+      ].join('');
+      document.querySelectorAll('.footer-social-links').forEach(el => { el.innerHTML = html; });
     }
 
     async function renderHomeFaq() {
@@ -4811,6 +4881,122 @@
           await saveSetting('faq_data', reordered);
           if (currentView === 'home') await renderHomeFaq();
         }
+      });
+    }
+
+    async function renderTestimonials() {
+      const raw   = await fetchSetting('testimonials_data');
+      const items = Array.isArray(raw) ? raw.sort((a,b) => (a.display_order||0)-(b.display_order||0)) : [];
+      const $grid  = document.getElementById('testimonials-grid');
+      const $empty = document.getElementById('testimonials-empty');
+      if (!$grid) return;
+      if (!items.length) {
+        $grid.innerHTML = '';
+        $empty.classList.remove('view-hidden');
+        document.getElementById('testimonials-section')?.classList.add('view-hidden');
+        return;
+      }
+      document.getElementById('testimonials-section')?.classList.remove('view-hidden');
+      $empty.classList.add('view-hidden');
+      $grid.innerHTML = items.map(t => `
+        <div class="editable-section relative bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 flex flex-col gap-4 reveal" data-tm-id="${esc(t.id)}">
+          <div class="section-toolbar" style="display:none; position:absolute; top:0.5rem; right:0.5rem; gap:0.35rem; align-items:center;">
+            <button class="tm-edit-btn toolbar-btn" title="Edit" data-tm-id="${esc(t.id)}">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+            </button>
+            <button class="tm-delete-btn toolbar-btn" title="Delete" data-tm-id="${esc(t.id)}" style="color:rgb(239,68,68)">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <svg class="text-imperial/30 w-8 h-8 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+          <p class="text-ink/75 text-sm leading-relaxed flex-1">${esc(t.quote)}</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-imperial/15 flex items-center justify-content-center text-imperial font-display font-bold text-sm flex-shrink-0 uppercase leading-none flex items-center justify-center">${esc((t.name||'?')[0])}</div>
+            <div>
+              <p class="text-sm font-semibold text-ink">${esc(t.name)}</p>
+              ${t.role ? `<p class="text-xs text-ink/45">${esc(t.role)}</p>` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Wire edit/delete buttons
+      $grid.querySelectorAll('.tm-edit-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id   = btn.dataset.tmId;
+          const all  = await fetchSetting('testimonials_data');
+          const item = (Array.isArray(all) ? all : []).find(t => t.id === id);
+          if (!item) return;
+          const newName  = prompt('Name:', item.name  || ''); if (newName  === null) return;
+          const newRole  = prompt('Role:', item.role  || '');
+          const newQuote = prompt('Quote:', item.quote || ''); if (newQuote === null) return;
+          const updated  = (Array.isArray(all) ? all : []).map(t => t.id === id ? { ...t, name: newName.trim(), role: (newRole||'').trim(), quote: newQuote.trim() } : t);
+          await saveSetting('testimonials_data', updated);
+          if (currentView === 'home') await renderTestimonials();
+          await renderAdminTestimonials();
+        });
+      });
+      $grid.querySelectorAll('.tm-delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this testimonial?')) return;
+          const id  = btn.dataset.tmId;
+          const all = await fetchSetting('testimonials_data');
+          const updated = (Array.isArray(all) ? all : []).filter(t => t.id !== id);
+          await saveSetting('testimonials_data', updated);
+          if (currentView === 'home') await renderTestimonials();
+          await renderAdminTestimonials();
+        });
+      });
+    }
+
+    async function renderAdminTestimonials() {
+      const raw   = await fetchSetting('testimonials_data');
+      const items = Array.isArray(raw) ? raw.sort((a,b) => (a.display_order||0)-(b.display_order||0)) : [];
+      const $list  = document.getElementById('admin-testimonials-list');
+      const $empty = document.getElementById('admin-testimonials-empty');
+      if (!items.length) { $list.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $list.innerHTML = items.map(item => `
+        <div class="bg-cream/60 border border-imperial/10 rounded-lg overflow-hidden" data-tm-id="${esc(item.id)}">
+          <div class="flex items-start gap-3 px-4 py-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-ink truncate">${esc(item.name)}</p>
+              ${item.role ? `<p class="text-xs text-ink/45 truncate">${esc(item.role)}</p>` : ''}
+              <p class="text-xs text-ink/60 mt-1 line-clamp-2">${esc(item.quote)}</p>
+            </div>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <button class="tm-admin-edit-btn text-xs text-imperial/70 hover:text-imperial border border-imperial/15 rounded px-2 py-1 transition-colors" data-tm-id="${esc(item.id)}">Edit</button>
+              <button class="tm-admin-delete-btn text-xs text-red-500/70 hover:text-red-600 border border-red-200/50 rounded px-2 py-1 transition-colors" data-tm-id="${esc(item.id)}">Delete</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      $list.querySelectorAll('.tm-admin-edit-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id   = btn.dataset.tmId;
+          const all  = await fetchSetting('testimonials_data');
+          const item = (Array.isArray(all) ? all : []).find(t => t.id === id);
+          if (!item) return;
+          const newName  = prompt('Name:', item.name  || ''); if (newName  === null) return;
+          const newRole  = prompt('Role:', item.role  || '');
+          const newQuote = prompt('Quote:', item.quote || ''); if (newQuote === null) return;
+          const updated  = (Array.isArray(all) ? all : []).map(t => t.id === id ? { ...t, name: newName.trim(), role: (newRole||'').trim(), quote: newQuote.trim() } : t);
+          await saveSetting('testimonials_data', updated);
+          if (currentView === 'home') await renderTestimonials();
+          await renderAdminTestimonials();
+        });
+      });
+      $list.querySelectorAll('.tm-admin-delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this testimonial?')) return;
+          const id  = btn.dataset.tmId;
+          const all = await fetchSetting('testimonials_data');
+          const updated = (Array.isArray(all) ? all : []).filter(t => t.id !== id);
+          await saveSetting('testimonials_data', updated);
+          if (currentView === 'home') await renderTestimonials();
+          await renderAdminTestimonials();
+        });
       });
     }
 
@@ -6718,6 +6904,7 @@
         $status.classList.remove('view-hidden');
         setTimeout(() => $status.classList.add('view-hidden'), 3000);
         if (currentView === 'home') await renderHomeContactInfo();
+        renderFooterSocial(data);
       } catch (err) { alert('Save failed: ' + err.message); }
     });
 
@@ -6735,6 +6922,25 @@
         document.getElementById('faq-answer').value   = '';
         await renderAdminFaq();
         if (currentView === 'home') await renderHomeFaq();
+      } catch (err) { alert('Error: ' + err.message); }
+    });
+
+    document.getElementById('add-testimonial-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const name  = document.getElementById('tm-name').value.trim();
+      const role  = document.getElementById('tm-role').value.trim();
+      const quote = document.getElementById('tm-quote').value.trim();
+      if (!name || !quote) return;
+      try {
+        const current = await fetchSetting('testimonials_data');
+        const items   = Array.isArray(current) ? current : [];
+        items.push({ id: crypto.randomUUID(), name, role, quote, display_order: items.length });
+        await saveSetting('testimonials_data', items);
+        document.getElementById('tm-name').value  = '';
+        document.getElementById('tm-role').value  = '';
+        document.getElementById('tm-quote').value = '';
+        await renderAdminTestimonials();
+        if (currentView === 'home') await renderTestimonials();
       } catch (err) { alert('Error: ' + err.message); }
     });
 
@@ -7225,6 +7431,8 @@
     renderHomeAboutFeatures().catch(console.error);
     renderHomePrograms().catch(console.error);
     populateProgramsDropdown().catch(console.error);
+    renderTestimonials().catch(console.error);
+    fetchContactInfo().then(renderFooterSocial).catch(console.error);
 
     // ── Gallery "View All" button ───────────────────
     const $galleryViewAll = document.getElementById('hp-gallery-viewall-btn');
