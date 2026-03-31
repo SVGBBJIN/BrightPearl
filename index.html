@@ -953,126 +953,6 @@
       border-radius: 2px; transition: width 0.3s;
     }
 
-    /* ── Chat Widget ──────────────────────────────── */
-    .chat-fab {
-      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100;
-      width: 56px; height: 56px; border-radius: 50%;
-      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; box-shadow: 0 4px 20px rgb(var(--imperial-rgb) / 0.35);
-      transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s;
-    }
-    .chat-fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgb(var(--imperial-rgb) / 0.45); }
-    .chat-fab svg { width: 24px; height: 24px; }
-
-    .chat-panel {
-      position: fixed; bottom: 5.5rem; right: 1.5rem; z-index: 100;
-      width: 380px; height: 520px;
-      background: rgb(var(--cream-rgb));
-      border: 1px solid rgb(var(--imperial-rgb) / 0.15);
-      border-radius: 1rem;
-      box-shadow: 0 12px 48px rgb(var(--ink-rgb) / 0.15);
-      display: flex; flex-direction: column;
-      opacity: 0; pointer-events: none;
-      transform: translateY(12px) scale(0.95);
-      transition: opacity 0.25s, transform 0.25s;
-    }
-    .chat-panel.active { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
-
-    .chat-header {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid rgb(var(--imperial-rgb) / 0.1);
-      display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0;
-    }
-    .chat-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.8rem;
-    }
-
-    .chat-messages {
-      flex: 1; overflow-y: auto; padding: 1rem 1.25rem;
-      display: flex; flex-direction: column; gap: 0.75rem;
-    }
-    .chat-messages::-webkit-scrollbar { width: 4px; }
-    .chat-messages::-webkit-scrollbar-thumb { background: rgb(var(--imperial-rgb) / 0.15); border-radius: 2px; }
-
-    .chat-bubble {
-      max-width: 85%; padding: 0.625rem 0.875rem;
-      border-radius: 1rem; font-size: 0.8125rem; line-height: 1.5; word-wrap: break-word;
-    }
-    .chat-bubble.assistant {
-      align-self: flex-start;
-      background: rgb(var(--surface-rgb)); color: rgb(var(--ink-rgb));
-      border: 1px solid rgb(var(--imperial-rgb) / 0.08);
-      border-bottom-left-radius: 0.25rem;
-    }
-    .chat-bubble.user {
-      align-self: flex-end;
-      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
-      border-bottom-right-radius: 0.25rem;
-    }
-
-    .chat-typing {
-      align-self: flex-start; padding: 0.625rem 0.875rem;
-      background: rgb(var(--surface-rgb)); border: 1px solid rgb(var(--imperial-rgb) / 0.08);
-      border-radius: 1rem; border-bottom-left-radius: 0.25rem;
-      display: flex; gap: 4px; align-items: center;
-    }
-    .chat-typing span {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: rgb(var(--imperial-rgb) / 0.4);
-      animation: typingDot 1.2s infinite;
-    }
-    .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
-    .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes typingDot {
-      0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
-      30%            { opacity: 1;   transform: translateY(-3px); }
-    }
-
-    .chat-quick-actions {
-      display: flex; gap: 0.5rem; flex-wrap: wrap;
-      padding: 0 1.25rem 0.5rem; flex-shrink: 0;
-    }
-    .chat-quick-btn {
-      font-size: 0.6875rem; padding: 0.3rem 0.65rem;
-      border: 1px solid rgb(var(--imperial-rgb) / 0.2); border-radius: 2rem;
-      color: rgb(var(--imperial-rgb)); background: transparent;
-      cursor: pointer; transition: all 0.2s; white-space: nowrap;
-    }
-    .chat-quick-btn:hover { background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); }
-
-    .chat-input-area {
-      padding: 0.75rem 1.25rem;
-      border-top: 1px solid rgb(var(--imperial-rgb) / 0.1);
-      display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0;
-    }
-    .chat-input-area input {
-      flex: 1; padding: 0.5rem 0.75rem; border-radius: 2rem;
-      border: 1px solid rgb(var(--imperial-rgb) / 0.15);
-      background: rgb(var(--surface-rgb)); color: rgb(var(--ink-rgb));
-      font-size: 0.8125rem; outline: none;
-    }
-    .chat-input-area input:focus { border-color: rgb(var(--imperial-rgb)); }
-    .chat-send-btn {
-      width: 34px; height: 34px; border-radius: 50%;
-      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: background 0.2s; flex-shrink: 0;
-    }
-    .chat-send-btn:hover    { background: rgb(var(--imperial-hover-rgb)); }
-    .chat-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    /* ── Tour highlight pulse ────────────────────── */
-    @keyframes tourPulse {
-      0%   { box-shadow: 0 0 0 0    rgb(var(--imperial-rgb) / 0.25); }
-      70%  { box-shadow: 0 0 0 12px rgb(var(--imperial-rgb) / 0); }
-      100% { box-shadow: 0 0 0 0    rgb(var(--imperial-rgb) / 0); }
-    }
-    .tour-highlight { animation: tourPulse 1.5s ease-out 2; border-radius: 0.5rem; }
-
     /* ── PDF card icon ────────────────────────────── */
     .pdf-icon-bg {
       width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
@@ -1080,10 +960,6 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* ── Mobile chat ──────────────────────────────── */
-    @media (max-width: 440px) {
-      .chat-panel { width: calc(100vw - 1.5rem); right: 0.75rem; bottom: 5rem; height: 60vh; }
-    }
 
     /* ══════════════════════════════════════════════════
        VISUAL EDIT MODE
@@ -1624,8 +1500,10 @@
         <button id="nav-faculty"      class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Faculty</button>
         <button id="nav-gallery-page" class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Gallery</button>
         <button id="nav-register"     class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Registration</button>
-        <button id="nav-admin"        class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Admin</button>
-        <button id="nav-logout"       class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Logout</button>
+        <button id="nav-login"         class="btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Log In</button>
+        <button id="nav-portal"        class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">My Portal</button>
+        <button id="nav-admin"         class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Admin</button>
+        <button id="nav-logout"        class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Logout</button>
       </div>
       <!-- Hamburger button — visible only on mobile -->
       <button id="nav-hamburger" class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-ink hover:text-imperial transition-colors shrink-0" aria-label="Open menu">
@@ -1650,8 +1528,10 @@
       <button id="mob-nav-gallery"      class="mobile-nav-item">Gallery</button>
       <button id="mob-nav-register"     class="mobile-nav-item mobile-nav-highlight">Registration</button>
       <div class="mobile-drawer-divider"></div>
-      <button id="mob-nav-admin"        class="mobile-nav-item view-hidden">Admin</button>
-      <button id="mob-nav-logout"       class="mobile-nav-item view-hidden">Logout</button>
+      <button id="mob-nav-login"         class="mobile-nav-item">Log In</button>
+      <button id="mob-nav-portal"        class="mobile-nav-item view-hidden">My Portal</button>
+      <button id="mob-nav-admin"         class="mobile-nav-item view-hidden">Admin</button>
+      <button id="mob-nav-logout"        class="mobile-nav-item view-hidden">Logout</button>
     </div>
   </div>
   <div id="mobile-nav-backdrop" class="mobile-drawer-backdrop"></div>
@@ -2254,28 +2134,121 @@
   </main>
 
   <!-- ═══════════════════════════════════════════════ -->
+  <!--  PARENT PORTAL VIEW                             -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <main id="parent-view" class="view-hidden relative z-10">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
+        <div>
+          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-1">My Account</p>
+          <h2 class="font-display text-2xl sm:text-3xl text-ink">My Portal</h2>
+          <p id="portal-welcome" class="text-ink/50 text-sm mt-1"></p>
+        </div>
+        <button onclick="showView('register')"
+          class="btn-imperial px-4 py-2 rounded-lg text-sm font-medium self-start sm:self-auto">
+          + Register for a Program
+        </button>
+      </div>
+
+      <!-- Registrations -->
+      <div class="mb-10">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>
+          My Registrations
+        </h3>
+        <div id="portal-registrations-list" class="space-y-3"></div>
+        <p id="portal-no-registrations" class="view-hidden text-center text-ink/40 italic py-10">
+          No registrations found. <button onclick="showView('register')" class="text-imperial hover:underline">Register for a program</button> to get started.
+        </p>
+      </div>
+    </div>
+
+    <footer class="border-t border-imperial/10 mt-8">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid sm:grid-cols-2 gap-6 pb-6">
+          <div class="space-y-1 text-sm text-ink/60">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
+            <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
+            <p>61 Chestnut St, West Newton, MA 02465</p>
+            <p>WeChat: J3477495715</p>
+          </div>
+          <div class="sm:text-right">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+            <div class="flex sm:justify-end gap-4">
+              <a href="https://www.facebook.com/BrightPearlAcademy" target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="Facebook">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              </a>
+              <a href="https://www.youtube.com/@BrightPearlAcademy" target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="YouTube">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
+          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &nbsp;&middot;&nbsp;
+          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════ -->
   <!--  ADMIN VIEW                                     -->
   <!-- ═══════════════════════════════════════════════ -->
   <main id="admin-view" class="view-hidden relative z-10">
 
-    <!-- Login Form -->
+    <!-- Login / Sign-Up Form -->
     <section id="admin-login" class="max-w-md mx-auto px-4 py-20">
       <div class="bg-surface/70 backdrop-blur rounded-xl shadow-sm border border-imperial/10 p-8">
-        <h2 class="font-display text-2xl text-ink text-center mb-1">Admin Login</h2>
-        <p class="text-center text-ink/50 text-sm mb-6">Sign in to manage academy data</p>
+        <h2 class="font-display text-2xl text-ink text-center mb-1">Welcome Back</h2>
+        <p class="text-center text-ink/50 text-sm mb-6">Sign in to your account or create a parent account</p>
+
+        <!-- Tabs -->
+        <div class="flex rounded-lg border border-imperial/15 overflow-hidden mb-6">
+          <button id="tab-signin" class="flex-1 py-2 text-sm font-medium bg-imperial text-cream transition-colors">Sign In</button>
+          <button id="tab-signup" class="flex-1 py-2 text-sm font-medium bg-transparent text-ink/60 hover:text-imperial transition-colors">Create Account</button>
+        </div>
+
+        <!-- Sign In Form -->
         <form id="login-form" class="space-y-4">
           <div>
             <label for="login-email" class="block text-xs font-medium text-ink/70 mb-1">Email</label>
-            <input id="login-email" type="email" value="admin@brightpearl.academy"
+            <input id="login-email" type="email" placeholder="your@email.com" autocomplete="email"
               class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
           </div>
           <div>
             <label for="login-password" class="block text-xs font-medium text-ink/70 mb-1">Password</label>
-            <input id="login-password" type="password" placeholder="Enter password"
+            <input id="login-password" type="password" placeholder="Enter password" autocomplete="current-password"
               class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
           </div>
           <p id="login-error" class="view-hidden text-imperial text-xs"></p>
           <button type="submit" class="btn-imperial w-full py-2.5 rounded-lg text-sm font-medium">Sign In</button>
+        </form>
+
+        <!-- Sign Up Form (hidden by default) -->
+        <form id="signup-form" class="view-hidden space-y-4">
+          <div>
+            <label for="signup-email" class="block text-xs font-medium text-ink/70 mb-1">Email <span class="text-imperial">*</span></label>
+            <input id="signup-email" type="email" required placeholder="your@email.com" autocomplete="email"
+              class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
+          </div>
+          <div>
+            <label for="signup-password" class="block text-xs font-medium text-ink/70 mb-1">Password <span class="text-imperial">*</span></label>
+            <input id="signup-password" type="password" required placeholder="At least 6 characters" autocomplete="new-password"
+              class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
+          </div>
+          <div>
+            <label for="signup-password2" class="block text-xs font-medium text-ink/70 mb-1">Confirm Password <span class="text-imperial">*</span></label>
+            <input id="signup-password2" type="password" required placeholder="Re-enter password" autocomplete="new-password"
+              class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
+          </div>
+          <p id="signup-error" class="view-hidden text-imperial text-xs"></p>
+          <p id="signup-success" class="view-hidden text-green-600 text-xs text-center"></p>
+          <button type="submit" class="btn-imperial w-full py-2.5 rounded-lg text-sm font-medium">Create Account</button>
+          <p class="text-center text-ink/40 text-xs">A confirmation email may be sent. Check your inbox to activate your account.</p>
         </form>
       </div>
     </section>
@@ -3006,55 +2979,18 @@
     <div class="lightbox-caption" id="lightbox-caption"></div>
   </div>
 
-  <!-- ═══ Chat Widget ═══ -->
-  <div id="chat-fab" class="chat-fab" title="Chat with Pearl">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-    </svg>
-  </div>
-
-  <div id="chat-panel" class="chat-panel">
-    <div class="chat-header">
-      <div class="chat-avatar">P</div>
-      <div>
-        <div class="font-display text-sm font-semibold text-ink">Pearl</div>
-        <div class="text-[0.65rem] text-ink/45">Academy AI Assistant</div>
-      </div>
-    </div>
-    <div id="chat-messages" class="chat-messages"></div>
-    <div id="chat-quick-actions" class="chat-quick-actions">
-      <button class="chat-quick-btn" data-quick="What classes do you offer?">Classes</button>
-      <button class="chat-quick-btn" data-quick="Tell me about your awards">Awards</button>
-      <button class="chat-quick-btn" data-quick="What are the schedules?">Schedules</button>
-      <button class="chat-quick-btn" data-tour="true">Site Tour</button>
-    </div>
-    <div class="chat-input-area">
-      <input id="chat-input" type="text" placeholder="Ask Pearl anything…" autocomplete="off" />
-      <button id="chat-send" class="chat-send-btn" title="Send">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-      </button>
-    </div>
-  </div>
-
   <!-- ═══ JavaScript (ES Module) ═══ -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
     const SUPABASE_URL      = 'https://vsjlvkivsvrjplkscgrz.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzamx2a2l2c3ZyanBsa3NjZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MTAyNzcsImV4cCI6MjA4Nzk4NjI3N30.x3M7efiCkyuJakCsytKxdZp7RnDGdtJDKQZzM5WdaUo';
-    const GROQ_API_KEY      = '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';
-    const GROQ_MODEL        = 'llama-3.3-70b-versatile';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ── State ──────────────────────────────────────
     let currentView  = 'home';
     let currentProgram = null;
     let session      = null;
-    let chatOpen     = false;
-    let chatHistory  = [];
-    let chatContext  = null;
-    let isSending    = false;
-    let tourActive   = false;
     let selectedFile = null;
     let selectedPdf  = null;
     let editMode     = false;
@@ -3126,8 +3062,12 @@
     const $tosView         = document.getElementById('tos-view');
     const $adminLogin      = document.getElementById('admin-login');
     const $adminDashboard  = document.getElementById('admin-dashboard');
+    const $parentView2     = document.getElementById('parent-view');
+    const $navLogin        = document.getElementById('nav-login');
+    const $navPortal       = document.getElementById('nav-portal');
     const $navLogout       = document.getElementById('nav-logout');
     const $navAdmin        = document.getElementById('nav-admin');
+    const ADMIN_EMAIL      = 'admin@brightpearl.academy';
 
     // ════════════════════════════════════════════════
     //  VIEW SWITCHING
@@ -3144,8 +3084,12 @@
     }
 
     function _syncNavSession() {
-      if (session) { $navLogout.classList.remove('view-hidden'); $navAdmin.classList.remove('view-hidden'); }
-      else { $navLogout.classList.add('view-hidden'); $navAdmin.classList.add('view-hidden'); }
+      const isAdmin  = session && session.user.email === ADMIN_EMAIL;
+      const isParent = session && !isAdmin;
+      $navLogin.classList.toggle('view-hidden',  !!session);
+      $navAdmin.classList.toggle('view-hidden',  !isAdmin);
+      $navPortal.classList.toggle('view-hidden', !isParent);
+      $navLogout.classList.toggle('view-hidden', !session);
     }
 
     function showView(view, subview) {
@@ -3161,6 +3105,7 @@
       $programsView.classList.toggle('view-hidden',    view !== 'programs');
       $galleryPageView.classList.toggle('view-hidden', view !== 'gallery-page');
       $tosView.classList.toggle('view-hidden',         view !== 'tos');
+      $parentView2.classList.toggle('view-hidden',     view !== 'parent');
 
       const $toolbar   = document.getElementById('visual-edit-toolbar');
       const $pageLabel = document.getElementById('edit-page-label');
@@ -3168,11 +3113,10 @@
 
       if (view === 'admin') {
         if (session) checkSessionExpiry();
-        const loggedIn = !!session;
+        const loggedIn = session && session.user.email === ADMIN_EMAIL;
         $adminLogin.classList.toggle('view-hidden',     loggedIn);
         $adminDashboard.classList.toggle('view-hidden', !loggedIn);
-        $navLogout.classList.toggle('view-hidden', !loggedIn);
-        $navAdmin.classList.toggle('view-hidden',   loggedIn);
+        _syncNavSession();
         $toolbar.classList.remove('visible');
         if (editMode) toggleEditMode();
         if (loggedIn) {
@@ -3242,6 +3186,12 @@
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Terms Page'; }
         else $toolbar.classList.remove('visible');
         renderTosPage();
+      } else if (view === 'parent') {
+        _syncNavSession();
+        $toolbar.classList.remove('visible');
+        if (editMode) toggleEditMode();
+        if (!session) { showView('admin'); return; }
+        renderParentPortal();
       } else {
         // home
         _syncNavSession();
@@ -3303,10 +3253,13 @@
       $drawer.setAttribute('aria-hidden', 'false');
       $hambOpen.style.display  = 'none';
       $hambClose.style.display = '';
-      // Sync logout/admin visibility in drawer
-      const loggedIn = !!session;
-      document.getElementById('mob-nav-logout').classList.toggle('view-hidden', !loggedIn);
-      document.getElementById('mob-nav-admin').classList.toggle('view-hidden', !loggedIn);
+      // Sync auth buttons visibility in drawer
+      const isAdmin2  = session && session.user.email === ADMIN_EMAIL;
+      const isParent2 = session && !isAdmin2;
+      document.getElementById('mob-nav-login').classList.toggle('view-hidden',  !!session);
+      document.getElementById('mob-nav-portal').classList.toggle('view-hidden', !isParent2);
+      document.getElementById('mob-nav-admin').classList.toggle('view-hidden',  !isAdmin2);
+      document.getElementById('mob-nav-logout').classList.toggle('view-hidden', !session);
     }
     function closeDrawer() {
       $drawer.classList.remove('open');
@@ -3328,7 +3281,9 @@
     document.getElementById('mob-nav-faculty').addEventListener('click',  () => mobNavigate('faculty'));
     document.getElementById('mob-nav-gallery').addEventListener('click',  () => mobNavigate('gallery-page'));
     document.getElementById('mob-nav-register').addEventListener('click', () => mobNavigate('register'));
-    document.getElementById('mob-nav-admin').addEventListener('click',    () => mobNavigate('admin'));
+    document.getElementById('mob-nav-login').addEventListener('click',   () => mobNavigate('admin'));
+    document.getElementById('mob-nav-portal').addEventListener('click',  () => mobNavigate('parent'));
+    document.getElementById('mob-nav-admin').addEventListener('click',   () => mobNavigate('admin'));
     document.getElementById('mob-nav-logout').addEventListener('click', async () => {
       closeDrawer();
       try { await supabase.auth.signOut(); } catch (err) { console.error(err); }
@@ -3347,14 +3302,65 @@
       if (error) { $error.textContent = error.message; $error.classList.remove('view-hidden'); return; }
       session = data.session;
       localStorage.setItem('bp_session_start', Date.now().toString());
-      showView('admin');
+      if (session.user.email === ADMIN_EMAIL) { showView('admin'); } else { showView('parent'); }
     });
+
+    // ── Sign-up form handler ───────────────────────
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email    = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const password2= document.getElementById('signup-password2').value;
+      const $err     = document.getElementById('signup-error');
+      const $ok      = document.getElementById('signup-success');
+      $err.classList.add('view-hidden'); $ok.classList.add('view-hidden');
+      if (password !== password2) {
+        $err.textContent = 'Passwords do not match.'; $err.classList.remove('view-hidden'); return;
+      }
+      if (password.length < 6) {
+        $err.textContent = 'Password must be at least 6 characters.'; $err.classList.remove('view-hidden'); return;
+      }
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) { $err.textContent = error.message; $err.classList.remove('view-hidden'); return; }
+      if (data.session) {
+        session = data.session;
+        localStorage.setItem('bp_session_start', Date.now().toString());
+        showView('parent');
+      } else {
+        $ok.textContent = 'Account created! Check your email to confirm your account, then sign in.';
+        $ok.classList.remove('view-hidden');
+        // Switch to sign-in tab
+        document.getElementById('tab-signin').click();
+      }
+    });
+
+    // ── Tab switching (Sign In / Create Account) ───
+    document.getElementById('tab-signin').addEventListener('click', () => {
+      document.getElementById('login-form').classList.remove('view-hidden');
+      document.getElementById('signup-form').classList.add('view-hidden');
+      document.getElementById('tab-signin').className =
+        'flex-1 py-2 text-sm font-medium bg-imperial text-cream transition-colors';
+      document.getElementById('tab-signup').className =
+        'flex-1 py-2 text-sm font-medium bg-transparent text-ink/60 hover:text-imperial transition-colors';
+    });
+    document.getElementById('tab-signup').addEventListener('click', () => {
+      document.getElementById('login-form').classList.add('view-hidden');
+      document.getElementById('signup-form').classList.remove('view-hidden');
+      document.getElementById('tab-signin').className =
+        'flex-1 py-2 text-sm font-medium bg-transparent text-ink/60 hover:text-imperial transition-colors';
+      document.getElementById('tab-signup').className =
+        'flex-1 py-2 text-sm font-medium bg-imperial text-cream transition-colors';
+    });
+
+    // ── nav-login click ─────────────────────────────
+    document.getElementById('nav-login').addEventListener('click',   () => showView('admin'));
+    document.getElementById('nav-portal').addEventListener('click',  () => showView('parent'));
 
     try {
       const { data: { session: existingSession } } = await supabase.auth.getSession();
       if (existingSession) session = existingSession;
     } catch (err) { console.error('Session init failed:', err); }
-    supabase.auth.onAuthStateChange((_e, s) => { session = s; });
+    supabase.auth.onAuthStateChange((_e, s) => { session = s; _syncNavSession(); });
 
     // ════════════════════════════════════════════════
     //  DATA FUNCTIONS
@@ -6862,6 +6868,59 @@
     }
 
     // ════════════════════════════════════════════════
+    //  PARENT PORTAL
+    // ════════════════════════════════════════════════
+    async function renderParentPortal() {
+      if (!session) { showView('admin'); return; }
+      const email = session.user.email;
+      const $welcome = document.getElementById('portal-welcome');
+      const $list    = document.getElementById('portal-registrations-list');
+      const $empty   = document.getElementById('portal-no-registrations');
+      if ($welcome) $welcome.textContent = email;
+
+      $list.innerHTML = '<p class="text-ink/40 text-sm py-4">Loading…</p>';
+      $empty.classList.add('view-hidden');
+
+      const { data: regs, error } = await supabase
+        .from('registrations')
+        .select('*')
+        .eq('email', email)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        $list.innerHTML = '<p class="text-imperial text-sm py-4">Could not load registrations.</p>';
+        return;
+      }
+      if (!regs || regs.length === 0) {
+        $list.innerHTML = '';
+        $empty.classList.remove('view-hidden');
+        return;
+      }
+
+      const statusColor = s => {
+        if (s === 'approved')  return 'bg-green-100 text-green-700 border-green-200';
+        if (s === 'rejected')  return 'bg-red-100 text-red-700 border-red-200';
+        return 'bg-amber-100 text-amber-700 border-amber-200';
+      };
+      const statusLabel = s => {
+        if (s === 'approved') return 'Approved';
+        if (s === 'rejected') return 'Not Approved';
+        return 'Pending';
+      };
+
+      $list.innerHTML = regs.map(r => `
+        <div class="bg-surface/70 backdrop-blur rounded-xl border border-imperial/10 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="space-y-0.5">
+            <p class="font-medium text-ink">${r.student_name || r.name || '—'}</p>
+            <p class="text-sm text-ink/55">${r.program_name || r.class_name || r.program || '—'}</p>
+            <p class="text-xs text-ink/35">${r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : ''}</p>
+          </div>
+          <span class="self-start sm:self-auto text-xs font-medium px-2.5 py-1 rounded-full border ${statusColor(r.status)}">${statusLabel(r.status)}</span>
+        </div>
+      `).join('');
+    }
+
+    // ════════════════════════════════════════════════
     //  ADMIN — PENDING REGISTRATIONS
     // ════════════════════════════════════════════════
     async function renderAdminPendingRegistrations() {
@@ -6973,98 +7032,6 @@
     $lb.addEventListener('click', e => { if (e.target === $lb) closeLightbox(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-    // ════════════════════════════════════════════════
-    //  GROQ AI CHAT
-    // ════════════════════════════════════════════════
-    const $fab   = document.getElementById('chat-fab');
-    const $panel = document.getElementById('chat-panel');
-    const $msgs  = document.getElementById('chat-messages');
-    const $inp   = document.getElementById('chat-input');
-    const $send  = document.getElementById('chat-send');
-
-    $fab.addEventListener('click', () => {
-      chatOpen = !chatOpen;
-      $panel.classList.toggle('active', chatOpen);
-      if (chatOpen && !chatHistory.length) {
-        addBotMsg("Hi! I'm **Pearl**, your academy assistant. Ask me about classes, awards, or visit **About** to learn our story!");
-        buildChatContext();
-      }
-      if (chatOpen) $inp.focus();
-    });
-
-    async function buildChatContext() {
-      try {
-        const [awards, classes] = await Promise.all([fetchAwards(), fetchClasses()]);
-        let ctx = `You are Pearl, the friendly AI assistant for Bright Pearl Academy — a Chinese dance school founded in 2018.
-Personality: warm, concise, encouraging. 1-3 sentences per reply unless detail is requested.
-For pricing or unknown topics, suggest contacting the academy.
-
-CLASSES:\n`;
-        classes.length ? classes.forEach(c => { ctx += `- ${c.name} | ${c.schedule_time||'TBD'} | Level: ${c.level||'All'} | ${c.description||''}\n`; }) : (ctx += '(None listed yet)\n');
-        ctx += `\nAWARDS:\n`;
-        awards.length  ? awards.forEach(a  => { ctx += `- ${a.title}${a.year?` (${a.year})`:''}: ${a.description||''}\n`; }) : (ctx += '(None listed yet)\n');
-        ctx += `\nSITES: Home (hero/awards/gallery), About (story + PDF downloads), Register (no payment needed), Admin (staff).
-To enroll: direct users to click "Register" in the nav. Documents are on the About page under "Downloads & Resources".`;
-        chatContext = ctx;
-      } catch (err) { console.error('Chat context build failed:', err); }
-    }
-
-    async function sendMessage(text) {
-      if (!text.trim() || isSending) return;
-      isSending = true; $send.disabled = true;
-      addUserMsg(text); chatHistory.push({ role:'user', content:text });
-      const $t = document.createElement('div');
-      $t.className = 'chat-typing'; $t.innerHTML = '<span></span><span></span><span></span>';
-      $msgs.appendChild($t); $msgs.scrollTop = $msgs.scrollHeight;
-      try {
-        if (!chatContext) await buildChatContext();
-        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${GROQ_API_KEY}` },
-          body: JSON.stringify({ model:GROQ_MODEL, messages:[{role:'system',content:chatContext},...chatHistory.slice(-16)], temperature:0.7, max_tokens:512 }),
-        });
-        const json = await res.json(); $t.remove();
-        if (json.error) throw new Error(json.error.message);
-        const reply = json.choices?.[0]?.message?.content || 'I couldn\'t generate a response. Please try again.';
-        chatHistory.push({ role:'assistant', content:reply }); addBotMsg(reply);
-      } catch (err) { $t.remove(); addBotMsg('Sorry, connection issue. Please try again.'); console.error(err); }
-      isSending = false; $send.disabled = false; $inp.focus();
-    }
-
-    $send.addEventListener('click', () => { sendMessage($inp.value); $inp.value = ''; });
-    $inp.addEventListener('keydown', e => { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); sendMessage($inp.value); $inp.value = ''; } });
-    document.querySelectorAll('[data-quick]').forEach(b => b.addEventListener('click', () => sendMessage(b.dataset.quick)));
-    document.querySelector('[data-tour]').addEventListener('click', startSiteTour);
-
-    async function startSiteTour() {
-      if (tourActive) return; tourActive = true;
-      if (currentView !== 'home') showView('home');
-      const steps = [
-        { id:'section-hero',    msg:"Welcome to **Bright Pearl Academy**! Here on the Home page you'll find our mission and a taste of what we offer." },
-        { id:'section-awards',  msg:"These are our **Awards & Honors** — recognition from competitions and cultural festivals across North America." },
-        { id:'section-gallery', msg:"Our **Gallery** captures performances and rehearsals. Click any photo to enlarge it." },
-      ];
-      for (const s of steps) {
-        addBotMsg(s.msg); await sleep(800);
-        const el = document.getElementById(s.id);
-        if (el) { el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('tour-highlight'); await sleep(3000); el.classList.remove('tour-highlight'); }
-      }
-      addBotMsg("Visit the **About** page to read our story and download resources. Ready to join? Click **Register** in the menu — no payment needed at that stage!");
-      await sleep(1500);
-      addBotMsg("Tour complete! What else can I help you with?");
-      tourActive = false;
-    }
-
-    function addUserMsg(text) {
-      const $e = document.createElement('div'); $e.className = 'chat-bubble user'; $e.textContent = text;
-      $msgs.appendChild($e); $msgs.scrollTop = $msgs.scrollHeight;
-    }
-    function addBotMsg(text) {
-      const $e = document.createElement('div'); $e.className = 'chat-bubble assistant';
-      $e.innerHTML = esc(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      $msgs.appendChild($e); $msgs.scrollTop = $msgs.scrollHeight;
-    }
-    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
     // ── Rich text formatting toolbar ────────────────
     function showFormatToolbar($body) {
