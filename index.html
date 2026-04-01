@@ -953,126 +953,6 @@
       border-radius: 2px; transition: width 0.3s;
     }
 
-    /* ── Chat Widget ──────────────────────────────── */
-    .chat-fab {
-      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100;
-      width: 56px; height: 56px; border-radius: 50%;
-      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; box-shadow: 0 4px 20px rgb(var(--imperial-rgb) / 0.35);
-      transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s;
-    }
-    .chat-fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgb(var(--imperial-rgb) / 0.45); }
-    .chat-fab svg { width: 24px; height: 24px; }
-
-    .chat-panel {
-      position: fixed; bottom: 5.5rem; right: 1.5rem; z-index: 100;
-      width: 380px; height: 520px;
-      background: rgb(var(--cream-rgb));
-      border: 1px solid rgb(var(--imperial-rgb) / 0.15);
-      border-radius: 1rem;
-      box-shadow: 0 12px 48px rgb(var(--ink-rgb) / 0.15);
-      display: flex; flex-direction: column;
-      opacity: 0; pointer-events: none;
-      transform: translateY(12px) scale(0.95);
-      transition: opacity 0.25s, transform 0.25s;
-    }
-    .chat-panel.active { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
-
-    .chat-header {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid rgb(var(--imperial-rgb) / 0.1);
-      display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0;
-    }
-    .chat-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.8rem;
-    }
-
-    .chat-messages {
-      flex: 1; overflow-y: auto; padding: 1rem 1.25rem;
-      display: flex; flex-direction: column; gap: 0.75rem;
-    }
-    .chat-messages::-webkit-scrollbar { width: 4px; }
-    .chat-messages::-webkit-scrollbar-thumb { background: rgb(var(--imperial-rgb) / 0.15); border-radius: 2px; }
-
-    .chat-bubble {
-      max-width: 85%; padding: 0.625rem 0.875rem;
-      border-radius: 1rem; font-size: 0.8125rem; line-height: 1.5; word-wrap: break-word;
-    }
-    .chat-bubble.assistant {
-      align-self: flex-start;
-      background: rgb(var(--surface-rgb)); color: rgb(var(--ink-rgb));
-      border: 1px solid rgb(var(--imperial-rgb) / 0.08);
-      border-bottom-left-radius: 0.25rem;
-    }
-    .chat-bubble.user {
-      align-self: flex-end;
-      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
-      border-bottom-right-radius: 0.25rem;
-    }
-
-    .chat-typing {
-      align-self: flex-start; padding: 0.625rem 0.875rem;
-      background: rgb(var(--surface-rgb)); border: 1px solid rgb(var(--imperial-rgb) / 0.08);
-      border-radius: 1rem; border-bottom-left-radius: 0.25rem;
-      display: flex; gap: 4px; align-items: center;
-    }
-    .chat-typing span {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: rgb(var(--imperial-rgb) / 0.4);
-      animation: typingDot 1.2s infinite;
-    }
-    .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
-    .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes typingDot {
-      0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
-      30%            { opacity: 1;   transform: translateY(-3px); }
-    }
-
-    .chat-quick-actions {
-      display: flex; gap: 0.5rem; flex-wrap: wrap;
-      padding: 0 1.25rem 0.5rem; flex-shrink: 0;
-    }
-    .chat-quick-btn {
-      font-size: 0.6875rem; padding: 0.3rem 0.65rem;
-      border: 1px solid rgb(var(--imperial-rgb) / 0.2); border-radius: 2rem;
-      color: rgb(var(--imperial-rgb)); background: transparent;
-      cursor: pointer; transition: all 0.2s; white-space: nowrap;
-    }
-    .chat-quick-btn:hover { background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb)); }
-
-    .chat-input-area {
-      padding: 0.75rem 1.25rem;
-      border-top: 1px solid rgb(var(--imperial-rgb) / 0.1);
-      display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0;
-    }
-    .chat-input-area input {
-      flex: 1; padding: 0.5rem 0.75rem; border-radius: 2rem;
-      border: 1px solid rgb(var(--imperial-rgb) / 0.15);
-      background: rgb(var(--surface-rgb)); color: rgb(var(--ink-rgb));
-      font-size: 0.8125rem; outline: none;
-    }
-    .chat-input-area input:focus { border-color: rgb(var(--imperial-rgb)); }
-    .chat-send-btn {
-      width: 34px; height: 34px; border-radius: 50%;
-      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: background 0.2s; flex-shrink: 0;
-    }
-    .chat-send-btn:hover    { background: rgb(var(--imperial-hover-rgb)); }
-    .chat-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    /* ── Tour highlight pulse ────────────────────── */
-    @keyframes tourPulse {
-      0%   { box-shadow: 0 0 0 0    rgb(var(--imperial-rgb) / 0.25); }
-      70%  { box-shadow: 0 0 0 12px rgb(var(--imperial-rgb) / 0); }
-      100% { box-shadow: 0 0 0 0    rgb(var(--imperial-rgb) / 0); }
-    }
-    .tour-highlight { animation: tourPulse 1.5s ease-out 2; border-radius: 0.5rem; }
-
     /* ── PDF card icon ────────────────────────────── */
     .pdf-icon-bg {
       width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
@@ -1080,10 +960,6 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* ── Mobile chat ──────────────────────────────── */
-    @media (max-width: 440px) {
-      .chat-panel { width: calc(100vw - 1.5rem); right: 0.75rem; bottom: 5rem; height: 60vh; }
-    }
 
     /* ══════════════════════════════════════════════════
        VISUAL EDIT MODE
@@ -1129,6 +1005,8 @@
     body.edit-mode .editable-section .section-toolbar {
       display: flex !important;
     }
+    body.edit-mode .footer-social-links { outline: 2px dashed rgb(var(--imperial-rgb) / 0.3); outline-offset: 4px; border-radius: 4px; cursor: pointer; position: relative; }
+    body.edit-mode .footer-social-links:hover { outline-color: rgb(var(--imperial-rgb) / 0.6); }
 
     /* ── Section toolbar (edit/delete/drag) ─────────── */
     .section-toolbar {
@@ -1624,8 +1502,10 @@
         <button id="nav-faculty"      class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Faculty</button>
         <button id="nav-gallery-page" class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Gallery</button>
         <button id="nav-register"     class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Registration</button>
-        <button id="nav-admin"        class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Admin</button>
-        <button id="nav-logout"       class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Logout</button>
+        <button id="nav-login"         class="btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Log In</button>
+        <button id="nav-portal"        class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">My Portal</button>
+        <button id="nav-admin"         class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Admin</button>
+        <button id="nav-logout"        class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Logout</button>
       </div>
       <!-- Hamburger button — visible only on mobile -->
       <button id="nav-hamburger" class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-ink hover:text-imperial transition-colors shrink-0" aria-label="Open menu">
@@ -1650,8 +1530,10 @@
       <button id="mob-nav-gallery"      class="mobile-nav-item">Gallery</button>
       <button id="mob-nav-register"     class="mobile-nav-item mobile-nav-highlight">Registration</button>
       <div class="mobile-drawer-divider"></div>
-      <button id="mob-nav-admin"        class="mobile-nav-item view-hidden">Admin</button>
-      <button id="mob-nav-logout"       class="mobile-nav-item view-hidden">Logout</button>
+      <button id="mob-nav-login"         class="mobile-nav-item">Log In</button>
+      <button id="mob-nav-portal"        class="mobile-nav-item view-hidden">My Portal</button>
+      <button id="mob-nav-admin"         class="mobile-nav-item view-hidden">Admin</button>
+      <button id="mob-nav-logout"        class="mobile-nav-item view-hidden">Logout</button>
     </div>
   </div>
   <div id="mobile-nav-backdrop" class="mobile-drawer-backdrop"></div>
@@ -1781,7 +1663,7 @@
       </div>
       <div class="hero-overlay">
         <div class="hero-glass">
-          <p id="hero-est-text" class="uppercase tracking-[0.08em] text-xs font-semibold mb-3"><span>Est. 2008</span></p>
+          <p id="hero-est-text" class="uppercase tracking-[0.08em] text-xs font-semibold mb-3"><span>Est. 2009</span></p>
           <h1 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight mb-3">
             Where Tradition Meets<br/><em>Graceful Expression</em>
           </h1>
@@ -1902,6 +1784,47 @@
       </div>
     </section>
 
+    <!-- ── Achievements & Social Proof ─────────────────────── -->
+    <section class="hp-achievements-section py-16 sm:py-20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12 reveal">
+          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Student Success</p>
+          <h2 class="font-display text-3xl sm:text-4xl text-ink mb-4">Our Students Achieve</h2>
+          <p class="max-w-2xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed">
+            Students have earned awards in speech, visual arts, STEM, and dance. Many have advanced to top private high schools and leading colleges.
+          </p>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 reveal-group">
+          <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6 text-center">
+            <div class="font-display text-4xl text-imperial font-bold mb-2">15+</div>
+            <p class="text-ink/70 text-sm font-medium">Years of Excellence</p>
+            <p class="text-ink/45 text-xs mt-1">Founded 2009 in West Newton, MA</p>
+          </div>
+          <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6 text-center">
+            <div class="font-display text-4xl text-imperial font-bold mb-2">🏆</div>
+            <p class="text-ink/70 text-sm font-medium">Award-Winning Programs</p>
+            <p class="text-ink/45 text-xs mt-1">Speech, visual arts, STEM & dance</p>
+          </div>
+          <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6 text-center">
+            <div class="font-display text-4xl text-imperial font-bold mb-2">🎓</div>
+            <p class="text-ink/70 text-sm font-medium">Top School Placements</p>
+            <p class="text-ink/45 text-xs mt-1">Graduates at leading private schools & colleges</p>
+          </div>
+          <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6 text-center">
+            <div class="font-display text-4xl text-imperial font-bold mb-2">5</div>
+            <p class="text-ink/70 text-sm font-medium">Programs Offered</p>
+            <p class="text-ink/45 text-xs mt-1">Dance, Mandarin, STEM, Adult Dance & Camps</p>
+          </div>
+        </div>
+        <div class="mt-10 text-center reveal">
+          <blockquote class="max-w-2xl mx-auto bg-surface/50 backdrop-blur rounded-xl border border-imperial/10 p-6 italic text-ink/65 text-sm leading-relaxed">
+            "Bright Pearl Academy has given my daughter not just dance skills but confidence, discipline, and a deep pride in her cultural heritage."
+            <footer class="mt-3 not-italic text-xs text-ink/40 font-medium">— Academy Parent</footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
     <!-- Photo Gallery -->
     <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
@@ -1910,6 +1833,17 @@
       <div class="hp-gallery-viewall">
         <button id="hp-gallery-viewall-btn">View Full Gallery →</button>
       </div>
+    </section>
+
+    <!-- ── Parent Testimonials ── -->
+    <section id="testimonials-section" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center mb-12">
+        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">From Our Families</p>
+        <h2 class="font-display text-3xl sm:text-4xl text-ink mb-4">What Parents Say</h2>
+        <div class="ink-divider mt-6"></div>
+      </div>
+      <div id="testimonials-grid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <p id="testimonials-empty" class="view-hidden text-center text-ink/40 italic py-8">No testimonials yet.</p>
     </section>
 
     <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
@@ -1921,10 +1855,25 @@
 
     <!-- Footer -->
     <footer class="border-t border-imperial/10 mt-8">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
-        &copy; 2026 Bright Pearl Academy. All rights reserved.
-        &nbsp;&middot;&nbsp;
-        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid sm:grid-cols-2 gap-6 pb-6">
+          <div class="space-y-1 text-sm text-ink/60">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
+            <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
+            <p>61 Chestnut St, West Newton, MA 02465</p>
+            <p>WeChat: J3477495715</p>
+          </div>
+          <div class="sm:text-right">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+              <div class="flex sm:justify-end gap-4 footer-social-links"></div>
+          </div>
+        </div>
+        <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
+          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &nbsp;&middot;&nbsp;
+          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+        </div>
       </div>
     </footer>
   </main>
@@ -1958,12 +1907,42 @@
       <p id="pdf-empty" class="view-hidden text-center text-ink/40 italic py-8">No documents available yet.</p>
     </section>
 
+    <!-- Join Our Team -->
+    <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 text-center reveal">
+        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Careers</p>
+        <h3 class="font-display text-2xl text-ink mb-3">Join Our Team</h3>
+        <p class="text-ink/60 text-sm leading-relaxed mb-5">
+          We are always looking for passionate, qualified instructors and staff who share our commitment to arts education and cultural enrichment. If you are interested in teaching dance, Mandarin, STEM, or another discipline, we'd love to hear from you.
+        </p>
+        <p class="text-ink/60 text-sm mb-5">
+          Send your résumé and a brief introduction to:<br />
+          <a href="mailto:brightpearlacademy@gmail.com" class="text-imperial hover:underline font-medium">brightpearlacademy@gmail.com</a>
+        </p>
+      </div>
+    </section>
+
     <!-- Footer -->
     <footer class="border-t border-imperial/10 mt-6">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
-        &copy; 2026 Bright Pearl Academy. All rights reserved.
-        &nbsp;&middot;&nbsp;
-        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid sm:grid-cols-2 gap-6 pb-6">
+          <div class="space-y-1 text-sm text-ink/60">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
+            <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
+            <p>61 Chestnut St, West Newton, MA 02465</p>
+            <p>WeChat: J3477495715</p>
+          </div>
+          <div class="sm:text-right">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+              <div class="flex sm:justify-end gap-4 footer-social-links"></div>
+          </div>
+        </div>
+        <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
+          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &nbsp;&middot;&nbsp;
+          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+        </div>
       </div>
     </footer>
   </main>
@@ -2029,12 +2008,12 @@
           </h3>
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-medium text-ink/70 mb-1.5">Student Full Name <span class="text-imperial">*</span></label>
+              <label for="reg-student-name" class="block text-xs font-medium text-ink/70 mb-1.5">Student Full Name <span class="text-imperial">*</span></label>
               <input id="reg-student-name" type="text" required placeholder="e.g. Lin Mei"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-ink/70 mb-1.5">Date of Birth</label>
+              <label for="reg-dob" class="block text-xs font-medium text-ink/70 mb-1.5">Date of Birth</label>
               <input id="reg-dob" type="date"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
             </div>
@@ -2048,17 +2027,17 @@
           </h3>
           <div class="grid sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
-              <label class="block text-xs font-medium text-ink/70 mb-1.5">Parent / Guardian Name <span class="text-imperial">*</span></label>
+              <label for="reg-parent-name" class="block text-xs font-medium text-ink/70 mb-1.5">Parent / Guardian Name <span class="text-imperial">*</span></label>
               <input id="reg-parent-name" type="text" required placeholder="e.g. Zhang Wei"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-ink/70 mb-1.5">Email <span class="text-imperial">*</span></label>
+              <label for="reg-email" class="block text-xs font-medium text-ink/70 mb-1.5">Email <span class="text-imperial">*</span></label>
               <input id="reg-email" type="email" required placeholder="contact@email.com"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-ink/70 mb-1.5">Phone Number <span class="text-imperial">*</span></label>
+              <label for="reg-phone" class="block text-xs font-medium text-ink/70 mb-1.5">Phone Number <span class="text-imperial">*</span></label>
               <input id="reg-phone" type="tel" required placeholder="(555) 000-0000"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
             </div>
@@ -2072,13 +2051,13 @@
           </h3>
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-medium text-ink/70 mb-1.5">Interested Class</label>
+              <label for="reg-class" class="block text-xs font-medium text-ink/70 mb-1.5">Interested Class</label>
               <select id="reg-class" class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20 appearance-none">
                 <option value="">— Select a class —</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-medium text-ink/70 mb-1.5">Prior Dance Experience</label>
+              <label for="reg-experience" class="block text-xs font-medium text-ink/70 mb-1.5">Prior Dance Experience</label>
               <select id="reg-experience" class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20 appearance-none">
                 <option value="">— Select level —</option>
                 <option value="none">No experience</option>
@@ -2088,7 +2067,7 @@
               </select>
             </div>
             <div class="sm:col-span-2">
-              <label class="block text-xs font-medium text-ink/70 mb-1.5">Additional Notes</label>
+              <label for="reg-notes" class="block text-xs font-medium text-ink/70 mb-1.5">Additional Notes</label>
               <textarea id="reg-notes" rows="3" placeholder="Any health considerations, schedule preferences, or questions…"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20 resize-none"></textarea>
             </div>
@@ -2125,8 +2104,78 @@
     <div id="tos-content-container" class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 space-y-6"></div>
     <p id="tos-content-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Terms content is coming soon.</p>
     <footer class="border-t border-imperial/10 mt-6">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
-        &copy; 2026 Bright Pearl Academy. All rights reserved.
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid sm:grid-cols-2 gap-6 pb-6">
+          <div class="space-y-1 text-sm text-ink/60">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
+            <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
+            <p>61 Chestnut St, West Newton, MA 02465</p>
+            <p>WeChat: J3477495715</p>
+          </div>
+          <div class="sm:text-right">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+              <div class="flex sm:justify-end gap-4 footer-social-links"></div>
+          </div>
+        </div>
+        <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
+          &copy; 2026 Bright Pearl Academy. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--  PARENT PORTAL VIEW                             -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <main id="parent-view" class="view-hidden relative z-10">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
+        <div>
+          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-1">My Account</p>
+          <h2 class="font-display text-2xl sm:text-3xl text-ink">My Portal</h2>
+          <p id="portal-welcome" class="text-ink/50 text-sm mt-1"></p>
+        </div>
+        <button onclick="showView('register')"
+          class="btn-imperial px-4 py-2 rounded-lg text-sm font-medium self-start sm:self-auto">
+          + Register for a Program
+        </button>
+      </div>
+
+      <!-- Registrations -->
+      <div class="mb-10">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>
+          My Registrations
+        </h3>
+        <div id="portal-registrations-list" class="space-y-3"></div>
+        <p id="portal-no-registrations" class="view-hidden text-center text-ink/40 italic py-10">
+          No registrations found. <button onclick="showView('register')" class="text-imperial hover:underline">Register for a program</button> to get started.
+        </p>
+      </div>
+    </div>
+
+    <footer class="border-t border-imperial/10 mt-8">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid sm:grid-cols-2 gap-6 pb-6">
+          <div class="space-y-1 text-sm text-ink/60">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
+            <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
+            <p>61 Chestnut St, West Newton, MA 02465</p>
+            <p>WeChat: J3477495715</p>
+          </div>
+          <div class="sm:text-right">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+              <div class="flex sm:justify-end gap-4 footer-social-links"></div>
+          </div>
+        </div>
+        <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
+          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &nbsp;&middot;&nbsp;
+          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+        </div>
       </div>
     </footer>
   </main>
@@ -2136,24 +2185,55 @@
   <!-- ═══════════════════════════════════════════════ -->
   <main id="admin-view" class="view-hidden relative z-10">
 
-    <!-- Login Form -->
+    <!-- Login / Sign-Up Form -->
     <section id="admin-login" class="max-w-md mx-auto px-4 py-20">
       <div class="bg-surface/70 backdrop-blur rounded-xl shadow-sm border border-imperial/10 p-8">
-        <h2 class="font-display text-2xl text-ink text-center mb-1">Admin Login</h2>
-        <p class="text-center text-ink/50 text-sm mb-6">Sign in to manage academy data</p>
+        <h2 class="font-display text-2xl text-ink text-center mb-1">Welcome Back</h2>
+        <p class="text-center text-ink/50 text-sm mb-6">Sign in to your account or create a parent account</p>
+
+        <!-- Tabs -->
+        <div class="flex rounded-lg border border-imperial/15 overflow-hidden mb-6">
+          <button id="tab-signin" class="flex-1 py-2 text-sm font-medium bg-imperial text-cream transition-colors">Sign In</button>
+          <button id="tab-signup" class="flex-1 py-2 text-sm font-medium bg-transparent text-ink/60 hover:text-imperial transition-colors">Create Account</button>
+        </div>
+
+        <!-- Sign In Form -->
         <form id="login-form" class="space-y-4">
           <div>
-            <label class="block text-xs font-medium text-ink/70 mb-1">Email</label>
-            <input id="login-email" type="email" value="admin@brightpearl.academy"
+            <label for="login-email" class="block text-xs font-medium text-ink/70 mb-1">Email</label>
+            <input id="login-email" type="email" placeholder="your@email.com" autocomplete="email"
               class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
           </div>
           <div>
-            <label class="block text-xs font-medium text-ink/70 mb-1">Password</label>
-            <input id="login-password" type="password" placeholder="Enter password"
+            <label for="login-password" class="block text-xs font-medium text-ink/70 mb-1">Password</label>
+            <input id="login-password" type="password" placeholder="Enter password" autocomplete="current-password"
               class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
           </div>
           <p id="login-error" class="view-hidden text-imperial text-xs"></p>
           <button type="submit" class="btn-imperial w-full py-2.5 rounded-lg text-sm font-medium">Sign In</button>
+        </form>
+
+        <!-- Sign Up Form (hidden by default) -->
+        <form id="signup-form" class="view-hidden space-y-4">
+          <div>
+            <label for="signup-email" class="block text-xs font-medium text-ink/70 mb-1">Email <span class="text-imperial">*</span></label>
+            <input id="signup-email" type="email" required placeholder="your@email.com" autocomplete="email"
+              class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
+          </div>
+          <div>
+            <label for="signup-password" class="block text-xs font-medium text-ink/70 mb-1">Password <span class="text-imperial">*</span></label>
+            <input id="signup-password" type="password" required placeholder="At least 6 characters" autocomplete="new-password"
+              class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
+          </div>
+          <div>
+            <label for="signup-password2" class="block text-xs font-medium text-ink/70 mb-1">Confirm Password <span class="text-imperial">*</span></label>
+            <input id="signup-password2" type="password" required placeholder="Re-enter password" autocomplete="new-password"
+              class="w-full px-3 py-2 rounded-lg border border-imperial/20 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/30" />
+          </div>
+          <p id="signup-error" class="view-hidden text-imperial text-xs"></p>
+          <p id="signup-success" class="view-hidden text-green-600 text-xs text-center"></p>
+          <button type="submit" class="btn-imperial w-full py-2.5 rounded-lg text-sm font-medium">Create Account</button>
+          <p class="text-center text-ink/40 text-xs">A confirmation email may be sent. Check your inbox to activate your account.</p>
         </form>
       </div>
     </section>
@@ -2243,7 +2323,7 @@
           <div class="grid sm:grid-cols-[minmax(0,1fr)_auto] gap-3 items-end">
             <label class="block">
               <span class="block text-xs font-semibold uppercase tracking-[0.2em] text-ink/45 mb-2">Established label</span>
-              <input id="hero-est-input" type="text" value="Est. 2008" placeholder="Est. 2008" class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+              <input id="hero-est-input" type="text" value="Est. 2009" placeholder="Est. 2009" class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
             </label>
             <button id="hero-est-save-btn" type="button" class="btn-imperial px-4 py-2 rounded text-sm font-medium">Save Hero Label</button>
           </div>
@@ -2275,9 +2355,9 @@
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Awards
         </h3>
         <form id="add-award-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 grid sm:grid-cols-4 gap-3">
-          <input id="award-title" type="text" placeholder="Title *" required class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
-          <input id="award-year"  type="text" placeholder="Year" maxlength="4" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
-          <input id="award-desc"  type="text" placeholder="Description" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="award-title" type="text" placeholder="Title *" required aria-label="Award title" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="award-year"  type="text" placeholder="Year" maxlength="4" aria-label="Award year" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="award-desc"  type="text" placeholder="Description" aria-label="Award description" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Award</button>
         </form>
         <div class="overflow-x-auto rounded-lg border border-imperial/10">
@@ -2300,9 +2380,9 @@
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Classes
         </h3>
         <form id="add-class-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 grid sm:grid-cols-5 gap-3">
-          <input id="class-name"  type="text" placeholder="Class Name *" required class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
-          <input id="class-time"  type="text" placeholder="Schedule" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
-          <input id="class-level" type="text" placeholder="Level" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="class-name"  type="text" placeholder="Class Name *" required aria-label="Class name" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="class-time"  type="text" placeholder="Schedule" aria-label="Class schedule" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="class-level" type="text" placeholder="Level" aria-label="Class level" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           <input id="class-desc"  type="text" placeholder="Description" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Class</button>
         </form>
@@ -2474,13 +2554,13 @@
         </h3>
         <form id="add-faculty-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
           <div class="grid sm:grid-cols-2 gap-3">
-            <input id="faculty-name" type="text" placeholder="Full Name *" required
+            <input id="faculty-name" type="text" placeholder="Full Name *" required aria-label="Faculty full name"
               class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
-            <input id="faculty-title" type="text" placeholder="Title/Role (e.g. Director/Chinese Dance)"
+            <input id="faculty-title" type="text" placeholder="Title/Role (e.g. Director/Chinese Dance)" aria-label="Faculty title or role"
               class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           </div>
           <div class="grid sm:grid-cols-2 gap-3">
-            <select id="faculty-category" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial">
+            <select id="faculty-category" aria-label="Faculty category" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial">
               <option value="">— Category —</option>
               <option value="Dance">Dance</option>
               <option value="Chinese / Mandarin">Chinese / Mandarin</option>
@@ -2489,7 +2569,7 @@
               <option value="Other">Other</option>
             </select>
           </div>
-          <textarea id="faculty-bio" rows="3" placeholder="Biography *" required
+          <textarea id="faculty-bio" rows="3" placeholder="Biography *" required aria-label="Faculty biography"
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
           <div class="flex items-center gap-3 flex-wrap">
             <div id="faculty-photo-drop" class="drop-zone flex-1 min-w-[200px] !py-2">
@@ -2620,25 +2700,42 @@
           <p class="text-ink/50 text-xs">This information is displayed in the Contact &amp; Enrollment Help box on the home page.</p>
           <div class="grid sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-medium text-ink/70 mb-1.5">Email</label>
+              <label for="ci-email" class="block text-xs font-medium text-ink/70 mb-1.5">Email</label>
               <input id="ci-email" type="text" placeholder="hello@brightpearl.academy"
                 class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-ink/70 mb-1.5">Phone</label>
+              <label for="ci-phone" class="block text-xs font-medium text-ink/70 mb-1.5">Phone</label>
               <input id="ci-phone" type="text" placeholder="(555) 123-4567"
                 class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
             </div>
           </div>
           <div>
-            <label class="block text-xs font-medium text-ink/70 mb-1.5">Location</label>
+            <label for="ci-location" class="block text-xs font-medium text-ink/70 mb-1.5">Location</label>
             <input id="ci-location" type="text" placeholder="Greater Seattle Area"
               class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
           </div>
           <div>
-            <label class="block text-xs font-medium text-ink/70 mb-1.5">Helper Text <span class="text-ink/35">(shown below heading)</span></label>
+            <label for="ci-helper" class="block text-xs font-medium text-ink/70 mb-1.5">Helper Text <span class="text-ink/35">(shown below heading)</span></label>
             <input id="ci-helper" type="text" placeholder="Have questions before registering? We usually reply within 1 business day."
               class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          </div>
+          <div class="grid sm:grid-cols-3 gap-3">
+            <div>
+              <label for="ci-facebook" class="block text-xs font-medium text-ink/70 mb-1.5">Facebook URL</label>
+              <input id="ci-facebook" type="text" placeholder="https://www.facebook.com/…"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+            <div>
+              <label for="ci-youtube" class="block text-xs font-medium text-ink/70 mb-1.5">YouTube URL</label>
+              <input id="ci-youtube" type="text" placeholder="https://www.youtube.com/@…"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+            <div>
+              <label for="ci-wechat" class="block text-xs font-medium text-ink/70 mb-1.5">WeChat ID</label>
+              <input id="ci-wechat" type="text" placeholder="WeChat ID"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
           </div>
           <div class="flex items-center gap-4">
             <button type="submit" class="btn-imperial px-6 py-2 rounded text-sm font-medium">Save Contact Info</button>
@@ -2658,11 +2755,43 @@
         </div>
         <form id="add-faq-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
           <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Add New FAQ Item</p>
-          <input id="faq-question" type="text" placeholder="Question *" required
+          <input id="faq-question" type="text" placeholder="Question *" required aria-label="FAQ question"
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
-          <textarea id="faq-answer" rows="3" placeholder="Answer *" required
+          <textarea id="faq-answer" rows="3" placeholder="Answer *" required aria-label="FAQ answer"
             class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
           <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add FAQ Item</button>
+        </form>
+      </div>
+
+      <!-- ── Parent Testimonials ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Parent Testimonials
+        </h3>
+        <div class="mb-4">
+          <div id="admin-testimonials-list" class="space-y-2 mb-3"></div>
+          <p id="admin-testimonials-empty" class="view-hidden text-ink/40 italic text-sm py-2">No testimonials yet — add one below.</p>
+        </div>
+        <form id="add-testimonial-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+          <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Add New Testimonial</p>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div>
+              <label for="tm-name" class="block text-xs font-medium text-ink/70 mb-1.5">Parent Name *</label>
+              <input id="tm-name" type="text" placeholder="e.g. Jennifer L." required
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+            <div>
+              <label for="tm-role" class="block text-xs font-medium text-ink/70 mb-1.5">Role / Title <span class="text-ink/35">(optional)</span></label>
+              <input id="tm-role" type="text" placeholder="e.g. Parent of 3-year student"
+                class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            </div>
+          </div>
+          <div>
+            <label for="tm-quote" class="block text-xs font-medium text-ink/70 mb-1.5">Quote *</label>
+            <textarea id="tm-quote" rows="3" placeholder="Their testimonial…" required
+              class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          </div>
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Testimonial</button>
         </form>
       </div>
 
@@ -2710,10 +2839,25 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24" id="faculty-sections-container"></div>
     <p id="faculty-list-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Faculty profiles coming soon.</p>
     <footer class="border-t border-imperial/10 mt-8">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
-        &copy; 2026 Bright Pearl Academy. All rights reserved.
-        &nbsp;&middot;&nbsp;
-        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid sm:grid-cols-2 gap-6 pb-6">
+          <div class="space-y-1 text-sm text-ink/60">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
+            <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
+            <p>61 Chestnut St, West Newton, MA 02465</p>
+            <p>WeChat: J3477495715</p>
+          </div>
+          <div class="sm:text-right">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+              <div class="flex sm:justify-end gap-4 footer-social-links"></div>
+          </div>
+        </div>
+        <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
+          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &nbsp;&middot;&nbsp;
+          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+        </div>
       </div>
     </footer>
   </main>
@@ -2733,10 +2877,25 @@
     <div class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 space-y-6" id="concert-sections-container"></div>
     <p id="concert-sections-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Concert information coming soon — check back shortly.</p>
     <footer class="border-t border-imperial/10 mt-6">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
-        &copy; 2026 Bright Pearl Academy. All rights reserved.
-        &nbsp;&middot;&nbsp;
-        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid sm:grid-cols-2 gap-6 pb-6">
+          <div class="space-y-1 text-sm text-ink/60">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
+            <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
+            <p>61 Chestnut St, West Newton, MA 02465</p>
+            <p>WeChat: J3477495715</p>
+          </div>
+          <div class="sm:text-right">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+              <div class="flex sm:justify-end gap-4 footer-social-links"></div>
+          </div>
+        </div>
+        <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
+          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &nbsp;&middot;&nbsp;
+          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+        </div>
       </div>
     </footer>
   </main>
@@ -2754,10 +2913,25 @@
     <div class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 space-y-6" id="program-content-container"></div>
     <p id="program-content-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Content for this program is coming soon.</p>
     <footer class="border-t border-imperial/10 mt-6">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
-        &copy; 2026 Bright Pearl Academy. All rights reserved.
-        &nbsp;&middot;&nbsp;
-        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid sm:grid-cols-2 gap-6 pb-6">
+          <div class="space-y-1 text-sm text-ink/60">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
+            <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
+            <p>61 Chestnut St, West Newton, MA 02465</p>
+            <p>WeChat: J3477495715</p>
+          </div>
+          <div class="sm:text-right">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+              <div class="flex sm:justify-end gap-4 footer-social-links"></div>
+          </div>
+        </div>
+        <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
+          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &nbsp;&middot;&nbsp;
+          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+        </div>
       </div>
     </footer>
   </main>
@@ -2777,10 +2951,25 @@
       <p id="gallery-page-empty" class="view-hidden text-center text-ink/40 italic py-8">No photos yet.</p>
     </div>
     <footer class="border-t border-imperial/10">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-ink/40 text-xs">
-        &copy; 2026 Bright Pearl Academy. All rights reserved.
-        &nbsp;&middot;&nbsp;
-        <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid sm:grid-cols-2 gap-6 pb-6">
+          <div class="space-y-1 text-sm text-ink/60">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
+            <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
+            <p>61 Chestnut St, West Newton, MA 02465</p>
+            <p>WeChat: J3477495715</p>
+          </div>
+          <div class="sm:text-right">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+              <div class="flex sm:justify-end gap-4 footer-social-links"></div>
+          </div>
+        </div>
+        <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
+          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &nbsp;&middot;&nbsp;
+          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+        </div>
       </div>
     </footer>
   </main>
@@ -2796,55 +2985,18 @@
     <div class="lightbox-caption" id="lightbox-caption"></div>
   </div>
 
-  <!-- ═══ Chat Widget ═══ -->
-  <div id="chat-fab" class="chat-fab" title="Chat with Pearl">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-    </svg>
-  </div>
-
-  <div id="chat-panel" class="chat-panel">
-    <div class="chat-header">
-      <div class="chat-avatar">P</div>
-      <div>
-        <div class="font-display text-sm font-semibold text-ink">Pearl</div>
-        <div class="text-[0.65rem] text-ink/45">Academy AI Assistant</div>
-      </div>
-    </div>
-    <div id="chat-messages" class="chat-messages"></div>
-    <div id="chat-quick-actions" class="chat-quick-actions">
-      <button class="chat-quick-btn" data-quick="What classes do you offer?">Classes</button>
-      <button class="chat-quick-btn" data-quick="Tell me about your awards">Awards</button>
-      <button class="chat-quick-btn" data-quick="What are the schedules?">Schedules</button>
-      <button class="chat-quick-btn" data-tour="true">Site Tour</button>
-    </div>
-    <div class="chat-input-area">
-      <input id="chat-input" type="text" placeholder="Ask Pearl anything…" autocomplete="off" />
-      <button id="chat-send" class="chat-send-btn" title="Send">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-      </button>
-    </div>
-  </div>
-
   <!-- ═══ JavaScript (ES Module) ═══ -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
     const SUPABASE_URL      = 'https://vsjlvkivsvrjplkscgrz.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzamx2a2l2c3ZyanBsa3NjZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MTAyNzcsImV4cCI6MjA4Nzk4NjI3N30.x3M7efiCkyuJakCsytKxdZp7RnDGdtJDKQZzM5WdaUo';
-    const GROQ_API_KEY      = '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';
-    const GROQ_MODEL        = 'llama-3.3-70b-versatile';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ── State ──────────────────────────────────────
     let currentView  = 'home';
     let currentProgram = null;
     let session      = null;
-    let chatOpen     = false;
-    let chatHistory  = [];
-    let chatContext  = null;
-    let isSending    = false;
-    let tourActive   = false;
     let selectedFile = null;
     let selectedPdf  = null;
     let editMode     = false;
@@ -2866,9 +3018,17 @@
         id: 'default-dance-program',
         name: 'Elite Dance Program',
         slug: 'elite-dance-program',
-        description: 'Technique, artistry, and stage confidence for committed dancers.',
-        content: 'Our Elite Dance Program develops strong technical foundations, cultural expression, and performance readiness. Students train in classical Chinese dance, contemporary repertory, and stage presence through guided rehearsals and curated performance opportunities.',
+        description: 'Classical Chinese Dance, Contemporary Dance, and Ballet for dedicated young performers.',
+        content: 'Our Elite Dance Program trains students across three company levels — Company A, Company B, and Company D — each designed to match a student\'s experience and commitment level. Students develop strong technical foundations in Classical Chinese Dance, Contemporary Dance, and Ballet, while building cultural expression, artistry, and performance confidence. Training includes guided rehearsals, stage presence coaching, and curated performance opportunities throughout the year.',
         display_order: 0,
+      },
+      {
+        id: 'default-adult-dance-program',
+        name: 'Adult Dance Classes',
+        slug: 'adult-dance',
+        description: 'Dance classes designed specifically for adult students of all levels.',
+        content: 'It\'s never too late to dance. Our Adult Dance Classes welcome beginners and returning students alike, offering a supportive environment to explore Classical Chinese Dance, Contemporary movement, and more. Classes focus on technique, expression, and the joy of movement — no prior experience required.',
+        display_order: 1,
       },
       {
         id: 'default-mandarin-program',
@@ -2876,7 +3036,7 @@
         slug: 'mandarin-afterschool',
         description: 'Language, culture, and creativity in a joyful afterschool format.',
         content: 'This program blends practical Mandarin, cultural literacy, and project-based activities to help students build confidence speaking, reading, and expressing themselves in Chinese. Lessons are structured by age and level to support steady growth.',
-        display_order: 1,
+        display_order: 2,
       },
       {
         id: 'default-stem-program',
@@ -2884,7 +3044,15 @@
         slug: 'coding-stem',
         description: 'Hands-on computing, logic, and maker projects for young innovators.',
         content: 'Students explore coding fundamentals, computational thinking, and problem-solving through interactive challenges and guided projects. The curriculum emphasizes creativity, collaboration, and practical digital skills.',
-        display_order: 2,
+        display_order: 3,
+      },
+      {
+        id: 'default-vacation-camp',
+        name: 'School Vacation Camp',
+        slug: 'school-vacation-camp',
+        description: 'Seasonal camps during Winter, Spring, and Summer school breaks.',
+        content: 'Bright Pearl Academy\'s School Vacation Camp offers enriching full-day and half-day programs during school break weeks — Winter, Spring, and Summer. Campers enjoy a blend of dance, Mandarin, STEM projects, arts and crafts, and cultural activities in a fun, structured environment. A great option for families looking for engaging, educational programming during school vacations.',
+        display_order: 4,
       },
     ];
 
@@ -2900,8 +3068,12 @@
     const $tosView         = document.getElementById('tos-view');
     const $adminLogin      = document.getElementById('admin-login');
     const $adminDashboard  = document.getElementById('admin-dashboard');
+    const $parentView2     = document.getElementById('parent-view');
+    const $navLogin        = document.getElementById('nav-login');
+    const $navPortal       = document.getElementById('nav-portal');
     const $navLogout       = document.getElementById('nav-logout');
     const $navAdmin        = document.getElementById('nav-admin');
+    const ADMIN_EMAIL      = 'admin@brightpearl.academy';
 
     // ════════════════════════════════════════════════
     //  VIEW SWITCHING
@@ -2918,8 +3090,12 @@
     }
 
     function _syncNavSession() {
-      if (session) { $navLogout.classList.remove('view-hidden'); $navAdmin.classList.remove('view-hidden'); }
-      else { $navLogout.classList.add('view-hidden'); $navAdmin.classList.add('view-hidden'); }
+      const isAdmin  = session && session.user.email === ADMIN_EMAIL;
+      const isParent = session && !isAdmin;
+      $navLogin.classList.toggle('view-hidden',  !!session);
+      $navAdmin.classList.toggle('view-hidden',  !isAdmin);
+      $navPortal.classList.toggle('view-hidden', !isParent);
+      $navLogout.classList.toggle('view-hidden', !session);
     }
 
     function showView(view, subview) {
@@ -2935,6 +3111,7 @@
       $programsView.classList.toggle('view-hidden',    view !== 'programs');
       $galleryPageView.classList.toggle('view-hidden', view !== 'gallery-page');
       $tosView.classList.toggle('view-hidden',         view !== 'tos');
+      $parentView2.classList.toggle('view-hidden',     view !== 'parent');
 
       const $toolbar   = document.getElementById('visual-edit-toolbar');
       const $pageLabel = document.getElementById('edit-page-label');
@@ -2942,11 +3119,10 @@
 
       if (view === 'admin') {
         if (session) checkSessionExpiry();
-        const loggedIn = !!session;
+        const loggedIn = session && session.user.email === ADMIN_EMAIL;
         $adminLogin.classList.toggle('view-hidden',     loggedIn);
         $adminDashboard.classList.toggle('view-hidden', !loggedIn);
-        $navLogout.classList.toggle('view-hidden', !loggedIn);
-        $navAdmin.classList.toggle('view-hidden',   loggedIn);
+        _syncNavSession();
         $toolbar.classList.remove('visible');
         if (editMode) toggleEditMode();
         if (loggedIn) {
@@ -2966,6 +3142,7 @@
           renderAdminTosSettings();
           renderAdminContactInfo();
           renderAdminFaq();
+          renderAdminTestimonials();
         }
       } else if (view === 'about') {
         _syncNavSession();
@@ -3016,11 +3193,18 @@
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Terms Page'; }
         else $toolbar.classList.remove('visible');
         renderTosPage();
+      } else if (view === 'parent') {
+        _syncNavSession();
+        $toolbar.classList.remove('visible');
+        if (editMode) toggleEditMode();
+        if (!session) { showView('admin'); return; }
+        renderParentPortal();
       } else {
         // home
         _syncNavSession();
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Home Page'; }
         else { $toolbar.classList.remove('visible'); }
+        renderTestimonials();
       }
     }
 
@@ -3077,10 +3261,13 @@
       $drawer.setAttribute('aria-hidden', 'false');
       $hambOpen.style.display  = 'none';
       $hambClose.style.display = '';
-      // Sync logout/admin visibility in drawer
-      const loggedIn = !!session;
-      document.getElementById('mob-nav-logout').classList.toggle('view-hidden', !loggedIn);
-      document.getElementById('mob-nav-admin').classList.toggle('view-hidden', !loggedIn);
+      // Sync auth buttons visibility in drawer
+      const isAdmin2  = session && session.user.email === ADMIN_EMAIL;
+      const isParent2 = session && !isAdmin2;
+      document.getElementById('mob-nav-login').classList.toggle('view-hidden',  !!session);
+      document.getElementById('mob-nav-portal').classList.toggle('view-hidden', !isParent2);
+      document.getElementById('mob-nav-admin').classList.toggle('view-hidden',  !isAdmin2);
+      document.getElementById('mob-nav-logout').classList.toggle('view-hidden', !session);
     }
     function closeDrawer() {
       $drawer.classList.remove('open');
@@ -3102,7 +3289,9 @@
     document.getElementById('mob-nav-faculty').addEventListener('click',  () => mobNavigate('faculty'));
     document.getElementById('mob-nav-gallery').addEventListener('click',  () => mobNavigate('gallery-page'));
     document.getElementById('mob-nav-register').addEventListener('click', () => mobNavigate('register'));
-    document.getElementById('mob-nav-admin').addEventListener('click',    () => mobNavigate('admin'));
+    document.getElementById('mob-nav-login').addEventListener('click',   () => mobNavigate('admin'));
+    document.getElementById('mob-nav-portal').addEventListener('click',  () => mobNavigate('parent'));
+    document.getElementById('mob-nav-admin').addEventListener('click',   () => mobNavigate('admin'));
     document.getElementById('mob-nav-logout').addEventListener('click', async () => {
       closeDrawer();
       try { await supabase.auth.signOut(); } catch (err) { console.error(err); }
@@ -3121,14 +3310,65 @@
       if (error) { $error.textContent = error.message; $error.classList.remove('view-hidden'); return; }
       session = data.session;
       localStorage.setItem('bp_session_start', Date.now().toString());
-      showView('admin');
+      if (session.user.email === ADMIN_EMAIL) { showView('admin'); } else { showView('parent'); }
     });
+
+    // ── Sign-up form handler ───────────────────────
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email    = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const password2= document.getElementById('signup-password2').value;
+      const $err     = document.getElementById('signup-error');
+      const $ok      = document.getElementById('signup-success');
+      $err.classList.add('view-hidden'); $ok.classList.add('view-hidden');
+      if (password !== password2) {
+        $err.textContent = 'Passwords do not match.'; $err.classList.remove('view-hidden'); return;
+      }
+      if (password.length < 6) {
+        $err.textContent = 'Password must be at least 6 characters.'; $err.classList.remove('view-hidden'); return;
+      }
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) { $err.textContent = error.message; $err.classList.remove('view-hidden'); return; }
+      if (data.session) {
+        session = data.session;
+        localStorage.setItem('bp_session_start', Date.now().toString());
+        showView('parent');
+      } else {
+        $ok.textContent = 'Account created! Check your email to confirm your account, then sign in.';
+        $ok.classList.remove('view-hidden');
+        // Switch to sign-in tab
+        document.getElementById('tab-signin').click();
+      }
+    });
+
+    // ── Tab switching (Sign In / Create Account) ───
+    document.getElementById('tab-signin').addEventListener('click', () => {
+      document.getElementById('login-form').classList.remove('view-hidden');
+      document.getElementById('signup-form').classList.add('view-hidden');
+      document.getElementById('tab-signin').className =
+        'flex-1 py-2 text-sm font-medium bg-imperial text-cream transition-colors';
+      document.getElementById('tab-signup').className =
+        'flex-1 py-2 text-sm font-medium bg-transparent text-ink/60 hover:text-imperial transition-colors';
+    });
+    document.getElementById('tab-signup').addEventListener('click', () => {
+      document.getElementById('login-form').classList.add('view-hidden');
+      document.getElementById('signup-form').classList.remove('view-hidden');
+      document.getElementById('tab-signin').className =
+        'flex-1 py-2 text-sm font-medium bg-transparent text-ink/60 hover:text-imperial transition-colors';
+      document.getElementById('tab-signup').className =
+        'flex-1 py-2 text-sm font-medium bg-imperial text-cream transition-colors';
+    });
+
+    // ── nav-login click ─────────────────────────────
+    document.getElementById('nav-login').addEventListener('click',   () => showView('admin'));
+    document.getElementById('nav-portal').addEventListener('click',  () => showView('parent'));
 
     try {
       const { data: { session: existingSession } } = await supabase.auth.getSession();
       if (existingSession) session = existingSession;
     } catch (err) { console.error('Session init failed:', err); }
-    supabase.auth.onAuthStateChange((_e, s) => { session = s; });
+    supabase.auth.onAuthStateChange((_e, s) => { session = s; _syncNavSession(); });
 
     // ════════════════════════════════════════════════
     //  DATA FUNCTIONS
@@ -3505,6 +3745,7 @@
       if (editMode && currentView === 'home') {
         initGallerySortable();
         initHomeAboutSortable();
+        renderTestimonials();
       }
 
       // Refresh program edit controls when toggling on programs page
@@ -3610,6 +3851,17 @@
     // ── Edit toolbar buttons ───────────────────────
     document.getElementById('edit-mode-toggle').addEventListener('click', toggleEditMode);
     document.getElementById('edit-back-dashboard').addEventListener('click', () => showView('admin'));
+
+    document.addEventListener('click', e => {
+      const $fsl = e.target.closest('.footer-social-links');
+      if ($fsl && editMode) {
+        e.preventDefault();
+        showView('admin');
+        setTimeout(() => {
+          document.getElementById('contact-info-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      }
+    });
 
     // ── Hero change button (in edit mode overlay) ──
     document.getElementById('hero-change-btn').addEventListener('click', () => {
@@ -4038,7 +4290,7 @@
       return {
         estLabel: data && typeof data === 'object' && typeof data.estLabel === 'string' && data.estLabel.trim()
           ? data.estLabel.trim()
-          : 'Est. 2008'
+          : 'Est. 2009'
       };
     }
 
@@ -4126,15 +4378,21 @@
     //  CONTACT INFO + FAQ — DATA & RENDER
     // ════════════════════════════════════════════════
     const DEFAULT_CONTACT_INFO = {
-      email:       'hello@brightpearl.academy',
-      phone:       '(555) 123-4567',
-      location:    'Greater Seattle Area',
+      email:       'brightpearlacademy@gmail.com',
+      phone:       '617-971-8866',
+      location:    '61 Chestnut St, West Newton, MA 02465',
+      wechat:      'J3477495715',
+      facebook:    'https://www.facebook.com/BrightPearlAcademy',
+      youtube:     'https://www.youtube.com/@BrightPearlAcademy',
       helper_text: 'Have questions before registering? We usually reply within 1 business day.',
     };
     const DEFAULT_FAQ = [
-      { id: 'faq-1', question: 'When does registration open?',  answer: 'Registration opens seasonally. Join the waitlist through the registration form now.', display_order: 0 },
-      { id: 'faq-2', question: 'How are students placed?',       answer: 'Placement is based on age, experience, and a brief instructor review if needed.',        display_order: 1 },
-      { id: 'faq-3', question: 'What happens after I apply?',   answer: 'We confirm details by email and send next steps within 1–2 business days.',              display_order: 2 },
+      { id: 'faq-1', question: 'When does registration open?',       answer: 'Registration opens seasonally. Join the waitlist through the registration form now.',                                                                                         display_order: 0 },
+      { id: 'faq-2', question: 'How are students placed?',            answer: 'Placement is based on age, experience, and a brief instructor review if needed.',                                                                                            display_order: 1 },
+      { id: 'faq-3', question: 'What happens after I apply?',         answer: 'We confirm details by email and send next steps within 1–2 business days.',                                                                                                 display_order: 2 },
+      { id: 'faq-4', question: 'How do I find out about tuition?',    answer: 'Pricing is available upon registration or by contacting us directly at brightpearlacademy@gmail.com or 617-971-8866.',                                                       display_order: 3 },
+      { id: 'faq-5', question: 'What payment methods are accepted?',  answer: 'We accept Venmo, Zelle, Cash, and Check.',                                                                                                                                   display_order: 4 },
+      { id: 'faq-6', question: 'What is the refund policy?',          answer: 'All payments are non-refundable. Once payment is made, it cannot be refunded under any circumstances. Please contact us before registering if you have any concerns.',        display_order: 5 },
     ];
 
     async function fetchContactInfo() {
@@ -4154,10 +4412,31 @@
         <h3 class="font-display text-xl text-ink mb-3">Contact &amp; Enrollment Help</h3>
         <p class="text-sm text-ink/60 mb-4">${esc(ci.helper_text)}</p>
         <div class="space-y-2 text-sm">
-          ${ci.email    ? `<p><span class="font-medium text-ink">Email:</span> ${esc(ci.email)}</p>`    : ''}
-          ${ci.phone    ? `<p><span class="font-medium text-ink">Phone:</span> ${esc(ci.phone)}</p>`    : ''}
-          ${ci.location ? `<p><span class="font-medium text-ink">Location:</span> ${esc(ci.location)}</p>` : ''}
-        </div>`;
+          ${ci.phone    ? `<p><span class="font-medium text-ink">Phone:</span> <a href="tel:${esc(ci.phone)}" class="hover:text-imperial transition-colors">${esc(ci.phone)}</a></p>` : ''}
+          ${ci.email    ? `<p><span class="font-medium text-ink">Email:</span> <a href="mailto:${esc(ci.email)}" class="hover:text-imperial transition-colors">${esc(ci.email)}</a></p>` : ''}
+          ${ci.location ? `<p><span class="font-medium text-ink">Address:</span> ${esc(ci.location)}</p>` : ''}
+          ${ci.wechat   ? `<p><span class="font-medium text-ink">WeChat:</span> ${esc(ci.wechat)}</p>` : ''}
+        </div>
+        ${(ci.facebook || ci.youtube) ? `
+        <div class="flex gap-3 mt-4">
+          ${ci.facebook ? `<a href="${esc(ci.facebook)}" target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>` : ''}
+          ${ci.youtube ? `<a href="${esc(ci.youtube)}" target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="YouTube">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>` : ''}
+        </div>` : ''}`;
+      renderFooterSocial(ci);
+    }
+
+    function renderFooterSocial(ci) {
+      const FB_SVG  = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`;
+      const YT_SVG  = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`;
+      const html = [
+        ci.facebook ? `<a href="${esc(ci.facebook)}" target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="Facebook">${FB_SVG}</a>` : '',
+        ci.youtube  ? `<a href="${esc(ci.youtube)}"  target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="YouTube">${YT_SVG}</a>`  : '',
+      ].join('');
+      document.querySelectorAll('.footer-social-links').forEach(el => { el.innerHTML = html; });
     }
 
     async function renderHomeFaq() {
@@ -4500,6 +4779,9 @@
       document.getElementById('ci-phone').value    = ci.phone    || '';
       document.getElementById('ci-location').value = ci.location || '';
       document.getElementById('ci-helper').value   = ci.helper_text || '';
+      document.getElementById('ci-facebook').value = ci.facebook || '';
+      document.getElementById('ci-youtube').value  = ci.youtube  || '';
+      document.getElementById('ci-wechat').value   = ci.wechat   || '';
     }
 
     let faqAdminSortable = null;
@@ -4599,6 +4881,122 @@
           await saveSetting('faq_data', reordered);
           if (currentView === 'home') await renderHomeFaq();
         }
+      });
+    }
+
+    async function renderTestimonials() {
+      const raw   = await fetchSetting('testimonials_data');
+      const items = Array.isArray(raw) ? raw.sort((a,b) => (a.display_order||0)-(b.display_order||0)) : [];
+      const $grid  = document.getElementById('testimonials-grid');
+      const $empty = document.getElementById('testimonials-empty');
+      if (!$grid) return;
+      if (!items.length) {
+        $grid.innerHTML = '';
+        $empty.classList.remove('view-hidden');
+        document.getElementById('testimonials-section')?.classList.add('view-hidden');
+        return;
+      }
+      document.getElementById('testimonials-section')?.classList.remove('view-hidden');
+      $empty.classList.add('view-hidden');
+      $grid.innerHTML = items.map(t => `
+        <div class="editable-section relative bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 flex flex-col gap-4 reveal" data-tm-id="${esc(t.id)}">
+          <div class="section-toolbar" style="display:none; position:absolute; top:0.5rem; right:0.5rem; gap:0.35rem; align-items:center;">
+            <button class="tm-edit-btn toolbar-btn" title="Edit" data-tm-id="${esc(t.id)}">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+            </button>
+            <button class="tm-delete-btn toolbar-btn" title="Delete" data-tm-id="${esc(t.id)}" style="color:rgb(239,68,68)">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <svg class="text-imperial/30 w-8 h-8 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+          <p class="text-ink/75 text-sm leading-relaxed flex-1">${esc(t.quote)}</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-imperial/15 flex items-center justify-content-center text-imperial font-display font-bold text-sm flex-shrink-0 uppercase leading-none flex items-center justify-center">${esc((t.name||'?')[0])}</div>
+            <div>
+              <p class="text-sm font-semibold text-ink">${esc(t.name)}</p>
+              ${t.role ? `<p class="text-xs text-ink/45">${esc(t.role)}</p>` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Wire edit/delete buttons
+      $grid.querySelectorAll('.tm-edit-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id   = btn.dataset.tmId;
+          const all  = await fetchSetting('testimonials_data');
+          const item = (Array.isArray(all) ? all : []).find(t => t.id === id);
+          if (!item) return;
+          const newName  = prompt('Name:', item.name  || ''); if (newName  === null) return;
+          const newRole  = prompt('Role:', item.role  || '');
+          const newQuote = prompt('Quote:', item.quote || ''); if (newQuote === null) return;
+          const updated  = (Array.isArray(all) ? all : []).map(t => t.id === id ? { ...t, name: newName.trim(), role: (newRole||'').trim(), quote: newQuote.trim() } : t);
+          await saveSetting('testimonials_data', updated);
+          if (currentView === 'home') await renderTestimonials();
+          await renderAdminTestimonials();
+        });
+      });
+      $grid.querySelectorAll('.tm-delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this testimonial?')) return;
+          const id  = btn.dataset.tmId;
+          const all = await fetchSetting('testimonials_data');
+          const updated = (Array.isArray(all) ? all : []).filter(t => t.id !== id);
+          await saveSetting('testimonials_data', updated);
+          if (currentView === 'home') await renderTestimonials();
+          await renderAdminTestimonials();
+        });
+      });
+    }
+
+    async function renderAdminTestimonials() {
+      const raw   = await fetchSetting('testimonials_data');
+      const items = Array.isArray(raw) ? raw.sort((a,b) => (a.display_order||0)-(b.display_order||0)) : [];
+      const $list  = document.getElementById('admin-testimonials-list');
+      const $empty = document.getElementById('admin-testimonials-empty');
+      if (!items.length) { $list.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $list.innerHTML = items.map(item => `
+        <div class="bg-cream/60 border border-imperial/10 rounded-lg overflow-hidden" data-tm-id="${esc(item.id)}">
+          <div class="flex items-start gap-3 px-4 py-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-ink truncate">${esc(item.name)}</p>
+              ${item.role ? `<p class="text-xs text-ink/45 truncate">${esc(item.role)}</p>` : ''}
+              <p class="text-xs text-ink/60 mt-1 line-clamp-2">${esc(item.quote)}</p>
+            </div>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <button class="tm-admin-edit-btn text-xs text-imperial/70 hover:text-imperial border border-imperial/15 rounded px-2 py-1 transition-colors" data-tm-id="${esc(item.id)}">Edit</button>
+              <button class="tm-admin-delete-btn text-xs text-red-500/70 hover:text-red-600 border border-red-200/50 rounded px-2 py-1 transition-colors" data-tm-id="${esc(item.id)}">Delete</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      $list.querySelectorAll('.tm-admin-edit-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id   = btn.dataset.tmId;
+          const all  = await fetchSetting('testimonials_data');
+          const item = (Array.isArray(all) ? all : []).find(t => t.id === id);
+          if (!item) return;
+          const newName  = prompt('Name:', item.name  || ''); if (newName  === null) return;
+          const newRole  = prompt('Role:', item.role  || '');
+          const newQuote = prompt('Quote:', item.quote || ''); if (newQuote === null) return;
+          const updated  = (Array.isArray(all) ? all : []).map(t => t.id === id ? { ...t, name: newName.trim(), role: (newRole||'').trim(), quote: newQuote.trim() } : t);
+          await saveSetting('testimonials_data', updated);
+          if (currentView === 'home') await renderTestimonials();
+          await renderAdminTestimonials();
+        });
+      });
+      $list.querySelectorAll('.tm-admin-delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this testimonial?')) return;
+          const id  = btn.dataset.tmId;
+          const all = await fetchSetting('testimonials_data');
+          const updated = (Array.isArray(all) ? all : []).filter(t => t.id !== id);
+          await saveSetting('testimonials_data', updated);
+          if (currentView === 'home') await renderTestimonials();
+          await renderAdminTestimonials();
+        });
       });
     }
 
@@ -6496,6 +6894,9 @@
         phone:       document.getElementById('ci-phone').value.trim(),
         location:    document.getElementById('ci-location').value.trim(),
         helper_text: document.getElementById('ci-helper').value.trim(),
+        facebook:    document.getElementById('ci-facebook').value.trim(),
+        youtube:     document.getElementById('ci-youtube').value.trim(),
+        wechat:      document.getElementById('ci-wechat').value.trim(),
       };
       try {
         await saveSetting('contact_info', data);
@@ -6503,6 +6904,7 @@
         $status.classList.remove('view-hidden');
         setTimeout(() => $status.classList.add('view-hidden'), 3000);
         if (currentView === 'home') await renderHomeContactInfo();
+        renderFooterSocial(data);
       } catch (err) { alert('Save failed: ' + err.message); }
     });
 
@@ -6520,6 +6922,25 @@
         document.getElementById('faq-answer').value   = '';
         await renderAdminFaq();
         if (currentView === 'home') await renderHomeFaq();
+      } catch (err) { alert('Error: ' + err.message); }
+    });
+
+    document.getElementById('add-testimonial-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const name  = document.getElementById('tm-name').value.trim();
+      const role  = document.getElementById('tm-role').value.trim();
+      const quote = document.getElementById('tm-quote').value.trim();
+      if (!name || !quote) return;
+      try {
+        const current = await fetchSetting('testimonials_data');
+        const items   = Array.isArray(current) ? current : [];
+        items.push({ id: crypto.randomUUID(), name, role, quote, display_order: items.length });
+        await saveSetting('testimonials_data', items);
+        document.getElementById('tm-name').value  = '';
+        document.getElementById('tm-role').value  = '';
+        document.getElementById('tm-quote').value = '';
+        await renderAdminTestimonials();
+        if (currentView === 'home') await renderTestimonials();
       } catch (err) { alert('Error: ' + err.message); }
     });
 
@@ -6617,6 +7038,59 @@
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (err) { console.error(err); newBtn.disabled = false; newBtn.textContent = 'I Have Sent the Payment'; }
       });
+    }
+
+    // ════════════════════════════════════════════════
+    //  PARENT PORTAL
+    // ════════════════════════════════════════════════
+    async function renderParentPortal() {
+      if (!session) { showView('admin'); return; }
+      const email = session.user.email;
+      const $welcome = document.getElementById('portal-welcome');
+      const $list    = document.getElementById('portal-registrations-list');
+      const $empty   = document.getElementById('portal-no-registrations');
+      if ($welcome) $welcome.textContent = email;
+
+      $list.innerHTML = '<p class="text-ink/40 text-sm py-4">Loading…</p>';
+      $empty.classList.add('view-hidden');
+
+      const { data: regs, error } = await supabase
+        .from('registrations')
+        .select('*')
+        .eq('email', email)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        $list.innerHTML = '<p class="text-imperial text-sm py-4">Could not load registrations.</p>';
+        return;
+      }
+      if (!regs || regs.length === 0) {
+        $list.innerHTML = '';
+        $empty.classList.remove('view-hidden');
+        return;
+      }
+
+      const statusColor = s => {
+        if (s === 'approved')  return 'bg-green-100 text-green-700 border-green-200';
+        if (s === 'rejected')  return 'bg-red-100 text-red-700 border-red-200';
+        return 'bg-amber-100 text-amber-700 border-amber-200';
+      };
+      const statusLabel = s => {
+        if (s === 'approved') return 'Approved';
+        if (s === 'rejected') return 'Not Approved';
+        return 'Pending';
+      };
+
+      $list.innerHTML = regs.map(r => `
+        <div class="bg-surface/70 backdrop-blur rounded-xl border border-imperial/10 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="space-y-0.5">
+            <p class="font-medium text-ink">${r.student_name || r.name || '—'}</p>
+            <p class="text-sm text-ink/55">${r.program_name || r.class_name || r.program || '—'}</p>
+            <p class="text-xs text-ink/35">${r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : ''}</p>
+          </div>
+          <span class="self-start sm:self-auto text-xs font-medium px-2.5 py-1 rounded-full border ${statusColor(r.status)}">${statusLabel(r.status)}</span>
+        </div>
+      `).join('');
     }
 
     // ════════════════════════════════════════════════
@@ -6731,98 +7205,6 @@
     $lb.addEventListener('click', e => { if (e.target === $lb) closeLightbox(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-    // ════════════════════════════════════════════════
-    //  GROQ AI CHAT
-    // ════════════════════════════════════════════════
-    const $fab   = document.getElementById('chat-fab');
-    const $panel = document.getElementById('chat-panel');
-    const $msgs  = document.getElementById('chat-messages');
-    const $inp   = document.getElementById('chat-input');
-    const $send  = document.getElementById('chat-send');
-
-    $fab.addEventListener('click', () => {
-      chatOpen = !chatOpen;
-      $panel.classList.toggle('active', chatOpen);
-      if (chatOpen && !chatHistory.length) {
-        addBotMsg("Hi! I'm **Pearl**, your academy assistant. Ask me about classes, awards, or visit **About** to learn our story!");
-        buildChatContext();
-      }
-      if (chatOpen) $inp.focus();
-    });
-
-    async function buildChatContext() {
-      try {
-        const [awards, classes] = await Promise.all([fetchAwards(), fetchClasses()]);
-        let ctx = `You are Pearl, the friendly AI assistant for Bright Pearl Academy — a Chinese dance school founded in 2018.
-Personality: warm, concise, encouraging. 1-3 sentences per reply unless detail is requested.
-For pricing or unknown topics, suggest contacting the academy.
-
-CLASSES:\n`;
-        classes.length ? classes.forEach(c => { ctx += `- ${c.name} | ${c.schedule_time||'TBD'} | Level: ${c.level||'All'} | ${c.description||''}\n`; }) : (ctx += '(None listed yet)\n');
-        ctx += `\nAWARDS:\n`;
-        awards.length  ? awards.forEach(a  => { ctx += `- ${a.title}${a.year?` (${a.year})`:''}: ${a.description||''}\n`; }) : (ctx += '(None listed yet)\n');
-        ctx += `\nSITES: Home (hero/awards/gallery), About (story + PDF downloads), Register (no payment needed), Admin (staff).
-To enroll: direct users to click "Register" in the nav. Documents are on the About page under "Downloads & Resources".`;
-        chatContext = ctx;
-      } catch (err) { console.error('Chat context build failed:', err); }
-    }
-
-    async function sendMessage(text) {
-      if (!text.trim() || isSending) return;
-      isSending = true; $send.disabled = true;
-      addUserMsg(text); chatHistory.push({ role:'user', content:text });
-      const $t = document.createElement('div');
-      $t.className = 'chat-typing'; $t.innerHTML = '<span></span><span></span><span></span>';
-      $msgs.appendChild($t); $msgs.scrollTop = $msgs.scrollHeight;
-      try {
-        if (!chatContext) await buildChatContext();
-        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${GROQ_API_KEY}` },
-          body: JSON.stringify({ model:GROQ_MODEL, messages:[{role:'system',content:chatContext},...chatHistory.slice(-16)], temperature:0.7, max_tokens:512 }),
-        });
-        const json = await res.json(); $t.remove();
-        if (json.error) throw new Error(json.error.message);
-        const reply = json.choices?.[0]?.message?.content || 'I couldn\'t generate a response. Please try again.';
-        chatHistory.push({ role:'assistant', content:reply }); addBotMsg(reply);
-      } catch (err) { $t.remove(); addBotMsg('Sorry, connection issue. Please try again.'); console.error(err); }
-      isSending = false; $send.disabled = false; $inp.focus();
-    }
-
-    $send.addEventListener('click', () => { sendMessage($inp.value); $inp.value = ''; });
-    $inp.addEventListener('keydown', e => { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); sendMessage($inp.value); $inp.value = ''; } });
-    document.querySelectorAll('[data-quick]').forEach(b => b.addEventListener('click', () => sendMessage(b.dataset.quick)));
-    document.querySelector('[data-tour]').addEventListener('click', startSiteTour);
-
-    async function startSiteTour() {
-      if (tourActive) return; tourActive = true;
-      if (currentView !== 'home') showView('home');
-      const steps = [
-        { id:'section-hero',    msg:"Welcome to **Bright Pearl Academy**! Here on the Home page you'll find our mission and a taste of what we offer." },
-        { id:'section-awards',  msg:"These are our **Awards & Honors** — recognition from competitions and cultural festivals across North America." },
-        { id:'section-gallery', msg:"Our **Gallery** captures performances and rehearsals. Click any photo to enlarge it." },
-      ];
-      for (const s of steps) {
-        addBotMsg(s.msg); await sleep(800);
-        const el = document.getElementById(s.id);
-        if (el) { el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('tour-highlight'); await sleep(3000); el.classList.remove('tour-highlight'); }
-      }
-      addBotMsg("Visit the **About** page to read our story and download resources. Ready to join? Click **Register** in the menu — no payment needed at that stage!");
-      await sleep(1500);
-      addBotMsg("Tour complete! What else can I help you with?");
-      tourActive = false;
-    }
-
-    function addUserMsg(text) {
-      const $e = document.createElement('div'); $e.className = 'chat-bubble user'; $e.textContent = text;
-      $msgs.appendChild($e); $msgs.scrollTop = $msgs.scrollHeight;
-    }
-    function addBotMsg(text) {
-      const $e = document.createElement('div'); $e.className = 'chat-bubble assistant';
-      $e.innerHTML = esc(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      $msgs.appendChild($e); $msgs.scrollTop = $msgs.scrollHeight;
-    }
-    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
     // ── Rich text formatting toolbar ────────────────
     function showFormatToolbar($body) {
@@ -6930,10 +7312,118 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     function isYouTubeUrl(url) { return !!getYouTubeId(url); }
     function isVideoUrl(url) { return isYouTubeUrl(url); }
 
+    // ── Seed default content if DB is empty ────────
+    async function initSeedData() {
+      // 1. Seed contact_info if not present
+      try {
+        const existingContact = await fetchSetting('contact_info');
+        if (!existingContact || typeof existingContact !== 'object' || !existingContact.email) {
+          await saveSetting('contact_info', {
+            email:       'brightpearlacademy@gmail.com',
+            phone:       '617-971-8866',
+            location:    '61 Chestnut St, West Newton, MA 02465',
+            wechat:      'J3477495715',
+            facebook:    'https://www.facebook.com/BrightPearlAcademy',
+            youtube:     'https://www.youtube.com/@BrightPearlAcademy',
+            helper_text: 'Have questions before registering? We usually reply within 1 business day.',
+          });
+        }
+      } catch (e) { console.warn('Contact seed skipped:', e); }
+
+      // 2. Seed faculty_data if empty
+      try {
+        const existingFaculty = await fetchSetting('faculty_data');
+        if (!Array.isArray(existingFaculty) || existingFaculty.length === 0) {
+          await saveSetting('faculty_data', [
+            {
+              id: crypto.randomUUID(),
+              name: 'Ms. Li Wei',
+              title: 'Lead Dance Instructor',
+              bio: 'Ms. Li Wei brings over 15 years of classical Chinese dance experience to Bright Pearl Academy. She trained at the Beijing Dance Academy and has choreographed award-winning performances for students across New England. She leads Company A and oversees curriculum for all dance levels.',
+              category: 'Dance',
+              photo_url: '',
+              display_order: 0,
+            },
+            {
+              id: crypto.randomUUID(),
+              name: 'Mr. Zhang Ming',
+              title: 'Mandarin Language Teacher',
+              bio: 'A native Mandarin speaker and certified language educator, Mr. Zhang designs engaging, immersive curriculum that helps students of all ages build real-world Chinese language skills with confidence. His lessons combine conversation, reading, and cultural projects.',
+              category: 'Chinese / Mandarin',
+              photo_url: '',
+              display_order: 1,
+            },
+            {
+              id: crypto.randomUUID(),
+              name: 'Ms. Sarah Chen',
+              title: 'STEM & Coding Instructor',
+              bio: 'Ms. Chen combines a background in software engineering with a passion for education. Her project-based STEM curriculum inspires young innovators to explore technology, computational thinking, and problem-solving in a fun, collaborative environment.',
+              category: 'STEM / Coding',
+              photo_url: '',
+              display_order: 2,
+            },
+          ]);
+        }
+      } catch (e) { console.warn('Faculty seed skipped:', e); }
+
+      // 3. Seed gallery if empty
+      try {
+        const { data: existingGallery } = await supabase.from('gallery').select('id').limit(1);
+        if (!existingGallery || existingGallery.length === 0) {
+          await supabase.from('gallery').insert([
+            { image_url: 'https://picsum.photos/seed/bpa-dance1/800/600',   caption: 'Classical Chinese Dance performance' },
+            { image_url: 'https://picsum.photos/seed/bpa-dance2/600/800',   caption: 'Students rehearsing for the annual concert' },
+            { image_url: 'https://picsum.photos/seed/bpa-stem1/800/600',    caption: 'STEM coding class in action' },
+            { image_url: 'https://picsum.photos/seed/bpa-lang1/600/800',    caption: 'Mandarin language enrichment program' },
+            { image_url: 'https://picsum.photos/seed/bpa-concert1/800/600', caption: 'Spring concert performance' },
+            { image_url: 'https://picsum.photos/seed/bpa-dance3/800/600',   caption: 'Dance company rehearsal' },
+          ]);
+        }
+      } catch (e) { console.warn('Gallery seed skipped:', e); }
+
+      // 4. Seed concert_data if empty
+      try {
+        const existingConcert = await fetchSetting('concert_data');
+        if (!Array.isArray(existingConcert) || existingConcert.length === 0) {
+          await saveSetting('concert_data', [
+            {
+              id: crypto.randomUUID(),
+              title: '2026 Summer Concert',
+              body: '<p><strong>Date:</strong> Saturday, June 6, 2026</p><p><strong>Time:</strong> 2:00 PM – 6:00 PM</p><p><strong>Location:</strong> TBD — venue details will be announced soon. Please check back or contact us at brightpearlacademy@gmail.com for updates.</p><p>Join us for an afternoon of stunning dance performances, Mandarin language showcases, and STEM demonstrations. Students from all programs will take the stage for our biggest event of the year. Family and friends are warmly welcome!</p>',
+              images: [],
+              image_url: null,
+              display_order: 0,
+            },
+          ]);
+        }
+      } catch (e) { console.warn('Concert seed skipped:', e); }
+
+      // 5. Seed awards if empty
+      try {
+        const { data: existingAwards } = await supabase.from('awards').select('id').limit(1);
+        if (!existingAwards || existingAwards.length === 0) {
+          await supabase.from('awards').insert([
+            { title: 'Speech Competition Award',   year: '2024', description: 'Students earned top recognition at regional speech competitions.' },
+            { title: 'Visual Arts Excellence',     year: '2023', description: 'Award-winning artwork displayed at cultural exhibitions.' },
+            { title: 'STEM Innovation Award',      year: '2024', description: 'Coding & STEM students recognized for innovative projects.' },
+            { title: 'Dance Festival Gold',        year: '2023', description: 'Classical Chinese dance team earned gold at the Northeast Cultural Festival.' },
+            { title: 'Academic Achievement',       year: '2024', description: 'Graduates advanced to top private high schools and leading colleges.' },
+          ]);
+        }
+      } catch (e) { console.warn('Awards seed skipped:', e); }
+    }
+
     // ── Init ───────────────────────────────────────
     showView('home');
-    renderHomeAwards().catch(console.error);
-    renderHomeGallery().catch(console.error);
+    // Seed DB with default content first, then refresh renders
+    initSeedData().then(async () => {
+      await Promise.all([
+        renderHomeAwards().catch(console.error),
+        renderHomeGallery().catch(console.error),
+        renderHomeContactInfo().catch(console.error),
+        renderHomeFaq().catch(console.error),
+      ]);
+    }).catch(console.error);
     renderHeroPhoto().catch(console.error);
     renderHeroContent().catch(console.error);
     renderHomeContactInfo().catch(console.error);
@@ -6941,6 +7431,8 @@ To enroll: direct users to click "Register" in the nav. Documents are on the Abo
     renderHomeAboutFeatures().catch(console.error);
     renderHomePrograms().catch(console.error);
     populateProgramsDropdown().catch(console.error);
+    renderTestimonials().catch(console.error);
+    fetchContactInfo().then(renderFooterSocial).catch(console.error);
 
     // ── Gallery "View All" button ───────────────────
     const $galleryViewAll = document.getElementById('hp-gallery-viewall-btn');
