@@ -505,85 +505,34 @@
     }
     .gallery-card-img-wrap .yt-thumb-wrap img { height: 100%; }
     .gallery-card:hover .gallery-card-img-wrap img { transform: scale(1.04); }
-    /* ── Full gallery page — compact carousel layout ── */
-    .gallery-carousel {
-      max-width: 860px;
-      margin: 0 auto;
-      background: rgb(var(--surface-rgb));
-      border-radius: 1rem;
-      border: 1px solid rgb(var(--imperial-rgb) / 0.1);
-      box-shadow: 0 8px 24px rgb(var(--ink-rgb) / 0.1);
-      padding: 0.85rem;
-    }
-    .gallery-carousel-stage {
-      position: relative;
-      border-radius: 0.8rem;
-      overflow: hidden;
-      background: rgb(var(--ink-rgb) / 0.08);
-      min-height: 220px;
-    }
-    .gallery-carousel-media img,
-    .gallery-carousel-media .yt-thumb-wrap img {
-      width: 100%;
-      max-height: min(62vh, 560px);
-      object-fit: contain;
-      display: block;
-      background: #000;
-    }
-    .gallery-carousel-media .yt-thumb-wrap {
-      height: auto;
-      aspect-ratio: 16 / 9;
-      background: #000;
-    }
-    .gallery-carousel-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 38px;
-      height: 38px;
-      border-radius: 999px;
-      border: 1px solid rgb(var(--imperial-rgb) / 0.35);
-      background: rgb(var(--ink-rgb) / 0.58);
-      color: white;
-      cursor: pointer;
-      z-index: 2;
-    }
-    .gallery-carousel-nav:hover { background: rgb(var(--imperial-rgb) / 0.85); }
-    .gallery-carousel-nav.prev { left: 0.65rem; }
-    .gallery-carousel-nav.next { right: 0.65rem; }
-    .gallery-carousel-meta {
+    .gallery-page-controls {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.8rem;
-      margin-top: 0.7rem;
-      font-size: 0.82rem;
-      color: rgb(var(--ink-rgb) / 0.6);
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
     }
-    .gallery-carousel-caption { font-style: italic; min-height: 1.2em; }
-    .gallery-carousel-counter { white-space: nowrap; font-weight: 600; color: rgb(var(--imperial-rgb)); }
-    .gallery-carousel-actions {
-      position: absolute;
-      top: 0.6rem;
-      left: 0.6rem;
-      right: 0.6rem;
-      display: none;
-      justify-content: space-between;
-      pointer-events: none;
-      z-index: 3;
+    .gallery-page-controls button {
+      border: 1px solid rgb(var(--imperial-rgb) / 0.35);
+      border-radius: 999px;
+      font-size: 0.76rem;
+      padding: 0.32rem 0.68rem;
+      color: rgb(var(--ink-rgb) / 0.82);
+      background: rgb(var(--surface-rgb));
+      transition: 0.15s ease;
     }
-    body.edit-mode .gallery-carousel-actions { display: flex; }
-    .gallery-carousel-action-btn {
-      pointer-events: auto;
-      background: rgba(0,0,0,0.56);
-      border: none;
-      border-radius: 6px;
-      color: #fff;
-      font-size: 0.72rem;
-      padding: 0.28rem 0.5rem;
-      cursor: pointer;
+    .gallery-page-controls button:hover:not(:disabled) {
+      color: rgb(var(--cream-rgb));
+      background: rgb(var(--imperial-rgb));
+      border-color: rgb(var(--imperial-rgb));
     }
-    .gallery-carousel-action-btn:hover { background: rgb(var(--imperial-rgb)); }
+    .gallery-page-controls button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .gallery-page-controls .gallery-page-status {
+      font-size: 0.74rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgb(var(--ink-rgb) / 0.5);
+    }
     /* Caption below image */
     .gallery-card-caption {
       padding: 0.55rem 0.875rem 0.7rem;
@@ -6019,89 +5968,130 @@
     async function renderGalleryPage() {
       const $grid  = document.getElementById('gallery-page-grid');
       const $empty = document.getElementById('gallery-page-empty');
-      // Compact skeleton while loading
-      $grid.innerHTML = `<div class="gallery-carousel skeleton" style="height:340px"></div>`;
+      const PAGE_SIZE = 8;
+      const start = Number.parseInt($grid.dataset.pageStart || '0', 10) || 0;
+
+      // Skeleton placeholders while loading
+      $grid.innerHTML = Array.from({length:8},(_,i)=>`<div class="gallery-card skeleton" style="height:${[180,240,200,260,150,220,190,230][i%8]}px"></div>`).join('');
       const photos = await fetchGallery();
       if (!photos.length) { $grid.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
+      const pageStart = Math.max(0, Math.min(start, Math.max(0, photos.length - 1)));
+      const page = photos.slice(pageStart, pageStart + PAGE_SIZE);
 
-      let idx = Number.parseInt($grid.dataset.carouselIndex || '0', 10);
-      if (!Number.isFinite(idx) || idx < 0 || idx >= photos.length) idx = 0;
+      const SVG_PENCIL = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
+      const SVG_TRASH  = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
 
       $grid.innerHTML = `
-        <div class="gallery-carousel reveal">
-          <div class="gallery-carousel-stage">
-            <div class="gallery-carousel-actions">
-              <button class="gallery-carousel-action-btn" data-gallery-edit>✏ Edit caption</button>
-              <button class="gallery-carousel-action-btn" data-gallery-del>🗑 Delete</button>
-            </div>
-            <button class="gallery-carousel-nav prev" type="button" aria-label="Previous photo">‹</button>
-            <div class="gallery-carousel-media" data-gallery-media></div>
-            <button class="gallery-carousel-nav next" type="button" aria-label="Next photo">›</button>
-          </div>
-          <div class="gallery-carousel-meta">
-            <p class="gallery-carousel-caption" data-gallery-caption></p>
-            <span class="gallery-carousel-counter" data-gallery-count></span>
-          </div>
-        </div>`;
+        <div class="gallery-page-controls">
+          <button type="button" data-gallery-page-prev ${pageStart <= 0 ? 'disabled' : ''}>← Newer</button>
+          <span class="gallery-page-status">${pageStart + 1}–${Math.min(pageStart + page.length, photos.length)} of ${photos.length}</span>
+          <button type="button" data-gallery-page-next ${pageStart + PAGE_SIZE >= photos.length ? 'disabled' : ''}>Older →</button>
+        </div>
+        ${page.map(p => {
+          const ytId = getYouTubeId(p.image_url);
+          const mediaEl = ytId
+            ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="lazy" /><div class="yt-play-overlay"></div></div>`
+            : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
+          return `
+          <div class="gallery-card" data-photo-id="${esc(p.id)}" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
+            <button class="gallery-card-delete-btn" data-del-id="${esc(p.id)}" data-del-url="${esc(p.image_url)}" title="Delete photo">${SVG_TRASH}</button>
+            <button class="gallery-card-edit-btn" title="Edit caption">${SVG_PENCIL}</button>
+            <div class="gallery-card-img-wrap">${mediaEl}</div>
+            ${p.caption ? `<div class="gallery-card-caption">${esc(p.caption)}</div>` : ''}
+          </div>`;
+        }).join('')}
+      `;
 
-      const $media   = $grid.querySelector('[data-gallery-media]');
-      const $caption = $grid.querySelector('[data-gallery-caption]');
-      const $count   = $grid.querySelector('[data-gallery-count]');
-
-      const renderSlide = (nextIdx) => {
-        idx = (nextIdx + photos.length) % photos.length;
-        $grid.dataset.carouselIndex = String(idx);
-        const item = photos[idx];
-        const ytId = getYouTubeId(item.image_url);
-        $media.innerHTML = ytId
-          ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" alt="${esc(item.caption||'Video')}" loading="eager" /><div class="yt-play-overlay"></div></div>`
-          : `<img src="${esc(item.image_url)}" alt="${esc(item.caption||'Gallery photo')}" loading="eager" />`;
-        $caption.textContent = item.caption || '';
-        $count.textContent   = `${idx + 1} / ${photos.length}`;
-      };
-
-      const shift = (d) => renderSlide(idx + d);
-      $grid.querySelector('.gallery-carousel-nav.prev').addEventListener('click', () => shift(-1));
-      $grid.querySelector('.gallery-carousel-nav.next').addEventListener('click', () => shift(1));
-      $media.addEventListener('click', () => {
-        const item = photos[idx];
-        openLightbox(item.image_url, item.caption || '');
+      $grid.dataset.pageStart = String(pageStart);
+      $grid.querySelector('[data-gallery-page-prev]')?.addEventListener('click', () => {
+        $grid.dataset.pageStart = String(Math.max(0, pageStart - PAGE_SIZE));
+        renderGalleryPage();
+      });
+      $grid.querySelector('[data-gallery-page-next]')?.addEventListener('click', () => {
+        $grid.dataset.pageStart = String(pageStart + PAGE_SIZE);
+        renderGalleryPage();
       });
 
-      // Keyboard controls
-      $grid.onkeydown = (e) => {
-        if (currentView !== 'gallery-page') return;
-        if (e.key === 'ArrowLeft') shift(-1);
-        if (e.key === 'ArrowRight') shift(1);
-      };
-
-      $grid.querySelector('[data-gallery-edit]').addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const item = photos[idx];
-        const next = prompt('Edit caption:', item.caption || '');
-        if (next === null) return;
-        const val = next.trim();
-        await updateGalleryCaption(item.id, val).catch(err => alert('Save failed: ' + err.message));
-        item.caption = val;
-        renderSlide(idx);
-        await renderHomeGallery();
+      // Lightbox on image click
+      $grid.querySelectorAll('.gallery-card').forEach(card => {
+        card.addEventListener('click', e => {
+          if (e.target.closest('.gallery-card-edit-btn') || e.target.closest('.gallery-card-delete-btn')) return;
+          if (card.querySelector('.gallery-caption-edit-row')) return; // editing in progress
+          openLightbox(card.dataset.lburl, card.dataset.lbcap);
+        });
       });
 
-      $grid.querySelector('[data-gallery-del]').addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const item = photos[idx];
-        if (!confirm('Delete this photo?')) return;
-        if (await deleteGalleryItem(item.id, item.image_url)) {
-          await renderHomeGallery();
-          await renderHeroPhoto();
-          await renderAdminGallery();
-          await renderGalleryPage();
-        }
+      // Inline caption editing
+      $grid.querySelectorAll('.gallery-card-edit-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const card = btn.closest('.gallery-card');
+          if (card.querySelector('.gallery-caption-edit-row')) return; // already open
+          const id      = card.dataset.photoId;
+          const current = card.dataset.lbcap || '';
+          const $existing = card.querySelector('.gallery-card-caption');
+          if ($existing) $existing.remove();
+          const row = document.createElement('div');
+          row.className = 'gallery-caption-edit-row';
+          row.innerHTML = `<input class="gallery-caption-input" type="text" placeholder="Add a caption…" value="${esc(current)}" />
+            <button class="gallery-caption-save-btn" title="Save">✓</button>
+            <button class="gallery-caption-cancel-btn" title="Cancel">✕</button>`;
+          card.appendChild(row);
+          const $input  = row.querySelector('.gallery-caption-input');
+          const $save   = row.querySelector('.gallery-caption-save-btn');
+          const $cancel = row.querySelector('.gallery-caption-cancel-btn');
+          $input.focus();
+          const doSave = async () => {
+            const val = $input.value.trim();
+            card.dataset.lbcap = val;
+            row.remove();
+            if (val) {
+              const cap = document.createElement('div');
+              cap.className = 'gallery-card-caption';
+              cap.textContent = val;
+              card.appendChild(cap);
+            }
+            await updateGalleryCaption(id, val).catch(err => alert('Save failed: ' + err.message));
+          };
+          const doCancel = () => {
+            row.remove();
+            if (current) {
+              const cap = document.createElement('div');
+              cap.className = 'gallery-card-caption';
+              cap.textContent = current;
+              card.appendChild(cap);
+            }
+          };
+          $save.addEventListener('click', e => { e.stopPropagation(); doSave(); });
+          $cancel.addEventListener('click', e => { e.stopPropagation(); doCancel(); });
+          $input.addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); doSave(); }
+            if (e.key === 'Escape') doCancel();
+          });
+        });
       });
 
-      destroySortables();
-      renderSlide(idx);
+      // Delete from gallery page (edit mode)
+      $grid.querySelectorAll('.gallery-card-delete-btn').forEach(btn => {
+        btn.addEventListener('click', async e => {
+          e.stopPropagation();
+          if (!confirm('Delete this photo?')) return;
+          const id  = btn.dataset.delId;
+          const url = btn.dataset.delUrl;
+          if (await deleteGalleryItem(id, url)) {
+            await renderHomeGallery();
+            await renderHeroPhoto();
+            await renderAdminGallery();
+            const remaining = photos.length - 1;
+            const nextStart = remaining <= 0 ? 0 : Math.min(pageStart, Math.max(0, remaining - 1));
+            $grid.dataset.pageStart = String(nextStart);
+            await renderGalleryPage();
+          }
+        });
+      });
+
+      if (editMode) { destroySortables(); initGalleryPageSortable(); }
     }
 
     async function renderTosPage() {
