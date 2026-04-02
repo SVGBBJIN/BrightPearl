@@ -230,6 +230,10 @@
       background: rgb(var(--surface-rgb));
       overflow-x: auto; -webkit-overflow-scrolling: touch;
     }
+    @media (min-width: 1024px) {
+      .awards-strip-section { overflow-x: visible; }
+      #awards-list { flex-wrap: wrap; row-gap: 0.6rem; }
+    }
     .awards-strip-label {
       flex-shrink: 0;
       text-transform: uppercase; letter-spacing: 0.08em;
@@ -600,6 +604,15 @@
     .hp-feature-cta:hover { border-color: rgb(var(--imperial-rgb)); color: rgb(var(--imperial-rgb)); }
     /* Photo wrap */
     .hp-feature-photo-wrap { position: relative; padding: 2.5rem 2rem 2rem; }
+    .hp-feature-photo-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 2.5rem 2rem 2rem;
+      border-radius: 1.25rem;
+      background: linear-gradient(180deg, rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.32));
+      z-index: 2;
+      pointer-events: none;
+    }
     /* Decorative circles */
     .hp-deco-circle {
       position: absolute; border-radius: 50%; z-index: 0; pointer-events: none;
@@ -708,6 +721,8 @@
       color: rgb(var(--ink-rgb)); margin-bottom: 0.5rem;
     }
     .hp-programs-sub { font-size: 0.95rem; color: rgb(var(--ink-rgb) / 0.72); }
+    .hp-programs-cta-wrap { margin-top: 2.5rem; text-align: center; }
+    .hp-programs-cta-note { margin-top: 0.75rem; font-size: 0.85rem; color: rgb(var(--ink-rgb) / 0.62); }
     .hp-programs-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.75rem; }
     @media (max-width: 900px) { .hp-programs-grid { grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 560px) { .hp-programs-grid { grid-template-columns: 1fr; } }
@@ -735,6 +750,9 @@
       border-color: rgb(var(--imperial-rgb) / 0.28);
     }
     @media (prefers-color-scheme: dark) {
+      .hp-feature-body { color: rgb(232 228 245 / 0.84); }
+      .hp-values-sub, .hp-programs-sub { color: rgb(232 228 245 / 0.78); }
+      .hp-value-body { color: rgb(232 228 245 / 0.8); }
       .hp-values-section {
         background: rgb(22 20 44);
         border-top:    1px solid rgb(var(--imperial-rgb) / 0.12);
@@ -1502,7 +1520,7 @@
         <button id="nav-faculty"      class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Faculty</button>
         <button id="nav-gallery-page" class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Gallery</button>
         <button id="nav-register"     class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Registration</button>
-        <button id="nav-login"         class="btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Log In</button>
+        <button id="nav-login"         class="btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap" title="Student/Parent Portal">Log In (Portal)</button>
         <button id="nav-portal"        class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">My Portal</button>
         <button id="nav-admin"         class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Admin</button>
         <button id="nav-logout"        class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Logout</button>
@@ -1530,7 +1548,7 @@
       <button id="mob-nav-gallery"      class="mobile-nav-item">Gallery</button>
       <button id="mob-nav-register"     class="mobile-nav-item mobile-nav-highlight">Registration</button>
       <div class="mobile-drawer-divider"></div>
-      <button id="mob-nav-login"         class="mobile-nav-item">Log In</button>
+      <button id="mob-nav-login"         class="mobile-nav-item" title="Student/Parent Portal">Log In (Portal)</button>
       <button id="mob-nav-portal"        class="mobile-nav-item view-hidden">My Portal</button>
       <button id="mob-nav-admin"         class="mobile-nav-item view-hidden">Admin</button>
       <button id="mob-nav-logout"        class="mobile-nav-item view-hidden">Logout</button>
@@ -1780,6 +1798,10 @@
         </div>
         <div id="home-programs-grid" class="hp-programs-grid reveal-group">
           <!-- Populated by renderHomePrograms() -->
+        </div>
+        <div class="hp-programs-cta-wrap reveal">
+          <button id="home-midpage-cta" class="btn-imperial px-8 py-3 text-sm font-semibold tracking-wide">Book a Free Trial Class</button>
+          <p class="hp-programs-cta-note">Questions before enrolling? We can help you pick the right starting program.</p>
         </div>
       </div>
     </section>
@@ -3219,6 +3241,7 @@
     document.getElementById('nav-admin').addEventListener('click',         () => showView('admin'));
     document.querySelectorAll('.footer-tos-link').forEach(el => el.addEventListener('click', () => showView('tos')));
     document.getElementById('hero-cta-register').addEventListener('click', () => showView('register'));
+    document.getElementById('home-midpage-cta')?.addEventListener('click', () => showView('register'));
     document.getElementById('hero-cta-about').addEventListener('click',    () => document.getElementById('home-about-section').scrollIntoView({ behavior: 'smooth' }));
     document.getElementById('nav-logout').addEventListener('click', async () => {
       try { await supabase.auth.signOut(); } catch (err) { console.error(err); }
