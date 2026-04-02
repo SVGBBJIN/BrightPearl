@@ -472,6 +472,59 @@
     .gallery-cell:hover { border-color: rgb(var(--imperial-rgb) / 0.4); transform: scale(1.02); }
     .gallery-cell img   { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
     .gallery-cell:hover img { transform: scale(1.03); }
+    .home-gallery-single {
+      max-width: 760px;
+      margin: 0 auto;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.12);
+      background: rgb(var(--surface-rgb));
+      border-radius: 0.95rem;
+      overflow: hidden;
+      box-shadow: 0 6px 22px rgb(var(--ink-rgb) / 0.08);
+    }
+    .home-gallery-stage {
+      position: relative;
+      background: rgb(var(--ink-rgb) / 0.08);
+      min-height: 260px;
+    }
+    .home-gallery-stage img,
+    .home-gallery-stage .yt-thumb-wrap img {
+      width: 100%;
+      max-height: min(56vh, 460px);
+      object-fit: cover;
+      display: block;
+      cursor: pointer;
+    }
+    .home-gallery-stage .yt-thumb-wrap {
+      aspect-ratio: 16 / 9;
+      height: auto;
+      background: #000;
+    }
+    .home-gallery-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.35);
+      background: rgb(var(--ink-rgb) / 0.58);
+      color: #fff;
+      cursor: pointer;
+    }
+    .home-gallery-nav.prev { left: 0.6rem; }
+    .home-gallery-nav.next { right: 0.6rem; }
+    .home-gallery-nav:disabled { opacity: 0.45; cursor: not-allowed; }
+    .home-gallery-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.6rem 0.85rem 0.8rem;
+      font-size: 0.78rem;
+      color: rgb(var(--ink-rgb) / 0.6);
+    }
+    .home-gallery-count { color: rgb(var(--imperial-rgb)); font-weight: 600; white-space: nowrap; }
 
     /* ── Full gallery page — masonry card layout ── */
     #gallery-page-grid {
@@ -1864,7 +1917,7 @@
     <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
       <p class="text-center text-ink/50 text-sm mb-8">Moments captured in motion</p>
-      <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 reveal-group"></div>
+      <div id="gallery-grid" class="reveal-group"></div>
       <div class="hp-gallery-viewall">
         <button id="hp-gallery-viewall-btn">View Full Gallery →</button>
       </div>
@@ -4394,19 +4447,57 @@
       const photos = await fetchGallery();
       const $grid  = document.getElementById('gallery-grid');
       if (!photos.length) {
-        $grid.innerHTML = Array.from({length:6},(_,i)=>`<div class="gallery-cell rounded-lg"><span class="text-ink/20 text-xs font-medium">Photo ${i+1}</span></div>`).join('');
+        $grid.innerHTML = `<div class="gallery-cell rounded-lg max-w-xl mx-auto"><span class="text-ink/20 text-xs font-medium">Photo coming soon</span></div>`;
         return;
       }
-      $grid.innerHTML = photos.map(p => {
+
+      let idx = Number.parseInt($grid.dataset.homeGalleryIndex || '0', 10);
+      if (!Number.isFinite(idx) || idx < 0 || idx >= photos.length) idx = 0;
+
+      $grid.innerHTML = `
+        <div class="home-gallery-single">
+          <div class="home-gallery-stage">
+            <button class="home-gallery-nav prev" data-home-gallery-prev type="button" aria-label="Previous">‹</button>
+            <div data-home-gallery-media></div>
+            <button class="home-gallery-nav next" data-home-gallery-next type="button" aria-label="Next">›</button>
+          </div>
+          <div class="home-gallery-meta">
+            <p class="italic" data-home-gallery-caption></p>
+            <span class="home-gallery-count" data-home-gallery-count></span>
+          </div>
+        </div>`;
+
+      const $media = $grid.querySelector('[data-home-gallery-media]');
+      const $cap   = $grid.querySelector('[data-home-gallery-caption]');
+      const $count = $grid.querySelector('[data-home-gallery-count]');
+      const $prev  = $grid.querySelector('[data-home-gallery-prev]');
+      const $next  = $grid.querySelector('[data-home-gallery-next]');
+
+      const renderCurrent = () => {
+        const p = photos[idx];
         const ytId = getYouTubeId(p.image_url);
-        const mediaEl = ytId
-          ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="lazy" /><div class="yt-play-overlay"></div></div>`
-          : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
-        return `<div class="gallery-cell rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">${mediaEl}</div>`;
-      }).join('');
-      $grid.querySelectorAll('[data-lburl]').forEach(c => {
-        c.addEventListener('click', () => openLightbox(c.dataset.lburl, c.dataset.lbcap));
+        $media.innerHTML = ytId
+          ? `<div class="yt-thumb-wrap" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}"><img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="eager" /><div class="yt-play-overlay"></div></div>`
+          : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="eager" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}" />`;
+        $cap.textContent = p.caption || '';
+        $count.textContent = `${idx + 1} / ${photos.length}`;
+        $grid.dataset.homeGalleryIndex = String(idx);
+        const onlyOne = photos.length <= 1;
+        $prev.disabled = onlyOne;
+        $next.disabled = onlyOne;
+      };
+
+      const shift = (delta) => {
+        idx = (idx + delta + photos.length) % photos.length;
+        renderCurrent();
+      };
+      $prev.addEventListener('click', () => shift(-1));
+      $next.addEventListener('click', () => shift(1));
+      $media.addEventListener('click', () => {
+        const p = photos[idx];
+        openLightbox(p.image_url, p.caption || '');
       });
+      renderCurrent();
     }
 
     // ════════════════════════════════════════════════
