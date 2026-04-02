@@ -476,6 +476,59 @@
     .gallery-cell:hover { border-color: rgb(var(--imperial-rgb) / 0.4); transform: scale(1.02); }
     .gallery-cell img   { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
     .gallery-cell:hover img { transform: scale(1.03); }
+    .home-gallery-single {
+      max-width: 760px;
+      margin: 0 auto;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.12);
+      background: rgb(var(--surface-rgb));
+      border-radius: 0.95rem;
+      overflow: hidden;
+      box-shadow: 0 6px 22px rgb(var(--ink-rgb) / 0.08);
+    }
+    .home-gallery-stage {
+      position: relative;
+      background: rgb(var(--ink-rgb) / 0.08);
+      min-height: 260px;
+    }
+    .home-gallery-stage img,
+    .home-gallery-stage .yt-thumb-wrap img {
+      width: 100%;
+      max-height: min(56vh, 460px);
+      object-fit: cover;
+      display: block;
+      cursor: pointer;
+    }
+    .home-gallery-stage .yt-thumb-wrap {
+      aspect-ratio: 16 / 9;
+      height: auto;
+      background: #000;
+    }
+    .home-gallery-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.35);
+      background: rgb(var(--ink-rgb) / 0.58);
+      color: #fff;
+      cursor: pointer;
+    }
+    .home-gallery-nav.prev { left: 0.6rem; }
+    .home-gallery-nav.next { right: 0.6rem; }
+    .home-gallery-nav:disabled { opacity: 0.45; cursor: not-allowed; }
+    .home-gallery-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.6rem 0.85rem 0.8rem;
+      font-size: 0.78rem;
+      color: rgb(var(--ink-rgb) / 0.6);
+    }
+    .home-gallery-count { color: rgb(var(--imperial-rgb)); font-weight: 600; white-space: nowrap; }
 
     /* ── Full gallery page — masonry card layout ── */
     #gallery-page-grid {
@@ -501,7 +554,42 @@
       width: 100%; display: block;
       transition: transform 0.4s ease;
     }
+    /* Ensure YouTube thumbnails in masonry cards reserve height correctly */
+    .gallery-card-img-wrap .yt-thumb-wrap {
+      height: auto;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+    .gallery-card-img-wrap .yt-thumb-wrap img { height: 100%; }
     .gallery-card:hover .gallery-card-img-wrap img { transform: scale(1.04); }
+    .gallery-page-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .gallery-page-controls button {
+      border: 1px solid rgb(var(--imperial-rgb) / 0.35);
+      border-radius: 999px;
+      font-size: 0.76rem;
+      padding: 0.32rem 0.68rem;
+      color: rgb(var(--ink-rgb) / 0.82);
+      background: rgb(var(--surface-rgb));
+      transition: 0.15s ease;
+    }
+    .gallery-page-controls button:hover:not(:disabled) {
+      color: rgb(var(--cream-rgb));
+      background: rgb(var(--imperial-rgb));
+      border-color: rgb(var(--imperial-rgb));
+    }
+    .gallery-page-controls button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .gallery-page-controls .gallery-page-status {
+      font-size: 0.74rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgb(var(--ink-rgb) / 0.5);
+    }
     /* Caption below image */
     .gallery-card-caption {
       padding: 0.55rem 0.875rem 0.7rem;
@@ -1851,7 +1939,7 @@
     <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
       <p class="text-center text-ink/50 text-sm mb-8">Moments captured in motion</p>
-      <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 reveal-group"></div>
+      <div id="gallery-grid" class="reveal-group"></div>
       <div class="hp-gallery-viewall">
         <button id="hp-gallery-viewall-btn">View Full Gallery →</button>
       </div>
@@ -4382,19 +4470,57 @@
       const photos = await fetchGallery();
       const $grid  = document.getElementById('gallery-grid');
       if (!photos.length) {
-        $grid.innerHTML = Array.from({length:6},(_,i)=>`<div class="gallery-cell rounded-lg"><span class="text-ink/20 text-xs font-medium">Photo ${i+1}</span></div>`).join('');
+        $grid.innerHTML = `<div class="gallery-cell rounded-lg max-w-xl mx-auto"><span class="text-ink/20 text-xs font-medium">Photo coming soon</span></div>`;
         return;
       }
-      $grid.innerHTML = photos.map(p => {
+
+      let idx = Number.parseInt($grid.dataset.homeGalleryIndex || '0', 10);
+      if (!Number.isFinite(idx) || idx < 0 || idx >= photos.length) idx = 0;
+
+      $grid.innerHTML = `
+        <div class="home-gallery-single">
+          <div class="home-gallery-stage">
+            <button class="home-gallery-nav prev" data-home-gallery-prev type="button" aria-label="Previous">‹</button>
+            <div data-home-gallery-media></div>
+            <button class="home-gallery-nav next" data-home-gallery-next type="button" aria-label="Next">›</button>
+          </div>
+          <div class="home-gallery-meta">
+            <p class="italic" data-home-gallery-caption></p>
+            <span class="home-gallery-count" data-home-gallery-count></span>
+          </div>
+        </div>`;
+
+      const $media = $grid.querySelector('[data-home-gallery-media]');
+      const $cap   = $grid.querySelector('[data-home-gallery-caption]');
+      const $count = $grid.querySelector('[data-home-gallery-count]');
+      const $prev  = $grid.querySelector('[data-home-gallery-prev]');
+      const $next  = $grid.querySelector('[data-home-gallery-next]');
+
+      const renderCurrent = () => {
+        const p = photos[idx];
         const ytId = getYouTubeId(p.image_url);
-        const mediaEl = ytId
-          ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="lazy" /><div class="yt-play-overlay"></div></div>`
-          : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
-        return `<div class="gallery-cell rounded-lg" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">${mediaEl}</div>`;
-      }).join('');
-      $grid.querySelectorAll('[data-lburl]').forEach(c => {
-        c.addEventListener('click', () => openLightbox(c.dataset.lburl, c.dataset.lbcap));
+        $media.innerHTML = ytId
+          ? `<div class="yt-thumb-wrap" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}"><img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="eager" /><div class="yt-play-overlay"></div></div>`
+          : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="eager" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}" />`;
+        $cap.textContent = p.caption || '';
+        $count.textContent = `${idx + 1} / ${photos.length}`;
+        $grid.dataset.homeGalleryIndex = String(idx);
+        const onlyOne = photos.length <= 1;
+        $prev.disabled = onlyOne;
+        $next.disabled = onlyOne;
+      };
+
+      const shift = (delta) => {
+        idx = (idx + delta + photos.length) % photos.length;
+        renderCurrent();
+      };
+      $prev.addEventListener('click', () => shift(-1));
+      $next.addEventListener('click', () => shift(1));
+      $media.addEventListener('click', () => {
+        const p = photos[idx];
+        openLightbox(p.image_url, p.caption || '');
       });
+      renderCurrent();
     }
 
     // ════════════════════════════════════════════════
@@ -5956,28 +6082,50 @@
     async function renderGalleryPage() {
       const $grid  = document.getElementById('gallery-page-grid');
       const $empty = document.getElementById('gallery-page-empty');
+      const PAGE_SIZE = 8;
+      const start = Number.parseInt($grid.dataset.pageStart || '0', 10) || 0;
+
       // Skeleton placeholders while loading
       $grid.innerHTML = Array.from({length:8},(_,i)=>`<div class="gallery-card skeleton" style="height:${[180,240,200,260,150,220,190,230][i%8]}px"></div>`).join('');
       const photos = await fetchGallery();
       if (!photos.length) { $grid.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
+      const pageStart = Math.max(0, Math.min(start, Math.max(0, photos.length - 1)));
+      const page = photos.slice(pageStart, pageStart + PAGE_SIZE);
 
       const SVG_PENCIL = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_TRASH  = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
 
-      $grid.innerHTML = photos.map(p => {
-        const ytId = getYouTubeId(p.image_url);
-        const mediaEl = ytId
-          ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="lazy" /><div class="yt-play-overlay"></div></div>`
-          : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
-        return `
-        <div class="gallery-card" data-photo-id="${esc(p.id)}" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
-          <button class="gallery-card-delete-btn" data-del-id="${esc(p.id)}" data-del-url="${esc(p.image_url)}" title="Delete photo">${SVG_TRASH}</button>
-          <button class="gallery-card-edit-btn" title="Edit caption">${SVG_PENCIL}</button>
-          <div class="gallery-card-img-wrap">${mediaEl}</div>
-          ${p.caption ? `<div class="gallery-card-caption">${esc(p.caption)}</div>` : ''}
-        </div>`;
-      }).join('');
+      $grid.innerHTML = `
+        <div class="gallery-page-controls">
+          <button type="button" data-gallery-page-prev ${pageStart <= 0 ? 'disabled' : ''}>← Newer</button>
+          <span class="gallery-page-status">${pageStart + 1}–${Math.min(pageStart + page.length, photos.length)} of ${photos.length}</span>
+          <button type="button" data-gallery-page-next ${pageStart + PAGE_SIZE >= photos.length ? 'disabled' : ''}>Older →</button>
+        </div>
+        ${page.map(p => {
+          const ytId = getYouTubeId(p.image_url);
+          const mediaEl = ytId
+            ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="lazy" /><div class="yt-play-overlay"></div></div>`
+            : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
+          return `
+          <div class="gallery-card" data-photo-id="${esc(p.id)}" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
+            <button class="gallery-card-delete-btn" data-del-id="${esc(p.id)}" data-del-url="${esc(p.image_url)}" title="Delete photo">${SVG_TRASH}</button>
+            <button class="gallery-card-edit-btn" title="Edit caption">${SVG_PENCIL}</button>
+            <div class="gallery-card-img-wrap">${mediaEl}</div>
+            ${p.caption ? `<div class="gallery-card-caption">${esc(p.caption)}</div>` : ''}
+          </div>`;
+        }).join('')}
+      `;
+
+      $grid.dataset.pageStart = String(pageStart);
+      $grid.querySelector('[data-gallery-page-prev]')?.addEventListener('click', () => {
+        $grid.dataset.pageStart = String(Math.max(0, pageStart - PAGE_SIZE));
+        renderGalleryPage();
+      });
+      $grid.querySelector('[data-gallery-page-next]')?.addEventListener('click', () => {
+        $grid.dataset.pageStart = String(pageStart + PAGE_SIZE);
+        renderGalleryPage();
+      });
 
       // Lightbox on image click
       $grid.querySelectorAll('.gallery-card').forEach(card => {
@@ -5996,10 +6144,8 @@
           if (card.querySelector('.gallery-caption-edit-row')) return; // already open
           const id      = card.dataset.photoId;
           const current = card.dataset.lbcap || '';
-          // Remove existing static caption
           const $existing = card.querySelector('.gallery-card-caption');
           if ($existing) $existing.remove();
-          // Inject inline edit row
           const row = document.createElement('div');
           row.className = 'gallery-caption-edit-row';
           row.innerHTML = `<input class="gallery-caption-input" type="text" placeholder="Add a caption…" value="${esc(current)}" />
@@ -6048,9 +6194,13 @@
           const id  = btn.dataset.delId;
           const url = btn.dataset.delUrl;
           if (await deleteGalleryItem(id, url)) {
-            btn.closest('.gallery-card').remove();
             await renderHomeGallery();
             await renderHeroPhoto();
+            await renderAdminGallery();
+            const remaining = photos.length - 1;
+            const nextStart = remaining <= 0 ? 0 : Math.min(pageStart, Math.max(0, remaining - 1));
+            $grid.dataset.pageStart = String(nextStart);
+            await renderGalleryPage();
           }
         });
       });
