@@ -497,6 +497,13 @@
       width: 100%; display: block;
       transition: transform 0.4s ease;
     }
+    /* Ensure YouTube thumbnails in masonry cards reserve height correctly */
+    .gallery-card-img-wrap .yt-thumb-wrap {
+      height: auto;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+    .gallery-card-img-wrap .yt-thumb-wrap img { height: 100%; }
     .gallery-card:hover .gallery-card-img-wrap img { transform: scale(1.04); }
     /* Caption below image */
     .gallery-card-caption {
