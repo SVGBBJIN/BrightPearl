@@ -1109,6 +1109,21 @@
     .admin-module-toggle:hover { color: rgb(var(--imperial-rgb)); border-color: rgb(var(--imperial-rgb) / 0.45); }
     .admin-module-content.view-hidden { display: none; }
     .hp-value-icon-emoji { font-size: 1.1rem; line-height: 1; }
+    .home-inline-edit-btn {
+      position: absolute; top: 0.7rem; right: 0.7rem; z-index: 3;
+      display: none; align-items: center; gap: 0.35rem;
+      padding: 0.22rem 0.5rem; border-radius: 999px;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.3);
+      background: rgb(var(--surface-rgb) / 0.85);
+      font-size: 0.68rem; color: rgb(var(--imperial-rgb)); cursor: pointer;
+    }
+    body.edit-mode .home-inline-edit-btn { display: inline-flex; }
+    .home-inline-add-btn {
+      display: none; margin-left: 0.75rem; font-size: 0.7rem; letter-spacing: 0.06em;
+      text-transform: uppercase; border: 1px solid rgb(var(--imperial-rgb) / 0.3);
+      border-radius: 999px; padding: 0.25rem 0.6rem; color: rgb(var(--imperial-rgb));
+    }
+    body.edit-mode .home-inline-add-btn { display: inline-block; }
 
     /* ── Editable sections in edit mode ─────────────── */
     body.edit-mode .editable-section {
@@ -1816,7 +1831,7 @@
     <!-- ── Core Values strip ─────────────────────────── -->
     <section class="hp-values-section">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 id="home-values-heading" class="hp-values-heading reveal">What We Believe In</h2>
+        <h2 id="home-values-heading" class="hp-values-heading reveal">What We Believe In <button id="home-values-add-btn" class="home-inline-add-btn" type="button">+ Add Card</button></h2>
         <p id="home-values-sub" class="hp-values-sub">The principles that shape every lesson, performance, and student journey.</p>
         <div id="home-values-grid" class="hp-values-grid reveal-group"></div>
       </div>
@@ -1826,7 +1841,7 @@
     <section class="hp-programs-section">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="hp-programs-header reveal">
-          <h2 id="home-programs-heading" class="hp-programs-heading">Our Programs</h2>
+          <h2 id="home-programs-heading" class="hp-programs-heading">Our Programs <button id="home-programs-admin-btn" class="home-inline-add-btn" type="button">Manage Cards</button></h2>
           <p id="home-programs-sub" class="hp-programs-sub">Award-winning instruction in dance, language, STEM, and music.</p>
         </div>
         <div id="home-programs-grid" class="hp-programs-grid reveal-group">
@@ -3357,6 +3372,24 @@
     document.querySelectorAll('.footer-tos-link').forEach(el => el.addEventListener('click', () => showView('tos')));
     document.getElementById('hero-cta-register').addEventListener('click', () => showView('register'));
     document.getElementById('home-midpage-cta')?.addEventListener('click', () => showView('register'));
+    document.getElementById('home-values-add-btn')?.addEventListener('click', async () => {
+      if (!(editMode && session?.user?.email === ADMIN_EMAIL)) return;
+      const title = prompt('New value card title:');
+      if (!title) return;
+      const body = prompt('New value card body:');
+      if (!body) return;
+      const icon = prompt('Icon emoji:', '✨') || '✨';
+      const cards = await fetchHomeValueCards();
+      cards.push({ id: crypto.randomUUID(), title: title.trim(), body: body.trim(), icon: icon.slice(0,2), display_order: cards.length });
+      await saveHomeValueCards(cards);
+      await renderHomeValueCards();
+      await renderAdminHomeValueCards();
+    });
+    document.getElementById('home-programs-admin-btn')?.addEventListener('click', () => {
+      if (!(editMode && session?.user?.email === ADMIN_EMAIL)) return;
+      showView('admin');
+      setTimeout(() => document.getElementById('add-program-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 280);
+    });
     document.getElementById('hero-cta-about').addEventListener('click',    () => document.getElementById('home-about-section').scrollIntoView({ behavior: 'smooth' }));
     document.getElementById('nav-logout').addEventListener('click', async () => {
       try { await supabase.auth.signOut(); } catch (err) { console.error(err); }
@@ -4989,13 +5022,31 @@
       const $grid = document.getElementById('home-values-grid');
       if (!$grid) return;
       const cards = await fetchHomeValueCards();
+      const canEdit = !!(editMode && currentView === 'home' && session?.user?.email === ADMIN_EMAIL);
       $grid.innerHTML = cards.map(card => `
-        <div class="hp-value-card">
+        <div class="hp-value-card relative" data-home-value-id="${esc(card.id)}">
+          ${canEdit ? `<button class="home-inline-edit-btn" data-edit-home-value="${esc(card.id)}">Edit</button>` : ''}
           <div class="hp-value-icon"><span class="hp-value-icon-emoji">${esc(card.icon || '✨')}</span></div>
           <h3 class="hp-value-title">${esc(card.title)}</h3>
           <p class="hp-value-body">${esc(card.body)}</p>
         </div>
       `).join('');
+      if (canEdit) {
+        $grid.querySelectorAll('[data-edit-home-value]').forEach(btn => btn.addEventListener('click', async () => {
+          const id = btn.dataset.editHomeValue;
+          const card = cards.find(c => c.id === id);
+          if (!card) return;
+          const title = prompt('Card title:', card.title || '');
+          if (!title) return;
+          const body = prompt('Card body:', card.body || '');
+          if (!body) return;
+          const icon = prompt('Icon emoji:', card.icon || '✨') || '✨';
+          const updated = cards.map(c => c.id === id ? { ...c, title: title.trim(), body: body.trim(), icon: icon.slice(0,2) } : c);
+          await saveHomeValueCards(updated);
+          await renderHomeValueCards();
+          await renderAdminHomeValueCards();
+        }));
+      }
       if (typeof initReveal === 'function') setTimeout(initReveal, 60);
     }
     async function renderAdminHomeValueCards() {
@@ -5061,12 +5112,14 @@
       if (!$grid) return;
       const copy = await fetchHomeCopySettings();
       const programs = await fetchPrograms();
+      const canEdit = !!(editMode && currentView === 'home' && session?.user?.email === ADMIN_EMAIL);
       if (!programs.length) {
         $grid.innerHTML = '<p class="text-ink/40 text-sm italic text-center py-4">Programs coming soon.</p>';
         return;
       }
       $grid.innerHTML = programs.map(p => `
-        <div class="hp-program-card">
+        <div class="hp-program-card relative" data-home-program-id="${esc(p.id)}">
+          ${canEdit ? `<button class="home-inline-edit-btn" data-edit-home-program="${esc(p.id)}">Edit</button>` : ''}
           <div class="hp-program-icon">${esc(p.icon || '◻︎')}</div>
           <h3 class="hp-program-name">${esc(p.name)}</h3>
           <p class="hp-program-desc">${esc(p.description || '')}</p>
@@ -5081,6 +5134,21 @@
       $grid.querySelectorAll('.hp-program-btn-enroll').forEach(btn => {
         btn.addEventListener('click', () => showView('register'));
       });
+      if (canEdit) {
+        $grid.querySelectorAll('[data-edit-home-program]').forEach(btn => btn.addEventListener('click', async () => {
+          const id = btn.dataset.editHomeProgram;
+          const p = programs.find(x => x.id === id);
+          if (!p) return;
+          const name = prompt('Program name:', p.name || '');
+          if (!name) return;
+          const description = prompt('Program description:', p.description || '') || '';
+          const icon = prompt('Program icon emoji:', p.icon || '◻︎') || '◻︎';
+          await updateProgramItem(id, { name: name.trim(), description: description.trim(), icon: icon.slice(0,2) });
+          await renderHomePrograms();
+          await renderAdminPrograms();
+          await populateProgramsDropdown();
+        }));
+      }
     }
 
     async function renderAdminContactInfo() {
