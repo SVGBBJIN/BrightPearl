@@ -889,6 +889,8 @@
     .hp-program-icon {
       width: 32px; height: 32px; border-radius: 8px;
       background: rgba(139,128,248,0.12); margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem;
     }
     .hp-program-name {
       font-family: 'Playfair Display', serif; font-size: 1.2rem;
@@ -1814,8 +1816,8 @@
     <!-- ── Core Values strip ─────────────────────────── -->
     <section class="hp-values-section">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="hp-values-heading reveal">What We Believe In</h2>
-        <p class="hp-values-sub">The principles that shape every lesson, performance, and student journey.</p>
+        <h2 id="home-values-heading" class="hp-values-heading reveal">What We Believe In</h2>
+        <p id="home-values-sub" class="hp-values-sub">The principles that shape every lesson, performance, and student journey.</p>
         <div id="home-values-grid" class="hp-values-grid reveal-group"></div>
       </div>
     </section>
@@ -1824,15 +1826,15 @@
     <section class="hp-programs-section">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="hp-programs-header reveal">
-          <h2 class="hp-programs-heading">Our Programs</h2>
-          <p class="hp-programs-sub">Award-winning instruction in dance, language, STEM, and music.</p>
+          <h2 id="home-programs-heading" class="hp-programs-heading">Our Programs</h2>
+          <p id="home-programs-sub" class="hp-programs-sub">Award-winning instruction in dance, language, STEM, and music.</p>
         </div>
         <div id="home-programs-grid" class="hp-programs-grid reveal-group">
           <!-- Populated by renderHomePrograms() -->
         </div>
         <div class="hp-programs-cta-wrap reveal">
           <button id="home-midpage-cta" class="btn-imperial px-8 py-3 text-sm font-semibold tracking-wide">Book a Free Trial Class</button>
-          <p class="hp-programs-cta-note">Questions before enrolling? We can help you pick the right starting program.</p>
+          <p id="home-programs-cta-note" class="hp-programs-cta-note">Questions before enrolling? We can help you pick the right starting program.</p>
         </div>
       </div>
     </section>
@@ -2417,6 +2419,27 @@
         <p id="admin-home-value-cards-empty" class="view-hidden text-ink/40 italic text-sm py-2">No cards yet — add one above.</p>
       </div>
 
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Home Page Text & Labels
+        </h3>
+        <form id="home-copy-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+          <div class="grid sm:grid-cols-2 gap-3">
+            <input id="home-values-heading-input" type="text" placeholder="Values section heading" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="home-values-sub-input" type="text" placeholder="Values section subtitle" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="home-programs-heading-input" type="text" placeholder="Programs section heading" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="home-programs-sub-input" type="text" placeholder="Programs section subtitle" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="home-programs-cta-input" type="text" placeholder="Programs CTA button text" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="home-programs-note-input" type="text" placeholder="Programs CTA note" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="home-programs-learn-label-input" type="text" placeholder="Program card Learn button label" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="home-programs-enroll-label-input" type="text" placeholder="Program card Enroll button label" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="home-contact-heading-input" type="text" placeholder="Contact card heading" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="home-faq-heading-input" type="text" placeholder="FAQ card heading" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          </div>
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">Save Home Text</button>
+        </form>
+      </div>
+
       <!-- ── Awards ── -->
       <div class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
@@ -2679,10 +2702,12 @@
         <!-- Create new program -->
         <form id="add-program-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-5 space-y-3">
           <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Create New Program (Subpage)</p>
-          <div class="grid sm:grid-cols-3 gap-3">
+          <div class="grid sm:grid-cols-4 gap-3">
             <input id="program-name" type="text" placeholder="Program Name *" required
               class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
             <input id="program-slug" type="text" placeholder="URL slug (e.g. dance, coding)"
+              class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+            <input id="program-icon" type="text" maxlength="2" placeholder="Card icon (e.g. 💃)"
               class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
             <input id="program-order" type="number" placeholder="Order (0, 1, 2…)" min="0"
               class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
@@ -3124,6 +3149,18 @@
       { id: 'home-card-expression', icon: '🎶', title: 'Creative Expression', body: 'Every student discovers their voice through collaborative music and movement.' },
       { id: 'home-card-community', icon: '🤝', title: 'Community & Growth', body: 'Students form lasting bonds and grow together on stage and beyond.' },
     ];
+    const DEFAULT_HOME_COPY = {
+      values_heading: 'What We Believe In',
+      values_sub: 'The principles that shape every lesson, performance, and student journey.',
+      programs_heading: 'Our Programs',
+      programs_sub: 'Award-winning instruction in dance, language, STEM, and music.',
+      programs_cta: 'Book a Free Trial Class',
+      programs_note: 'Questions before enrolling? We can help you pick the right starting program.',
+      programs_learn_label: 'Learn More',
+      programs_enroll_label: 'Enroll Now',
+      contact_heading: 'Contact & Enrollment Help',
+      faq_heading: 'Quick FAQ',
+    };
 
     // ── DOM refs ───────────────────────────────────
     const $homeView        = document.getElementById('home-view');
@@ -3223,6 +3260,7 @@
           renderAdminPaymentSettings();
           renderAdminHeroSettings();
           renderAdminHomeValueCards();
+          renderAdminHomeCopySettings();
           renderAdminAwards();
           renderAdminClasses();
           renderAdminAbout();
@@ -3298,7 +3336,11 @@
         _syncNavSession();
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Home Page'; }
         else { $toolbar.classList.remove('visible'); }
+        applyHomeCopySettings();
         renderHomeValueCards();
+        renderHomePrograms();
+        renderHomeContactInfo();
+        renderHomeFaq();
         renderTestimonials();
       }
     }
@@ -3557,9 +3599,9 @@
       if (!list.length && includeDefaults) return DEFAULT_PROGRAMS;
       return list.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
     }
-    async function addProgramItem(name, slug, description, content, display_order) {
+    async function addProgramItem(name, slug, description, content, display_order, icon = null) {
       const programs = await fetchPrograms(false);
-      programs.push({ id: crypto.randomUUID(), name, slug, description, content, display_order });
+      programs.push({ id: crypto.randomUUID(), name, slug, description, content, display_order, icon: icon || null });
       await saveSetting('programs_data', programs);
       return true;
     }
@@ -3583,6 +3625,14 @@
         display_order: i,
       })).filter(c => c.title && c.body);
       await saveSetting('home_value_cards', normalized);
+      return true;
+    }
+    async function fetchHomeCopySettings() {
+      const data = await fetchSetting('home_copy_settings');
+      return data && typeof data === 'object' ? { ...DEFAULT_HOME_COPY, ...data } : { ...DEFAULT_HOME_COPY };
+    }
+    async function saveHomeCopySettings(payload) {
+      await saveSetting('home_copy_settings', { ...DEFAULT_HOME_COPY, ...payload });
       return true;
     }
 
@@ -4566,9 +4616,10 @@
 
     async function renderHomeContactInfo() {
       const ci   = await fetchContactInfo();
+      const copy = await fetchHomeCopySettings();
       const $card = document.getElementById('contact-info-card');
       $card.innerHTML = `
-        <h3 class="font-display text-xl text-ink mb-3">Contact &amp; Enrollment Help</h3>
+        <h3 class="font-display text-xl text-ink mb-3">${esc(copy.contact_heading || 'Contact & Enrollment Help')}</h3>
         <p class="text-sm text-ink/60 mb-4">${esc(ci.helper_text)}</p>
         <div class="space-y-2 text-sm">
           ${ci.phone    ? `<p><span class="font-medium text-ink">Phone:</span> <a href="tel:${esc(ci.phone)}" class="hover:text-imperial transition-colors">${esc(ci.phone)}</a></p>` : ''}
@@ -4600,9 +4651,10 @@
 
     async function renderHomeFaq() {
       const items = await fetchFaqData();
+      const copy = await fetchHomeCopySettings();
       const $card  = document.getElementById('faq-card');
       $card.innerHTML = `
-        <h3 class="font-display text-xl text-ink mb-3">Quick FAQ</h3>
+        <h3 class="font-display text-xl text-ink mb-3">${esc(copy.faq_heading || 'Quick FAQ')}</h3>
         <div class="space-y-3 text-sm text-ink/65">
           ${items.map(item => `
             <div>
@@ -4906,6 +4958,33 @@
     // ════════════════════════════════════════════════
     //  HOMEPAGE — Customizable value cards
     // ════════════════════════════════════════════════
+    async function applyHomeCopySettings() {
+      const s = await fetchHomeCopySettings();
+      const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text || ''; };
+      setText('home-values-heading', s.values_heading);
+      setText('home-values-sub', s.values_sub);
+      setText('home-programs-heading', s.programs_heading);
+      setText('home-programs-sub', s.programs_sub);
+      setText('home-midpage-cta', s.programs_cta);
+      setText('home-programs-cta-note', s.programs_note);
+      return s;
+    }
+    async function renderAdminHomeCopySettings() {
+      const s = await fetchHomeCopySettings();
+      const pairs = [
+        ['home-values-heading-input', s.values_heading],
+        ['home-values-sub-input', s.values_sub],
+        ['home-programs-heading-input', s.programs_heading],
+        ['home-programs-sub-input', s.programs_sub],
+        ['home-programs-cta-input', s.programs_cta],
+        ['home-programs-note-input', s.programs_note],
+        ['home-programs-learn-label-input', s.programs_learn_label],
+        ['home-programs-enroll-label-input', s.programs_enroll_label],
+        ['home-contact-heading-input', s.contact_heading],
+        ['home-faq-heading-input', s.faq_heading],
+      ];
+      pairs.forEach(([id, val]) => { const el = document.getElementById(id); if (el) el.value = val || ''; });
+    }
     async function renderHomeValueCards() {
       const $grid = document.getElementById('home-values-grid');
       if (!$grid) return;
@@ -4980,6 +5059,7 @@
     async function renderHomePrograms() {
       const $grid = document.getElementById('home-programs-grid');
       if (!$grid) return;
+      const copy = await fetchHomeCopySettings();
       const programs = await fetchPrograms();
       if (!programs.length) {
         $grid.innerHTML = '<p class="text-ink/40 text-sm italic text-center py-4">Programs coming soon.</p>';
@@ -4987,12 +5067,12 @@
       }
       $grid.innerHTML = programs.map(p => `
         <div class="hp-program-card">
-          <div class="hp-program-icon"></div>
+          <div class="hp-program-icon">${esc(p.icon || '◻︎')}</div>
           <h3 class="hp-program-name">${esc(p.name)}</h3>
           <p class="hp-program-desc">${esc(p.description || '')}</p>
           <div class="hp-program-btns">
-            <button class="hp-program-btn-learn" data-slug="${esc(p.slug)}">Learn More</button>
-            <button class="hp-program-btn-enroll">Enroll Now</button>
+            <button class="hp-program-btn-learn" data-slug="${esc(p.slug)}">${esc(copy.programs_learn_label || 'Learn More')}</button>
+            <button class="hp-program-btn-enroll">${esc(copy.programs_enroll_label || 'Enroll Now')}</button>
           </div>
         </div>`).join('');
       $grid.querySelectorAll('.hp-program-btn-learn').forEach(btn => {
@@ -6451,6 +6531,13 @@
           </div>
           <!-- Expandable sections panel -->
           <div id="prog-panel-${esc(p.id)}" class="view-hidden border-t border-imperial/10 px-4 py-4 space-y-3">
+            <form class="edit-prog-meta-form grid sm:grid-cols-4 gap-2 bg-cream/45 border border-imperial/10 rounded-lg p-3" data-prog-id="${esc(p.id)}">
+              <input type="text" value="${esc(p.name)}" class="prog-meta-name px-2.5 py-1.5 rounded border border-imperial/15 bg-cream text-ink text-xs focus:outline-none focus:border-imperial" placeholder="Program name" />
+              <input type="text" value="${esc(p.slug || '')}" class="prog-meta-slug px-2.5 py-1.5 rounded border border-imperial/15 bg-cream text-ink text-xs focus:outline-none focus:border-imperial" placeholder="Slug" />
+              <input type="text" value="${esc(p.icon || '')}" maxlength="2" class="prog-meta-icon px-2.5 py-1.5 rounded border border-imperial/15 bg-cream text-ink text-xs focus:outline-none focus:border-imperial" placeholder="Icon" />
+              <button type="submit" class="btn-imperial px-3 py-1.5 rounded text-xs font-medium">Save Program Meta</button>
+              <input type="text" value="${esc(p.description || '')}" class="sm:col-span-4 prog-meta-desc px-2.5 py-1.5 rounded border border-imperial/15 bg-cream text-ink text-xs focus:outline-none focus:border-imperial" placeholder="Short description" />
+            </form>
             <div class="space-y-1.5">
               ${sections.length ? sectionsHtml : '<p class="text-xs text-ink/40 italic">No sections yet.</p>'}
             </div>
@@ -6487,8 +6574,27 @@
         if (await deleteProgramItem(b.dataset.delProgram)) {
           await renderAdminPrograms();
           await populateProgramsDropdown();
+          await renderHomePrograms();
         }
       }));
+
+      // Edit program metadata (name/slug/description/icon)
+      $list.querySelectorAll('.edit-prog-meta-form').forEach(form => {
+        form.addEventListener('submit', async e => {
+          e.preventDefault();
+          const id = form.dataset.progId;
+          const name = form.querySelector('.prog-meta-name').value.trim();
+          const slug = form.querySelector('.prog-meta-slug').value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+          const icon = form.querySelector('.prog-meta-icon').value.trim().slice(0, 2);
+          const description = form.querySelector('.prog-meta-desc').value.trim();
+          if (!name) return alert('Program name is required.');
+          await updateProgramItem(id, { name, slug, icon: icon || null, description: description || null });
+          await renderAdminPrograms();
+          await populateProgramsDropdown();
+          await renderHomePrograms();
+          if (currentView === 'programs') await renderProgramPage(currentProgram);
+        });
+      });
 
       // Delete section inside program
       $list.querySelectorAll('[data-del-prog-section]').forEach(b => b.addEventListener('click', async () => {
@@ -6977,6 +7083,26 @@
       await renderAdminHomeValueCards();
       await renderHomeValueCards();
     });
+    document.getElementById('home-copy-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      await saveHomeCopySettings({
+        values_heading: document.getElementById('home-values-heading-input').value.trim(),
+        values_sub: document.getElementById('home-values-sub-input').value.trim(),
+        programs_heading: document.getElementById('home-programs-heading-input').value.trim(),
+        programs_sub: document.getElementById('home-programs-sub-input').value.trim(),
+        programs_cta: document.getElementById('home-programs-cta-input').value.trim(),
+        programs_note: document.getElementById('home-programs-note-input').value.trim(),
+        programs_learn_label: document.getElementById('home-programs-learn-label-input').value.trim(),
+        programs_enroll_label: document.getElementById('home-programs-enroll-label-input').value.trim(),
+        contact_heading: document.getElementById('home-contact-heading-input').value.trim(),
+        faq_heading: document.getElementById('home-faq-heading-input').value.trim(),
+      });
+      await applyHomeCopySettings();
+      await renderHomePrograms();
+      await renderHomeContactInfo();
+      await renderHomeFaq();
+      alert('Home copy updated.');
+    });
 
     document.getElementById('add-award-form').addEventListener('submit', async e => {
       e.preventDefault();
@@ -7095,13 +7221,15 @@
       const rawSlug = document.getElementById('program-slug').value.trim();
       const slug    = rawSlug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
       const desc    = document.getElementById('program-description').value.trim();
+      const icon    = document.getElementById('program-icon').value.trim();
       const order   = parseInt(document.getElementById('program-order').value) || 0;
       if (!name) return;
       try {
-        await addProgramItem(name, slug, desc||null, null, order);
-        ['program-name','program-slug','program-description','program-order'].forEach(id => document.getElementById(id).value = '');
+        await addProgramItem(name, slug, desc||null, null, order, icon||null);
+        ['program-name','program-slug','program-description','program-icon','program-order'].forEach(id => document.getElementById(id).value = '');
         await renderAdminPrograms();
         await populateProgramsDropdown();
+        await renderHomePrograms();
       } catch (err) { alert('Error: ' + err.message); }
     });
 
@@ -7665,7 +7793,15 @@
         }
       } catch (e) { console.warn('Concert seed skipped:', e); }
 
-      // 5. Seed awards if empty
+      // 5. Seed home copy settings if empty
+      try {
+        const existingHomeCopy = await fetchSetting('home_copy_settings');
+        if (!existingHomeCopy || typeof existingHomeCopy !== 'object') {
+          await saveHomeCopySettings(DEFAULT_HOME_COPY);
+        }
+      } catch (e) { console.warn('Home copy seed skipped:', e); }
+
+      // 6. Seed home value cards if empty
       try {
         const existingCards = await fetchSetting('home_value_cards');
         if (!Array.isArray(existingCards) || existingCards.length === 0) {
@@ -7673,7 +7809,7 @@
         }
       } catch (e) { console.warn('Home value cards seed skipped:', e); }
 
-      // 6. Seed awards if empty
+      // 7. Seed awards if empty
       try {
         const { data: existingAwards } = await supabase.from('awards').select('id').limit(1);
         if (!existingAwards || existingAwards.length === 0) {
@@ -7698,6 +7834,7 @@
         renderHomeContactInfo().catch(console.error),
         renderHomeFaq().catch(console.error),
         renderHomeValueCards().catch(console.error),
+        applyHomeCopySettings().catch(console.error),
       ]);
     }).catch(console.error);
     renderHeroPhoto().catch(console.error);
@@ -7705,6 +7842,7 @@
     renderHomeContactInfo().catch(console.error);
     renderHomeFaq().catch(console.error);
     renderHomeValueCards().catch(console.error);
+    applyHomeCopySettings().catch(console.error);
     renderHomeAboutFeatures().catch(console.error);
     renderHomePrograms().catch(console.error);
     populateProgramsDropdown().catch(console.error);
