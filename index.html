@@ -1096,6 +1096,17 @@
     .visual-edit-toolbar .toolbar-label {
       font-size: 0.75rem; font-weight: 500; opacity: 0.7; letter-spacing: 0.05em; text-transform: uppercase;
     }
+    #edit-drag-status { min-width: 180px; text-align: right; }
+    body.is-dragging .drag-handle { color: rgb(var(--imperial-rgb)); }
+    .admin-module-collapsible { border: 1px solid rgb(var(--imperial-rgb) / 0.08); border-radius: 0.75rem; padding: 1.1rem; background: rgb(var(--surface-rgb) / 0.3); }
+    .admin-module-toggle {
+      margin-left: auto; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: rgb(var(--ink-rgb) / 0.55); border: 1px solid rgb(var(--imperial-rgb) / 0.2);
+      border-radius: 999px; padding: 0.2rem 0.6rem; transition: all .2s ease;
+    }
+    .admin-module-toggle:hover { color: rgb(var(--imperial-rgb)); border-color: rgb(var(--imperial-rgb) / 0.45); }
+    .admin-module-content.view-hidden { display: none; }
+    .hp-value-icon-emoji { font-size: 1.1rem; line-height: 1; }
 
     /* ── Editable sections in edit mode ─────────────── */
     body.edit-mode .editable-section {
@@ -1651,6 +1662,7 @@
       <span id="edit-page-label" class="text-sm font-medium opacity-90">Home</span>
     </div>
     <div class="flex items-center gap-2">
+      <span id="edit-drag-status" class="text-[11px] uppercase tracking-[0.08em] opacity-80">Drag & drop ready</span>
       <button id="edit-mode-toggle" title="Toggle visual edit mode">
         <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zM19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
         Edit Mode
@@ -1804,76 +1816,7 @@
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="hp-values-heading reveal">What We Believe In</h2>
         <p class="hp-values-sub">The principles that shape every lesson, performance, and student journey.</p>
-        <div class="hp-values-grid reveal-group">
-
-          <!-- Artistic Discipline -->
-          <div class="hp-value-card">
-            <div class="hp-value-icon">
-              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Overlapping arc figure — dance -->
-                <circle cx="34" cy="16" r="9" fill="rgb(var(--imperial-rgb) / 0.22)" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="1.5"/>
-                <path d="M18 44 Q26 28 34 36 Q42 28 50 44" stroke="rgb(var(--imperial-rgb) / 0.6)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-                <path d="M22 44 Q20 54 16 58" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/>
-                <path d="M46 44 Q48 54 52 58" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/>
-                <!-- dashed arc above head -->
-                <path d="M22 14 A14 14 0 0 1 46 14" stroke="rgba(248,113,113,0.55)" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
-              </svg>
-            </div>
-            <h3 class="hp-value-title">Artistic Discipline</h3>
-            <p class="hp-value-body">Students build precision, presence, and lasting confidence through rigorous classical training that carries far beyond the stage.</p>
-          </div>
-
-          <!-- Cultural Heritage -->
-          <div class="hp-value-card">
-            <div class="hp-value-icon">
-              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Stylized Chinese character strokes -->
-                <rect x="12" y="14" width="44" height="6" rx="3" fill="rgb(var(--imperial-rgb) / 0.18)" stroke="rgb(var(--imperial-rgb) / 0.45)" stroke-width="1.2"/>
-                <rect x="22" y="14" width="5" height="38" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.25)"/>
-                <rect x="41" y="14" width="5" height="38" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.25)"/>
-                <rect x="17" y="36" width="34" height="5" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.18)" stroke="rgb(var(--imperial-rgb) / 0.35)" stroke-width="1"/>
-                <!-- dashed circle around -->
-                <circle cx="34" cy="34" r="26" stroke="rgba(248,113,113,0.3)" stroke-width="1.2" stroke-dasharray="4 3"/>
-              </svg>
-            </div>
-            <h3 class="hp-value-title">Cultural Heritage</h3>
-            <p class="hp-value-body">We honor Chinese tradition through language, dance, and performance — keeping culture alive and meaningful across generations.</p>
-          </div>
-
-          <!-- Creative Expression -->
-          <div class="hp-value-card">
-            <div class="hp-value-icon">
-              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Waveform + note -->
-                <circle cx="22" cy="46" r="7" fill="rgb(var(--imperial-rgb) / 0.2)" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="1.5"/>
-                <line x1="22" y1="46" x2="22" y2="18" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="2" stroke-linecap="round"/>
-                <line x1="22" y1="18" x2="42" y2="22" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/>
-                <!-- soundwave -->
-                <path d="M36 34 Q40 26 44 34 Q48 42 52 34" stroke="rgba(248,113,113,0.55)" stroke-width="2" stroke-linecap="round" fill="none"/>
-                <path d="M30 38 Q34 30 38 38 Q42 46 46 38" stroke="rgb(var(--imperial-rgb) / 0.3)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-              </svg>
-            </div>
-            <h3 class="hp-value-title">Creative Expression</h3>
-            <p class="hp-value-body">Every student discovers their voice through music, movement, and collaborative performance — creativity nurtured, not constrained.</p>
-          </div>
-
-          <!-- Community & Growth -->
-          <div class="hp-value-card">
-            <div class="hp-value-icon">
-              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Two figures side by side -->
-                <circle cx="22" cy="18" r="7" fill="rgb(var(--imperial-rgb) / 0.2)" stroke="rgb(var(--imperial-rgb) / 0.45)" stroke-width="1.5"/>
-                <circle cx="46" cy="18" r="7" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1.5"/>
-                <path d="M10 52 Q10 36 22 36 Q30 36 34 42 Q38 36 46 36 Q58 36 58 52" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2.5" stroke-linecap="round" fill="rgb(var(--imperial-rgb) / 0.06)"/>
-                <!-- dashed arc connecting them above -->
-                <path d="M22 10 A12 12 0 0 1 46 10" stroke="rgba(248,113,113,0.4)" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
-              </svg>
-            </div>
-            <h3 class="hp-value-title">Community &amp; Growth</h3>
-            <p class="hp-value-body">Students form genuine, lasting bonds — supporting each other on stage and off, growing together as artists and as people.</p>
-          </div>
-
-        </div>
+        <div id="home-values-grid" class="hp-values-grid reveal-group"></div>
       </div>
     </section>
 
@@ -2457,6 +2400,21 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- ── Home Value Cards ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Home Value Cards
+        </h3>
+        <form id="home-value-card-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 mb-4 grid sm:grid-cols-4 gap-3">
+          <input id="home-value-icon-input" type="text" maxlength="2" placeholder="Icon (e.g. 🎭)" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="home-value-title-input" type="text" required placeholder="Card title" class="px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <input id="home-value-body-input" type="text" required placeholder="Card description" class="sm:col-span-2 px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <button type="submit" class="sm:col-span-4 btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Home Card</button>
+        </form>
+        <div id="admin-home-value-cards-list" class="space-y-2 mb-2"></div>
+        <p id="admin-home-value-cards-empty" class="view-hidden text-ink/40 italic text-sm py-2">No cards yet — add one above.</p>
       </div>
 
       <!-- ── Awards ── -->
@@ -3115,13 +3073,8 @@
     let selectedFacultyPhoto = null;
     let destModalFile    = null;
     let destModalResolve = null;
-    let aboutSortable          = null;
-    let homeAboutSortable      = null;
-    let gallerySortable        = null;
-    let concertSortable        = null;
-    let galleryPageSortable    = null;
-    let tosSortable            = null;
-    let programSortable        = null;
+    const sortables = {};
+    let homeValueAdminSortable = null;
 
     const DEFAULT_PROGRAMS = [
       {
@@ -3165,6 +3118,12 @@
         display_order: 4,
       },
     ];
+    const DEFAULT_HOME_VALUE_CARDS = [
+      { id: 'home-card-discipline', icon: '🎭', title: 'Artistic Discipline', body: 'Students build precision, presence, and confidence through rigorous classical training.' },
+      { id: 'home-card-heritage', icon: '🏮', title: 'Cultural Heritage', body: 'We honor Chinese tradition through language, dance, and meaningful performances.' },
+      { id: 'home-card-expression', icon: '🎶', title: 'Creative Expression', body: 'Every student discovers their voice through collaborative music and movement.' },
+      { id: 'home-card-community', icon: '🤝', title: 'Community & Growth', body: 'Students form lasting bonds and grow together on stage and beyond.' },
+    ];
 
     // ── DOM refs ───────────────────────────────────
     const $homeView        = document.getElementById('home-view');
@@ -3207,6 +3166,29 @@
       $navPortal.classList.toggle('view-hidden', !isParent);
       $navLogout.classList.toggle('view-hidden', !session);
     }
+    function initAdminModules() {
+      document.querySelectorAll('#admin-dashboard > .mb-14').forEach((module, idx) => {
+        if (module.dataset.modularized === '1') return;
+        const heading = module.querySelector('h3');
+        if (!heading) return;
+        module.classList.add('admin-module-collapsible');
+        const content = document.createElement('div');
+        content.className = 'admin-module-content';
+        Array.from(module.children).forEach((child, childIdx) => { if (childIdx > 0) content.appendChild(child); });
+        module.appendChild(content);
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'admin-module-toggle';
+        toggle.textContent = idx < 2 ? 'Collapse' : 'Expand';
+        heading.appendChild(toggle);
+        if (idx >= 2) content.classList.add('view-hidden');
+        toggle.addEventListener('click', () => {
+          content.classList.toggle('view-hidden');
+          toggle.textContent = content.classList.contains('view-hidden') ? 'Expand' : 'Collapse';
+        });
+        module.dataset.modularized = '1';
+      });
+    }
 
     function showView(view, subview) {
       currentView = view;
@@ -3240,6 +3222,7 @@
           renderAdminPendingRegistrations();
           renderAdminPaymentSettings();
           renderAdminHeroSettings();
+          renderAdminHomeValueCards();
           renderAdminAwards();
           renderAdminClasses();
           renderAdminAbout();
@@ -3253,6 +3236,7 @@
           renderAdminContactInfo();
           renderAdminFaq();
           renderAdminTestimonials();
+          initAdminModules();
         }
       } else if (view === 'about') {
         _syncNavSession();
@@ -3314,6 +3298,7 @@
         _syncNavSession();
         if (session) { $toolbar.classList.add('visible'); $pageLabel.textContent = 'Home Page'; }
         else { $toolbar.classList.remove('visible'); }
+        renderHomeValueCards();
         renderTestimonials();
       }
     }
@@ -3583,6 +3568,23 @@
       await saveSetting('programs_data', programs.filter(p => p.id !== id));
       return true;
     }
+    async function fetchHomeValueCards() {
+      const data = await fetchSetting('home_value_cards');
+      const list = Array.isArray(data) ? data : [];
+      if (!list.length) return DEFAULT_HOME_VALUE_CARDS;
+      return list.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+    }
+    async function saveHomeValueCards(cards) {
+      const normalized = cards.map((c, i) => ({
+        id: c.id || crypto.randomUUID(),
+        icon: (c.icon || '✨').slice(0, 2),
+        title: (c.title || '').trim(),
+        body: (c.body || '').trim(),
+        display_order: i,
+      })).filter(c => c.title && c.body);
+      await saveSetting('home_value_cards', normalized);
+      return true;
+    }
 
     // ── Concert sections CRUD ──
     async function fetchConcertSections() {
@@ -3846,11 +3848,7 @@
         ? '<svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Preview'
         : '<svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zM19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>Edit Mode';
 
-      if      (editMode && currentView === 'about')        initAboutSortable();
-      else if (editMode && currentView === 'concert')      initConcertSortable();
-      else if (editMode && currentView === 'gallery-page') initGalleryPageSortable();
-      else if (editMode && currentView === 'tos')          initTosSortable();
-      else if (editMode && currentView === 'programs')     initProgramSortable();
+      if (editMode) initEditModeSortables();
       else destroySortables();
 
       if (editMode && currentView === 'home') {
@@ -3863,15 +3861,45 @@
       if (currentView === 'programs') _applyProgramEditMode();
     }
 
-    function initAboutSortable() {
-      const container = document.getElementById('about-sections-container');
-      if (!container || aboutSortable) return;
-      aboutSortable = Sortable.create(container, {
-        handle: '.drag-handle',
+    function setDragStatus(message) {
+      const $status = document.getElementById('edit-drag-status');
+      if ($status) $status.textContent = message;
+    }
+    function createManagedSortable(key, element, options = {}) {
+      if (!element || sortables[key]) return;
+      sortables[key] = Sortable.create(element, {
         animation: 200,
         ghostClass: 'sortable-ghost',
         chosenClass: 'sortable-chosen',
         dragClass: 'sortable-drag',
+        delayOnTouchOnly: true,
+        delay: 80,
+        fallbackTolerance: 4,
+        ...options,
+        onStart: evt => {
+          document.body.classList.add('is-dragging');
+          setDragStatus(`Dragging ${key.replace(/-/g, ' ')}...`);
+          options.onStart?.(evt);
+        },
+        onEnd: async evt => {
+          document.body.classList.remove('is-dragging');
+          setDragStatus('Drag & drop ready');
+          await options.onEnd?.(evt);
+        },
+      });
+    }
+    function initEditModeSortables() {
+      if (currentView === 'about') initAboutSortable();
+      if (currentView === 'concert') initConcertSortable();
+      if (currentView === 'gallery-page') initGalleryPageSortable();
+      if (currentView === 'tos') initTosSortable();
+      if (currentView === 'programs') initProgramSortable();
+      if (currentView === 'home') { initGallerySortable(); initHomeAboutSortable(); }
+    }
+    function initAboutSortable() {
+      const container = document.getElementById('about-sections-container');
+      createManagedSortable('about-sections', container, {
+        handle: '.drag-handle',
         onEnd: async () => {
           const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
           await reorderAboutSections(ids);
@@ -3881,10 +3909,8 @@
 
     function initHomeAboutSortable() {
       const container = document.getElementById('home-about-sections');
-      if (!container || homeAboutSortable) return;
-      homeAboutSortable = Sortable.create(container, {
-        handle: '.drag-handle', animation: 200,
-        ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
+      createManagedSortable('home-about-sections', container, {
+        handle: '.drag-handle',
         filter: '.home-about-add-row',
         onEnd: async () => {
           const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
@@ -3895,21 +3921,13 @@
 
     function initGallerySortable() {
       const grid = document.getElementById('gallery-grid');
-      if (!grid || gallerySortable) return;
-      gallerySortable = Sortable.create(grid, {
-        animation: 200,
-        ghostClass: 'sortable-ghost',
-        chosenClass: 'sortable-chosen',
-        dragClass: 'sortable-drag',
-      });
+      createManagedSortable('home-gallery', grid);
     }
 
     function initConcertSortable() {
       const container = document.getElementById('concert-sections-container');
-      if (!container || concertSortable) return;
-      concertSortable = Sortable.create(container, {
-        handle: '.drag-handle', animation: 200,
-        ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
+      createManagedSortable('concert-sections', container, {
+        handle: '.drag-handle',
         onEnd: async () => {
           const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
           await reorderConcertSections(ids);
@@ -3918,17 +3936,12 @@
     }
     function initGalleryPageSortable() {
       const grid = document.getElementById('gallery-page-grid');
-      if (!grid || galleryPageSortable) return;
-      galleryPageSortable = Sortable.create(grid, {
-        animation: 200, ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
-      });
+      createManagedSortable('gallery-page', grid);
     }
     function initTosSortable() {
       const container = document.getElementById('tos-content-container');
-      if (!container || tosSortable) return;
-      tosSortable = Sortable.create(container, {
-        handle: '.drag-handle', animation: 200,
-        ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
+      createManagedSortable('tos-sections', container, {
+        handle: '.drag-handle',
         onEnd: async () => {
           const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
           await reorderTosSections(ids);
@@ -3937,10 +3950,8 @@
     }
     function initProgramSortable() {
       const container = document.getElementById('program-content-container');
-      if (!container || programSortable) return;
-      programSortable = Sortable.create(container, {
-        handle: '.drag-handle', animation: 200,
-        ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
+      createManagedSortable('program-sections', container, {
+        handle: '.drag-handle',
         onEnd: async () => {
           const slug = container.dataset.programId;
           if (!slug) return;
@@ -3950,13 +3961,12 @@
       });
     }
     function destroySortables() {
-      if (aboutSortable)       { aboutSortable.destroy();       aboutSortable = null; }
-      if (homeAboutSortable)   { homeAboutSortable.destroy();   homeAboutSortable = null; }
-      if (gallerySortable)     { gallerySortable.destroy();     gallerySortable = null; }
-      if (concertSortable)     { concertSortable.destroy();     concertSortable = null; }
-      if (galleryPageSortable) { galleryPageSortable.destroy(); galleryPageSortable = null; }
-      if (tosSortable)         { tosSortable.destroy();         tosSortable = null; }
-      if (programSortable)     { programSortable.destroy();     programSortable = null; }
+      Object.keys(sortables).forEach((key) => {
+        sortables[key]?.destroy();
+        delete sortables[key];
+      });
+      document.body.classList.remove('is-dragging');
+      setDragStatus('Drag & drop ready');
     }
 
     // ── Edit toolbar buttons ───────────────────────
@@ -4890,6 +4900,77 @@
         }
         $submit.disabled = false; $submit.textContent = 'Add Section';
         $ytUrl.value = ''; $ytPrev.classList.add('view-hidden'); $ytThm.src = '';
+      });
+    }
+
+    // ════════════════════════════════════════════════
+    //  HOMEPAGE — Customizable value cards
+    // ════════════════════════════════════════════════
+    async function renderHomeValueCards() {
+      const $grid = document.getElementById('home-values-grid');
+      if (!$grid) return;
+      const cards = await fetchHomeValueCards();
+      $grid.innerHTML = cards.map(card => `
+        <div class="hp-value-card">
+          <div class="hp-value-icon"><span class="hp-value-icon-emoji">${esc(card.icon || '✨')}</span></div>
+          <h3 class="hp-value-title">${esc(card.title)}</h3>
+          <p class="hp-value-body">${esc(card.body)}</p>
+        </div>
+      `).join('');
+      if (typeof initReveal === 'function') setTimeout(initReveal, 60);
+    }
+    async function renderAdminHomeValueCards() {
+      const cards = await fetchHomeValueCards();
+      const $list = document.getElementById('admin-home-value-cards-list');
+      const $empty = document.getElementById('admin-home-value-cards-empty');
+      if (!$list) return;
+      if (homeValueAdminSortable) { homeValueAdminSortable.destroy(); homeValueAdminSortable = null; }
+      if (!cards.length) { $list.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+      $list.innerHTML = cards.map(card => `
+        <div class="bg-cream/60 border border-imperial/10 rounded-lg px-3 py-2 flex items-center gap-2" data-home-card-id="${esc(card.id)}">
+          <span class="faq-drag-handle cursor-grab active:cursor-grabbing text-ink/25 hover:text-ink/50">⋮⋮</span>
+          <span class="text-lg">${esc(card.icon || '✨')}</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-ink truncate">${esc(card.title)}</p>
+            <p class="text-xs text-ink/55 truncate">${esc(card.body)}</p>
+          </div>
+          <button data-edit-home-card="${esc(card.id)}" class="text-xs text-imperial hover:underline">Edit</button>
+          <button data-del-home-card="${esc(card.id)}" class="text-xs text-red-500 hover:underline">Delete</button>
+        </div>
+      `).join('');
+      $list.querySelectorAll('[data-del-home-card]').forEach(btn => btn.addEventListener('click', async () => {
+        const next = cards.filter(c => c.id !== btn.dataset.delHomeCard);
+        await saveHomeValueCards(next);
+        await renderAdminHomeValueCards();
+        await renderHomeValueCards();
+      }));
+      $list.querySelectorAll('[data-edit-home-card]').forEach(btn => btn.addEventListener('click', async () => {
+        const card = cards.find(c => c.id === btn.dataset.editHomeCard);
+        if (!card) return;
+        const title = prompt('Card title:', card.title || '');
+        if (!title) return;
+        const body = prompt('Card description:', card.body || '');
+        if (!body) return;
+        const icon = prompt('Card icon (emoji):', card.icon || '✨') || '✨';
+        const updated = cards.map(c => c.id === card.id ? { ...c, title: title.trim(), body: body.trim(), icon: icon.slice(0, 2) } : c);
+        await saveHomeValueCards(updated);
+        await renderAdminHomeValueCards();
+        await renderHomeValueCards();
+      }));
+      homeValueAdminSortable = Sortable.create($list, {
+        handle: '.faq-drag-handle',
+        animation: 180,
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        dragClass: 'sortable-drag',
+        onEnd: async () => {
+          const ids = Array.from($list.querySelectorAll('[data-home-card-id]')).map(el => el.dataset.homeCardId);
+          const reordered = ids.map(id => cards.find(c => c.id === id)).filter(Boolean);
+          await saveHomeValueCards(reordered);
+          await renderAdminHomeValueCards();
+          await renderHomeValueCards();
+        }
       });
     }
 
@@ -6883,6 +6964,19 @@
       }
       $btn.disabled = false;
     });
+    document.getElementById('home-value-card-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const icon = (document.getElementById('home-value-icon-input').value.trim() || '✨').slice(0, 2);
+      const title = document.getElementById('home-value-title-input').value.trim();
+      const body = document.getElementById('home-value-body-input').value.trim();
+      if (!title || !body) return;
+      const cards = await fetchHomeValueCards();
+      cards.push({ id: crypto.randomUUID(), icon, title, body, display_order: cards.length });
+      await saveHomeValueCards(cards);
+      e.target.reset();
+      await renderAdminHomeValueCards();
+      await renderHomeValueCards();
+    });
 
     document.getElementById('add-award-form').addEventListener('submit', async e => {
       e.preventDefault();
@@ -7573,6 +7667,14 @@
 
       // 5. Seed awards if empty
       try {
+        const existingCards = await fetchSetting('home_value_cards');
+        if (!Array.isArray(existingCards) || existingCards.length === 0) {
+          await saveHomeValueCards(DEFAULT_HOME_VALUE_CARDS);
+        }
+      } catch (e) { console.warn('Home value cards seed skipped:', e); }
+
+      // 6. Seed awards if empty
+      try {
         const { data: existingAwards } = await supabase.from('awards').select('id').limit(1);
         if (!existingAwards || existingAwards.length === 0) {
           await supabase.from('awards').insert([
@@ -7595,12 +7697,14 @@
         renderHomeGallery().catch(console.error),
         renderHomeContactInfo().catch(console.error),
         renderHomeFaq().catch(console.error),
+        renderHomeValueCards().catch(console.error),
       ]);
     }).catch(console.error);
     renderHeroPhoto().catch(console.error);
     renderHeroContent().catch(console.error);
     renderHomeContactInfo().catch(console.error);
     renderHomeFaq().catch(console.error);
+    renderHomeValueCards().catch(console.error);
     renderHomeAboutFeatures().catch(console.error);
     renderHomePrograms().catch(console.error);
     populateProgramsDropdown().catch(console.error);
