@@ -810,6 +810,59 @@
       .hp-value-icon { background: rgb(var(--imperial-rgb) / 0.15); }
     }
 
+    /* ── Value & Program card edit mode ─────────── */
+    .hp-value-card { position: relative; }
+    body.edit-mode .hp-value-card {
+      outline: 2px dashed rgb(var(--imperial-rgb) / 0.25);
+      outline-offset: 4px; border-radius: 0.875rem; transition: outline-color 0.2s;
+    }
+    body.edit-mode .hp-value-card:hover { outline-color: rgb(var(--imperial-rgb) / 0.55); }
+    body.edit-mode .hp-value-card .val-card-toolbar { display: flex !important; }
+    body.edit-mode .hp-program-card {
+      outline: 2px dashed rgb(var(--imperial-rgb) / 0.25);
+      outline-offset: 4px; transition: outline-color 0.2s;
+    }
+    body.edit-mode .hp-program-card:hover { outline-color: rgb(var(--imperial-rgb) / 0.55); }
+    body.edit-mode .hp-program-card .prog-card-toolbar { display: flex !important; }
+    .val-card-toolbar, .prog-card-toolbar {
+      display: none !important;
+      position: absolute; top: 6px; right: 6px; z-index: 10;
+      gap: 4px; align-items: center;
+    }
+    .val-card-toolbar button, .val-card-toolbar .drag-handle,
+    .prog-card-toolbar button, .prog-card-toolbar .drag-handle {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgb(var(--cream-rgb)); color: rgb(var(--ink-rgb) / 0.6);
+      border: 1px solid rgb(var(--imperial-rgb) / 0.15);
+      box-shadow: 0 1px 4px rgb(var(--ink-rgb) / 0.1);
+      cursor: pointer; transition: background 0.15s, color 0.15s; font-size: 0;
+    }
+    .val-card-toolbar button:hover, .prog-card-toolbar button:hover {
+      background: rgb(var(--imperial-rgb)); color: rgb(var(--cream-rgb));
+    }
+    .val-card-toolbar .drag-handle, .prog-card-toolbar .drag-handle { cursor: grab; }
+    .val-card-toolbar .drag-handle:active, .prog-card-toolbar .drag-handle:active { cursor: grabbing; }
+    /* Add-card rows – hidden by default, flex in edit mode */
+    .val-add-row, .prog-add-row {
+      display: none; grid-column: 1 / -1;
+      justify-content: center; align-items: center; padding: 0.75rem;
+    }
+    body.edit-mode .val-add-row, body.edit-mode .prog-add-row { display: flex; }
+    /* Inline icon picker for value cards */
+    .val-icon-picker {
+      display: none; flex-wrap: wrap; gap: 6px; margin-top: 0.5rem;
+    }
+    body.edit-mode .val-icon-picker.open { display: flex; }
+    .val-icon-picker button {
+      width: 36px; height: 36px; border-radius: 8px; padding: 6px;
+      border: 1px solid rgb(var(--imperial-rgb) / 0.15);
+      background: rgb(var(--cream-rgb)); cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .val-icon-picker button:hover,
+    .val-icon-picker button.active { background: rgb(var(--imperial-rgb) / 0.12); border-color: rgb(var(--imperial-rgb) / 0.5); }
+
     /* ── Mid-page CTA ────────────────────────────── */
     .hp-midpage-cta-section {
       padding: 5rem 1rem;
@@ -964,6 +1017,7 @@
       font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em;
     }
     body.edit-mode .hp-feature-photo-wrap:hover .hp-photo-upload-overlay { opacity: 1; }
+    body.edit-mode .prog-icon-wrap:hover .hp-photo-upload-overlay { opacity: 1; }
 
     /* ── Add-section row (edit mode) ──────────────── */
     .home-about-add-row {
@@ -3151,6 +3205,8 @@
     let galleryPageSortable    = null;
     let tosSortable            = null;
     let programSortable        = null;
+    let homeValuesSortable     = null;
+    let homeProgramsSortable   = null;
 
     const DEFAULT_PROGRAMS = [
       {
@@ -3911,6 +3967,8 @@
       if (editMode && currentView === 'home') {
         initGallerySortable();
         initHomeAboutSortable();
+        initHomeValuesSortable();
+        initHomeProgramsSortable();
         renderTestimonials();
       }
 
@@ -3944,6 +4002,44 @@
         onEnd: async () => {
           const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
           await reorderAboutSections(ids);
+        }
+      });
+    }
+
+    function initHomeValuesSortable() {
+      const grid = document.getElementById('hp-values-grid');
+      if (!grid || homeValuesSortable) return;
+      homeValuesSortable = Sortable.create(grid, {
+        handle: '.drag-handle', animation: 200,
+        ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
+        filter: '.val-add-row',
+        onEnd: async () => {
+          const ids = Array.from(grid.querySelectorAll('[data-val-id]')).map(el => el.dataset.valId).filter(Boolean);
+          const vals = await fetchValuesData();
+          const reordered = ids.map((id, idx) => {
+            const item = vals.find(v => v.id === id);
+            return item ? { ...item, display_order: idx } : null;
+          }).filter(Boolean);
+          await saveSetting('values_data', reordered);
+        }
+      });
+    }
+
+    function initHomeProgramsSortable() {
+      const grid = document.getElementById('home-programs-grid');
+      if (!grid || homeProgramsSortable) return;
+      homeProgramsSortable = Sortable.create(grid, {
+        handle: '.drag-handle', animation: 200,
+        ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
+        filter: '.prog-add-row',
+        onEnd: async () => {
+          const ids = Array.from(grid.querySelectorAll('[data-prog-id]')).map(el => el.dataset.progId).filter(Boolean);
+          const programs = await fetchPrograms();
+          const reordered = ids.map((id, idx) => {
+            const item = programs.find(p => p.id === id);
+            return item ? { ...item, display_order: idx } : null;
+          }).filter(Boolean);
+          await saveSetting('programs_data', reordered);
         }
       });
     }
@@ -4005,13 +4101,15 @@
       });
     }
     function destroySortables() {
-      if (aboutSortable)       { aboutSortable.destroy();       aboutSortable = null; }
-      if (homeAboutSortable)   { homeAboutSortable.destroy();   homeAboutSortable = null; }
-      if (gallerySortable)     { gallerySortable.destroy();     gallerySortable = null; }
-      if (concertSortable)     { concertSortable.destroy();     concertSortable = null; }
-      if (galleryPageSortable) { galleryPageSortable.destroy(); galleryPageSortable = null; }
-      if (tosSortable)         { tosSortable.destroy();         tosSortable = null; }
-      if (programSortable)     { programSortable.destroy();     programSortable = null; }
+      if (aboutSortable)        { aboutSortable.destroy();        aboutSortable = null; }
+      if (homeAboutSortable)    { homeAboutSortable.destroy();    homeAboutSortable = null; }
+      if (gallerySortable)      { gallerySortable.destroy();      gallerySortable = null; }
+      if (concertSortable)      { concertSortable.destroy();      concertSortable = null; }
+      if (galleryPageSortable)  { galleryPageSortable.destroy();  galleryPageSortable = null; }
+      if (tosSortable)          { tosSortable.destroy();          tosSortable = null; }
+      if (programSortable)      { programSortable.destroy();      programSortable = null; }
+      if (homeValuesSortable)   { homeValuesSortable.destroy();   homeValuesSortable = null; }
+      if (homeProgramsSortable) { homeProgramsSortable.destroy(); homeProgramsSortable = null; }
     }
 
     // ── Edit toolbar buttons ───────────────────────
@@ -4676,12 +4774,140 @@
       const $grid = document.getElementById('hp-values-grid');
       if (!$grid) return;
       const values = await fetchValuesData();
+
+      const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
+      const SVG_PENCIL = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
+      const SVG_TRASH  = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
+
+      const iconPickerHtml = Object.keys(VALUE_CARD_ICONS).map(key => `
+        <button type="button" class="val-icon-opt" data-icon-key="${key}" title="${VALUE_ICON_LABELS[key] || key}">
+          ${VALUE_CARD_ICONS[key]}
+        </button>`).join('');
+
       $grid.innerHTML = values.map(v => `
-        <div class="hp-value-card">
-          <div class="hp-value-icon">${VALUE_CARD_ICONS[v.icon_key] || VALUE_CARD_ICONS['star']}</div>
-          <h3 class="hp-value-title">${esc(v.title)}</h3>
-          <p class="hp-value-body">${esc(v.body)}</p>
-        </div>`).join('');
+        <div class="hp-value-card" data-val-id="${esc(v.id)}">
+          <div class="val-card-toolbar">
+            <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
+            <button class="val-edit-btn" data-val-id="${esc(v.id)}" title="Edit card">${SVG_PENCIL}</button>
+            <button class="val-del-btn" data-val-id="${esc(v.id)}" title="Delete card">${SVG_TRASH}</button>
+          </div>
+          <div class="hp-value-icon val-icon-wrap" data-val-id="${esc(v.id)}" title="${editMode ? 'Click to change icon' : ''}" style="${editMode ? 'cursor:pointer' : ''}">${VALUE_CARD_ICONS[v.icon_key] || VALUE_CARD_ICONS['star']}</div>
+          <div class="val-icon-picker" data-val-id="${esc(v.id)}">${iconPickerHtml}</div>
+          <h3 class="hp-value-title val-title-el" data-val-id="${esc(v.id)}">${esc(v.title)}</h3>
+          <p class="hp-value-body val-body-el" data-val-id="${esc(v.id)}">${esc(v.body)}</p>
+        </div>`).join('') + `
+      <div class="val-add-row">
+        <button id="hp-val-add-btn" class="btn-outline px-5 py-2 text-sm font-medium">+ Add Value Card</button>
+      </div>`;
+
+      // Icon click → toggle icon picker
+      $grid.querySelectorAll('.val-icon-wrap').forEach(wrap => {
+        wrap.addEventListener('click', () => {
+          if (!editMode) return;
+          const picker = $grid.querySelector(`.val-icon-picker[data-val-id="${wrap.dataset.valId}"]`);
+          if (picker) picker.classList.toggle('open');
+        });
+      });
+
+      // Icon picker option selected
+      $grid.querySelectorAll('.val-icon-opt').forEach(btn => {
+        btn.addEventListener('click', async e => {
+          e.stopPropagation();
+          const picker = btn.closest('.val-icon-picker');
+          const valId  = picker.dataset.valId;
+          const newKey = btn.dataset.iconKey;
+          picker.classList.remove('open');
+          const vals = await fetchValuesData();
+          const idx  = vals.findIndex(v => v.id === valId);
+          if (idx === -1) return;
+          vals[idx].icon_key = newKey;
+          await saveSetting('values_data', vals);
+          await renderHomeValuesCards();
+          if (homeValuesSortable) { homeValuesSortable.destroy(); homeValuesSortable = null; }
+          if (editMode) initHomeValuesSortable();
+        });
+      });
+
+      // Pencil → contentEditable inline edit
+      $grid.querySelectorAll('.val-edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const valId  = btn.dataset.valId;
+          const card   = $grid.querySelector(`.hp-value-card[data-val-id="${valId}"]`);
+          const $title = card.querySelector('.val-title-el');
+          const $body  = card.querySelector('.val-body-el');
+          if ($title.contentEditable === 'true') {
+            // Save & close
+            [$title, $body].forEach(el => { el.contentEditable = 'false'; el.style.outline = ''; });
+            card.querySelector('.val-inline-save')?.remove();
+            fetchValuesData().then(async vals => {
+              const idx = vals.findIndex(v => v.id === valId);
+              if (idx !== -1) {
+                vals[idx].title = $title.textContent.trim();
+                vals[idx].body  = $body.textContent.trim();
+                await saveSetting('values_data', vals);
+              }
+            });
+          } else {
+            // Open edit
+            [$title, $body].forEach(el => {
+              el.contentEditable = 'true';
+              el.style.outline = '1px dashed rgb(var(--imperial-rgb) / 0.4)';
+              el.style.borderRadius = '3px';
+              el.style.minHeight = '1em';
+            });
+            $title.focus();
+            if (!card.querySelector('.val-inline-save')) {
+              const sb = document.createElement('button');
+              sb.className = 'val-inline-save inline-save-btn';
+              sb.textContent = 'Save Changes';
+              sb.addEventListener('click', async () => {
+                [$title, $body].forEach(el => { el.contentEditable = 'false'; el.style.outline = ''; el.style.borderRadius = ''; });
+                sb.remove();
+                const vals = await fetchValuesData();
+                const idx  = vals.findIndex(v => v.id === valId);
+                if (idx !== -1) {
+                  vals[idx].title = $title.textContent.trim();
+                  vals[idx].body  = $body.textContent.trim();
+                  await saveSetting('values_data', vals);
+                }
+                await renderHomeValuesCards();
+                if (homeValuesSortable) { homeValuesSortable.destroy(); homeValuesSortable = null; }
+                if (editMode) initHomeValuesSortable();
+              });
+              card.appendChild(sb);
+            }
+          }
+        });
+      });
+
+      // Delete buttons
+      $grid.querySelectorAll('.val-del-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this value card?')) return;
+          const vals = await fetchValuesData();
+          await saveSetting('values_data', vals.filter(v => v.id !== btn.dataset.valId));
+          if (homeValuesSortable) { homeValuesSortable.destroy(); homeValuesSortable = null; }
+          await renderHomeValuesCards();
+          if (editMode) initHomeValuesSortable();
+        });
+      });
+
+      // Add card button
+      document.getElementById('hp-val-add-btn')?.addEventListener('click', async () => {
+        const title = prompt('Card title:');
+        if (!title?.trim()) return;
+        const body = prompt('Card description:');
+        if (body === null) return;
+        const vals = await fetchValuesData();
+        vals.push({ id: crypto.randomUUID(), title: title.trim(), body: body.trim(), icon_key: 'star', display_order: vals.length });
+        await saveSetting('values_data', vals);
+        if (homeValuesSortable) { homeValuesSortable.destroy(); homeValuesSortable = null; }
+        await renderHomeValuesCards();
+        if (editMode) initHomeValuesSortable();
+      });
+
+      // Init sortable if already in edit mode
+      if (editMode) initHomeValuesSortable();
     }
 
     // ════════════════════════════════════════════════
@@ -4986,22 +5212,113 @@
         $grid.innerHTML = '<p class="text-ink/40 text-sm italic text-center py-4">Programs coming soon.</p>';
         return;
       }
+
+      const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
+      const SVG_PENCIL = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
+      const SVG_CAM    = `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>`;
+
       $grid.innerHTML = programs.map(p => `
-        <div class="hp-program-card">
-          <div class="hp-program-icon">${p.icon_url ? `<img src="${esc(p.icon_url)}" alt="" aria-hidden="true" class="w-full h-full object-cover rounded-md" />` : ''}</div>
-          <h3 class="hp-program-name">${esc(p.name)}</h3>
-          <p class="hp-program-desc">${esc(p.description || '')}</p>
+        <div class="hp-program-card" data-prog-id="${esc(p.id)}">
+          <div class="prog-card-toolbar">
+            <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
+            <button class="prog-edit-btn" data-prog-id="${esc(p.id)}" title="Edit card">${SVG_PENCIL}</button>
+          </div>
+          <div class="hp-program-icon prog-icon-wrap" data-prog-id="${esc(p.id)}" style="position:relative;overflow:hidden;">
+            ${p.icon_url ? `<img src="${esc(p.icon_url)}" alt="" aria-hidden="true" class="w-full h-full object-cover rounded-md" />` : ''}
+            <div class="hp-photo-upload-overlay prog-icon-upload-overlay" style="border-radius:10px;">${SVG_CAM}<span>Change icon</span></div>
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="prog-icon-file" data-prog-id="${esc(p.id)}" style="display:none" />
+          </div>
+          <h3 class="hp-program-name prog-name-el" data-prog-id="${esc(p.id)}">${esc(p.name)}</h3>
+          <p class="hp-program-desc prog-desc-el" data-prog-id="${esc(p.id)}">${esc(p.description || '')}</p>
           <div class="hp-program-btns">
             <button class="hp-program-btn-learn" data-slug="${esc(p.slug)}">Learn More</button>
             <button class="hp-program-btn-enroll">Enroll Now</button>
           </div>
-        </div>`).join('');
+        </div>`).join('') + `
+      <div class="prog-add-row">
+        <p class="text-ink/50 text-sm italic">Add new programs from the <button class="text-imperial hover:underline font-medium" id="hp-prog-goto-admin">Admin Dashboard</button></p>
+      </div>`;
+
       $grid.querySelectorAll('.hp-program-btn-learn').forEach(btn => {
         btn.addEventListener('click', () => showView('programs', btn.dataset.slug));
       });
       $grid.querySelectorAll('.hp-program-btn-enroll').forEach(btn => {
         btn.addEventListener('click', () => showView('register'));
       });
+
+      // Icon upload overlay click
+      $grid.querySelectorAll('.prog-icon-upload-overlay').forEach(overlay => {
+        overlay.addEventListener('click', e => {
+          if (!editMode) return;
+          e.stopPropagation();
+          overlay.closest('.prog-icon-wrap')?.querySelector('.prog-icon-file')?.click();
+        });
+      });
+
+      // Icon file input change
+      $grid.querySelectorAll('.prog-icon-file').forEach(input => {
+        input.addEventListener('change', async () => {
+          const file   = input.files[0]; if (!file) return;
+          const progId = input.dataset.progId;
+          const overlay = input.closest('.prog-icon-wrap')?.querySelector('.prog-icon-upload-overlay');
+          if (overlay) overlay.innerHTML = '<span>Uploading…</span>';
+          try {
+            const url = await uploadImageToStorage(file);
+            await updateProgramItem(progId, { icon_url: url });
+            if (homeProgramsSortable) { homeProgramsSortable.destroy(); homeProgramsSortable = null; }
+            await renderHomePrograms();
+            if (editMode) initHomeProgramsSortable();
+          } catch (err) {
+            if (overlay) overlay.innerHTML = SVG_CAM + '<span>Change icon</span>';
+            alert('Upload failed: ' + err.message);
+          }
+          input.value = '';
+        });
+      });
+
+      // Pencil → contentEditable inline edit
+      $grid.querySelectorAll('.prog-edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const progId = btn.dataset.progId;
+          const card   = $grid.querySelector(`.hp-program-card[data-prog-id="${progId}"]`);
+          const $name  = card.querySelector('.prog-name-el');
+          const $desc  = card.querySelector('.prog-desc-el');
+          if ($name.contentEditable === 'true') {
+            [$name, $desc].forEach(el => { el.contentEditable = 'false'; el.style.outline = ''; });
+            card.querySelector('.prog-inline-save')?.remove();
+            updateProgramItem(progId, { name: $name.textContent.trim(), description: $desc.textContent.trim() });
+          } else {
+            [$name, $desc].forEach(el => {
+              el.contentEditable = 'true';
+              el.style.outline = '1px dashed rgb(var(--imperial-rgb) / 0.4)';
+              el.style.borderRadius = '3px';
+            });
+            $name.focus();
+            if (!card.querySelector('.prog-inline-save')) {
+              const sb = document.createElement('button');
+              sb.className = 'prog-inline-save inline-save-btn';
+              sb.textContent = 'Save Changes';
+              sb.addEventListener('click', async () => {
+                [$name, $desc].forEach(el => { el.contentEditable = 'false'; el.style.outline = ''; el.style.borderRadius = ''; });
+                sb.remove();
+                await updateProgramItem(progId, { name: $name.textContent.trim(), description: $desc.textContent.trim() });
+                if (homeProgramsSortable) { homeProgramsSortable.destroy(); homeProgramsSortable = null; }
+                await renderHomePrograms();
+                if (editMode) initHomeProgramsSortable();
+              });
+              // Insert before buttons row
+              const btnsRow = card.querySelector('.hp-program-btns');
+              btnsRow ? card.insertBefore(sb, btnsRow) : card.appendChild(sb);
+            }
+          }
+        });
+      });
+
+      // Admin link from add-row
+      document.getElementById('hp-prog-goto-admin')?.addEventListener('click', () => showView('admin'));
+
+      // Init sortable if already in edit mode
+      if (editMode) initHomeProgramsSortable();
     }
 
     async function renderAdminContactInfo() {
