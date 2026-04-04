@@ -185,9 +185,8 @@
       background: linear-gradient(90deg, rgb(139, 128, 248), rgb(210, 60, 180));
     }
     .hero-banner::after {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-      height: 65%;
-      background: linear-gradient(to top, rgba(10,8,28,0.75) 0%, transparent 100%);
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,8,28,0.72) 0%, rgba(10,8,28,0.38) 45%, rgba(10,8,28,0.15) 75%, transparent 100%);
       pointer-events: none; z-index: 1;
     }
     .hero-overlay {
@@ -222,17 +221,17 @@
     }
 
     /* ── Awards Strip ────────────────────────────── */
+    @keyframes awards-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
     .awards-strip-section {
-      display: flex; align-items: center; gap: 2rem;
-      padding: 1rem 2rem;
+      display: flex; align-items: center; gap: 1.5rem;
+      padding: 0.85rem 1.5rem;
       border-top: 1px solid rgb(var(--imperial-rgb) / 0.12);
       border-bottom: 1px solid rgb(var(--imperial-rgb) / 0.12);
       background: rgb(var(--surface-rgb));
-      overflow-x: auto; -webkit-overflow-scrolling: touch;
-    }
-    @media (min-width: 1024px) {
-      .awards-strip-section { overflow-x: visible; }
-      #awards-list { flex-wrap: wrap; row-gap: 0.6rem; }
+      overflow: hidden;
     }
     .awards-strip-label {
       flex-shrink: 0;
@@ -241,7 +240,18 @@
       color: rgb(var(--ink-rgb) / 0.45);
       white-space: nowrap;
     }
-    #awards-list { display: flex; align-items: center; gap: 0; flex-wrap: nowrap; }
+    .awards-strip-track {
+      flex: 1; overflow: hidden; min-width: 0;
+    }
+    #awards-list {
+      display: flex; align-items: center; gap: 0; flex-wrap: nowrap;
+      width: max-content;
+      animation: awards-scroll 28s linear infinite;
+    }
+    #awards-list:hover { animation-play-state: paused; }
+    @media (prefers-reduced-motion: reduce) {
+      #awards-list { animation: none; }
+    }
     .award-chip {
       display: flex; align-items: center; gap: 0.5rem;
       padding: 0 1.5rem; white-space: nowrap;
@@ -697,7 +707,7 @@
       position: absolute;
       inset: 2.5rem 2rem 2rem;
       border-radius: 1.25rem;
-      background: linear-gradient(180deg, rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.32));
+      background: linear-gradient(180deg, rgb(0 0 0 / 0.25), rgb(0 0 0 / 0.50));
       z-index: 2;
       pointer-events: none;
     }
@@ -800,8 +810,23 @@
       .hp-value-icon { background: rgb(var(--imperial-rgb) / 0.15); }
     }
 
+    /* ── Mid-page CTA ────────────────────────────── */
+    .hp-midpage-cta-section {
+      padding: 5rem 1rem;
+      background: rgb(var(--imperial-rgb) / 0.05);
+      border-top: 1px solid rgb(var(--imperial-rgb) / 0.1);
+      border-bottom: 1px solid rgb(var(--imperial-rgb) / 0.1);
+    }
+    @media (prefers-color-scheme: dark) {
+      .hp-midpage-cta-section { background: rgb(var(--imperial-rgb) / 0.08); }
+    }
+
     /* ── Programs & Classes ──────────────────────── */
-    .hp-programs-section { padding: 5rem 1rem; }
+    .hp-programs-section {
+      padding: 5rem 1rem;
+      border-top: 1px solid rgb(var(--imperial-rgb) / 0.08);
+      border-bottom: 1px solid rgb(var(--imperial-rgb) / 0.08);
+    }
     .hp-programs-header { margin-bottom: 3rem; }
     .hp-programs-heading {
       font-family: 'Playfair Display', serif;
@@ -846,7 +871,11 @@
         border-top:    1px solid rgb(var(--imperial-rgb) / 0.12);
         border-bottom: 1px solid rgb(var(--imperial-rgb) / 0.12);
       }
-      .hp-programs-section { background: rgb(32 29 60); }
+      .hp-programs-section {
+        background: rgb(22 20 44);
+        border-top-color: rgb(var(--imperial-rgb) / 0.14);
+        border-bottom-color: rgb(var(--imperial-rgb) / 0.14);
+      }
       .hp-program-card {
         background: rgb(36 33 68);
         border-color: rgb(var(--imperial-rgb) / 0.2);
@@ -1608,7 +1637,7 @@
         <button id="nav-faculty"      class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Faculty</button>
         <button id="nav-gallery-page" class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Gallery</button>
         <button id="nav-register"     class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Registration</button>
-        <button id="nav-login"         class="btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap" title="Student/Parent Portal">Log In (Portal)</button>
+        <button id="nav-login"         class="btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap" title="Parent &amp; Student Portal" aria-label="Parent &amp; Student Portal">Student Portal</button>
         <button id="nav-portal"        class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">My Portal</button>
         <button id="nav-admin"         class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Admin</button>
         <button id="nav-logout"        class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Logout</button>
@@ -1636,7 +1665,7 @@
       <button id="mob-nav-gallery"      class="mobile-nav-item">Gallery</button>
       <button id="mob-nav-register"     class="mobile-nav-item mobile-nav-highlight">Registration</button>
       <div class="mobile-drawer-divider"></div>
-      <button id="mob-nav-login"         class="mobile-nav-item" title="Student/Parent Portal">Log In (Portal)</button>
+      <button id="mob-nav-login"         class="mobile-nav-item" title="Parent &amp; Student Portal" aria-label="Parent &amp; Student Portal">Student Portal</button>
       <button id="mob-nav-portal"        class="mobile-nav-item view-hidden">My Portal</button>
       <button id="mob-nav-admin"         class="mobile-nav-item view-hidden">Admin</button>
       <button id="mob-nav-logout"        class="mobile-nav-item view-hidden">Logout</button>
@@ -1788,7 +1817,9 @@
     <!-- Awards — slim horizontal strip -->
     <section id="section-awards" class="awards-strip-section">
       <span class="awards-strip-label">Awards &amp; Honors</span>
-      <div id="awards-list"></div>
+      <div class="awards-strip-track">
+        <div id="awards-list"></div>
+      </div>
       <p id="awards-empty" class="view-hidden text-ink/40 italic text-xs py-1">No awards to display yet.</p>
     </section>
 
@@ -1802,9 +1833,10 @@
     <!-- ── Core Values strip ─────────────────────────── -->
     <section class="hp-values-section">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Our Values</p>
         <h2 class="hp-values-heading reveal">What We Believe In</h2>
         <p class="hp-values-sub">The principles that shape every lesson, performance, and student journey.</p>
-        <div class="hp-values-grid reveal-group">
+        <div class="hp-values-grid reveal-group is-visible">
 
           <!-- Artistic Discipline -->
           <div class="hp-value-card">
@@ -1881,6 +1913,7 @@
     <section class="hp-programs-section">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="hp-programs-header reveal">
+          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Programs &amp; Classes</p>
           <h2 class="hp-programs-heading">Our Programs</h2>
           <p class="hp-programs-sub">Award-winning instruction in dance, language, STEM, and music.</p>
         </div>
@@ -1894,8 +1927,18 @@
       </div>
     </section>
 
+    <!-- ── Mid-page CTA ─────────────────────────────────── -->
+    <section class="hp-midpage-cta-section">
+      <div class="max-w-2xl mx-auto px-4 text-center reveal">
+        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Get Started</p>
+        <h2 class="font-display text-3xl sm:text-4xl text-ink mb-4">Ready to Join?</h2>
+        <p class="text-ink/60 text-sm sm:text-base mb-8 leading-relaxed">Enrollment is open. Reserve your spot in our award-winning programs today — we'd love to welcome your family.</p>
+        <button class="btn-imperial px-10 py-4 text-base font-semibold tracking-wide" onclick="document.getElementById('nav-register').click()">Enroll Now &rarr;</button>
+      </div>
+    </section>
+
     <!-- ── Achievements & Social Proof ─────────────────────── -->
-    <section class="hp-achievements-section py-16 sm:py-20">
+    <section class="hp-achievements-section py-16 sm:py-20 border-t border-imperial/10">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12 reveal">
           <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Student Success</p>
@@ -1936,7 +1979,8 @@
     </section>
 
     <!-- Photo Gallery -->
-    <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <section id="section-gallery" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-imperial/10">
+      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3 text-center">Our Students</p>
       <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Gallery</h2>
       <p class="text-center text-ink/50 text-sm mb-8">Moments captured in motion</p>
       <div id="gallery-grid" class="reveal-group"></div>
@@ -1946,7 +1990,7 @@
     </section>
 
     <!-- ── Parent Testimonials ── -->
-    <section id="testimonials-section" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <section id="testimonials-section" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-imperial/10">
       <div class="text-center mb-12">
         <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">From Our Families</p>
         <h2 class="font-display text-3xl sm:text-4xl text-ink mb-4">What Parents Say</h2>
@@ -1964,22 +2008,49 @@
     </section>
 
     <!-- Footer -->
-    <footer class="border-t border-imperial/10 mt-8">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="grid sm:grid-cols-2 gap-6 pb-6">
-          <div class="space-y-1 text-sm text-ink/60">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+    <footer class="border-t border-imperial/10 mt-8 bg-surface/80 backdrop-blur">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Top row: Logo + school name -->
+        <div class="flex items-center gap-3 mb-8">
+          <img src="assets/Logo.png" alt="Bright Pearl Academy logo" class="w-10 h-10 rounded-full object-cover ring-1 ring-imperial/20 shadow-sm" />
+          <span class="font-display text-lg text-ink tracking-wide">Bright Pearl <span class="text-imperial">Academy</span></span>
+        </div>
+
+        <!-- Main footer grid: Contact | Navigate | Follow Us -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pb-8">
+
+          <!-- Contact -->
+          <div class="space-y-1.5 text-sm text-ink/60">
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Contact</p>
             <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
             <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
             <p>61 Chestnut St, West Newton, MA 02465</p>
             <p>WeChat: J3477495715</p>
           </div>
-          <div class="sm:text-right">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
-              <div class="flex sm:justify-end gap-4 footer-social-links"></div>
+
+          <!-- Navigation -->
+          <div>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Navigate</p>
+            <nav class="flex flex-col gap-2 text-sm text-ink/60" aria-label="Footer navigation">
+              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-home').click()">Home</button>
+              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-programs').click()">Programs</button>
+              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-faculty').click()">Faculty</button>
+              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-gallery-page').click()">Gallery</button>
+              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-register').click()">Registration</button>
+            </nav>
           </div>
+
+          <!-- Follow Us -->
+          <div>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+            <div class="flex gap-4 footer-social-links"></div>
+          </div>
+
         </div>
-        <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
+
+        <!-- Copyright -->
+        <div class="border-t border-imperial/10 pt-5 text-center text-ink/40 text-xs">
           &copy; 2026 Bright Pearl Academy. All rights reserved.
           &nbsp;&middot;&nbsp;
           <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
@@ -4212,7 +4283,7 @@
       } else {
         $ub.textContent = `Upload ${valid.length} Images to Gallery`;
         $bulkStrip.innerHTML = valid.map((f, i) =>
-          `<div class="relative group"><img src="${URL.createObjectURL(f)}" class="w-14 h-14 object-cover rounded border border-imperial/20" title="${esc(f.name)}" />` +
+          `<div class="relative group"><img src="${URL.createObjectURL(f)}" class="w-14 h-14 object-cover rounded border border-imperial/20" alt="${esc(f.name)}" title="${esc(f.name)}" />` +
           `<button type="button" data-bulk-remove="${i}" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs leading-none flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">&times;</button></div>`
         ).join('');
         $bulkStrip.classList.remove('view-hidden');
@@ -4280,7 +4351,7 @@
         const id = getYouTubeId($ytIn.value.trim());
         if (id) {
           $ytErr.classList.add('hidden');
-          $ytPrv.innerHTML = `<img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" style="width:100%;height:100%;object-fit:cover;" /><div class="yt-play-overlay"></div>`;
+          $ytPrv.innerHTML = `<img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="" aria-hidden="true" style="width:100%;height:100%;object-fit:cover;" /><div class="yt-play-overlay"></div>`;
           $ytPrv.classList.remove('hidden');
         } else {
           $ytPrv.classList.add('hidden');
@@ -4459,11 +4530,13 @@
       const $empty = document.getElementById('awards-empty');
       if (!awards.length) { $list.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
-      $list.innerHTML = awards.map(a => `
+      // Duplicate chips for seamless infinite marquee (animation translateX(-50%) loops back to start)
+      const chipHtml = awards.map(a => `
         <div class="award-chip">
           ${a.year ? `<span class="award-chip-year">${esc(a.year)}</span>` : ''}
           <span class="award-chip-title">${esc(a.title)}</span>
         </div>`).join('');
+      $list.innerHTML = chipHtml + chipHtml;
     }
 
     async function renderHomeGallery() {
@@ -4533,6 +4606,7 @@
       wechat:      'J3477495715',
       facebook:    'https://www.facebook.com/BrightPearlAcademy',
       youtube:     'https://www.youtube.com/@BrightPearlAcademy',
+      instagram:   '',
       helper_text: 'Have questions before registering? We usually reply within 1 business day.',
     };
     const DEFAULT_FAQ = [
@@ -4581,9 +4655,11 @@
     function renderFooterSocial(ci) {
       const FB_SVG  = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`;
       const YT_SVG  = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`;
+      const IG_SVG  = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`;
       const html = [
-        ci.facebook ? `<a href="${esc(ci.facebook)}" target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="Facebook">${FB_SVG}</a>` : '',
-        ci.youtube  ? `<a href="${esc(ci.youtube)}"  target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="YouTube">${YT_SVG}</a>`  : '',
+        ci.instagram ? `<a href="${esc(ci.instagram)}" target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="Instagram">${IG_SVG}</a>` : '',
+        ci.facebook  ? `<a href="${esc(ci.facebook)}"  target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="Facebook">${FB_SVG}</a>`  : '',
+        ci.youtube   ? `<a href="${esc(ci.youtube)}"   target="_blank" rel="noopener noreferrer" class="text-ink/50 hover:text-imperial transition-colors" aria-label="YouTube">${YT_SVG}</a>`   : '',
       ].join('');
       document.querySelectorAll('.footer-social-links').forEach(el => { el.innerHTML = html; });
     }
@@ -6318,7 +6394,7 @@
       $empty.classList.add('view-hidden');
       $tbody.innerHTML = members.map(m => `<tr>
         <td class="px-4 py-3">${m.photo_url
-          ? `<img src="${esc(m.photo_url)}" class="w-10 h-10 object-cover rounded-full border border-imperial/10"/>`
+          ? `<img src="${esc(m.photo_url)}" class="w-10 h-10 object-cover rounded-full border border-imperial/10" alt="${esc(m.name || 'Faculty member')}" />`
           : '<span class="text-ink/25 text-xs">—</span>'}</td>
         <td class="px-4 py-3 font-medium">${esc(m.name)}</td>
         <td class="px-4 py-3 text-ink/60">${esc(m.title||'')}</td>
@@ -6664,7 +6740,7 @@
       if (!sections.length) { $tbody.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
       $tbody.innerHTML = sections.map(s => `<tr>
-        <td class="px-4 py-3">${s.image_url ? `<img src="${esc(s.image_url)}" class="w-12 h-8 object-cover rounded border border-imperial/10"/>` : '<span class="text-ink/25 text-xs">—</span>'}</td>
+        <td class="px-4 py-3">${s.image_url ? `<img src="${esc(s.image_url)}" alt="" class="w-12 h-8 object-cover rounded border border-imperial/10"/>` : '<span class="text-ink/25 text-xs">—</span>'}</td>
         <td class="px-4 py-3 font-medium">${esc(s.title)}</td>
         <td class="px-4 py-3 text-ink/60 text-xs">${esc(s.body.substring(0,90))}${s.body.length>90?'…':''}</td>
         <td class="px-4 py-3 text-ink/50 text-center">${s.display_order}</td>
@@ -6717,7 +6793,7 @@
         const ytId = getYouTubeId(p.image_url);
         const thumb = ytId
           ? `<img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" class="yt-admin-thumb" alt="video"/>`
-          : `<img src="${esc(p.image_url)}" class="w-14 h-10 object-cover rounded border border-imperial/10"/>`;
+          : `<img src="${esc(p.image_url)}" alt="" class="w-14 h-10 object-cover rounded border border-imperial/10"/>`;
         return `<tr>
         <td class="px-4 py-3">${thumb}</td>
         <td class="px-4 py-3 text-ink/60">${esc(p.caption||'—')}</td>
