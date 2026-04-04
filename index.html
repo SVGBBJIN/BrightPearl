@@ -1836,75 +1836,8 @@
         <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Our Values</p>
         <h2 class="hp-values-heading reveal">What We Believe In</h2>
         <p class="hp-values-sub">The principles that shape every lesson, performance, and student journey.</p>
-        <div class="hp-values-grid reveal-group is-visible">
-
-          <!-- Artistic Discipline -->
-          <div class="hp-value-card">
-            <div class="hp-value-icon">
-              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Overlapping arc figure — dance -->
-                <circle cx="34" cy="16" r="9" fill="rgb(var(--imperial-rgb) / 0.22)" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="1.5"/>
-                <path d="M18 44 Q26 28 34 36 Q42 28 50 44" stroke="rgb(var(--imperial-rgb) / 0.6)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-                <path d="M22 44 Q20 54 16 58" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/>
-                <path d="M46 44 Q48 54 52 58" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/>
-                <!-- dashed arc above head -->
-                <path d="M22 14 A14 14 0 0 1 46 14" stroke="rgba(248,113,113,0.55)" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
-              </svg>
-            </div>
-            <h3 class="hp-value-title">Artistic Discipline</h3>
-            <p class="hp-value-body">Students build precision, presence, and lasting confidence through rigorous classical training that carries far beyond the stage.</p>
-          </div>
-
-          <!-- Cultural Heritage -->
-          <div class="hp-value-card">
-            <div class="hp-value-icon">
-              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Stylized Chinese character strokes -->
-                <rect x="12" y="14" width="44" height="6" rx="3" fill="rgb(var(--imperial-rgb) / 0.18)" stroke="rgb(var(--imperial-rgb) / 0.45)" stroke-width="1.2"/>
-                <rect x="22" y="14" width="5" height="38" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.25)"/>
-                <rect x="41" y="14" width="5" height="38" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.25)"/>
-                <rect x="17" y="36" width="34" height="5" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.18)" stroke="rgb(var(--imperial-rgb) / 0.35)" stroke-width="1"/>
-                <!-- dashed circle around -->
-                <circle cx="34" cy="34" r="26" stroke="rgba(248,113,113,0.3)" stroke-width="1.2" stroke-dasharray="4 3"/>
-              </svg>
-            </div>
-            <h3 class="hp-value-title">Cultural Heritage</h3>
-            <p class="hp-value-body">We honor Chinese tradition through language, dance, and performance — keeping culture alive and meaningful across generations.</p>
-          </div>
-
-          <!-- Creative Expression -->
-          <div class="hp-value-card">
-            <div class="hp-value-icon">
-              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Waveform + note -->
-                <circle cx="22" cy="46" r="7" fill="rgb(var(--imperial-rgb) / 0.2)" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="1.5"/>
-                <line x1="22" y1="46" x2="22" y2="18" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="2" stroke-linecap="round"/>
-                <line x1="22" y1="18" x2="42" y2="22" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/>
-                <!-- soundwave -->
-                <path d="M36 34 Q40 26 44 34 Q48 42 52 34" stroke="rgba(248,113,113,0.55)" stroke-width="2" stroke-linecap="round" fill="none"/>
-                <path d="M30 38 Q34 30 38 38 Q42 46 46 38" stroke="rgb(var(--imperial-rgb) / 0.3)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-              </svg>
-            </div>
-            <h3 class="hp-value-title">Creative Expression</h3>
-            <p class="hp-value-body">Every student discovers their voice through music, movement, and collaborative performance — creativity nurtured, not constrained.</p>
-          </div>
-
-          <!-- Community & Growth -->
-          <div class="hp-value-card">
-            <div class="hp-value-icon">
-              <svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Two figures side by side -->
-                <circle cx="22" cy="18" r="7" fill="rgb(var(--imperial-rgb) / 0.2)" stroke="rgb(var(--imperial-rgb) / 0.45)" stroke-width="1.5"/>
-                <circle cx="46" cy="18" r="7" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1.5"/>
-                <path d="M10 52 Q10 36 22 36 Q30 36 34 42 Q38 36 46 36 Q58 36 58 52" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2.5" stroke-linecap="round" fill="rgb(var(--imperial-rgb) / 0.06)"/>
-                <!-- dashed arc connecting them above -->
-                <path d="M22 10 A12 12 0 0 1 46 10" stroke="rgba(248,113,113,0.4)" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
-              </svg>
-            </div>
-            <h3 class="hp-value-title">Community &amp; Growth</h3>
-            <p class="hp-value-body">Students form genuine, lasting bonds — supporting each other on stage and off, growing together as artists and as people.</p>
-          </div>
-
+        <div id="hp-values-grid" class="hp-values-grid reveal-group is-visible">
+          <!-- Populated by renderHomeValuesCards() -->
         </div>
       </div>
     </section>
@@ -2944,6 +2877,31 @@
         </form>
       </div>
 
+      <!-- ── Values / Beliefs Cards ── -->
+      <div class="mb-14">
+        <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
+          <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Values &amp; Beliefs Cards
+        </h3>
+        <p class="text-ink/50 text-xs mb-4">These are the "What We Believe In" cards shown on the homepage. Add, edit, reorder, or delete them below.</p>
+        <div class="mb-4">
+          <div id="admin-values-list" class="space-y-2 mb-3"></div>
+          <p id="admin-values-empty" class="view-hidden text-ink/40 italic text-sm py-2">No value cards yet — add one below.</p>
+        </div>
+        <form id="add-value-form" class="bg-surface/60 backdrop-blur rounded-lg border border-imperial/10 p-5 space-y-3">
+          <p class="text-xs font-medium text-ink/60 uppercase tracking-wide">Add New Value Card</p>
+          <div>
+            <p class="text-xs font-medium text-ink/70 mb-2">Choose an Icon</p>
+            <div id="val-icon-picker-add" class="flex flex-wrap gap-2"></div>
+            <input type="hidden" id="val-icon-key" value="dance" />
+          </div>
+          <input id="val-title" type="text" placeholder="Card title *" required aria-label="Value card title"
+            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" />
+          <textarea id="val-body" rows="3" placeholder="Card body text *" required aria-label="Value card body"
+            class="w-full px-3 py-2 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y"></textarea>
+          <button type="submit" class="btn-imperial px-4 py-2 rounded text-sm font-medium">+ Add Value Card</button>
+        </form>
+      </div>
+
       <!-- ── Parent Testimonials ── -->
       <div class="mb-14">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
@@ -3202,6 +3160,7 @@
         description: 'Classical Chinese Dance, Contemporary Dance, and Ballet for dedicated young performers.',
         content: 'Our Elite Dance Program trains students across three company levels — Company A, Company B, and Company D — each designed to match a student\'s experience and commitment level. Students develop strong technical foundations in Classical Chinese Dance, Contemporary Dance, and Ballet, while building cultural expression, artistry, and performance confidence. Training includes guided rehearsals, stage presence coaching, and curated performance opportunities throughout the year.',
         display_order: 0,
+        icon_url: null,
       },
       {
         id: 'default-adult-dance-program',
@@ -3210,6 +3169,7 @@
         description: 'Dance classes designed specifically for adult students of all levels.',
         content: 'It\'s never too late to dance. Our Adult Dance Classes welcome beginners and returning students alike, offering a supportive environment to explore Classical Chinese Dance, Contemporary movement, and more. Classes focus on technique, expression, and the joy of movement — no prior experience required.',
         display_order: 1,
+        icon_url: null,
       },
       {
         id: 'default-mandarin-program',
@@ -3218,6 +3178,7 @@
         description: 'Language, culture, and creativity in a joyful afterschool format.',
         content: 'This program blends practical Mandarin, cultural literacy, and project-based activities to help students build confidence speaking, reading, and expressing themselves in Chinese. Lessons are structured by age and level to support steady growth.',
         display_order: 2,
+        icon_url: null,
       },
       {
         id: 'default-stem-program',
@@ -3226,6 +3187,7 @@
         description: 'Hands-on computing, logic, and maker projects for young innovators.',
         content: 'Students explore coding fundamentals, computational thinking, and problem-solving through interactive challenges and guided projects. The curriculum emphasizes creativity, collaboration, and practical digital skills.',
         display_order: 3,
+        icon_url: null,
       },
       {
         id: 'default-vacation-camp',
@@ -3234,7 +3196,28 @@
         description: 'Seasonal camps during Winter, Spring, and Summer school breaks.',
         content: 'Bright Pearl Academy\'s School Vacation Camp offers enriching full-day and half-day programs during school break weeks — Winter, Spring, and Summer. Campers enjoy a blend of dance, Mandarin, STEM projects, arts and crafts, and cultural activities in a fun, structured environment. A great option for families looking for engaging, educational programming during school vacations.',
         display_order: 4,
+        icon_url: null,
       },
+    ];
+
+    // ── Values card icon library ───────────────────
+    const VALUE_CARD_ICONS = {
+      dance: `<svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="16" r="9" fill="rgb(var(--imperial-rgb) / 0.22)" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="1.5"/><path d="M18 44 Q26 28 34 36 Q42 28 50 44" stroke="rgb(var(--imperial-rgb) / 0.6)" stroke-width="2.5" stroke-linecap="round" fill="none"/><path d="M22 44 Q20 54 16 58" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/><path d="M46 44 Q48 54 52 58" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/><path d="M22 14 A14 14 0 0 1 46 14" stroke="rgba(248,113,113,0.55)" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/></svg>`,
+      heritage: `<svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="14" width="44" height="6" rx="3" fill="rgb(var(--imperial-rgb) / 0.18)" stroke="rgb(var(--imperial-rgb) / 0.45)" stroke-width="1.2"/><rect x="22" y="14" width="5" height="38" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.25)"/><rect x="41" y="14" width="5" height="38" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.25)"/><rect x="17" y="36" width="34" height="5" rx="2.5" fill="rgb(var(--imperial-rgb) / 0.18)" stroke="rgb(var(--imperial-rgb) / 0.35)" stroke-width="1"/><circle cx="34" cy="34" r="26" stroke="rgba(248,113,113,0.3)" stroke-width="1.2" stroke-dasharray="4 3"/></svg>`,
+      music: `<svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="46" r="7" fill="rgb(var(--imperial-rgb) / 0.2)" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="1.5"/><line x1="22" y1="46" x2="22" y2="18" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="2" stroke-linecap="round"/><line x1="22" y1="18" x2="42" y2="22" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round"/><path d="M36 34 Q40 26 44 34 Q48 42 52 34" stroke="rgba(248,113,113,0.55)" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M30 38 Q34 30 38 38 Q42 46 46 38" stroke="rgb(var(--imperial-rgb) / 0.3)" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>`,
+      community: `<svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="18" r="7" fill="rgb(var(--imperial-rgb) / 0.2)" stroke="rgb(var(--imperial-rgb) / 0.45)" stroke-width="1.5"/><circle cx="46" cy="18" r="7" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1.5"/><path d="M10 52 Q10 36 22 36 Q30 36 34 42 Q38 36 46 36 Q58 36 58 52" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2.5" stroke-linecap="round" fill="rgb(var(--imperial-rgb) / 0.06)"/><path d="M22 10 A12 12 0 0 1 46 10" stroke="rgba(248,113,113,0.4)" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/></svg>`,
+      star: `<svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M34 10 L39 26 H56 L42 36 L47 52 L34 42 L21 52 L26 36 L12 26 H29 Z" fill="rgb(var(--imperial-rgb) / 0.18)" stroke="rgb(var(--imperial-rgb) / 0.55)" stroke-width="1.5" stroke-linejoin="round"/><path d="M34 18 L37 28 H48 L39 34 L42 44 L34 38 L26 44 L29 34 L20 28 H31 Z" fill="rgba(248,113,113,0.18)"/></svg>`,
+      book: `<svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="12" width="30" height="44" rx="3" fill="rgb(var(--imperial-rgb) / 0.15)" stroke="rgb(var(--imperial-rgb) / 0.45)" stroke-width="1.5"/><rect x="26" y="12" width="30" height="44" rx="3" fill="rgb(var(--imperial-rgb) / 0.1)" stroke="rgb(var(--imperial-rgb) / 0.35)" stroke-width="1.5"/><line x1="20" y1="24" x2="34" y2="24" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="1.5" stroke-linecap="round"/><line x1="20" y1="32" x2="34" y2="32" stroke="rgb(var(--imperial-rgb) / 0.3)" stroke-width="1.5" stroke-linecap="round"/><line x1="20" y1="40" x2="28" y2="40" stroke="rgba(248,113,113,0.45)" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+      heart: `<svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M34 54 C34 54 10 40 10 24 C10 16 16 10 24 10 C28.4 10 32.4 12.4 34 16 C35.6 12.4 39.6 10 44 10 C52 10 58 16 58 24 C58 40 34 54 34 54Z" fill="rgb(var(--imperial-rgb) / 0.2)" stroke="rgb(var(--imperial-rgb) / 0.55)" stroke-width="1.5" stroke-linejoin="round"/><path d="M26 26 C26 22 28.7 20 32 22" stroke="rgba(248,113,113,0.6)" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
+      award: `<svg viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="28" r="16" fill="rgb(var(--imperial-rgb) / 0.15)" stroke="rgb(var(--imperial-rgb) / 0.5)" stroke-width="1.5"/><path d="M26 42 L22 58 L34 52 L46 58 L42 42" stroke="rgb(var(--imperial-rgb) / 0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgb(var(--imperial-rgb) / 0.08)"/><path d="M34 18 L36 24 H42 L37 28 L39 34 L34 30 L29 34 L31 28 L26 24 H32 Z" fill="rgba(248,113,113,0.35)" stroke="rgba(248,113,113,0.5)" stroke-width="0.8" stroke-linejoin="round"/></svg>`,
+    };
+    const VALUE_ICON_LABELS = { dance: 'Dance', heritage: 'Heritage', music: 'Music', community: 'Community', star: 'Excellence', book: 'Learning', heart: 'Passion', award: 'Awards' };
+
+    const DEFAULT_VALUES = [
+      { id: 'val-1', title: 'Artistic Discipline', body: 'Students build precision, presence, and lasting confidence through rigorous classical training that carries far beyond the stage.', icon_key: 'dance',     display_order: 0 },
+      { id: 'val-2', title: 'Cultural Heritage',   body: 'We honor Chinese tradition through language, dance, and performance — keeping culture alive and meaningful across generations.',    icon_key: 'heritage',  display_order: 1 },
+      { id: 'val-3', title: 'Creative Expression', body: 'Every student discovers their voice through music, movement, and collaborative performance — creativity nurtured, not constrained.',  icon_key: 'music',     display_order: 2 },
+      { id: 'val-4', title: 'Community & Growth',  body: 'Students form genuine, lasting bonds — supporting each other on stage and off, growing together as artists and as people.',          icon_key: 'community', display_order: 3 },
     ];
 
     // ── DOM refs ───────────────────────────────────
@@ -3323,6 +3306,7 @@
           renderAdminTosSettings();
           renderAdminContactInfo();
           renderAdminFaq();
+          renderAdminValues();
           renderAdminTestimonials();
         }
       } else if (view === 'about') {
@@ -4679,6 +4663,28 @@
     }
 
     // ════════════════════════════════════════════════
+    //  VALUES / BELIEFS CARDS — Data + Render
+    // ════════════════════════════════════════════════
+    async function fetchValuesData() {
+      const data = await fetchSetting('values_data');
+      return Array.isArray(data) && data.length
+        ? data.sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
+        : DEFAULT_VALUES;
+    }
+
+    async function renderHomeValuesCards() {
+      const $grid = document.getElementById('hp-values-grid');
+      if (!$grid) return;
+      const values = await fetchValuesData();
+      $grid.innerHTML = values.map(v => `
+        <div class="hp-value-card">
+          <div class="hp-value-icon">${VALUE_CARD_ICONS[v.icon_key] || VALUE_CARD_ICONS['star']}</div>
+          <h3 class="hp-value-title">${esc(v.title)}</h3>
+          <p class="hp-value-body">${esc(v.body)}</p>
+        </div>`).join('');
+    }
+
+    // ════════════════════════════════════════════════
     //  HOMEPAGE — About feature blocks (Our Story)
     // ════════════════════════════════════════════════
     async function renderHomeAboutFeatures() {
@@ -4982,7 +4988,7 @@
       }
       $grid.innerHTML = programs.map(p => `
         <div class="hp-program-card">
-          <div class="hp-program-icon"></div>
+          <div class="hp-program-icon">${p.icon_url ? `<img src="${esc(p.icon_url)}" alt="" aria-hidden="true" class="w-full h-full object-cover rounded-md" />` : ''}</div>
           <h3 class="hp-program-name">${esc(p.name)}</h3>
           <p class="hp-program-desc">${esc(p.description || '')}</p>
           <div class="hp-program-btns">
@@ -5106,6 +5112,165 @@
           await saveSetting('faq_data', reordered);
           if (currentView === 'home') await renderHomeFaq();
         }
+      });
+    }
+
+    // ── Icon picker HTML helper ────────────────────
+    function buildIconPickerHtml(containerId, selectedKey) {
+      return Object.entries(VALUE_ICON_LABELS).map(([key, label]) => `
+        <button type="button" data-icon-pick="${esc(key)}" data-picker-for="${esc(containerId)}"
+          class="val-icon-pick-btn flex flex-col items-center gap-1 p-2 rounded-lg border text-xs transition-all cursor-pointer
+            ${key === selectedKey
+              ? 'border-imperial bg-imperial/12 ring-2 ring-imperial/40'
+              : 'border-imperial/15 bg-cream hover:border-imperial/40'}"
+          title="${esc(label)}">
+          <span class="w-7 h-7 flex items-center justify-center">${VALUE_CARD_ICONS[key]}</span>
+          <span class="text-ink/70 leading-tight">${esc(label)}</span>
+        </button>`).join('');
+    }
+
+    let valuesAdminSortable = null;
+    async function renderAdminValues() {
+      const raw    = await fetchSetting('values_data');
+      const items  = Array.isArray(raw) && raw.length
+        ? raw.sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
+        : DEFAULT_VALUES;
+      const $list  = document.getElementById('admin-values-list');
+      const $empty = document.getElementById('admin-values-empty');
+      if (!$list) return;
+      if (valuesAdminSortable) { valuesAdminSortable.destroy(); valuesAdminSortable = null; }
+
+      // Populate the Add form icon picker
+      const $addPicker = document.getElementById('val-icon-picker-add');
+      if ($addPicker && !$addPicker.children.length) {
+        const curKey = document.getElementById('val-icon-key')?.value || 'dance';
+        $addPicker.innerHTML = buildIconPickerHtml('add', curKey);
+        wireIconPickerButtons($addPicker, 'val-icon-key');
+      }
+
+      if (!items.length) { $list.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
+      $empty.classList.add('view-hidden');
+
+      $list.innerHTML = items.map(item => `
+        <div class="val-admin-item bg-cream/60 border border-imperial/10 rounded-lg overflow-hidden" data-val-id="${esc(item.id)}">
+          <div class="flex items-start gap-2 px-3 py-2.5">
+            <div class="val-drag-handle flex-shrink-0 mt-1 cursor-grab active:cursor-grabbing text-ink/25 hover:text-ink/50 transition-colors" title="Drag to reorder">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>
+            </div>
+            <span class="w-6 h-6 flex-shrink-0 flex items-center justify-center mt-0.5">${VALUE_CARD_ICONS[item.icon_key] || VALUE_CARD_ICONS['star']}</span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-ink">${esc(item.title)}</p>
+              <p class="text-xs text-ink/50">${esc((item.body || '').substring(0, 80))}${(item.body || '').length > 80 ? '…' : ''}</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button data-edit-val="${esc(item.id)}" class="text-ink/50 hover:text-imperial text-xs font-medium transition-colors">Edit</button>
+              <button data-del-val="${esc(item.id)}"  class="text-imperial hover:underline text-xs font-medium">Delete</button>
+            </div>
+          </div>
+          <div class="val-inline-edit view-hidden px-3 pb-3 space-y-2 border-t border-imperial/8 pt-2.5">
+            <div>
+              <p class="text-xs font-medium text-ink/70 mb-1.5">Icon</p>
+              <div class="val-edit-icon-picker flex flex-wrap gap-1.5" data-val-edit-id="${esc(item.id)}">
+                ${buildIconPickerHtml('edit-' + esc(item.id), item.icon_key || 'star')}
+              </div>
+              <input type="hidden" class="val-edit-icon-key" value="${esc(item.icon_key || 'star')}" />
+            </div>
+            <input data-val-edit-title="${esc(item.id)}" type="text" value="${esc(item.title)}"
+              class="w-full px-2.5 py-1.5 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial" placeholder="Title" />
+            <textarea data-val-edit-body="${esc(item.id)}" rows="3"
+              class="w-full px-2.5 py-1.5 rounded border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial resize-y" placeholder="Body text">${esc(item.body || '')}</textarea>
+            <div class="flex gap-2">
+              <button data-save-val="${esc(item.id)}" class="btn-imperial px-3 py-1 rounded text-xs font-medium">Save</button>
+              <button data-cancel-val="${esc(item.id)}" class="px-3 py-1 rounded text-xs font-medium border border-imperial/20 text-ink/60 hover:border-imperial/40">Cancel</button>
+            </div>
+          </div>
+        </div>`).join('');
+
+      // Wire edit/cancel/save/delete
+      $list.querySelectorAll('[data-edit-val]').forEach(b => {
+        b.addEventListener('click', () => {
+          const card = $list.querySelector(`[data-val-id="${b.dataset.editVal}"]`);
+          card.querySelector('.val-inline-edit').classList.remove('view-hidden');
+          const picker = card.querySelector('.val-edit-icon-picker');
+          const hiddenKey = card.querySelector('.val-edit-icon-key');
+          if (picker) wireIconPickerButtons(picker, null, hiddenKey);
+          b.textContent = '▲';
+        });
+      });
+      $list.querySelectorAll('[data-cancel-val]').forEach(b => {
+        b.addEventListener('click', () => {
+          const card    = $list.querySelector(`[data-val-id="${b.dataset.cancelVal}"]`);
+          const editBtn = card.querySelector('[data-edit-val]');
+          card.querySelector('.val-inline-edit').classList.add('view-hidden');
+          if (editBtn) editBtn.textContent = 'Edit';
+        });
+      });
+      $list.querySelectorAll('[data-save-val]').forEach(b => {
+        b.addEventListener('click', async () => {
+          const id    = b.dataset.saveVal;
+          const card  = $list.querySelector(`[data-val-id="${id}"]`);
+          const title = card.querySelector(`[data-val-edit-title]`).value.trim();
+          const body  = card.querySelector(`[data-val-edit-body]`).value.trim();
+          const icon_key = card.querySelector('.val-edit-icon-key')?.value || 'star';
+          if (!title || !body) return;
+          b.textContent = 'Saving…'; b.disabled = true;
+          const current = await fetchSetting('values_data');
+          const list    = Array.isArray(current) && current.length ? current : DEFAULT_VALUES;
+          const updated = list.map(v => v.id === id ? { ...v, title, body, icon_key } : v);
+          await saveSetting('values_data', updated);
+          b.textContent = 'Save'; b.disabled = false;
+          await renderAdminValues();
+          if (currentView === 'home') await renderHomeValuesCards();
+        });
+      });
+      $list.querySelectorAll('[data-del-val]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Delete this value card?')) return;
+        const current = await fetchSetting('values_data');
+        const list    = Array.isArray(current) && current.length ? current : DEFAULT_VALUES;
+        const updated = list.filter(v => v.id !== b.dataset.delVal);
+        await saveSetting('values_data', updated);
+        await renderAdminValues();
+        if (currentView === 'home') await renderHomeValuesCards();
+      }));
+
+      // Drag-and-drop reordering
+      valuesAdminSortable = Sortable.create($list, {
+        handle: '.val-drag-handle',
+        animation: 180,
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        dragClass: 'sortable-drag',
+        onEnd: async () => {
+          const ids     = Array.from($list.querySelectorAll('[data-val-id]')).map(el => el.dataset.valId);
+          const current = await fetchSetting('values_data');
+          const list    = Array.isArray(current) && current.length ? current : DEFAULT_VALUES;
+          const reordered = ids.map((id, idx) => {
+            const item = list.find(v => v.id === id);
+            return item ? { ...item, display_order: idx } : null;
+          }).filter(Boolean);
+          await saveSetting('values_data', reordered);
+          if (currentView === 'home') await renderHomeValuesCards();
+        }
+      });
+    }
+
+    // Wire icon picker buttons — sets value in a hidden input or named input by id
+    function wireIconPickerButtons(pickerEl, hiddenInputId, hiddenInputEl) {
+      pickerEl.querySelectorAll('[data-icon-pick]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          pickerEl.querySelectorAll('[data-icon-pick]').forEach(b => {
+            b.classList.remove('border-imperial', 'bg-imperial/12', 'ring-2', 'ring-imperial/40');
+            b.classList.add('border-imperial/15', 'bg-cream');
+          });
+          btn.classList.add('border-imperial', 'bg-imperial/12', 'ring-2', 'ring-imperial/40');
+          btn.classList.remove('border-imperial/15', 'bg-cream');
+          const key = btn.dataset.iconPick;
+          if (hiddenInputId) {
+            const inp = document.getElementById(hiddenInputId);
+            if (inp) inp.value = key;
+          }
+          if (hiddenInputEl) hiddenInputEl.value = key;
+        });
       });
     }
 
@@ -6446,6 +6611,17 @@
           </div>
           <!-- Expandable sections panel -->
           <div id="prog-panel-${esc(p.id)}" class="view-hidden border-t border-imperial/10 px-4 py-4 space-y-3">
+            <!-- Program card icon -->
+            <div class="flex items-center gap-3 pb-3 border-b border-imperial/10">
+              <div class="hp-program-icon shrink-0">${p.icon_url ? `<img src="${esc(p.icon_url)}" alt="" class="w-full h-full object-cover rounded-md" />` : ''}</div>
+              <div class="flex-1">
+                <p class="text-xs font-medium text-ink/70 mb-1">Card Icon <span class="text-ink/40 font-normal">(shown in the programs grid)</span></p>
+                <input type="file" accept="image/jpeg,image/png,image/webp,image/gif"
+                  class="prog-icon-input block text-xs text-ink/70 file:mr-2 file:px-2 file:py-1 file:rounded file:border-0 file:bg-imperial/10 file:text-imperial file:cursor-pointer"
+                  data-prog-id="${esc(p.id)}" />
+                ${p.icon_url ? `<button data-remove-prog-icon="${esc(p.id)}" class="mt-1 text-imperial/70 hover:text-imperial text-xs hover:underline">Remove icon</button>` : ''}
+              </div>
+            </div>
             <div class="space-y-1.5">
               ${sections.length ? sectionsHtml : '<p class="text-xs text-ink/40 italic">No sections yet.</p>'}
             </div>
@@ -6515,6 +6691,36 @@
           const toggleBtn = $list.querySelector(`.toggle-program-panel[data-prog-id="${form.dataset.progId}"]`);
           if (toggleBtn) toggleBtn.textContent = 'Close ▴';
           if (currentView === 'programs') await renderProgramPage(currentProgram);
+        });
+      });
+
+      // Program card icon upload
+      $list.querySelectorAll('.prog-icon-input').forEach(input => {
+        input.addEventListener('change', async () => {
+          const file = input.files?.[0];
+          if (!file) return;
+          const progId = input.dataset.progId;
+          const btn = input.closest('.bg-surface\\/60')?.querySelector('.toggle-program-panel');
+          try {
+            const iconUrl = await uploadImageToStorage(file);
+            await updateProgramItem(progId, { icon_url: iconUrl });
+            await renderAdminPrograms();
+            if (btn) { const panel = document.getElementById('prog-panel-' + progId); if (panel) panel.classList.remove('view-hidden'); }
+            if (currentView === 'home') await renderHomePrograms();
+          } catch (err) { alert('Upload failed: ' + err.message); }
+        });
+      });
+
+      // Remove program card icon
+      $list.querySelectorAll('[data-remove-prog-icon]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Remove this program\'s icon?')) return;
+          const progId = btn.dataset.removeProgIcon;
+          await updateProgramItem(progId, { icon_url: null });
+          await renderAdminPrograms();
+          const panel = document.getElementById('prog-panel-' + progId);
+          if (panel) panel.classList.remove('view-hidden');
+          if (currentView === 'home') await renderHomePrograms();
         });
       });
 
@@ -7174,6 +7380,24 @@
       } catch (err) { alert('Error: ' + err.message); }
     });
 
+    document.getElementById('add-value-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const icon_key = document.getElementById('val-icon-key').value || 'star';
+      const title    = document.getElementById('val-title').value.trim();
+      const body     = document.getElementById('val-body').value.trim();
+      if (!title || !body) return;
+      try {
+        const current = await fetchSetting('values_data');
+        const items   = Array.isArray(current) && current.length ? current : [...DEFAULT_VALUES];
+        items.push({ id: crypto.randomUUID(), title, body, icon_key, display_order: items.length });
+        await saveSetting('values_data', items);
+        document.getElementById('val-title').value = '';
+        document.getElementById('val-body').value  = '';
+        await renderAdminValues();
+        if (currentView === 'home') await renderHomeValuesCards();
+      } catch (err) { alert('Error: ' + err.message); }
+    });
+
     document.getElementById('add-testimonial-form').addEventListener('submit', async e => {
       e.preventDefault();
       const name  = document.getElementById('tm-name').value.trim();
@@ -7678,6 +7902,7 @@
     renderHomeContactInfo().catch(console.error);
     renderHomeFaq().catch(console.error);
     renderHomeAboutFeatures().catch(console.error);
+    renderHomeValuesCards().catch(console.error);
     renderHomePrograms().catch(console.error);
     populateProgramsDropdown().catch(console.error);
     renderTestimonials().catch(console.error);
