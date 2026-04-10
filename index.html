@@ -3681,7 +3681,19 @@
       const data = await fetchSetting('programs_data');
       const list = Array.isArray(data) ? data : [];
       if (!list.length && includeDefaults) return DEFAULT_PROGRAMS;
-      return list.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+      // Guard against accidental duplicate entries (most often duplicate slugs)
+      // so navigation dropdowns/pages don't appear repeated.
+      const seen = new Set();
+      const deduped = [];
+      for (const [idx, program] of list.entries()) {
+        const slugKey = String(program?.slug || '').trim().toLowerCase();
+        const idKey = String(program?.id || '').trim().toLowerCase();
+        const key = slugKey || idKey || `fallback-${idx}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        deduped.push(program);
+      }
+      return deduped.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
     }
     async function addProgramItem(name, slug, description, content, display_order) {
       const programs = await fetchPrograms(false);
