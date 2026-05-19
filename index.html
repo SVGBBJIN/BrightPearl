@@ -25,11 +25,14 @@
       theme: {
         extend: {
           colors: {
-            // All three read from CSS vars so they auto-flip in dark mode
             cream:    'rgb(var(--cream-rgb) / <alpha-value>)',
             ink:      'rgb(var(--ink-rgb) / <alpha-value>)',
             imperial: 'rgb(var(--imperial-rgb) / <alpha-value>)',
             surface:  'rgb(var(--surface-rgb) / <alpha-value>)',
+            rose:     'rgb(var(--rose-rgb) / <alpha-value>)',
+            teal:     'rgb(var(--teal-rgb) / <alpha-value>)',
+            gold:     'rgb(var(--gold-rgb) / <alpha-value>)',
+            plum:     'rgb(var(--plum-rgb) / <alpha-value>)',
           },
           fontFamily: {
             display: ['Playfair Display', 'serif'],
@@ -41,21 +44,106 @@
   </script>
 
   <style>
-    /* ── CSS Color Variables ──────────────────────── */
+    /* ── Bright Pearl Design System — CSS Variables ── */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+
     :root {
-      --cream-rgb:           249 247 242;   /* #f9f7f2  warm cream        */
-      --ink-rgb:             26  26  26;    /* #1a1a1a  near-black         */
-      --imperial-rgb:        196 69  105;   /* #C44569  warm rose          */
-      --imperial-hover-rgb:  176 49  85;    /* #B03155  darker rose hover  */
-      --surface-rgb:         255 255 255;   /* white cards                 */
+      /* Anchor palette */
+      --cream-rgb:           249 247 242;   /* #f9f7f2 — warm cream page bg   */
+      --ink-rgb:             26  26  26;    /* #1a1a1a — near-black body text  */
+      --surface-rgb:         255 255 255;   /* #ffffff — card / dialog surface */
+      --imperial-rgb:        91  79  207;   /* #5b4fcf — imperial blue-purple  */
+      --imperial-hover-rgb:  74  61  191;   /* #4a3dbf — imperial hover        */
+
+      /* Supporting hues (design system extension) */
+      --rose-rgb:            210 60  180;   /* #d23cb4 — magenta-rose          */
+      --rose-soft-rgb:       255 214 214;   /* #ffd6d6 — pale petal            */
+      --teal-rgb:            72  220 210;   /* #48dcd2 — pearl teal            */
+      --gold-rgb:            232 188 120;   /* #e8bc78 — soft gold             */
+      --plum-rgb:            58  40  100;   /* #3a2864 — deep plum             */
+
+      /* Semantic foreground */
+      --fg-1: rgb(var(--ink-rgb));
+      --fg-2: rgb(var(--ink-rgb) / 0.70);
+      --fg-3: rgb(var(--ink-rgb) / 0.55);
+      --fg-4: rgb(var(--ink-rgb) / 0.40);
+
+      /* Semantic backgrounds */
+      --bg-page:    rgb(var(--cream-rgb));
+      --bg-surface: rgb(var(--surface-rgb));
+      --bg-soft:    rgb(var(--imperial-rgb) / 0.04);
+      --bg-tint:    rgb(var(--imperial-rgb) / 0.08);
+
+      /* Borders */
+      --border-subtle: rgb(var(--imperial-rgb) / 0.10);
+      --border-soft:   rgb(var(--imperial-rgb) / 0.20);
+      --border-strong: rgb(var(--imperial-rgb) / 0.40);
+
+      /* Status */
+      --success-rgb: 36  150 110;
+      --warning-rgb: 200 132 30;
+      --danger-rgb:  220 38  38;
+
+      /* Signature gradients */
+      --grad-pearl:    linear-gradient(90deg, rgb(190 178 255), rgb(240 110 200) 60%, rgb(72 220 210));
+      --grad-imperial: linear-gradient(135deg, rgb(var(--imperial-rgb)), rgb(var(--rose-rgb)));
+      --grad-divider:  linear-gradient(90deg, transparent 0%, rgb(var(--imperial-rgb) / 0.35) 20%, rgb(var(--imperial-rgb) / 0.6) 50%, rgb(var(--imperial-rgb) / 0.35) 80%, transparent 100%);
+
+      /* Shadows */
+      --shadow-1: 0 1px 4px  rgb(var(--ink-rgb) / 0.06);
+      --shadow-2: 0 2px 12px rgb(var(--ink-rgb) / 0.08);
+      --shadow-3: 0 12px 40px rgb(var(--imperial-rgb) / 0.18);
+      --shadow-glow-imperial: 0 8px 28px rgb(var(--imperial-rgb) / 0.28);
+      --shadow-inner-soft:    inset 0 1px 0 rgb(255 255 255 / 0.6);
+
+      /* Corner radii */
+      --radius-xs:   0.375rem;
+      --radius-sm:   0.5rem;
+      --radius-md:   0.75rem;
+      --radius-lg:   0.875rem;
+      --radius-xl:   1.25rem;
+      --radius-2xl:  1.5rem;
+      --radius-pill: 9999px;
+
+      /* Motion */
+      --ease-graceful: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-soft:     cubic-bezier(0.4, 0, 0.2, 1);
+      --dur-quick:  150ms;
+      --dur-base:   220ms;
+      --dur-medium: 320ms;
+      --dur-slow:   600ms;
+
+      /* Type families */
+      --font-display: 'Playfair Display', 'Iowan Old Style', Georgia, serif;
+      --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono:    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+      /* Type scale (fluid) */
+      --fs-display-1: clamp(2.5rem, 4vw + 1rem, 3.75rem);
+      --fs-display-2: clamp(2rem,   3vw + 1rem, 3rem);
+      --fs-h1:        clamp(1.75rem, 2vw + 1rem, 2.5rem);
+      --fs-h2:        clamp(1.5rem,  1.5vw + 0.75rem, 2rem);
+      --fs-h3:        1.25rem;
+      --fs-body:      0.9375rem;
+      --fs-body-sm:   0.875rem;
+      --fs-meta:      0.78rem;
+      --fs-micro:     0.72rem;
+
+      --lh-tight: 1.15;
+      --lh-snug:  1.3;
+      --lh-body:  1.6;
+      --lh-loose: 1.75;
+      --tracking-eyebrow: 0.3em;
     }
+
     @media (prefers-color-scheme: dark) {
       :root {
-        --cream-rgb:           24  12  17;   /* #180c11  deep dark rose     */
-        --ink-rgb:             245 228 234;  /* #f5e4ea  light rose-white   */
-        --imperial-rgb:        230 110 145;  /* #e66e91  lighter rose dark  */
-        --imperial-hover-rgb:  245 130 165;  /* #f582a5  lighter hover dark */
-        --surface-rgb:         42  20  28;   /* #2a141c  dark card surface  */
+        --cream-rgb:           12  11  24;    /* #0c0b18 */
+        --ink-rgb:             232 228 245;   /* #e8e4f5 */
+        --imperial-rgb:        139 128 248;   /* #8b80f8 */
+        --imperial-hover-rgb:  160 151 252;   /* #a097fc */
+        --surface-rgb:         28  25  52;    /* #1c1934 */
+        --rose-rgb:            240 110 200;   /* #f06ec8 */
       }
     }
 
@@ -1660,6 +1748,265 @@
       }
       main:not(.view-hidden) { animation: none; }
     }
+
+    /* ══════════════════════════════════════════════════
+       Content Block — composable card surface
+       data-kind: text | image | video | quote
+       data-tone: cream | ink | lavender | rose | gold | glass
+       data-size: sm | md (default) | lg
+       ══════════════════════════════════════════════════ */
+    :root {
+      --cb-radius: 18px;
+      --cb-pad-sm: 18px;
+      --cb-pad-md: 28px;
+      --cb-pad-lg: 40px;
+      --cb-shadow-rest:  0 1px 2px rgb(var(--ink-rgb) / 0.04), 0 4px 16px rgb(var(--ink-rgb) / 0.05);
+      --cb-shadow-hover: 0 2px 4px rgb(var(--imperial-rgb) / 0.08), 0 18px 50px rgb(var(--imperial-rgb) / 0.18);
+      --cb-shadow-active:0 0 0 3px rgb(var(--imperial-rgb) / 0.18), 0 18px 50px rgb(var(--imperial-rgb) / 0.22);
+      --cb-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .content-block {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--cb-radius);
+      padding: var(--cb-pad-md);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--cb-shadow-rest);
+      overflow: hidden;
+      isolation: isolate;
+      transition: transform 420ms var(--cb-ease), box-shadow 420ms var(--cb-ease), border-color 420ms var(--cb-ease);
+      will-change: transform;
+    }
+
+    /* Accent line sweeps from centre on hover */
+    .content-block::before {
+      content: '';
+      position: absolute; top: 0; left: 50%;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, rgb(var(--imperial-rgb)), rgb(var(--rose-rgb)), rgb(var(--imperial-rgb)));
+      transform: translateX(-50%);
+      transition: width 520ms var(--cb-ease);
+      z-index: 3;
+    }
+
+    /* Soft sheen sweeps on hover */
+    .content-block::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(115deg, transparent 30%, rgb(var(--rose-rgb) / 0.10) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 900ms var(--cb-ease);
+      pointer-events: none; z-index: 1;
+    }
+
+    .content-block:hover { transform: translateY(-4px); box-shadow: var(--cb-shadow-hover); border-color: rgb(var(--imperial-rgb) / 0.28); }
+    .content-block:hover::before { width: 96%; }
+    .content-block:hover::after  { transform: translateX(100%); }
+
+    .content-block:focus-within,
+    .content-block.is-active { border-color: rgb(var(--imperial-rgb) / 0.6); box-shadow: var(--cb-shadow-active); }
+
+    .content-block > * { position: relative; z-index: 2; }
+
+    /* Sizes */
+    .content-block[data-size="sm"] { padding: var(--cb-pad-sm); border-radius: 14px; }
+    .content-block[data-size="lg"] { padding: var(--cb-pad-lg); border-radius: 22px; }
+
+    /* Tones */
+    .content-block[data-tone="cream"]   { background: var(--bg-surface); color: var(--fg-1); }
+
+    .content-block[data-tone="ink"] {
+      background: linear-gradient(155deg, #1a1330 0%, #2a1850 50%, #4a1f5a 100%);
+      color: #f6f1ff; border-color: rgba(255,255,255,0.10);
+    }
+    .content-block[data-tone="ink"] .cb-title   { color: #ffffff !important; }
+    .content-block[data-tone="ink"] .cb-title em{ color: #ffd6e8 !important; }
+    .content-block[data-tone="ink"] .cb-body    { color: rgba(255,255,255,0.92) !important; }
+    .content-block[data-tone="ink"] .cb-eyebrow { color: #ffb6dc !important; }
+    .content-block[data-tone="ink"] .cb-meta    { color: rgba(255,255,255,0.78) !important; border-top-color: rgba(255,255,255,0.22) !important; }
+    .content-block[data-tone="ink"] blockquote  { color: #ffffff !important; }
+    .content-block[data-tone="ink"] cite        { color: rgba(255,255,255,0.72) !important; }
+
+    .content-block[data-tone="lavender"] {
+      background: linear-gradient(155deg, rgb(var(--imperial-rgb) / 0.06), rgb(var(--rose-rgb) / 0.03));
+      border-color: rgb(var(--imperial-rgb) / 0.18);
+    }
+
+    .content-block[data-tone="rose"] {
+      background: linear-gradient(155deg, #fff5fa 0%, #ffe7f3 100%);
+      border-color: rgba(180, 40, 130, 0.28); color: #2a1234;
+    }
+    .content-block[data-tone="rose"] .cb-title   { color: #2a1234 !important; }
+    .content-block[data-tone="rose"] .cb-title em{ color: #b22885 !important; font-style: italic; }
+    .content-block[data-tone="rose"] .cb-body    { color: rgba(42, 18, 52, 0.88) !important; }
+    .content-block[data-tone="rose"] .cb-eyebrow { color: #a3236f !important; }
+    .content-block[data-tone="rose"] .cb-meta    { color: rgba(42, 18, 52, 0.72) !important; border-top-color: rgba(180, 40, 130, 0.22) !important; }
+    .content-block[data-tone="rose"] blockquote  { color: #2a1234 !important; }
+    .content-block[data-tone="rose"] cite        { color: rgba(42, 18, 52, 0.70) !important; }
+
+    .content-block[data-tone="gold"] {
+      background: linear-gradient(155deg, #fff8e8 0%, #fceeca 100%);
+      border-color: rgba(168, 122, 31, 0.45); color: #4a3210;
+    }
+    .content-block[data-tone="gold"] .cb-title   { color: #3a2608 !important; }
+    .content-block[data-tone="gold"] .cb-title em{ color: #a87a1f !important; font-style: italic; }
+    .content-block[data-tone="gold"] .cb-body    { color: rgba(58, 38, 8, 0.90) !important; }
+    .content-block[data-tone="gold"] .cb-eyebrow { color: #8a5e10 !important; }
+    .content-block[data-tone="gold"] .cb-meta    { color: rgba(58, 38, 8, 0.72) !important; border-top-color: rgba(168, 122, 31, 0.30) !important; }
+    .content-block[data-tone="gold"] blockquote  { color: #3a2608 !important; }
+    .content-block[data-tone="gold"] cite        { color: rgba(58, 38, 8, 0.72) !important; }
+
+    .content-block[data-tone="glass"] {
+      background: rgb(var(--surface-rgb) / 0.6);
+      backdrop-filter: blur(12px) saturate(140%);
+      border-color: rgb(var(--imperial-rgb) / 0.18);
+    }
+
+    /* Inner parts */
+    .cb-eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.22em;
+      text-transform: uppercase; color: rgb(var(--imperial-rgb) / 0.75); margin: 0 0 10px;
+    }
+    .cb-title {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 2.4vw, 30px);
+      font-weight: 600; line-height: 1.2; margin: 0 0 8px; text-wrap: balance;
+    }
+    .cb-title em { color: rgb(var(--rose-rgb)); font-style: italic; }
+    .cb-body {
+      font-size: 14.5px; line-height: 1.65;
+      color: rgb(var(--ink-rgb) / 0.72); margin: 0 0 14px; text-wrap: pretty;
+    }
+    .cb-meta {
+      font-size: 12px; color: rgb(var(--ink-rgb) / 0.5); letter-spacing: 0.04em;
+      display: flex; gap: 12px; align-items: center;
+      margin-top: auto; padding-top: 14px; border-top: 1px solid rgb(var(--ink-rgb) / 0.08);
+    }
+
+    /* Image kind */
+    .content-block[data-kind="image"] { padding: 0; min-height: 240px; }
+    .content-block[data-kind="image"] .cb-media {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; z-index: 0;
+      transition: transform 1100ms var(--cb-ease), filter 800ms var(--cb-ease);
+    }
+    .content-block[data-kind="image"]:hover .cb-media { transform: scale(1.06); }
+    .content-block[data-kind="image"] .cb-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to top, rgba(10,8,28,0.78) 0%, rgba(10,8,28,0.35) 45%, rgba(10,8,28,0.1) 80%);
+    }
+    .content-block[data-kind="image"] .cb-image-body {
+      position: relative; z-index: 2; margin-top: auto; padding: var(--cb-pad-md); color: white;
+    }
+    .content-block[data-kind="image"] .cb-image-body .cb-eyebrow { color: rgb(255,210,230); }
+    .content-block[data-kind="image"] .cb-image-body .cb-title { color: white; }
+    .content-block[data-kind="image"] .cb-image-body .cb-body { color: rgba(255,255,255,0.82); }
+
+    /* Video kind */
+    .content-block[data-kind="video"] {
+      padding: 0; min-height: 280px; background: #0a081c; cursor: pointer;
+    }
+    .content-block[data-kind="video"] .cb-media {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; z-index: 0; opacity: 0.85;
+      transition: opacity 600ms var(--cb-ease), transform 1200ms var(--cb-ease);
+    }
+    .content-block[data-kind="video"]:hover .cb-media { opacity: 1; transform: scale(1.04); }
+    .content-block[data-kind="video"] .cb-play {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 78px; height: 78px; border-radius: 999px;
+      background: rgba(255,255,255,0.92); border: 0; cursor: pointer; z-index: 3;
+      display: flex; align-items: center; justify-content: center;
+      color: rgb(var(--imperial-rgb));
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgb(var(--rose-rgb) / 0.5);
+      animation: cb-pulse 2.6s ease-in-out infinite;
+      transition: transform 300ms var(--cb-ease), background 300ms;
+    }
+    .content-block[data-kind="video"]:hover .cb-play {
+      transform: translate(-50%,-50%) scale(1.08); background: white;
+    }
+    .content-block[data-kind="video"] .cb-play svg { width: 30px; height: 30px; margin-left: 4px; }
+    @keyframes cb-pulse {
+      0%,100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0  rgb(var(--rose-rgb) / 0.5); }
+      50%     { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 18px rgb(var(--rose-rgb) / 0); }
+    }
+    .content-block[data-kind="video"] .cb-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to top, rgba(10,8,28,0.75), rgba(10,8,28,0.15));
+    }
+    .content-block[data-kind="video"] .cb-image-body {
+      position: relative; z-index: 2; margin-top: auto; padding: var(--cb-pad-md); color: white;
+    }
+    .content-block[data-kind="video"] .cb-image-body .cb-title { color: white; }
+    .content-block[data-kind="video"] .cb-image-body .cb-eyebrow { color: rgb(255,210,230); }
+
+    /* Quote kind */
+    .content-block[data-kind="quote"] { padding-left: calc(var(--cb-pad-md) + 8px); }
+    .content-block[data-kind="quote"]::after { display: none; }
+    .content-block[data-kind="quote"] .cb-quote-mark {
+      position: absolute; top: 6px; left: 14px;
+      font-family: var(--font-display); font-size: 76px; line-height: 1;
+      color: rgb(var(--rose-rgb) / 0.45); z-index: 2;
+    }
+    .content-block[data-kind="quote"] blockquote {
+      margin: 0 0 14px; font-family: var(--font-display); font-style: italic;
+      font-size: clamp(17px, 1.7vw, 22px); line-height: 1.5; color: var(--fg-1); text-wrap: pretty;
+    }
+    .content-block[data-kind="quote"] cite {
+      font-style: normal; font-family: var(--font-body); font-size: 11.5px;
+      font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgb(var(--ink-rgb) / 0.5);
+    }
+
+    /* "Add block" ghost target */
+    .content-block.cb-add {
+      background: transparent; border: 2px dashed rgb(var(--imperial-rgb) / 0.25);
+      box-shadow: none; align-items: center; justify-content: center;
+      text-align: center; min-height: 220px; cursor: pointer;
+      color: rgb(var(--imperial-rgb) / 0.7);
+    }
+    .content-block.cb-add::before, .content-block.cb-add::after { display: none; }
+    .content-block.cb-add:hover {
+      background: rgb(var(--imperial-rgb) / 0.04);
+      border-color: rgb(var(--imperial-rgb) / 0.5);
+      color: rgb(var(--imperial-rgb));
+      transform: translateY(-2px);
+    }
+    .content-block.cb-add .cb-add-icon {
+      width: 56px; height: 56px; border-radius: 999px;
+      background: rgb(var(--imperial-rgb) / 0.08);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+      transition: transform 380ms var(--cb-ease), background 380ms;
+    }
+    .content-block.cb-add:hover .cb-add-icon {
+      background: rgb(var(--imperial-rgb)); color: white; transform: rotate(90deg) scale(1.08);
+    }
+    .content-block.cb-add .cb-add-label {
+      font-family: var(--font-display); font-size: 17px; font-weight: 600; letter-spacing: 0.02em;
+    }
+
+    /* Showcase grid */
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 22px;
+    }
+    @media (max-width: 900px) {
+      .showcase-grid { grid-template-columns: 1fr; }
+      .showcase-grid > * { grid-column: 1 / -1 !important; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .content-block, .content-block::before, .content-block::after,
+      .content-block .cb-media, .content-block .cb-play, .content-block .cb-add .cb-add-icon {
+        transition: none !important; animation: none !important;
+      }
+    }
   </style>
 </head>
 
@@ -1910,6 +2257,71 @@
         <div class="hp-programs-cta-wrap reveal">
           <button id="home-midpage-cta" class="btn-imperial px-8 py-3 text-sm font-semibold tracking-wide">Book a Free Trial Class</button>
           <p class="hp-programs-cta-note">Questions before enrolling? We can help you pick the right starting program.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Inside Bright Pearl — Content Block Showcase ─ -->
+    <section class="py-16 sm:py-20 border-t border-imperial/10">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12 reveal">
+          <p class="uppercase text-imperial/70 text-xs font-medium mb-3" style="letter-spacing:0.3em;">Inside Bright Pearl</p>
+          <h2 class="font-display text-3xl sm:text-4xl text-ink mb-3">A Glimpse of <em style="color:rgb(var(--rose-rgb));font-style:italic;">Studio Life</em></h2>
+          <p class="max-w-xl mx-auto text-ink/55 text-sm leading-relaxed">Stories, stages, and small moments — built with our flexible content blocks.</p>
+          <div class="ink-divider"></div>
+        </div>
+        <div class="showcase-grid reveal-group">
+          <!-- Quote -->
+          <div class="content-block" data-kind="quote" data-tone="lavender" style="grid-column: span 4;">
+            <span class="cb-quote-mark">&ldquo;</span>
+            <blockquote>Every class begins with respect &mdash; for the form, for one another, and for the centuries of practice we inherit.</blockquote>
+            <cite>&mdash; Lin Wei, Founder</cite>
+          </div>
+          <!-- Video -->
+          <div class="content-block" data-kind="video" data-tone="ink" style="grid-column: span 5;">
+            <div class="cb-overlay"></div>
+            <button class="cb-play" aria-label="Watch our spring recital reel">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5z"/></svg>
+            </button>
+            <div class="cb-image-body">
+              <p class="cb-eyebrow">Spring Recital</p>
+              <h3 class="cb-title">2025 Performance Reel</h3>
+              <p class="cb-body" style="margin:0;">3:42 &middot; Boston Symphony Hall</p>
+            </div>
+          </div>
+          <!-- Image -->
+          <div class="content-block" data-kind="image" style="grid-column: span 3;">
+            <div class="cb-media" style="position:absolute;inset:0;background:linear-gradient(155deg,#6e3aa5,#d23cb4 60%,#e8bc78);"></div>
+            <div class="cb-overlay"></div>
+            <div class="cb-image-body">
+              <p class="cb-eyebrow">Photo</p>
+              <h3 class="cb-title" style="font-size:20px;">Lantern Festival</h3>
+            </div>
+          </div>
+          <!-- Text -->
+          <div class="content-block" data-tone="cream" style="grid-column: span 4;">
+            <p class="cb-eyebrow">Heritage</p>
+            <h3 class="cb-title">A practice <em>centuries</em> in the making.</h3>
+            <p class="cb-body">Classical Chinese dance carries a vocabulary of hand, eye, body, and step refined across generations. We teach it slowly, with care, so each student finds their own voice within the form.</p>
+            <div class="cb-meta"><span>Article</span><span>&middot;</span><span>4 min read</span></div>
+          </div>
+          <!-- Gold callout -->
+          <div class="content-block" data-tone="gold" style="grid-column: span 4;">
+            <p class="cb-eyebrow">2024 Honor</p>
+            <h3 class="cb-title">Boston Cultural Arts Award</h3>
+            <p class="cb-body">Recognized for excellence in cultural education and community contribution.</p>
+            <div class="cb-meta"><span>Award</span></div>
+          </div>
+          <!-- Glass stat -->
+          <div class="content-block" data-tone="glass" style="grid-column: span 4;">
+            <p class="cb-eyebrow">By the Numbers</p>
+            <div style="font-family:var(--font-display);font-size:56px;font-weight:600;line-height:1;background-image:var(--grad-imperial);-webkit-background-clip:text;background-clip:text;color:transparent;margin:4px 0 6px;">320+</div>
+            <h3 class="cb-title" style="font-size:18px;">Students enrolled this year</h3>
+            <p class="cb-body" style="margin-bottom:0;">Across six programs, ages 4&ndash;adult.</p>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:30px;">
+          <p style="font-size:12px;color:rgb(var(--ink-rgb)/0.5);">A core building block of our system &mdash; mix text, image, video, quotes, or stats.</p>
         </div>
       </div>
     </section>
