@@ -2413,7 +2413,13 @@
           <h2 class="font-display text-2xl sm:text-3xl text-ink">Dashboard</h2>
           <p class="text-ink/50 text-sm">Manage content, classes, gallery &amp; registrations</p>
         </div>
-        <span id="admin-email-badge" class="text-xs bg-imperial/10 text-imperial px-3 py-1 rounded-full"></span>
+        <div class="flex items-center gap-3">
+          <button id="export-site-btn" onclick="exportSiteContent()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-imperial/20 bg-surface/60 text-imperial text-sm font-medium hover:bg-imperial/10 hover:border-imperial/40 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            Export Content
+          </button>
+          <span id="admin-email-badge" class="text-xs bg-imperial/10 text-imperial px-3 py-1 rounded-full"></span>
+        </div>
       </div>
 
       <!-- ── Pending Registrations ── -->
@@ -5717,6 +5723,105 @@
           await renderAdminTestimonials();
         });
       });
+    }
+
+    // ════════════════════════════════════════════════
+    //  SITE CONTENT EXPORT
+    // ════════════════════════════════════════════════
+    async function exportSiteContent() {
+      const btn = document.getElementById('export-site-btn');
+      const originalHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Exporting…`;
+
+      try {
+        const [
+          awards, classes, aboutSections, pdfs, gallery,
+          faculty, programs, concertSections, tosData,
+          heroImage, heroContent, contactInfo, faqData,
+          valuesData, testimonialsData, paymentSettings
+        ] = await Promise.all([
+          fetchAwards(),
+          fetchClasses(),
+          fetchAboutSections(),
+          fetchPdfs(),
+          fetchGallery(),
+          fetchFaculty(),
+          fetchPrograms(false),
+          fetchConcertSections(),
+          fetchTosSettings(),
+          fetchHeroSetting(),
+          fetchHeroContentSetting(),
+          fetchContactInfo(),
+          fetchFaqData(),
+          fetchValuesData(),
+          fetchSetting('testimonials_data'),
+          fetchAnyPaymentSetting()
+        ]);
+
+        const exportPayload = {
+          _meta: {
+            exported_at: new Date().toISOString(),
+            version: '1.0',
+            source: 'BrightPearl Academy CMS',
+            description: 'Full site content export. Each top-level key maps to a distinct content section. Arrays preserve display_order where relevant.'
+          },
+          site: {
+            name: 'BrightPearl Academy',
+            contact: contactInfo || {}
+          },
+          pages: {
+            home: {
+              hero: {
+                image_url: heroImage?.value || null,
+                established_label: heroContent?.estLabel || null
+              },
+              awards_ticker: (awards || []).map(({ id: _id, created_at: _c, ...a }) => a),
+              values: (Array.isArray(valuesData) ? valuesData : []).map(({ id: _id, ...v }) => v),
+              testimonials: (Array.isArray(testimonialsData) ? testimonialsData : []).map(({ id: _id, ...t }) => t),
+              gallery: (gallery || []).map(({ id: _id, created_at: _c, ...g }) => g),
+              faq: (Array.isArray(faqData) ? faqData : []).map(({ id: _id, ...f }) => f)
+            },
+            about: {
+              sections: (aboutSections || []).map(({ id: _id, ...s }) => s),
+              pdf_downloads: (pdfs || []).map(({ id: _id, ...p }) => p)
+            },
+            faculty: {
+              members: (faculty || []).map(({ id: _id, ...m }) => m)
+            },
+            programs: {
+              items: (Array.isArray(programs) ? programs : []).map(({ id: _id, ...p }) => p)
+            },
+            concert: {
+              sections: (Array.isArray(concertSections) ? concertSections : []).map(({ id: _id, ...s }) => s)
+            },
+            terms_of_service: tosData || {}
+          },
+          registration: {
+            classes: (classes || []).map(({ id: _id, created_at: _c, ...c }) => c),
+            payment: paymentSettings ? (({ id: _id, created_at: _c, ...p }) => p)(paymentSettings) : {}
+          }
+        };
+
+        const json = JSON.stringify(exportPayload, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const datestamp = new Date().toISOString().slice(0, 10);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `brightpearl-content-${datestamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg> Exported`;
+        setTimeout(() => { btn.disabled = false; btn.innerHTML = originalHTML; }, 2500);
+      } catch (err) {
+        console.error('Export failed:', err);
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg> Export failed`;
+        setTimeout(() => { btn.disabled = false; btn.innerHTML = originalHTML; }, 3000);
+      }
     }
 
     // ════════════════════════════════════════════════
