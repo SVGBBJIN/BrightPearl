@@ -1999,6 +1999,181 @@
     /* section-toolbar visibility hook (existing rule uses body.edit-mode) — no change needed */
     /* cb-editorial full-width span within cb-grid */
     .cb-grid > .cb-editorial { grid-column: 1 / -1; }
+
+    /* ═══════════════════════════════════════════════════
+       HOME LAYOUT PATTERNS  (manifesto · zigzag · banner)
+       ═════════════════════════════════════════════════ */
+
+    /* ── Icon chip ── */
+    .cb-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg, rgb(var(--imperial-rgb) / 0.14), rgb(var(--rose-rgb) / 0.10));
+      color: rgb(var(--imperial-rgb));
+      display: flex; align-items: center; justify-content: center;
+      transition: transform var(--dur-base) var(--ease-graceful);
+    }
+    .cb-icon svg, .cb-icon img { width: 22px; height: 22px; }
+    .content-block:hover .cb-icon { transform: rotate(-3deg) scale(1.06); }
+    .content-block[data-tone="ink"] .cb-icon { background: rgba(255,255,255,0.16); color: white; }
+    .content-block[data-tone="gold"] .cb-icon { background: rgba(168,122,31,0.18); color: #8a5e10; }
+
+    /* ── Manifesto rows — big italic numeral + text ── */
+    .cb-manifesto {
+      display: grid; grid-template-columns: 104px 1fr; gap: 28px;
+      padding: 32px 0; border-top: 1px solid var(--border-subtle);
+      position: relative; transition: padding-left 420ms var(--cb-ease);
+    }
+    .cb-manifesto:hover { padding-left: 12px; }
+    .cb-manifesto-num {
+      font-family: var(--font-display); font-size: 84px; font-weight: 400;
+      line-height: 0.9; color: rgb(var(--imperial-rgb) / 0.22);
+      letter-spacing: -0.04em; font-style: italic; position: relative;
+      transition: color 420ms, transform 420ms var(--cb-ease);
+    }
+    .cb-manifesto:hover .cb-manifesto-num { color: rgb(var(--imperial-rgb)); transform: scale(1.04); }
+    .cb-manifesto-text { display: flex; flex-direction: column; justify-content: center; gap: 8px; min-width: 0; }
+    .cb-manifesto-title {
+      font-family: var(--font-display); font-size: 27px; font-weight: 600;
+      color: var(--fg-1); margin: 0; line-height: 1.2;
+    }
+    .cb-manifesto-title em { color: rgb(var(--rose-rgb)); font-style: italic; }
+    .cb-manifesto-body { font-size: 15px; line-height: 1.65; color: rgb(var(--ink-rgb) / 0.72); margin: 0; }
+    .cb-manifesto .section-toolbar {
+      position: absolute !important; top: 8px !important; right: 8px !important;
+      z-index: 6 !important; opacity: 0; transition: opacity 220ms;
+    }
+    .cb-manifesto:hover .section-toolbar,
+    .cb-manifesto:focus-within .section-toolbar { opacity: 1; }
+    @media (max-width: 800px) {
+      .cb-manifesto { grid-template-columns: 60px 1fr; gap: 16px; }
+      .cb-manifesto-num { font-size: 52px; }
+      .cb-manifesto-title { font-size: 22px; }
+    }
+
+    /* ── Zigzag feature rows — alternating image + text ── */
+    .cb-zigzag { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
+    .cb-zigzag.flip > .cb-zigzag-photo { order: 2; }
+    .cb-zigzag-photo {
+      position: relative; height: 320px; border-radius: 22px; overflow: hidden;
+      border: 1px solid var(--border-subtle); box-shadow: var(--cb-shadow-rest);
+      transition: transform 520ms var(--cb-ease), box-shadow 520ms var(--cb-ease);
+    }
+    .cb-zigzag-photo:hover { transform: translateY(-4px) rotate(-0.5deg); box-shadow: var(--cb-shadow-hover); }
+    .cb-zigzag-photo:hover .cb-photo { transform: scale(1.06); }
+    .cb-zigzag.flip .cb-zigzag-photo:hover { transform: translateY(-4px) rotate(0.5deg); }
+    .cb-zigzag-text { padding: 0 20px; position: relative; }
+    .cb-zigzag-text .cb-eyebrow { margin: 0 0 12px; }
+    .cb-zigzag-text h3 {
+      font-family: var(--font-display); font-size: 32px; font-weight: 600;
+      line-height: 1.1; margin: 0 0 14px; text-wrap: balance;
+    }
+    .cb-zigzag-text h3 em { color: rgb(var(--rose-rgb)); font-style: italic; }
+    .cb-zigzag-text p {
+      font-size: 15px; line-height: 1.65; color: rgb(var(--ink-rgb) / 0.72);
+      margin: 0 0 20px; max-width: 460px;
+    }
+    .cb-prog-icon-img {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 92px; height: 92px; object-fit: contain; z-index: 2;
+      border-radius: 18px; padding: 14px; background: rgba(255,255,255,0.92);
+      box-shadow: 0 10px 30px rgba(10,8,28,0.35);
+    }
+    @media (max-width: 800px) {
+      .cb-zigzag { grid-template-columns: 1fr; gap: 22px; }
+      .cb-zigzag.flip > .cb-zigzag-photo { order: 1; }
+      .cb-zigzag-photo { height: 240px; }
+      .cb-zigzag-text { padding: 0; }
+    }
+
+    /* ── Stats banner — full-bleed photo with overlaid stat chips ── */
+    .cb-banner {
+      position: relative; min-height: 440px; border-radius: 24px; overflow: hidden;
+      border: 1px solid var(--border-subtle); box-shadow: var(--cb-shadow-rest); isolation: isolate;
+    }
+    .cb-banner::before {
+      content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: linear-gradient(to top, rgba(10,8,28,0.86) 0%, rgba(10,8,28,0.4) 55%, rgba(10,8,28,0.58) 100%);
+    }
+    .cb-banner-headline { position: absolute; top: 40px; left: 44px; right: 44px; z-index: 3; color: white; max-width: 580px; }
+    .cb-banner-headline .cb-eyebrow { color: rgba(255,182,220,0.9); margin: 0 0 10px; }
+    .cb-banner-headline h3 {
+      font-family: var(--font-display); font-size: 38px; font-weight: 600;
+      line-height: 1.1; margin: 0; color: white; text-wrap: balance;
+    }
+    .cb-banner-headline h3 em { color: #ffd6e8; font-style: italic; }
+    .cb-banner-stats {
+      position: absolute; bottom: 28px; left: 28px; right: 28px; z-index: 3;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    }
+    .cb-banner-stat {
+      background: rgba(255,255,255,0.10); backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.22); border-radius: 16px;
+      padding: 18px 20px; color: white;
+      transition: transform var(--dur-base) var(--ease-graceful), background var(--dur-base);
+    }
+    .cb-banner-stat:hover { transform: translateY(-3px); background: rgba(255,255,255,0.14); }
+    .cb-banner-stat .num {
+      font-family: var(--font-display); font-size: 38px; font-weight: 600;
+      line-height: 1; letter-spacing: -0.02em; margin-bottom: 6px;
+      background: linear-gradient(135deg, #fff, #ffd6e8);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .cb-banner-stat .lbl { font-size: 12.5px; font-weight: 600; color: white; letter-spacing: 0.04em; margin-bottom: 2px; }
+    .cb-banner-stat .note { font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.4; }
+    @media (max-width: 800px) {
+      .cb-banner { min-height: 580px; }
+      .cb-banner-stats { grid-template-columns: 1fr 1fr; }
+      .cb-banner-headline { left: 24px; right: 24px; top: 28px; }
+      .cb-banner-headline h3 { font-size: 28px; }
+    }
+
+    /* ── Extra cb-photo tints for programs ── */
+    .cb-photo.mandarin { background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(180,240,235,0.45), transparent 65%), linear-gradient(135deg, #5b4fcf, #48dcd2); }
+    .cb-photo.stem     { background: radial-gradient(ellipse 70% 60% at 60% 50%, rgba(200,190,250,0.40), transparent 65%), linear-gradient(135deg, #3a2864, #5b4fcf); }
+    .cb-photo.music    { background: radial-gradient(ellipse 60% 70% at 40% 50%, rgba(255,225,200,0.50), transparent 65%), linear-gradient(135deg, #d23cb4, #e8bc78); }
+    .cb-photo.adult    { background: radial-gradient(ellipse 70% 60% at 50% 60%, rgba(255,210,230,0.40), transparent 65%), linear-gradient(135deg, #2a1850, #6e2570); }
+    .cb-photo.camp     { background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(200,250,240,0.50), transparent 65%), linear-gradient(135deg, #48dcd2, #5b4fcf); }
+
+    /* ── Integration: Values grid → manifesto rows ── */
+    #hp-values-grid { display: block; }
+    .hp-value-card.cb-manifesto {
+      background: transparent !important; border: 0 !important;
+      border-top: 1px solid var(--border-subtle) !important;
+      border-radius: 0 !important; padding: 32px 0 !important; box-shadow: none !important;
+    }
+    .hp-value-card.cb-manifesto:hover {
+      transform: none !important; box-shadow: none !important;
+      border-top-color: var(--border-subtle) !important; padding-left: 12px !important;
+    }
+    .hp-value-card.cb-manifesto .cb-manifesto-num {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+    }
+    .hp-value-card.cb-manifesto .hp-value-icon {
+      margin: 0; width: 44px; height: 44px; flex-shrink: 0; padding: 8px;
+    }
+    body.edit-mode .hp-value-card.cb-manifesto { outline-offset: -6px; }
+    .hp-value-card.cb-manifesto .val-card-toolbar { top: 8px; right: 8px; }
+    .hp-value-card.cb-manifesto .val-icon-picker {
+      position: absolute; top: 104px; left: 0; width: 220px; z-index: 12;
+      background: rgb(var(--surface-rgb)); padding: 8px;
+      border-radius: 10px; box-shadow: 0 8px 28px rgb(var(--ink-rgb) / 0.18);
+    }
+    .hp-value-card.cb-manifesto .inline-save-btn { grid-column: 1 / -1; justify-self: start; }
+
+    /* ── Integration: Programs grid → zigzag rows ── */
+    #home-programs-grid { display: flex; flex-direction: column; gap: 48px; }
+    .hp-program-card.cb-zigzag {
+      background: transparent !important; border: 0 !important;
+      border-radius: 0 !important; padding: 0 !important;
+      box-shadow: none !important; overflow: visible !important; transform: none !important;
+    }
+    .hp-program-card.cb-zigzag::before { display: none !important; }
+    .hp-program-card.cb-zigzag:hover { transform: none !important; box-shadow: none !important; }
+    .hp-program-card.cb-zigzag .hp-program-name { color: var(--fg-1) !important; margin: 0 0 14px; }
+    body.edit-mode .hp-program-card.cb-zigzag { outline-offset: -6px; }
+    .hp-program-card.cb-zigzag .prog-card-toolbar { top: 8px; right: 8px; }
+    .cb-zigzag-photo .hp-photo-upload-overlay { border-radius: 22px; }
+    .cb-zigzag-text .hp-program-btns { display: flex; gap: 10px; flex-wrap: wrap; margin: 0; }
   </style>
 </head>
 
@@ -2273,33 +2448,38 @@
             Students have earned awards in speech, visual arts, STEM, and dance. Many have advanced to top private high schools and leading colleges.
           </p>
         </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 reveal-group">
-          <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6 text-center">
-            <div class="font-display text-4xl text-imperial font-bold mb-2">15+</div>
-            <p class="text-ink/70 text-sm font-medium">Years of Excellence</p>
-            <p class="text-ink/45 text-xs mt-1">Founded 2009 in West Newton, MA</p>
+        <div class="cb-banner reveal" style="margin-bottom: 28px;">
+          <div class="cb-photo recital"></div>
+          <div class="cb-banner-headline">
+            <p class="cb-eyebrow">Inside Bright Pearl</p>
+            <h3>From the studio to the <em>Symphony Hall</em>.</h3>
           </div>
-          <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6 text-center">
-            <div class="font-display text-4xl text-imperial font-bold mb-2">🏆</div>
-            <p class="text-ink/70 text-sm font-medium">Award-Winning Programs</p>
-            <p class="text-ink/45 text-xs mt-1">Speech, visual arts, STEM & dance</p>
-          </div>
-          <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6 text-center">
-            <div class="font-display text-4xl text-imperial font-bold mb-2">🎓</div>
-            <p class="text-ink/70 text-sm font-medium">Top School Placements</p>
-            <p class="text-ink/45 text-xs mt-1">Graduates at leading private schools & colleges</p>
-          </div>
-          <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6 text-center">
-            <div class="font-display text-4xl text-imperial font-bold mb-2">5</div>
-            <p class="text-ink/70 text-sm font-medium">Programs Offered</p>
-            <p class="text-ink/45 text-xs mt-1">Dance, Mandarin, STEM, Adult Dance & Camps</p>
+          <div class="cb-photo-label" style="top:40px;right:40px;left:auto;bottom:auto;"><span class="dot"></span>Spring Recital 2025</div>
+          <div class="cb-banner-stats">
+            <div class="cb-banner-stat"><div class="num">15+</div><div class="lbl">Years of Excellence</div><div class="note">Founded 2009 in West Newton, MA</div></div>
+            <div class="cb-banner-stat"><div class="num">320+</div><div class="lbl">Active Students</div><div class="note">Across all programs, ages 4–adult</div></div>
+            <div class="cb-banner-stat"><div class="num">42</div><div class="lbl">Award Honors</div><div class="note">Speech, visual arts, STEM &amp; dance</div></div>
+            <div class="cb-banner-stat"><div class="num">5</div><div class="lbl">Programs Offered</div><div class="note">Dance, Mandarin, STEM, Adult Dance &amp; Camps</div></div>
           </div>
         </div>
-        <div class="mt-10 text-center reveal">
-          <blockquote class="max-w-2xl mx-auto bg-surface/50 backdrop-blur rounded-xl border border-imperial/10 p-6 italic text-ink/65 text-sm leading-relaxed">
-            "Bright Pearl Academy has given my daughter not just dance skills but confidence, discipline, and a deep pride in her cultural heritage."
-            <footer class="mt-3 not-italic text-xs text-ink/40 font-medium">— Academy Parent</footer>
-          </blockquote>
+        <div class="cb-grid reveal-group">
+          <div class="content-block" data-tone="gold" style="grid-column: span 4;">
+            <div class="cb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div>
+            <p class="cb-eyebrow">2024 Honor</p>
+            <h3 class="cb-title" style="font-size:22px;">Boston Cultural Arts Award</h3>
+            <p class="cb-body" style="margin:0;">Recognized for excellence in preserving and teaching Chinese classical dance.</p>
+          </div>
+          <div class="content-block" data-tone="ink" style="grid-column: span 4;">
+            <p class="cb-eyebrow">By the Numbers</p>
+            <div class="cb-stat">98%</div>
+            <h3 class="cb-title" style="font-size:20px;">Top-school placement rate</h3>
+            <p class="cb-body" style="margin:0;">Graduates advance to leading private schools and colleges nationwide.</p>
+          </div>
+          <div class="content-block" data-kind="quote" data-tone="ink" style="grid-column: span 4;">
+            <span class="cb-quote-mark">&ldquo;</span>
+            <blockquote>Bright Pearl gave my daughter not just dance skills, but confidence, discipline, and a deep pride in her cultural heritage.</blockquote>
+            <cite>&mdash; Academy Parent</cite>
+          </div>
         </div>
       </div>
     </section>
@@ -5140,17 +5320,22 @@
           ${VALUE_CARD_ICONS[key]}
         </button>`).join('');
 
-      $grid.innerHTML = values.map(v => `
-        <div class="hp-value-card" data-val-id="${esc(v.id)}">
+      $grid.innerHTML = values.map((v, idx) => `
+        <div class="hp-value-card cb-manifesto" data-val-id="${esc(v.id)}">
           <div class="val-card-toolbar">
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="val-edit-btn" data-val-id="${esc(v.id)}" title="Edit card">${SVG_PENCIL}</button>
             <button class="val-del-btn" data-val-id="${esc(v.id)}" title="Delete card">${SVG_TRASH}</button>
           </div>
-          <div class="hp-value-icon val-icon-wrap" data-val-id="${esc(v.id)}" title="${editMode ? 'Click to change icon' : ''}" style="${editMode ? 'cursor:pointer' : ''}">${VALUE_CARD_ICONS[v.icon_key] || VALUE_CARD_ICONS['star']}</div>
-          <div class="val-icon-picker" data-val-id="${esc(v.id)}">${iconPickerHtml}</div>
-          <h3 class="hp-value-title val-title-el" data-val-id="${esc(v.id)}">${esc(v.title)}</h3>
-          <p class="hp-value-body val-body-el" data-val-id="${esc(v.id)}">${esc(v.body)}</p>
+          <div class="cb-manifesto-num">
+            ${String(idx + 1).padStart(2, '0')}
+            <div class="hp-value-icon val-icon-wrap cb-icon" data-val-id="${esc(v.id)}" title="${editMode ? 'Click to change icon' : ''}" style="${editMode ? 'cursor:pointer' : ''}">${VALUE_CARD_ICONS[v.icon_key] || VALUE_CARD_ICONS['star']}</div>
+            <div class="val-icon-picker" data-val-id="${esc(v.id)}">${iconPickerHtml}</div>
+          </div>
+          <div class="cb-manifesto-text">
+            <h3 class="hp-value-title val-title-el cb-manifesto-title" data-val-id="${esc(v.id)}">${esc(v.title)}</h3>
+            <p class="hp-value-body val-body-el cb-manifesto-body" data-val-id="${esc(v.id)}">${esc(v.body)}</p>
+          </div>
         </div>`).join('') + `
       <div class="val-add-row">
         <button id="hp-val-add-btn" class="btn-outline px-5 py-2 text-sm font-medium">+ Add Value Card</button>
@@ -5336,12 +5521,16 @@
           </div>`;
 
         if (v.kind === 'text') {
+          const num = String(idx + 1).padStart(2, '0');
           return `
-            <div class="editable-section content-block reveal" data-tone="${v.tone}" data-section-id="${esc(s.id)}" style="grid-column: span ${v.span}">
+            <div class="editable-section cb-manifesto reveal" data-section-id="${esc(s.id)}" style="grid-column: 1 / -1">
               ${toolbar}
-              <p class="cb-eyebrow haf-eyebrow" data-id="${esc(s.id)}">${esc(s.eyebrow || 'Our Story')}</p>
-              <h3 class="cb-title hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
-              <div class="cb-body hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
+              <div class="cb-manifesto-num">${num}</div>
+              <div class="cb-manifesto-text hp-feature-text">
+                <p class="cb-eyebrow haf-eyebrow" data-id="${esc(s.id)}">${esc(s.eyebrow || 'Our Story')}</p>
+                <h3 class="cb-manifesto-title hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
+                <div class="cb-manifesto-body cb-body hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
+              </div>
             </div>`;
         }
 
@@ -5575,22 +5764,27 @@
       const SVG_PENCIL = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_CAM    = `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>`;
 
-      $grid.innerHTML = programs.map(p => `
-        <div class="hp-program-card" data-prog-id="${esc(p.id)}">
-          <div class="prog-card-toolbar">
-            <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
-            <button class="prog-edit-btn" data-prog-id="${esc(p.id)}" title="Edit card">${SVG_PENCIL}</button>
-          </div>
-          <div class="hp-program-icon prog-icon-wrap" data-prog-id="${esc(p.id)}" style="position:relative;overflow:hidden;">
-            ${p.icon_url ? `<img src="${esc(p.icon_url)}" alt="" aria-hidden="true" class="w-full h-full object-cover rounded-md" />` : ''}
-            <div class="hp-photo-upload-overlay prog-icon-upload-overlay" style="border-radius:10px;">${SVG_CAM}<span>Change icon</span></div>
+      const PROG_PHOTOS = ['dance', 'mandarin', 'stem', 'music', 'adult', 'camp'];
+      $grid.innerHTML = programs.map((p, idx) => `
+        <div class="hp-program-card cb-zigzag${idx % 2 === 1 ? ' flip' : ''}" data-prog-id="${esc(p.id)}">
+          <div class="cb-zigzag-photo prog-icon-wrap" data-prog-id="${esc(p.id)}">
+            <div class="cb-photo ${PROG_PHOTOS[idx % PROG_PHOTOS.length]}"></div>
+            ${p.icon_url ? `<img src="${esc(p.icon_url)}" alt="" aria-hidden="true" class="cb-prog-icon-img" />` : ''}
+            <div class="hp-photo-upload-overlay prog-icon-upload-overlay">${SVG_CAM}<span>Change icon</span></div>
             <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="prog-icon-file" data-prog-id="${esc(p.id)}" style="display:none" />
           </div>
-          <h3 class="hp-program-name prog-name-el" data-prog-id="${esc(p.id)}">${esc(p.name)}</h3>
-          <p class="hp-program-desc prog-desc-el" data-prog-id="${esc(p.id)}">${esc(p.description || '')}</p>
-          <div class="hp-program-btns">
-            <button class="hp-program-btn-learn" data-slug="${esc(p.slug)}">Learn More</button>
-            <button class="hp-program-btn-enroll">Enroll Now</button>
+          <div class="cb-zigzag-text">
+            <div class="prog-card-toolbar">
+              <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
+              <button class="prog-edit-btn" data-prog-id="${esc(p.id)}" title="Edit card">${SVG_PENCIL}</button>
+            </div>
+            <p class="cb-eyebrow">Program</p>
+            <h3 class="hp-program-name prog-name-el" data-prog-id="${esc(p.id)}">${esc(p.name)}</h3>
+            <p class="hp-program-desc prog-desc-el" data-prog-id="${esc(p.id)}">${esc(p.description || '')}</p>
+            <div class="hp-program-btns">
+              <button class="hp-program-btn-learn" data-slug="${esc(p.slug)}">Learn More</button>
+              <button class="hp-program-btn-enroll">Enroll Now</button>
+            </div>
           </div>
         </div>`).join('') + `
       <div class="prog-add-row">
