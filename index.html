@@ -48,6 +48,22 @@
       --imperial-rgb:        196 69  105;   /* #C44569  warm rose          */
       --imperial-hover-rgb:  176 49  85;    /* #B03155  darker rose hover  */
       --surface-rgb:         255 255 255;   /* white cards                 */
+
+      /* ── Design system extension tokens (content-block) ── */
+      --rose-rgb:            210 60  180;   /* #d23cb4  magenta-rose accent */
+      --bg-surface:          rgb(var(--surface-rgb));
+      --border-subtle:       rgb(var(--imperial-rgb) / 0.12);
+      --fg-1:                rgb(var(--ink-rgb));
+      --fg-2:                rgb(var(--ink-rgb) / 0.70);
+      --fg-3:                rgb(var(--ink-rgb) / 0.55);
+      --font-display:        'Playfair Display', Georgia, serif;
+      --font-body:           'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono:           ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --grad-imperial:       linear-gradient(135deg, rgb(var(--imperial-rgb)), rgb(var(--rose-rgb)));
+      --grad-divider:        linear-gradient(90deg, transparent, rgb(var(--imperial-rgb) / 0.6) 50%, transparent);
+      --dur-base:            220ms;
+      --dur-quick:           150ms;
+      --ease-graceful:       cubic-bezier(0.22, 1, 0.36, 1);
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -56,6 +72,7 @@
         --imperial-rgb:        230 110 145;  /* #e66e91  lighter rose dark  */
         --imperial-hover-rgb:  245 130 165;  /* #f582a5  lighter hover dark */
         --surface-rgb:         42  20  28;   /* #2a141c  dark card surface  */
+        --rose-rgb:            240 110 200;  /* #f06ec8  lighter dark rose  */
       }
     }
 
