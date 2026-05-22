@@ -1677,6 +1677,328 @@
       }
       main:not(.view-hidden) { animation: none; }
     }
+    /* ═══════════════════════════════════════════════════
+       CONTENT-BLOCK COMPONENT  (ported from design bundle)
+       ═════════════════════════════════════════════════ */
+    :root {
+      --cb-radius: 18px;
+      --cb-pad-sm: 18px;
+      --cb-pad-md: 28px;
+      --cb-pad-lg: 40px;
+      --cb-shadow-rest: 0 1px 2px rgb(var(--ink-rgb) / 0.04), 0 4px 16px rgb(var(--ink-rgb) / 0.05);
+      --cb-shadow-hover: 0 2px 4px rgb(var(--imperial-rgb) / 0.08), 0 18px 50px rgb(var(--imperial-rgb) / 0.18);
+      --cb-shadow-active: 0 0 0 3px rgb(var(--imperial-rgb) / 0.18), 0 18px 50px rgb(var(--imperial-rgb) / 0.22);
+      --cb-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .content-block {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--cb-radius);
+      padding: var(--cb-pad-md);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--cb-shadow-rest);
+      overflow: hidden;
+      isolation: isolate;
+      transition:
+        transform 420ms var(--cb-ease),
+        box-shadow 420ms var(--cb-ease),
+        border-color 420ms var(--cb-ease);
+      will-change: transform;
+    }
+    .content-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg,
+        rgb(var(--imperial-rgb)),
+        rgb(var(--rose-rgb)),
+        rgb(var(--imperial-rgb)));
+      background-size: 200% 100%;
+      transform: translateX(-50%);
+      transition: width 520ms var(--cb-ease);
+      z-index: 3;
+    }
+    .content-block::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg,
+        transparent 30%,
+        rgb(var(--rose-rgb) / 0.10) 50%,
+        transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 900ms var(--cb-ease);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .content-block:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--cb-shadow-hover);
+      border-color: rgb(var(--imperial-rgb) / 0.28);
+    }
+    .content-block:hover::before { width: 96%; }
+    .content-block:hover::after  { transform: translateX(100%); }
+    .content-block:focus-within,
+    .content-block.is-active {
+      border-color: rgb(var(--imperial-rgb) / 0.6);
+      box-shadow: var(--cb-shadow-active);
+    }
+    .content-block > * { position: relative; z-index: 2; }
+
+    /* Sizes */
+    .content-block[data-size="sm"] { padding: var(--cb-pad-sm); border-radius: 14px; }
+    .content-block[data-size="lg"] { padding: var(--cb-pad-lg); border-radius: 22px; }
+
+    /* Tones */
+    .content-block[data-tone="cream"] { background: var(--bg-surface); color: var(--fg-1); }
+    .content-block[data-tone="ink"] {
+      background: linear-gradient(155deg, #1a1330 0%, #2a1850 50%, #4a1f5a 100%);
+      color: #f6f1ff; border-color: rgba(255,255,255,0.10);
+    }
+    .content-block[data-tone="ink"] .cb-title   { color: #ffffff !important; }
+    .content-block[data-tone="ink"] .cb-title em{ color: #ffd6e8 !important; }
+    .content-block[data-tone="ink"] .cb-body    { color: rgba(255,255,255,0.92) !important; }
+    .content-block[data-tone="ink"] .cb-eyebrow { color: #ffb6dc !important; }
+    .content-block[data-tone="ink"] .cb-meta    { color: rgba(255,255,255,0.78) !important; border-top-color: rgba(255,255,255,0.22) !important; }
+    .content-block[data-tone="ink"] blockquote  { color: #ffffff !important; }
+    .content-block[data-tone="ink"] cite        { color: rgba(255,255,255,0.72) !important; }
+    .content-block[data-tone="lavender"] {
+      background: linear-gradient(155deg, rgb(var(--imperial-rgb) / 0.06), rgb(var(--rose-rgb) / 0.03));
+      border-color: rgb(var(--imperial-rgb) / 0.18);
+    }
+    .content-block[data-tone="rose"] {
+      background: linear-gradient(155deg, #fff5fa 0%, #ffe7f3 100%);
+      border-color: rgba(180, 40, 130, 0.28); color: #2a1234;
+    }
+    .content-block[data-tone="rose"] .cb-title   { color: #2a1234 !important; }
+    .content-block[data-tone="rose"] .cb-title em{ color: #b22885 !important; font-style: italic; }
+    .content-block[data-tone="rose"] .cb-body    { color: rgba(42, 18, 52, 0.88) !important; }
+    .content-block[data-tone="rose"] .cb-eyebrow { color: #a3236f !important; }
+    .content-block[data-tone="rose"] .cb-meta    { color: rgba(42, 18, 52, 0.72) !important; border-top-color: rgba(180, 40, 130, 0.22) !important; }
+    .content-block[data-tone="rose"] blockquote  { color: #2a1234 !important; }
+    .content-block[data-tone="rose"] cite        { color: rgba(42, 18, 52, 0.70) !important; }
+    .content-block[data-tone="gold"] {
+      background: linear-gradient(155deg, #fff8e8 0%, #fceeca 100%);
+      border-color: rgba(168, 122, 31, 0.45); color: #4a3210;
+    }
+    .content-block[data-tone="gold"] .cb-title   { color: #3a2608 !important; }
+    .content-block[data-tone="gold"] .cb-title em{ color: #a87a1f !important; font-style: italic; }
+    .content-block[data-tone="gold"] .cb-body    { color: rgba(58, 38, 8, 0.90) !important; }
+    .content-block[data-tone="gold"] .cb-eyebrow { color: #8a5e10 !important; }
+    .content-block[data-tone="gold"] .cb-meta    { color: rgba(58, 38, 8, 0.72) !important; border-top-color: rgba(168, 122, 31, 0.30) !important; }
+    .content-block[data-tone="gold"] blockquote  { color: #3a2608 !important; }
+    .content-block[data-tone="gold"] cite        { color: rgba(58, 38, 8, 0.72) !important; }
+    .content-block[data-tone="glass"] {
+      background: rgb(var(--surface-rgb) / 0.6);
+      backdrop-filter: blur(12px) saturate(140%);
+      border-color: rgb(var(--imperial-rgb) / 0.18);
+    }
+
+    /* Inner parts */
+    .cb-eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgb(var(--imperial-rgb) / 0.75); margin: 0 0 10px;
+    }
+    .cb-title {
+      font-family: var(--font-display); font-size: clamp(20px, 2.4vw, 30px);
+      font-weight: 600; line-height: 1.2; margin: 0 0 8px; text-wrap: balance;
+    }
+    .cb-title em { color: rgb(var(--rose-rgb)); font-style: italic; }
+    .cb-body {
+      font-size: 14.5px; line-height: 1.65; color: rgb(var(--ink-rgb) / 0.72);
+      margin: 0 0 14px; text-wrap: pretty;
+    }
+    .cb-meta {
+      font-size: 12px; color: rgb(var(--ink-rgb) / 0.5); letter-spacing: 0.04em;
+      display: flex; gap: 12px; align-items: center;
+      margin-top: auto; padding-top: 14px; border-top: 1px solid rgb(var(--ink-rgb) / 0.08);
+    }
+    .content-block[data-tone="ink"] .cb-meta { border-top-color: rgba(255,255,255,0.12); }
+
+    /* Image kind */
+    .content-block[data-kind="image"] { padding: 0; min-height: 240px; }
+    .content-block[data-kind="image"] .cb-media {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;
+      transition: transform 1100ms var(--cb-ease), filter 800ms var(--cb-ease);
+    }
+    .content-block[data-kind="image"]:hover .cb-media { transform: scale(1.06); }
+    .content-block[data-kind="image"] .cb-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,8,28,0.78) 0%, rgba(10,8,28,0.35) 45%, rgba(10,8,28,0.1) 80%);
+      z-index: 1; transition: opacity 600ms var(--cb-ease);
+    }
+    .content-block[data-kind="image"] .cb-image-body {
+      position: relative; z-index: 2; margin-top: auto; padding: var(--cb-pad-md); color: white;
+    }
+    .content-block[data-kind="image"] .cb-image-body .cb-eyebrow { color: rgb(255,210,230); }
+    .content-block[data-kind="image"] .cb-image-body .cb-title { color: white; }
+    .content-block[data-kind="image"] .cb-image-body .cb-body { color: rgba(255,255,255,0.82); }
+
+    /* Video kind */
+    .content-block[data-kind="video"] { padding: 0; min-height: 280px; background: #0a081c; cursor: pointer; }
+    .content-block[data-kind="video"] .cb-media {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;
+      opacity: 0.85; transition: opacity 600ms var(--cb-ease), transform 1200ms var(--cb-ease);
+    }
+    .content-block[data-kind="video"]:hover .cb-media { opacity: 1; transform: scale(1.04); }
+    .content-block[data-kind="video"] .cb-play {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 78px; height: 78px; border-radius: 999px; background: rgba(255,255,255,0.92);
+      border: 0; cursor: pointer; z-index: 3; display: flex; align-items: center; justify-content: center;
+      color: rgb(var(--imperial-rgb));
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgb(var(--rose-rgb) / 0.5);
+      animation: cb-pulse 2.6s ease-in-out infinite;
+      transition: transform 300ms var(--cb-ease), background 300ms;
+    }
+    .content-block[data-kind="video"]:hover .cb-play { transform: translate(-50%, -50%) scale(1.08); background: white; }
+    .content-block[data-kind="video"] .cb-play svg { width: 30px; height: 30px; margin-left: 4px; }
+    @keyframes cb-pulse {
+      0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 0 rgb(var(--rose-rgb) / 0.5); }
+      50%      { box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 18px rgb(var(--rose-rgb) / 0); }
+    }
+    .content-block[data-kind="video"] .cb-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,8,28,0.75), rgba(10,8,28,0.15)); z-index: 1;
+    }
+    .content-block[data-kind="video"] .cb-image-body {
+      position: relative; z-index: 2; margin-top: auto; padding: var(--cb-pad-md); color: white;
+    }
+    .content-block[data-kind="video"] .cb-image-body .cb-title { color: white; }
+    .content-block[data-kind="video"] .cb-image-body .cb-eyebrow { color: rgb(255,210,230); }
+
+    /* Quote kind */
+    .content-block[data-kind="quote"] { padding-left: calc(var(--cb-pad-md) + 8px); }
+    .content-block[data-kind="quote"]::after { display: none; }
+    .content-block[data-kind="quote"] .cb-quote-mark {
+      position: absolute; top: 6px; left: 14px;
+      font-family: var(--font-display); font-size: 76px; line-height: 1;
+      color: rgb(var(--rose-rgb) / 0.45); z-index: 2;
+    }
+    .content-block[data-kind="quote"] blockquote {
+      margin: 0 0 14px; font-family: var(--font-display); font-style: italic;
+      font-size: clamp(17px, 1.7vw, 22px); line-height: 1.5; color: var(--fg-1); text-wrap: pretty;
+    }
+    .content-block[data-kind="quote"] cite {
+      font-style: normal; font-family: var(--font-body); font-size: 11.5px;
+      font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(var(--ink-rgb) / 0.5);
+    }
+
+    /* Editable affordances */
+    .content-block[data-editable] { cursor: grab; }
+    .content-block[data-editable]:active { cursor: grabbing; }
+
+    /* Ghost add tile */
+    .content-block.cb-add {
+      background: transparent; border: 2px dashed rgb(var(--imperial-rgb) / 0.25);
+      box-shadow: none; align-items: center; justify-content: center;
+      text-align: center; min-height: 180px; cursor: pointer; color: rgb(var(--imperial-rgb) / 0.7);
+    }
+    .content-block.cb-add::before, .content-block.cb-add::after { display: none; }
+    .content-block.cb-add:hover {
+      background: rgb(var(--imperial-rgb) / 0.04); border-color: rgb(var(--imperial-rgb) / 0.5);
+      color: rgb(var(--imperial-rgb)); transform: translateY(-2px);
+    }
+    .content-block.cb-add .cb-add-icon {
+      width: 56px; height: 56px; border-radius: 999px;
+      background: rgb(var(--imperial-rgb) / 0.08);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px; transition: transform 380ms var(--cb-ease), background 380ms;
+    }
+    .content-block.cb-add:hover .cb-add-icon {
+      background: rgb(var(--imperial-rgb)); color: white; transform: rotate(90deg) scale(1.08);
+    }
+    .content-block.cb-add .cb-add-label {
+      font-family: var(--font-display); font-size: 17px; font-weight: 600; letter-spacing: 0.02em;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .content-block, .content-block::before, .content-block::after,
+      .content-block .cb-media, .content-block .cb-play,
+      .content-block.cb-add .cb-add-icon { transition: none !important; animation: none !important; }
+    }
+
+    /* ── 12-col grid chassis ── */
+    .cb-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 22px; }
+    @media (max-width: 900px) { .cb-grid { grid-template-columns: 1fr; } .cb-grid > * { grid-column: 1 / -1 !important; } }
+
+    /* ── Stat numeral ── */
+    .cb-stat { font-family: var(--font-display); font-size: 56px; font-weight: 600; line-height: 1; background-image: var(--grad-imperial); -webkit-background-clip: text; background-clip: text; color: transparent; margin: 4px 0 10px; letter-spacing: -0.02em; }
+    .content-block[data-tone="ink"] .cb-stat { background-image: linear-gradient(135deg, #ffd6e8, #ffb6dc); -webkit-background-clip: text; background-clip: text; }
+    .content-block[data-tone="gold"] .cb-stat { background-image: linear-gradient(135deg, #a87a1f, #d4a44a); -webkit-background-clip: text; background-clip: text; }
+
+    /* ── Pill button row ── */
+    .cb-actions { display: flex; gap: 10px; margin-top: auto; padding-top: 14px; border-top: 1px solid rgb(var(--ink-rgb) / 0.08); flex-wrap: wrap; }
+    .content-block[data-tone="ink"] .cb-actions { border-top-color: rgba(255,255,255,0.18); }
+
+    /* ── Photo placeholders ── */
+    .cb-photo { position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: center; transition: transform 1100ms var(--cb-ease), filter 600ms; }
+    .cb-photo::after { content:''; position:absolute; inset:0; opacity:0.4; mix-blend-mode: overlay; background-image: radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px), radial-gradient(rgba(0,0,0,0.15) 1px, transparent 1px); background-size: 3px 3px, 5px 5px; background-position: 0 0, 1px 1px; pointer-events: none; }
+    .cb-photo.stage     { background: radial-gradient(ellipse 60% 80% at 30% 70%, rgba(255,210,230,0.55), transparent 65%), radial-gradient(ellipse 70% 60% at 75% 30%, rgba(232,188,120,0.5), transparent 65%), radial-gradient(circle at 50% 100%, rgba(91,79,207,0.7), transparent 70%), linear-gradient(135deg, #1a1330 0%, #4a1f5a 55%, #6e2570 100%); }
+    .cb-photo.studio    { background: radial-gradient(ellipse 70% 60% at 40% 50%, rgba(255,235,210,0.45), transparent 70%), radial-gradient(ellipse 60% 80% at 90% 30%, rgba(210,60,180,0.4), transparent 65%), linear-gradient(150deg, #6e3aa5 0%, #d23cb4 60%, #e8bc78 100%); }
+    .cb-photo.recital   { background: radial-gradient(ellipse 50% 70% at 50% 60%, rgba(255,210,230,0.6), transparent 70%), radial-gradient(circle at 20% 20%, rgba(72,220,210,0.35), transparent 60%), linear-gradient(135deg, #2a1850, #5b4fcf 55%, #d23cb4 100%); }
+    .cb-photo.community { background: radial-gradient(ellipse 60% 60% at 30% 40%, rgba(255,240,200,0.45), transparent 65%), radial-gradient(ellipse 70% 80% at 80% 70%, rgba(91,79,207,0.5), transparent 70%), linear-gradient(135deg, #e8bc78 0%, #d23cb4 50%, #5b4fcf 100%); }
+    .cb-photo.lantern   { background: radial-gradient(circle at 30% 70%, rgba(255,180,80,0.6), transparent 50%), radial-gradient(circle at 70% 30%, rgba(255,120,200,0.55), transparent 55%), linear-gradient(135deg, #2a1850, #6e2570 60%, #d23cb4 100%); }
+    .cb-photo.barre     { background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(255,255,255,0.18), transparent 70%), linear-gradient(160deg, #3a2864 0%, #5b4fcf 60%, #8e7af0 100%); }
+    .cb-photo.dance     { background: radial-gradient(ellipse 70% 70% at 40% 50%, rgba(255,210,230,0.55), transparent 65%), linear-gradient(135deg, #6e3aa5, #d23cb4); }
+    .cb-photo-label { position: absolute; bottom: 14px; right: 14px; z-index: 3; font: 500 11px/1 var(--font-mono); color: rgba(255,255,255,0.85); padding: 7px 11px; border-radius: 999px; background: rgba(10,8,28,0.4); backdrop-filter: blur(10px); letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.14); }
+    .cb-photo-label .dot { display:inline-block; width: 6px; height: 6px; border-radius: 999px; background: rgb(var(--rose-rgb)); margin-right: 6px; vertical-align: 1px; box-shadow: 0 0 8px rgb(var(--rose-rgb) / 0.6); }
+
+    /* ── Editorial split ── */
+    .cb-editorial { position: relative; display: grid; grid-template-columns: 5fr 7fr; gap: 0; min-height: 380px; overflow: hidden; border-radius: 22px; border: 1px solid var(--border-subtle); background: var(--bg-surface); box-shadow: var(--cb-shadow-rest); isolation: isolate; transition: transform 420ms var(--cb-ease), box-shadow 420ms var(--cb-ease), border-color 420ms var(--cb-ease); }
+    .cb-editorial:hover { transform: translateY(-4px); box-shadow: var(--cb-shadow-hover); border-color: rgb(var(--imperial-rgb) / 0.28); }
+    .cb-editorial:hover .cb-photo { transform: scale(1.05); }
+    .cb-editorial::before { content:''; position:absolute; top:0; left:50%; width:0; height:2px; background: linear-gradient(90deg, rgb(var(--imperial-rgb)), rgb(var(--rose-rgb)), rgb(var(--imperial-rgb))); transform: translateX(-50%); transition: width 520ms var(--cb-ease); z-index: 5; }
+    .cb-editorial:hover::before { width: 96%; }
+    .cb-editorial.flip { grid-template-columns: 7fr 5fr; }
+    .cb-editorial.flip .cb-photo-pane { order: 2; }
+    .cb-editorial.flip .cb-text-pane  { order: 1; }
+    .cb-photo-pane { position: relative; min-height: 100%; overflow: hidden; }
+    .cb-text-pane { padding: 48px 44px; display: flex; flex-direction: column; justify-content: center; gap: 14px; position: relative; }
+    .cb-text-pane .cb-eyebrow { margin: 0; }
+    .cb-text-pane .cb-title { font-size: clamp(22px, 2.5vw, 34px); line-height: 1.15; margin: 4px 0 4px; }
+    .cb-text-pane .cb-body { font-size: 15px; line-height: 1.65; margin: 0; }
+    @media (max-width: 800px) { .cb-editorial, .cb-editorial.flip { grid-template-columns: 1fr; } .cb-photo-pane { min-height: 200px; order: 1 !important; } .cb-text-pane { padding: 28px; order: 2 !important; } }
+    .cb-editorial.ink { background: linear-gradient(155deg, #1a1330, #2a1850 60%, #4a1f5a); border-color: rgba(255,255,255,0.10); }
+    .cb-editorial.ink .cb-text-pane .cb-title { color: #fff; }
+    .cb-editorial.ink .cb-text-pane .cb-title em { color: #ffd6e8; font-style: italic; }
+    .cb-editorial.ink .cb-text-pane .cb-body { color: rgba(255,255,255,0.86); }
+    .cb-editorial.ink .cb-text-pane .cb-eyebrow { color: #ffb6dc; }
+
+    /* ── Integration overrides ── */
+    /* Toolbar inside content-block / cb-editorial: repositioned to top-right inside the block
+       (not above it), since overflow:hidden clips the original top:-14px placement. */
+    .content-block .section-toolbar,
+    .cb-editorial .section-toolbar {
+      top: 10px !important; right: 10px !important;
+      position: absolute !important; z-index: 6 !important;
+      opacity: 0; transition: opacity 220ms;
+    }
+    .content-block:hover .section-toolbar,
+    .cb-editorial:hover .section-toolbar,
+    .content-block:focus-within .section-toolbar,
+    .cb-editorial:focus-within .section-toolbar { opacity: 1; }
+    /* Light chips on dark/image/video blocks */
+    .content-block[data-tone="ink"] .section-toolbar button,
+    .content-block[data-kind="image"] .section-toolbar button,
+    .content-block[data-kind="video"] .section-toolbar button,
+    .cb-editorial.ink .section-toolbar button {
+      background: rgba(255,255,255,0.88) !important;
+      color: rgb(var(--imperial-rgb)) !important;
+      border-color: rgba(255,255,255,0.4) !important;
+    }
+    /* Carousel fills the photo pane */
+    .cb-photo-pane .sec-carousel { position: absolute; inset: 0; height: 100% !important; }
+    .cb-photo-pane .sec-carousel img { width: 100%; height: 100%; object-fit: cover; }
+    /* Add-section row spans full width */
+    .cb-grid > .home-about-add-row { grid-column: 1 / -1; }
+    /* section-toolbar visibility hook (existing rule uses body.edit-mode) — no change needed */
+    /* cb-editorial full-width span within cb-grid */
+    .cb-grid > .cb-editorial { grid-column: 1 / -1; }
   </style>
 </head>
 
@@ -4017,6 +4339,7 @@
         onEnd: async () => {
           const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
           await reorderAboutSections(ids);
+          await renderHomeAbout();
         }
       });
     }
@@ -4031,6 +4354,7 @@
         onEnd: async () => {
           const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
           await reorderAboutSections(ids);
+          await renderHomeAboutFeatures();
         }
       });
     }
@@ -4093,6 +4417,7 @@
         onEnd: async () => {
           const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
           await reorderConcertSections(ids);
+          await renderConcertPage();
         }
       });
     }
@@ -4112,6 +4437,7 @@
         onEnd: async () => {
           const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
           await reorderTosSections(ids);
+          await renderTosPage();
         }
       });
     }
@@ -4126,6 +4452,7 @@
           if (!slug) return;
           const ids = Array.from(container.querySelectorAll('[data-section-id]')).map(el => el.dataset.sectionId);
           await reorderProgramSections(slug, ids);
+          await renderProgramPage(currentProgram);
         }
       });
     }
@@ -4987,15 +5314,20 @@
 
       if (!sections.length) {
         $container.innerHTML = addRowHtml;
+        $container.classList.add('cb-grid');
         wireHomeAboutAddForm();
         return;
       }
 
+      $container.classList.add('cb-grid');
+      const variants = computeVariants(sections);
+
       $container.innerHTML = sections.map((s, idx) => {
+        const v    = variants[idx];
         const flip = idx % 2 !== 0;
 
         const toolbar = `
-          <div class="section-toolbar" style="position:absolute;top:0.5rem;right:0.5rem;">
+          <div class="section-toolbar">
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="haf-edit-btn" data-edit-id="${esc(s.id)}" title="Edit text">${SVG_PENCIL}</button>
             <button class="haf-img-btn" data-img-id="${esc(s.id)}" title="${s.image_url && !isVideoUrl(s.image_url) ? 'Change photo' : 'Add photo'}">${SVG_IMG}</button>
@@ -5003,39 +5335,36 @@
             <button class="haf-del-btn" data-del-id="${esc(s.id)}" title="Delete section">${SVG_TRASH}</button>
           </div>`;
 
-        if (!s.image_url) {
+        if (v.kind === 'text') {
           return `
-            <div class="hp-feature-text-only reveal" data-section-id="${esc(s.id)}" style="position:relative">
+            <div class="editable-section content-block reveal" data-tone="${v.tone}" data-section-id="${esc(s.id)}" style="grid-column: span ${v.span}">
               ${toolbar}
-              <span class="hp-feature-eyebrow haf-eyebrow" data-id="${esc(s.id)}">${esc(s.eyebrow || 'Our Story')}</span>
-              <h2 class="hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h2>
-              <div class="hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
+              <p class="cb-eyebrow haf-eyebrow" data-id="${esc(s.id)}">${esc(s.eyebrow || 'Our Story')}</p>
+              <h3 class="cb-title hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
+              <div class="cb-body hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
             </div>`;
         }
 
         const isVid = isVideoUrl(s.image_url);
         const ytId  = isVid ? getYouTubeId(s.image_url) : null;
-        const mediaEl = isVid
-          ? `<div class="yt-thumb-wrap" style="border-radius:0.75rem;overflow:hidden;cursor:pointer" data-lburl="${esc(s.image_url)}">
-               <img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(s.title)}" loading="lazy" />
+        const carouselHtml = isVid
+          ? `<div class="yt-thumb-wrap" style="position:absolute;inset:0;width:100%;height:100%;cursor:pointer" data-lburl="${esc(s.image_url)}">
+               <img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(s.title)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;" />
                <div class="yt-play-overlay"></div>
              </div>`
-          : `<img class="hp-feature-img" src="${esc(s.image_url)}" alt="${esc(s.title)}" loading="lazy" />
+          : `<img class="hp-feature-img" src="${esc(s.image_url)}" alt="${esc(s.title)}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
              <div class="hp-photo-upload-overlay">${SVG_CAM}<span>Change photo</span></div>
              <input class="haf-photo-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" />`;
         return `
-          <div class="hp-feature${flip ? ' hp-feature--flip' : ''}" data-section-id="${esc(s.id)}" style="position:relative">
+          <div class="editable-section cb-editorial${flip ? ' flip' : ''}${v.inkEdit ? ' ink' : ''}" data-section-id="${esc(s.id)}" style="grid-column: span 12">
             ${toolbar}
-            <div class="hp-feature-text">
-              <span class="hp-feature-eyebrow haf-eyebrow" data-id="${esc(s.id)}">${esc(s.eyebrow || 'Our Story')}</span>
-              <h2 class="hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h2>
-              <div class="hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
+            <div class="cb-photo-pane hp-feature-photo-wrap"${isVid ? '' : ` data-upload-sid="${esc(s.id)}"`}>
+              ${carouselHtml}
             </div>
-            <div class="hp-feature-photo-wrap"${isVid ? '' : ` data-upload-sid="${esc(s.id)}"`}>
-              <div class="hp-deco-circle hp-deco-circle--primary"></div>
-              <div class="hp-deco-circle hp-deco-circle--accent"></div>
-              <div class="hp-deco-dash-box"></div>
-              ${mediaEl}
+            <div class="cb-text-pane hp-feature-text">
+              <p class="cb-eyebrow haf-eyebrow" data-id="${esc(s.id)}">${esc(s.eyebrow || 'Our Story')}</p>
+              <h3 class="cb-title hp-feature-heading haf-title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
+              <div class="cb-body hp-feature-body haf-body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
             </div>
           </div>`;
       }).join('') + addRowHtml;
@@ -5073,8 +5402,8 @@
                 sb.remove();
                 await renderHomeAboutFeatures();
               });
-              block.querySelector('.hp-feature-text, .hp-feature-text-only') ?
-                block.querySelector('.hp-feature-text, .hp-feature-text-only').appendChild(sb) :
+              block.querySelector('.cb-text-pane, .hp-feature-text') ?
+                block.querySelector('.cb-text-pane, .hp-feature-text').appendChild(sb) :
                 block.appendChild(sb);
             }
           }
@@ -5836,9 +6165,44 @@
         }, { passive: true });
       });
     }
+    function computeVariants(sections) {
+    // Determine kind/tone/span for each section without touching the DB.
+    // kind: 'editorial' if has image/carousel, 'text' otherwise
+    // tone: cycles through palette for text blocks; editorial blocks stay cream
+    // span: editorial = 12 (full row); text blocks tile 7/5/5/7/6/6, rows sum to 12
+    const TEXT_TONES = ['cream', 'lavender', 'gold', 'cream', 'rose', 'cream'];
+    const TEXT_SPANS = [7, 5, 5, 7, 6, 6];
+
+    const variants = sections.map((s, i) => {
+      const hasImage = !!(s.image_url || (s.images && s.images.length));
+      const isVideo  = hasImage && isVideoUrl(s.image_url || '');
+      const kind     = isVideo ? 'video' : hasImage ? 'editorial' : 'text';
+      const tone     = kind === 'text' ? TEXT_TONES[i % TEXT_TONES.length] : 'cream';
+      const inkEdit  = kind === 'editorial' && (i % 3 === 2);
+      return { kind, tone, span: kind !== 'text' ? 12 : 0, inkEdit };
+    });
+
+    // Tile text block spans so each row sums to 12
+    let rowSum = 0;
+    let rowStart = 0;
+    for (let i = 0; i < variants.length; i++) {
+      if (variants[i].kind !== 'text') { rowSum = 0; rowStart = i + 1; continue; }
+      const span = TEXT_SPANS[i % TEXT_SPANS.length];
+      variants[i].span = span;
+      rowSum += span;
+      if (rowSum >= 12) { rowSum = 0; rowStart = i + 1; }
+      else if (i === variants.length - 1 || variants[i + 1].kind !== 'text') {
+        // partial row — widen this block to fill
+        variants[i].span += (12 - rowSum);
+        rowSum = 0; rowStart = i + 1;
+      }
+    }
+    return variants;
+  }
+
     function wireSbsResizeHandles($container, updateFn) {
       $container.querySelectorAll('.sbs-resize-handle').forEach(handle => {
-        const imgContainer = handle.closest('.sec-sidebyside-img');
+        const imgContainer = handle.closest('.sec-sidebyside-img, .cb-photo-pane');
         const carousel = imgContainer?.querySelector('.sec-carousel');
         const sectionId = handle.dataset.resizeId;
         handle.addEventListener('mousedown', e => {
@@ -5871,35 +6235,48 @@
       const sections   = await fetchAboutSections();
       if (!sections.length) { $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
-      const layout = getSectionLayout('about');
+      $container.classList.add('cb-grid');
+      const variants_ha = computeVariants(sections);
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
       const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_IMG_A  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
       const SVG_VID_A  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
       const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
-      $container.innerHTML = sections.map(s => {
+      $container.innerHTML = sections.map((s, idx) => {
+        const v       = variants_ha[idx];
+        const flip    = idx % 2 !== 0;
         const imgs    = getSectionImages(s);
         const hasImgs = imgs.length > 0;
-        const isSBS   = layout === 'sidebyside' && hasImgs;
         const carHTML = hasImgs ? buildCarouselHTML(imgs, s.id, editMode) : '';
-        const textHTML = `
-          <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
-          <div class="text-ink/65 leading-relaxed text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${sanitizeHtml(s.body)}</div>`;
-        const imgH = s.img_height || '';
-        const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${s.id}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
-        const bodyHTML = isSBS
-          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text">${textHTML}</div></div>`
-          : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
-        return `
-        <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8" data-section-id="${s.id}">
+        const tbHTML = `
           <div class="section-toolbar">
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
             <button class="img-section-btn" title="Add/change image" data-imgbtn-id="${s.id}">${SVG_IMG_A}</button>
             <button class="vid-section-btn" title="Add YouTube video" data-vidbtn-id="${s.id}">${SVG_VID_A}</button>
             <button class="del-section-btn" title="Delete section" data-delbtn-id="${s.id}">${SVG_TRASH}</button>
+          </div>`;
+        const textHTML = `
+          <h3 class="cb-title editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
+          <div class="cb-body editable-body" data-field="body" data-id="${s.id}">${sanitizeHtml(s.body)}</div>`;
+        if (!hasImgs) {
+          return `
+          <div class="editable-section content-block" data-tone="${v.tone}" data-section-id="${s.id}" style="grid-column: span ${v.span}">
+            ${tbHTML}
+            ${textHTML}
+          </div>`;
+        }
+        const imgH = s.img_height || '';
+        const resizeHandle = editMode ? `<div class="sbs-resize-handle" data-resize-id="${s.id}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
+        return `
+        <div class="editable-section cb-editorial${flip ? ' flip' : ''}${v.inkEdit ? ' ink' : ''}" data-section-id="${s.id}" style="grid-column: span 12">
+          ${tbHTML}
+          <div class="cb-photo-pane sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">
+            ${carHTML}${resizeHandle}
           </div>
-          ${bodyHTML}
+          <div class="cb-text-pane sec-sidebyside-text">
+            ${textHTML}
+          </div>
         </div>`;
       }).join('');
 
@@ -6273,36 +6650,46 @@
       const sections   = await fetchConcertSections();
       if (!sections.length) { $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return; }
       $empty.classList.add('view-hidden');
-      const layout  = getSectionLayout('concert');
-      $container.classList.toggle('sbs-container-full', layout === 'sidebyside');
+      $container.classList.add('cb-grid');
+      const variants_cp = computeVariants(sections);
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
       const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_IMG_C  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
       const SVG_VID_C  = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`;
       const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
-      $container.innerHTML = sections.map(s => {
+      $container.innerHTML = sections.map((s, idx) => {
+        const v       = variants_cp[idx];
+        const flip    = idx % 2 !== 0;
         const imgs    = getSectionImages(s);
         const hasImgs = imgs.length > 0;
-        const isSBS   = layout === 'sidebyside' && hasImgs;
         const carHTML = hasImgs ? buildCarouselHTML(imgs, s.id, editMode) : '';
-        const textHTML = `
-          <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
-          <div class="text-ink/65 leading-relaxed text-sm sm:text-base editable-body" data-field="body" data-id="${s.id}">${sanitizeHtml(s.body)}</div>`;
-        const imgH = s.img_height || '';
-        const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${s.id}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
         const tbHTML = `
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="edit-section-btn" title="Edit inline" data-edit-id="${s.id}">${SVG_PENCIL}</button>
             <button class="img-concert-btn" title="${hasImgs ? 'Add/change image' : 'Add image'}" data-imgbtn-id="${s.id}">${SVG_IMG_C}</button>
             <button class="vid-concert-btn" title="Add YouTube video" data-vidbtn-id="${s.id}">${SVG_VID_C}</button>
             <button class="del-section-btn" title="Delete" data-delbtn-id="${s.id}">${SVG_TRASH}</button>`;
-        const bodyHTML = isSBS
-          ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8"><div class="section-toolbar">${tbHTML}</div>${textHTML}</div></div>`
-          : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
+        const textHTML = `
+          <h3 class="cb-title editable-title" data-field="title" data-id="${s.id}">${esc(s.title)}</h3>
+          <div class="cb-body editable-body" data-field="body" data-id="${s.id}">${sanitizeHtml(s.body)}</div>`;
+        if (!hasImgs) {
+          return `
+          <div class="editable-section content-block reveal-left" data-tone="${v.tone}" data-section-id="${s.id}" style="grid-column: span ${v.span}">
+            <div class="section-toolbar">${tbHTML}</div>
+            ${textHTML}
+          </div>`;
+        }
+        const imgH = s.img_height || '';
+        const resizeHandle = editMode ? `<div class="sbs-resize-handle" data-resize-id="${s.id}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
         return `
-        <div class="editable-section ${isSBS ? 'sec-sbs-section' : 'card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8'} reveal-left" data-section-id="${s.id}">
-          ${isSBS ? '' : `<div class="section-toolbar">${tbHTML}</div>`}
-          ${bodyHTML}
+        <div class="editable-section cb-editorial${flip ? ' flip' : ''}${v.inkEdit ? ' ink' : ''} reveal-left" data-section-id="${s.id}" style="grid-column: span 12">
+          <div class="section-toolbar">${tbHTML}</div>
+          <div class="cb-photo-pane sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">
+            ${carHTML}${resizeHandle}
+          </div>
+          <div class="cb-text-pane sec-sidebyside-text">
+            ${textHTML}
+          </div>
         </div>`;
       }).join('');
 
@@ -6471,31 +6858,41 @@
 
       if (sections.length) {
         $empty.classList.add('view-hidden');
-        const layout = getSectionLayout('program');
-        $container.classList.toggle('sbs-container-full', layout === 'sidebyside');
-        $container.innerHTML = sections.map(s => {
+        $container.classList.add('cb-grid');
+        const variants_pp = computeVariants(sections);
+        $container.innerHTML = sections.map((s, idx) => {
+          const v       = variants_pp[idx];
+          const flip    = idx % 2 !== 0;
           const imgs    = getSectionImages(s);
           const hasImgs = imgs.length > 0;
-          const isSBS   = layout === 'sidebyside' && hasImgs;
           const carHTML = hasImgs ? buildCarouselHTML(imgs, s.id, editMode) : '';
-          const textHTML = `
-            <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
-            <div class="text-ink/65 leading-relaxed text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>`;
-          const imgH = s.img_height || '';
-          const resizeHandle = (isSBS && editMode) ? `<div class="sbs-resize-handle" data-resize-id="${esc(s.id)}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
           const tbHTMLp = `
               <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
               <button class="edit-section-btn" title="Edit inline" data-edit-id="${esc(s.id)}">${SVG_PENCIL}</button>
               <button class="img-program-btn" title="${hasImgs ? 'Add/change image' : 'Add image'}" data-imgbtn-id="${esc(s.id)}">${SVG_IMG_P}</button>
               <button class="vid-program-btn" title="Add YouTube video" data-vidbtn-id="${esc(s.id)}">${SVG_VID_P}</button>
               <button class="del-section-btn" title="Delete section" data-delbtn-id="${esc(s.id)}">${SVG_TRASH}</button>`;
-          const bodyHTML = isSBS
-            ? `<div class="sec-sidebyside"><div class="sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">${carHTML}${resizeHandle}</div><div class="sec-sidebyside-text card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8"><div class="section-toolbar">${tbHTMLp}</div>${textHTML}</div></div>`
-            : `${hasImgs ? `<div class="sec-linear-img">${carHTML}</div>` : ''}${textHTML}`;
+          const textHTML = `
+            <h3 class="cb-title editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
+            <div class="cb-body editable-body" data-field="body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>`;
+          if (!hasImgs) {
+            return `
+          <div class="editable-section content-block reveal-left" data-tone="${v.tone}" data-section-id="${esc(s.id)}" style="grid-column: span ${v.span}">
+            <div class="section-toolbar">${tbHTMLp}</div>
+            ${textHTML}
+          </div>`;
+          }
+          const imgH = s.img_height || '';
+          const resizeHandle = editMode ? `<div class="sbs-resize-handle" data-resize-id="${esc(s.id)}" title="Drag to resize image"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M10 2L2 10M7 2L2 7M10 5L5 10"/></svg></div>` : '';
           return `
-          <div class="editable-section ${isSBS ? 'sec-sbs-section' : 'card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8'} reveal-left" data-section-id="${esc(s.id)}">
-            ${isSBS ? '' : `<div class="section-toolbar">${tbHTMLp}</div>`}
-            ${bodyHTML}
+          <div class="editable-section cb-editorial${flip ? ' flip' : ''}${v.inkEdit ? ' ink' : ''} reveal-left" data-section-id="${esc(s.id)}" style="grid-column: span 12">
+            <div class="section-toolbar">${tbHTMLp}</div>
+            <div class="cb-photo-pane sec-sidebyside-img" style="${imgH ? `--sbs-img-h:${imgH}` : ''}">
+              ${carHTML}${resizeHandle}
+            </div>
+            <div class="cb-text-pane sec-sidebyside-text">
+              ${textHTML}
+            </div>
           </div>`;
         }).join('');
 
@@ -6811,19 +7208,24 @@
         return;
       }
       $empty.classList.add('view-hidden');
+      $container.classList.add('cb-grid');
+      const variants_tp = computeVariants(sections);
       const SVG_DRAG   = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></svg>`;
       const SVG_PENCIL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>`;
       const SVG_TRASH  = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
-      $container.innerHTML = sections.map(s => `
-        <div class="editable-section card-accent bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8" data-section-id="${esc(s.id)}">
+      $container.innerHTML = sections.map((s, idx) => {
+        const v = variants_tp[idx];
+        return `
+        <div class="editable-section content-block" data-tone="${v.tone}" data-section-id="${esc(s.id)}" style="grid-column: span ${v.span}">
           <div class="section-toolbar">
             <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
             <button class="edit-section-btn" title="Edit inline" data-edit-id="${esc(s.id)}">${SVG_PENCIL}</button>
             <button class="del-section-btn" title="Delete section" data-delbtn-id="${esc(s.id)}">${SVG_TRASH}</button>
           </div>
-          <h3 class="font-display text-xl text-ink mb-3 editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
-          <div class="text-ink/65 leading-relaxed text-sm sm:text-base editable-body" data-field="body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
-        </div>`).join('');
+          <h3 class="cb-title editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</h3>
+          <div class="cb-body editable-body" data-field="body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
+        </div>`;
+      }).join('');
 
       $container.querySelectorAll('.edit-section-btn').forEach(btn => {
         btn.addEventListener('click', () => {
