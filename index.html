@@ -551,6 +551,8 @@
       box-shadow: 0 2px 10px rgb(var(--ink-rgb) / 0.07), 0 0 0 1px rgb(var(--imperial-rgb) / 0.07);
       transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s;
       cursor: pointer;
+      content-visibility: auto;
+      contain-intrinsic-size: auto 250px;
     }
     .gallery-card:hover {
       transform: translateY(-5px);
@@ -1740,7 +1742,7 @@
     /* Tones */
     .content-block[data-tone="cream"] { background: var(--bg-surface); color: var(--fg-1); }
     .content-block[data-tone="ink"] {
-      background: linear-gradient(155deg, #1a1330 0%, #2a1850 50%, #4a1f5a 100%);
+      background: linear-gradient(155deg, rgb(var(--ink-rgb)) 0%, rgb(12 10 32) 50%, rgb(30 20 60) 100%);
       color: #f6f1ff; border-color: rgba(255,255,255,0.10);
     }
     .content-block[data-tone="ink"] .cb-title   { color: #ffffff !important; }
@@ -1947,7 +1949,7 @@
     .cb-text-pane .cb-title { font-size: clamp(22px, 2.5vw, 34px); line-height: 1.15; margin: 4px 0 4px; }
     .cb-text-pane .cb-body { font-size: 15px; line-height: 1.65; margin: 0; }
     @media (max-width: 800px) { .cb-editorial, .cb-editorial.flip { grid-template-columns: 1fr; } .cb-photo-pane { min-height: 200px; order: 1 !important; } .cb-text-pane { padding: 28px; order: 2 !important; } }
-    .cb-editorial.ink { background: linear-gradient(155deg, #1a1330, #2a1850 60%, #4a1f5a); border-color: rgba(255,255,255,0.10); }
+    .cb-editorial.ink { background: linear-gradient(155deg, rgb(var(--ink-rgb)), rgb(14 11 34) 60%, rgb(32 22 58)); border-color: rgba(255,255,255,0.10); }
     .cb-editorial.ink .cb-text-pane .cb-title { color: #fff; }
     .cb-editorial.ink .cb-text-pane .cb-title em { color: #ffd6e8; font-style: italic; }
     .cb-editorial.ink .cb-text-pane .cb-body { color: rgba(255,255,255,0.86); }
@@ -2273,6 +2275,110 @@
     @media (max-width: 800px) {
       .cb-manifesto:nth-child(3n+1) .cb-manifesto-num { font-size: 64px; }
       .cb-manifesto:nth-child(3n+2) .cb-manifesto-num { font-size: 48px; }
+    }
+
+    /* ── Programs Page Accordion ────────────────── */
+    .prog-accordion-wrap {
+      border: 1px solid rgb(var(--imperial-rgb) / 0.15);
+      border-radius: 1rem; overflow: hidden;
+      background: rgb(var(--surface-rgb));
+      transition: box-shadow 0.25s var(--ease-graceful), border-color 0.25s;
+      break-inside: avoid;
+    }
+    @media (prefers-color-scheme: dark) {
+      .prog-accordion-wrap { background: rgb(var(--surface-rgb)); }
+    }
+    .prog-accordion-wrap:hover {
+      border-color: rgb(var(--imperial-rgb) / 0.35);
+      box-shadow: 0 4px 24px rgb(var(--imperial-rgb) / 0.12);
+    }
+    .prog-accordion-trigger {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 1.75rem; text-align: left; background: transparent;
+      cursor: pointer; border: none; gap: 1rem;
+      border-bottom: 1px solid transparent; transition: border-color 0.2s, background 0.2s;
+    }
+    .prog-accordion-wrap.open .prog-accordion-trigger {
+      border-bottom-color: rgb(var(--imperial-rgb) / 0.1);
+      background: rgb(var(--imperial-rgb) / 0.03);
+    }
+    .prog-accordion-label {
+      display: flex; flex-direction: column; gap: 0.2rem; flex: 1; min-width: 0;
+    }
+    .prog-accordion-eyebrow {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: rgb(var(--imperial-rgb) / 0.65);
+    }
+    .prog-accordion-title-text {
+      font-family: 'Cinzel', 'Playfair Display', serif;
+      font-size: 1.05rem; font-weight: 600;
+      color: rgb(var(--ink-rgb)); line-height: 1.3;
+      text-align: left;
+    }
+    .prog-accordion-chevron {
+      flex-shrink: 0; width: 20px; height: 20px;
+      color: rgb(var(--imperial-rgb)); transition: transform 0.35s var(--ease-graceful);
+    }
+    .prog-accordion-wrap.open .prog-accordion-chevron { transform: rotate(180deg); }
+    .prog-accordion-body {
+      display: grid; grid-template-rows: 0fr;
+      transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .prog-accordion-wrap.open .prog-accordion-body { grid-template-rows: 1fr; }
+    .prog-accordion-inner {
+      overflow: hidden; padding: 0 1.75rem;
+      transition: padding 0.3s; padding-bottom: 0;
+    }
+    .prog-accordion-wrap.open .prog-accordion-inner { padding: 1.5rem 1.75rem 1.75rem; }
+
+    /* Information hierarchy on program pages */
+    .prog-accordion-inner .cb-title {
+      font-family: 'Cinzel', 'Playfair Display', serif;
+      font-size: 1.1rem; font-weight: 600; color: rgb(var(--ink-rgb));
+      margin-bottom: 0.75rem; display: none;
+    }
+    .prog-accordion-inner .cb-body {
+      font-size: 0.925rem; line-height: 1.85;
+      color: rgb(var(--ink-rgb) / 0.72);
+    }
+    .prog-accordion-inner .cb-body strong, .prog-accordion-inner .cb-body b {
+      color: rgb(var(--ink-rgb)); font-weight: 600;
+    }
+    .prog-accordion-inner .cb-body em { color: rgb(var(--imperial-rgb)); }
+    .prog-accordion-inner .cb-body h1, .prog-accordion-inner .cb-body h2,
+    .prog-accordion-inner .cb-body h3 {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      color: rgb(var(--ink-rgb)); margin: 1rem 0 0.4rem;
+    }
+    .prog-accordion-inner .cb-body ul li::marker { color: rgb(var(--imperial-rgb)); }
+
+    /* Also give editorial layout sections in programs better spacing */
+    #program-content-container .cb-editorial { margin-bottom: 0; }
+    #program-content-container .cb-grid { gap: 16px; }
+
+    /* ── Cinzel Display Font Integration ──────────── */
+    .font-display, [class*="font-display"],
+    .hp-feature-heading, .hp-values-heading, .hp-programs-heading,
+    .cb-manifesto-title, .hp-tm-section-header h3,
+    .faculty-group-header h3, .faculty-cat-title {
+      font-family: 'Cinzel', 'Playfair Display', serif !important;
+      letter-spacing: 0.03em;
+    }
+    /* Keep program & section titles in Cinzel */
+    #program-page-title { font-family: 'Cinzel', 'Playfair Display', serif; letter-spacing: 0.04em; }
+    /* Page section headers in Cinzel */
+    h1.font-display, h2.font-display { letter-spacing: 0.04em; }
+    /* Awards strip label */
+    .awards-strip-label { font-family: 'Cinzel', serif; letter-spacing: 0.14em; }
+    /* Nav brand uses Cinzel */
+    #nav-brand span { font-family: 'Cinzel', serif !important; letter-spacing: 0.06em; }
+
+    /* ── Imperial Ink background tones ───────────── */
+    @media (prefers-color-scheme: dark) {
+      .hp-values-section { background: rgb(14 11 32) !important; }
+      .hp-programs-section { background: rgb(12 9 28) !important; }
+      .hp-tm-card { background: rgb(16 13 36) !important; }
+      nav { background: rgb(var(--cream-rgb) / 0.92) !important; }
     }
   </style>
 </head>
@@ -3692,10 +3798,10 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center reveal">
       <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Programs</p>
       <h2 id="program-page-title" class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4">Program</h2>
-      <p id="program-page-desc" class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed"></p>
+      <p id="program-page-desc" class="max-w-2xl mx-auto text-ink/60 text-sm sm:text-base leading-relaxed"></p>
       <div class="ink-divider mt-8"></div>
     </div>
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 space-y-6" id="program-content-container"></div>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 pb-16" id="program-content-container"></div>
     <p id="program-content-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Content for this program is coming soon.</p>
     <footer class="border-t border-imperial/10 mt-6">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -4195,10 +4301,15 @@
       const { data, error } = await supabase.from('classes').select('*').order('created_at', { ascending: false });
       if (error) { console.error(error); return []; } return data || [];
     }
-    async function fetchGallery() {
+    let _galleryCache = null;
+    async function fetchGallery(bustCache = false) {
+      if (_galleryCache && !bustCache) return _galleryCache;
       const { data, error } = await supabase.from('gallery').select('*').order('created_at', { ascending: false });
-      if (error) { console.error(error); return []; } return data || [];
+      if (error) { console.error(error); return []; }
+      _galleryCache = data || [];
+      return _galleryCache;
     }
+    function invalidateGalleryCache() { _galleryCache = null; }
     async function fetchAboutSections() {
       const { data, error } = await supabase.from('about_sections').select('*').order('display_order', { ascending: true });
       if (error) { console.error(error); return []; } return data || [];
@@ -7195,9 +7306,20 @@
             <div class="cb-body editable-body" data-field="body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>`;
           if (!hasImgs) {
             return `
-          <div class="editable-section content-block reveal-left" data-tone="${v.tone}" data-section-id="${esc(s.id)}" style="grid-column: span ${v.span}">
+          <div class="prog-accordion-wrap${idx === 0 ? ' open' : ''} reveal-left" data-section-id="${esc(s.id)}" style="grid-column: 1 / -1">
             <div class="section-toolbar">${tbHTMLp}</div>
-            ${textHTML}
+            <button class="prog-accordion-trigger" data-accordion-id="${esc(s.id)}" type="button">
+              <div class="prog-accordion-label">
+                <span class="prog-accordion-eyebrow">Section ${idx + 1}</span>
+                <span class="prog-accordion-title-text editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</span>
+              </div>
+              <svg class="prog-accordion-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8l5 5 5-5"/></svg>
+            </button>
+            <div class="prog-accordion-body">
+              <div class="prog-accordion-inner">
+                <div class="cb-body editable-body" data-field="body" data-id="${esc(s.id)}">${sanitizeHtml(s.body)}</div>
+              </div>
+            </div>
           </div>`;
           }
           const imgH = s.img_height || '';
@@ -7216,6 +7338,14 @@
 
         wireCarousels($container);
         wireSbsResizeHandles($container, (id, fields) => updateProgramSection(currentProgram, id, fields));
+
+        // Wire accordion toggles
+        $container.querySelectorAll('.prog-accordion-trigger').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const wrap = btn.closest('.prog-accordion-wrap');
+            wrap.classList.toggle('open');
+          });
+        });
 
         // Carousel: add image
         $container.querySelectorAll('.carousel-add-img').forEach(btn => {
@@ -7301,7 +7431,10 @@
           btn.addEventListener('click', () => {
             const id = btn.dataset.editId;
             const card = $container.querySelector(`[data-section-id="${id}"]`);
-            const $t = card.querySelector('.editable-title'), $b = card.querySelector('.editable-body');
+            // Ensure accordion is open for editing
+            card.classList.add('open');
+            const $t = card.querySelector('.editable-title') || card.querySelector('.prog-accordion-title-text');
+            const $b = card.querySelector('.editable-body');
             if ($t.contentEditable === 'true') {
               $t.contentEditable = 'false'; $b.contentEditable = 'false';
               const sb = card.querySelector('.inline-save-btn'); if (sb) sb.remove();
