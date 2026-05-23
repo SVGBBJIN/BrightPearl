@@ -2380,6 +2380,149 @@
       .hp-tm-card { background: rgb(16 13 36) !important; }
       nav { background: rgb(var(--cream-rgb) / 0.92) !important; }
     }
+
+    /* ── Enhanced Scroll Reveal Variants ────────── */
+    .reveal-scale {
+      opacity: 0; transform: scale(0.95) translateY(12px);
+      transition: opacity 0.65s var(--ease-graceful), transform 0.65s var(--ease-graceful);
+    }
+    .reveal-scale.is-visible { opacity: 1; transform: scale(1) translateY(0); }
+
+    .reveal-fade {
+      opacity: 0;
+      transition: opacity 0.7s var(--ease-graceful);
+    }
+    .reveal-fade.is-visible { opacity: 1; }
+
+    /* Stagger delay extensions for larger grids */
+    .reveal-group.is-visible > *:nth-child(9)  { transition-delay: 0.52s; }
+    .reveal-group.is-visible > *:nth-child(10) { transition-delay: 0.58s; }
+
+    /* ── Testimonial card animations ─────────────── */
+    .hp-tm-card {
+      transition:
+        transform 0.35s var(--ease-graceful),
+        box-shadow 0.35s var(--ease-graceful),
+        border-color 0.35s;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .hp-tm-card:hover {
+      transform: translateY(-8px) scale(1.015);
+      box-shadow: 0 20px 56px rgba(10,8,28,0.5), 0 0 0 1px rgb(var(--imperial-rgb) / 0.25);
+      border-color: rgb(var(--imperial-rgb) / 0.22);
+    }
+    .hp-tm-card .tm-quote-mark {
+      transition: color 0.3s, transform 0.3s var(--ease-graceful);
+    }
+    .hp-tm-card:hover .tm-quote-mark {
+      color: rgb(var(--rose-rgb) / 0.85);
+      transform: scale(1.12) translateY(-4px);
+    }
+    .hp-tm-card .tm-avatar {
+      transition: transform 0.3s var(--ease-graceful), background 0.3s;
+    }
+    .hp-tm-card:hover .tm-avatar {
+      transform: scale(1.1);
+      background: rgb(var(--imperial-rgb) / 0.55);
+    }
+
+    /* ── Value card hover polish ─────────────────── */
+    .hp-value-card .hp-value-icon {
+      transition: background 0.3s, transform 0.35s var(--ease-graceful);
+    }
+    .hp-value-card:hover .hp-value-icon {
+      background: var(--grad-imperial);
+      transform: rotate(-6deg) scale(1.1);
+    }
+    .hp-value-card .hp-value-icon svg {
+      transition: color 0.3s;
+    }
+    .hp-value-card:hover .hp-value-icon svg { color: white; }
+    .hp-value-card .hp-value-title {
+      transition: color 0.25s;
+    }
+    .hp-value-card:hover .hp-value-title { color: rgb(var(--imperial-rgb)); }
+
+    /* ── Nav underline glide ─────────────────────── */
+    .nav-scroll-items button {
+      position: relative; overflow: hidden;
+    }
+    .nav-scroll-items button::after {
+      content: '';
+      position: absolute; bottom: 2px; left: 50%; right: 50%;
+      height: 2px; background: rgb(var(--imperial-rgb));
+      border-radius: 1px;
+      transition: left 0.22s var(--ease-graceful), right 0.22s var(--ease-graceful);
+    }
+    .nav-scroll-items button:hover::after,
+    .nav-scroll-items button.active::after { left: 8%; right: 8%; }
+
+    /* ── Gallery card hover ──────────────────────── */
+    .gallery-card {
+      transition: transform 0.3s var(--ease-graceful), box-shadow 0.3s, border-color 0.3s;
+    }
+    .gallery-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 14px 40px rgb(var(--ink-rgb) / 0.18), 0 0 0 1px rgb(var(--imperial-rgb) / 0.18);
+    }
+
+    /* ── hp-program-card hover glow pulse ────────── */
+    .hp-program-card:nth-child(3n+1):hover::before { background: rgb(var(--indigo-rgb)); opacity: 1; }
+    .hp-program-card:nth-child(3n+2):hover::before { background: rgb(var(--imperial-rgb)); opacity: 1; }
+    .hp-program-card:nth-child(3n+3):hover::before { background: rgb(56 210 200); opacity: 1; }
+    .hp-program-card .hp-program-desc {
+      transition: color 0.25s;
+    }
+    .hp-program-card:hover .hp-program-desc { color: rgb(var(--ink-rgb) / 0.82); }
+
+    /* ── Feature section photo parallax-ish ─────── */
+    .hp-feature-photo-wrap {
+      overflow: hidden; border-radius: 1.5rem;
+    }
+    .hp-feature-img {
+      transition: transform 0.7s var(--ease-graceful), opacity 0.6s ease;
+    }
+    .hp-feature:hover .hp-feature-img.loaded { transform: scale(1.04); }
+
+    /* ── Content block hover shimmer ────────────── */
+    .content-block::after {
+      background: linear-gradient(115deg,
+        transparent 30%,
+        rgb(var(--indigo-rgb) / 0.08) 50%,
+        transparent 70%);
+    }
+
+    /* ── Faculty card hover ──────────────────────── */
+    .faculty-cat-card .faculty-cat-img-wrap img {
+      transition: transform 0.5s var(--ease-graceful);
+    }
+    .faculty-cat-card:hover .faculty-cat-img-wrap img { transform: scale(1.06); }
+
+    /* ── Ink divider animated entrance ──────────── */
+    .ink-divider {
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.7s var(--ease-graceful);
+    }
+    .is-visible ~ .ink-divider,
+    .reveal.is-visible .ink-divider,
+    .ink-divider.is-visible { transform: scaleX(1); }
+    /* Dividers inside revealed parents auto-animate */
+    .reveal.is-visible .ink-divider { transform: scaleX(1); transition-delay: 0.2s; }
+
+    /* ── Award chip hover ────────────────────────── */
+    .award-chip {
+      transition: background 0.2s;
+    }
+    .award-chip:hover { background: rgb(var(--imperial-rgb) / 0.06); }
+    .award-chip:hover .award-chip-year { background: rgb(var(--imperial-rgb) / 0.2); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-scale, .reveal-fade { transition: none !important; }
+      .hp-tm-card, .hp-value-card .hp-value-icon, .hp-feature-img,
+      .gallery-card, .nav-scroll-items button::after,
+      .faculty-cat-card .faculty-cat-img-wrap img { transition: none !important; }
+    }
   </style>
 </head>
 
@@ -2644,21 +2787,7 @@
             Students have earned awards in speech, visual arts, STEM, and dance. Many have advanced to top private high schools and leading colleges.
           </p>
         </div>
-        <div class="cb-banner reveal" style="margin-bottom: 28px;">
-          <div class="cb-photo recital"></div>
-          <div class="cb-banner-headline">
-            <p class="cb-eyebrow">Inside Bright Pearl</p>
-            <h3>From the studio to the <em>Symphony Hall</em>.</h3>
-          </div>
-          <div class="cb-photo-label" style="top:40px;right:40px;left:auto;bottom:auto;"><span class="dot"></span>Spring Recital 2025</div>
-          <div class="cb-banner-stats">
-            <div class="cb-banner-stat"><div class="num">15+</div><div class="lbl">Years of Excellence</div><div class="note">Founded 2009 in West Newton, MA</div></div>
-            <div class="cb-banner-stat"><div class="num">320+</div><div class="lbl">Active Students</div><div class="note">Across all programs, ages 4–adult</div></div>
-            <div class="cb-banner-stat"><div class="num">42</div><div class="lbl">Award Honors</div><div class="note">Speech, visual arts, STEM &amp; dance</div></div>
-            <div class="cb-banner-stat"><div class="num">5</div><div class="lbl">Programs Offered</div><div class="note">Dance, Mandarin, STEM, Adult Dance &amp; Camps</div></div>
-          </div>
-        </div>
-        <div class="cb-grid reveal-group">
+        <div class="cb-grid reveal-group" style="margin-bottom: 36px;">
           <div class="content-block" data-tone="gold" style="grid-column: span 6;">
             <div class="cb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div>
             <p class="cb-eyebrow">2024 Honor</p>
@@ -2672,13 +2801,13 @@
             <p class="cb-body" style="margin:0;">Graduates advance to leading private schools and colleges nationwide.</p>
           </div>
         </div>
-        <div class="reveal" style="margin-top:36px;">
+        <div class="reveal-fade" style="margin-top:36px;">
           <div class="hp-tm-section-header">
             <p class="cb-eyebrow">What Parents Say</p>
             <h3>Voices from our community</h3>
           </div>
           <div id="testimonials-section">
-            <div id="testimonials-grid" class="hp-tm-grid"></div>
+            <div id="testimonials-grid" class="hp-tm-grid reveal-group"></div>
             <p id="testimonials-empty" class="view-hidden text-ink/40 italic py-4 text-sm text-center">No testimonials yet.</p>
           </div>
         </div>
@@ -6393,7 +6522,7 @@
       }
       $empty?.classList.add('view-hidden');
       $grid.innerHTML = items.map(t => `
-        <div class="hp-tm-card editable-section reveal" data-tm-id="${esc(t.id)}">
+        <div class="hp-tm-card editable-section" data-tm-id="${esc(t.id)}">
           <div class="section-toolbar" style="display:none; position:absolute; top:0.5rem; right:0.5rem; gap:0.35rem; align-items:center;">
             <button class="tm-edit-btn toolbar-btn" title="Edit" data-tm-id="${esc(t.id)}">
               <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
@@ -6441,6 +6570,8 @@
           await renderAdminTestimonials();
         });
       });
+      // Re-observe new cards after async inject
+      if (typeof initReveal === 'function') setTimeout(initReveal, 60);
     }
 
     async function renderAdminTestimonials() {
@@ -9122,7 +9253,7 @@
       { threshold: 0.1, rootMargin: '0px 0px -48px 0px' }
     );
     function initReveal() {
-      document.querySelectorAll('.reveal, .reveal-left, .reveal-group').forEach((el) => {
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-group, .reveal-scale, .reveal-fade').forEach((el) => {
         if (!el.classList.contains('is-visible')) revealObserver.observe(el);
       });
     }
