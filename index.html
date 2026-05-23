@@ -807,6 +807,16 @@
     }
     body.edit-mode .hp-program-card:hover { outline-color: rgb(var(--imperial-rgb) / 0.55); }
     body.edit-mode .hp-program-card .prog-card-toolbar { display: flex !important; }
+    body.edit-mode .prog-header-edit {
+      outline: 1px dashed rgb(var(--imperial-rgb) / 0.35);
+      outline-offset: 4px; border-radius: 4px; cursor: text;
+      transition: outline-color 0.2s;
+    }
+    body.edit-mode .prog-header-edit:hover { outline-color: rgb(var(--imperial-rgb) / 0.65); }
+    body.edit-mode .prog-header-edit:focus {
+      outline: 2px solid rgb(var(--imperial-rgb)); outline-offset: 4px;
+      background: rgb(var(--imperial-rgb) / 0.04);
+    }
     .val-card-toolbar, .prog-card-toolbar {
       display: none !important;
       position: absolute; top: 6px; right: 6px; z-index: 10;
@@ -2144,12 +2154,6 @@
     .hp-tm-section-header h3 { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--fg-1); margin: 0; }
 
     /* ── Gallery full-width mosaic ── */
-    .hp-gallery-full { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    @media (max-width: 700px) { .hp-gallery-full { grid-template-columns: 1fr; } }
-    .hp-gallery-full .hp-gallery-photo img,
-    .hp-gallery-full .hp-gallery-photo.large img { height: 280px; }
-    .hp-gallery-full .hp-gallery-photo .yt-thumb-wrap,
-    .hp-gallery-full .hp-gallery-photo.large .yt-thumb-wrap { height: 280px; }
 
     /* ── Programs real photo support ── */
     .hp-program-photo-img {
@@ -2498,24 +2502,6 @@
       </div>
     </section>
 
-    <!-- ── Programs & Classes ─────────────────────────── -->
-    <section class="hp-programs-section">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="hp-programs-header reveal">
-          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Programs &amp; Classes</p>
-          <h2 class="hp-programs-heading">Our Programs</h2>
-          <p class="hp-programs-sub">Award-winning instruction in dance, language, STEM, and music.</p>
-        </div>
-        <div id="home-programs-grid" class="hp-programs-grid reveal-group">
-          <!-- Populated by renderHomePrograms() -->
-        </div>
-        <div class="hp-programs-cta-wrap reveal">
-          <button id="home-midpage-cta" class="btn-imperial px-8 py-3 text-sm font-semibold tracking-wide">Book a Free Trial Class</button>
-          <p class="hp-programs-cta-note">Questions before enrolling? We can help you pick the right starting program.</p>
-        </div>
-      </div>
-    </section>
-
     <!-- ── Mid-page CTA ─────────────────────────────────── -->
     <section class="hp-midpage-cta-section">
       <div class="max-w-2xl mx-auto px-4 text-center reveal">
@@ -2577,17 +2563,20 @@
       </div>
     </section>
 
-    <!-- ── Studio Moments — gallery ── -->
-    <section id="hp-students-section" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-imperial/10">
-      <div class="text-center mb-12 reveal">
-        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Our Community</p>
-        <h2 class="font-display text-3xl sm:text-4xl text-ink mb-4">Studio Moments</h2>
-        <p class="max-w-xl mx-auto text-ink/55 text-sm leading-relaxed">Moments from the studio, the stage, and beyond — captured in motion.</p>
-      </div>
-      <div class="reveal-group">
-        <div id="gallery-grid" class="hp-gallery-mosaic hp-gallery-full"></div>
-        <div class="hp-gallery-viewall" style="text-align:center; margin-top:20px;">
-          <button id="hp-gallery-viewall-btn">View Full Gallery →</button>
+    <!-- ── Programs & Classes ─────────────────────────── -->
+    <section class="hp-programs-section">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="hp-programs-header reveal">
+          <p id="programs-eyebrow-el" class="prog-header-edit uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Programs &amp; Classes</p>
+          <h2 id="programs-title-el" class="prog-header-edit hp-programs-heading">Our Programs</h2>
+          <p id="programs-sub-el" class="prog-header-edit hp-programs-sub">Award-winning instruction in dance, language, STEM, and music.</p>
+        </div>
+        <div id="home-programs-grid" class="hp-programs-grid reveal-group">
+          <!-- Populated by renderHomePrograms() -->
+        </div>
+        <div class="hp-programs-cta-wrap reveal">
+          <button id="home-midpage-cta" class="btn-imperial px-8 py-3 text-sm font-semibold tracking-wide">Book a Free Trial Class</button>
+          <p class="hp-programs-cta-note">Questions before enrolling? We can help you pick the right starting program.</p>
         </div>
       </div>
     </section>
@@ -4588,6 +4577,7 @@
         initHomeProgramsSortable();
         renderTestimonials();
       }
+      if (currentView === 'home') initProgramsHeaderEdit();
 
       // Refresh program edit controls when toggling on programs page
       if (currentView === 'programs') _applyProgramEditMode();
@@ -5805,6 +5795,36 @@
     // ════════════════════════════════════════════════
     //  HOMEPAGE — Programs & Classes grid
     // ════════════════════════════════════════════════
+    async function loadProgramsHeaderText() {
+      const data = await fetchSetting('programs_header_text');
+      if (!data) return;
+      const map = { eyebrow: 'programs-eyebrow-el', title: 'programs-title-el', sub: 'programs-sub-el' };
+      Object.entries(map).forEach(([k, id]) => {
+        const el = document.getElementById(id);
+        if (el && typeof data[k] === 'string' && data[k].trim()) el.textContent = data[k];
+      });
+    }
+    async function saveProgramsHeaderText() {
+      const payload = {
+        eyebrow: (document.getElementById('programs-eyebrow-el')?.textContent || '').trim(),
+        title:   (document.getElementById('programs-title-el')?.textContent   || '').trim(),
+        sub:     (document.getElementById('programs-sub-el')?.textContent     || '').trim(),
+      };
+      try { await saveSetting('programs_header_text', payload); } catch (e) { console.error(e); }
+    }
+    function initProgramsHeaderEdit() {
+      ['programs-eyebrow-el','programs-title-el','programs-sub-el'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.contentEditable = editMode ? 'true' : 'false';
+        if (el.dataset.editWired) return;
+        el.dataset.editWired = '1';
+        el.addEventListener('blur', () => { if (editMode) saveProgramsHeaderText(); });
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); el.blur(); }
+        });
+      });
+    }
     async function renderHomePrograms() {
       const $grid = document.getElementById('home-programs-grid');
       if (!$grid) return;
@@ -8898,15 +8918,11 @@
     renderHomeAboutFeatures().catch(console.error);
     renderHomeValuesCards().catch(console.error);
     renderHomePrograms().catch(console.error);
+    loadProgramsHeaderText().catch(console.error);
     populateProgramsDropdown().catch(console.error);
     renderTestimonials().catch(console.error);
     fetchContactInfo().then(renderFooterSocial).catch(console.error);
-
-    // ── Gallery "View All" button ───────────────────
-    const $galleryViewAll = document.getElementById('hp-gallery-viewall-btn');
-    if ($galleryViewAll) {
-      $galleryViewAll.addEventListener('click', () => showView('gallery-page'));
-    }
+    initProgramsHeaderEdit();
 
     // ── Scroll Reveal ───────────────────────────────
     const revealObserver = new IntersectionObserver(
