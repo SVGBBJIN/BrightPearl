@@ -2502,6 +2502,24 @@
       </div>
     </section>
 
+    <!-- ── Programs & Classes ─────────────────────────── -->
+    <section class="hp-programs-section">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="hp-programs-header reveal">
+          <p id="programs-eyebrow-el" class="prog-header-edit uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Programs &amp; Classes</p>
+          <h2 id="programs-title-el" class="prog-header-edit hp-programs-heading">Our Programs</h2>
+          <p id="programs-sub-el" class="prog-header-edit hp-programs-sub">Award-winning instruction in dance, language, STEM, and music.</p>
+        </div>
+        <div id="home-programs-grid" class="hp-programs-grid reveal-group">
+          <!-- Populated by renderHomePrograms() -->
+        </div>
+        <div class="hp-programs-cta-wrap reveal">
+          <button id="home-midpage-cta" class="btn-imperial px-8 py-3 text-sm font-semibold tracking-wide">Book a Free Trial Class</button>
+          <p class="hp-programs-cta-note">Questions before enrolling? We can help you pick the right starting program.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ── Mid-page CTA ─────────────────────────────────── -->
     <section class="hp-midpage-cta-section">
       <div class="max-w-2xl mx-auto px-4 text-center reveal">
@@ -4389,9 +4407,10 @@
       const { error } = await supabase.from('classes').update(fields).eq('id', id);
       if (error) { alert('Error: ' + error.message); return false; } return true;
     }
-    async function addAboutSection(title, body, display_order, image_url) {
+    async function addAboutSection(title, body, display_order, image_url, eyebrow) {
       const row = { title, body, display_order };
       if (image_url) row.image_url = image_url;
+      if (eyebrow) row.eyebrow = eyebrow;
       const { error } = await supabase.from('about_sections').insert(row);
       if (error) { alert('Error: ' + error.message); return false; } return true;
     }
@@ -4556,8 +4575,10 @@
         initGallerySortable();
         initHomeAboutSortable();
         initHomeValuesSortable();
+        initHomeProgramsSortable();
         renderTestimonials();
       }
+      if (currentView === 'home') initProgramsHeaderEdit();
 
       // Refresh program edit controls when toggling on programs page
       if (currentView === 'programs') _applyProgramEditMode();
@@ -5494,11 +5515,30 @@
         <div class="home-about-add-row">
           <button class="home-about-add-btn" id="home-about-add-btn">+ Add Section</button>
           <div class="home-about-add-form" id="home-about-add-form">
+            <p style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:rgb(var(--ink-rgb)/0.5);margin-bottom:0.5rem;">Layout</p>
+            <div id="haf-type-picker" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+              <button type="button" class="haf-type-btn active" data-type="text"
+                style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1.5px solid rgb(var(--imperial-rgb)/0.3);background:rgb(var(--imperial-rgb)/0.08);cursor:pointer;font-size:0.72rem;color:inherit;transition:border-color 0.15s,background 0.15s;">
+                <svg width="28" height="20" viewBox="0 0 28 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="26" height="18" rx="2"/><line x1="5" y1="6" x2="23" y2="6"/><line x1="5" y1="10" x2="23" y2="10"/><line x1="5" y1="14" x2="16" y2="14"/></svg>
+                Text Block
+              </button>
+              <button type="button" class="haf-type-btn" data-type="photo"
+                style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1.5px solid rgb(var(--imperial-rgb)/0.15);background:transparent;cursor:pointer;font-size:0.72rem;color:inherit;transition:border-color 0.15s,background 0.15s;">
+                <svg width="28" height="20" viewBox="0 0 28 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="12" height="18" rx="2"/><rect x="15" y="1" width="12" height="18" rx="2"/><path d="M3 14l3-3 2 2 3-3"/></svg>
+                Photo + Text
+              </button>
+              <button type="button" class="haf-type-btn" data-type="video"
+                style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;padding:0.5rem 0.75rem;border-radius:0.5rem;border:1.5px solid rgb(var(--imperial-rgb)/0.15);background:transparent;cursor:pointer;font-size:0.72rem;color:inherit;transition:border-color 0.15s,background 0.15s;">
+                <svg width="28" height="20" viewBox="0 0 28 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="12" height="18" rx="2"/><rect x="15" y="1" width="12" height="18" rx="2"/><polygon points="5,7 5,13 9,10" fill="currentColor" stroke="none"/></svg>
+                Video + Text
+              </button>
+            </div>
+            <input id="haf-eyebrow" type="text" placeholder="Eyebrow label (optional)" style="margin-bottom:0.5rem;" />
             <input id="haf-title" type="text" placeholder="Section title *" />
             <textarea id="haf-body" rows="4" placeholder="Section body text *" style="resize:vertical"></textarea>
-            <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <div id="haf-photo-row" style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
               <div id="haf-img-drop" class="drop-zone flex-1 min-w-[180px] !py-2" style="cursor:pointer">
-                <p class="text-ink/50 text-xs">Photo (optional) — drop or <span class="text-imperial font-medium">click</span></p>
+                <p class="text-ink/50 text-xs">Photo — drop or <span class="text-imperial font-medium">click</span></p>
                 <input id="haf-img-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" />
               </div>
               <div id="haf-img-preview" class="view-hidden flex items-center gap-2">
@@ -5506,8 +5546,8 @@
                 <button type="button" id="haf-img-clear" class="text-imperial text-xs hover:underline">Clear</button>
               </div>
             </div>
-            <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem;">
-              <input id="haf-yt-url" type="url" placeholder="Or paste a YouTube URL (optional)"
+            <div id="haf-video-row" style="display:none;align-items:center;gap:0.5rem;">
+              <input id="haf-yt-url" type="url" placeholder="Paste a YouTube URL"
                 style="flex:1;padding:0.4rem 0.6rem;border:1px solid rgb(var(--imperial-rgb)/0.2);border-radius:0.375rem;font-size:0.8rem;background:transparent;color:inherit;" />
               <div id="haf-yt-preview" class="view-hidden" style="width:60px;height:36px;border-radius:4px;overflow:hidden;position:relative;flex-shrink:0;">
                 <img id="haf-yt-thumb" src="" style="width:100%;height:100%;object-fit:cover;" alt="" />
@@ -5715,20 +5755,51 @@
     }
 
     function wireHomeAboutAddForm() {
-      const $btn    = document.getElementById('home-about-add-btn');
-      const $form   = document.getElementById('home-about-add-form');
-      const $cancel = document.getElementById('haf-cancel-btn');
-      const $submit = document.getElementById('haf-submit-btn');
-      const $drop   = document.getElementById('haf-img-drop');
-      const $imgIn  = document.getElementById('haf-img-input');
-      const $prev   = document.getElementById('haf-img-preview');
-      const $thumb  = document.getElementById('haf-img-thumb');
-      const $clear  = document.getElementById('haf-img-clear');
-      const $ytUrl  = document.getElementById('haf-yt-url');
-      const $ytPrev = document.getElementById('haf-yt-preview');
-      const $ytThm  = document.getElementById('haf-yt-thumb');
+      const $btn      = document.getElementById('home-about-add-btn');
+      const $form     = document.getElementById('home-about-add-form');
+      const $cancel   = document.getElementById('haf-cancel-btn');
+      const $submit   = document.getElementById('haf-submit-btn');
+      const $drop     = document.getElementById('haf-img-drop');
+      const $imgIn    = document.getElementById('haf-img-input');
+      const $prev     = document.getElementById('haf-img-preview');
+      const $thumb    = document.getElementById('haf-img-thumb');
+      const $clear    = document.getElementById('haf-img-clear');
+      const $ytUrl    = document.getElementById('haf-yt-url');
+      const $ytPrev   = document.getElementById('haf-yt-preview');
+      const $ytThm    = document.getElementById('haf-yt-thumb');
+      const $photoRow = document.getElementById('haf-photo-row');
+      const $videoRow = document.getElementById('haf-video-row');
       if (!$btn || !$form) return;
       let _file = null;
+      let _sectionType = 'text'; // 'text' | 'photo' | 'video'
+
+      // Layout type picker
+      document.getElementById('haf-type-picker')?.querySelectorAll('.haf-type-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.haf-type-btn').forEach(b => {
+            b.classList.remove('active');
+            b.style.borderColor = 'rgb(var(--imperial-rgb)/0.15)';
+            b.style.background  = 'transparent';
+          });
+          btn.classList.add('active');
+          btn.style.borderColor = 'rgb(var(--imperial-rgb)/0.5)';
+          btn.style.background  = 'rgb(var(--imperial-rgb)/0.08)';
+          _sectionType = btn.dataset.type;
+          if (_sectionType === 'photo') {
+            $photoRow.style.display = 'flex';
+            $videoRow.style.display = 'none';
+          } else if (_sectionType === 'video') {
+            $photoRow.style.display = 'none';
+            $videoRow.style.display = 'flex';
+          } else {
+            $photoRow.style.display = 'none';
+            $videoRow.style.display = 'none';
+          }
+        });
+      });
+      // Set initial state: text type = no media rows
+      if ($photoRow) $photoRow.style.display = 'none';
+      if ($videoRow) $videoRow.style.display = 'none';
 
       $btn.addEventListener('click', () => { $form.classList.toggle('open'); if ($form.classList.contains('open')) document.getElementById('haf-title')?.focus(); });
       $cancel.addEventListener('click', () => {
@@ -5748,26 +5819,29 @@
       });
 
       $submit.addEventListener('click', async () => {
-        const title = document.getElementById('haf-title').value.trim();
-        const body  = document.getElementById('haf-body').value.trim();
+        const title   = document.getElementById('haf-title').value.trim();
+        const body    = document.getElementById('haf-body').value.trim();
+        const eyebrow = (document.getElementById('haf-eyebrow')?.value || '').trim();
         if (!title || !body) { alert('Title and body are required.'); return; }
         $submit.disabled = true; $submit.textContent = 'Adding…';
         let imageUrl = null;
-        const ytRaw = $ytUrl.value.trim();
-        const ytId  = getYouTubeId(ytRaw);
-        if (ytId) {
+        if (_sectionType === 'video') {
+          const ytRaw = $ytUrl.value.trim();
+          const ytId  = getYouTubeId(ytRaw);
+          if (!ytId) { alert('Please paste a valid YouTube URL.'); $submit.disabled = false; $submit.textContent = 'Add Section'; return; }
           imageUrl = ytRaw;
-        } else if (_file) {
+        } else if (_sectionType === 'photo' && _file) {
           try { imageUrl = await uploadImageToStorage(_file); }
           catch (err) { alert('Image upload failed: ' + err.message); $submit.disabled = false; $submit.textContent = 'Add Section'; return; }
         }
         const order = await fetchAboutSections().then(s => s.length);
-        if (await addAboutSection(title, body, order, imageUrl)) {
+        if (await addAboutSection(title, body, order, imageUrl, eyebrow || null)) {
           await renderHomeAboutFeatures();
           await renderHomeAbout();
           await renderAdminAbout();
         }
         $submit.disabled = false; $submit.textContent = 'Add Section';
+        document.getElementById('haf-eyebrow').value = '';
         $ytUrl.value = ''; $ytPrev.classList.add('view-hidden'); $ytThm.src = '';
       });
     }
@@ -7700,6 +7774,7 @@
             await updateProgramItem(progId, { icon_url: iconUrl });
             await renderAdminPrograms();
             if (btn) { const panel = document.getElementById('prog-panel-' + progId); if (panel) panel.classList.remove('view-hidden'); }
+            if (currentView === 'home') await renderHomePrograms();
           } catch (err) { alert('Upload failed: ' + err.message); }
         });
       });
@@ -7713,6 +7788,7 @@
           await renderAdminPrograms();
           const panel = document.getElementById('prog-panel-' + progId);
           if (panel) panel.classList.remove('view-hidden');
+          if (currentView === 'home') await renderHomePrograms();
         });
       });
 
@@ -8895,8 +8971,11 @@
     renderHomeFaq().catch(console.error);
     renderHomeAboutFeatures().catch(console.error);
     renderHomeValuesCards().catch(console.error);
+    renderHomePrograms().catch(console.error);
+    loadProgramsHeaderText().catch(console.error);
     populateProgramsDropdown().catch(console.error);
     renderTestimonials().catch(console.error);
+    initProgramsHeaderEdit();
     fetchContactInfo().then(renderFooterSocial).catch(console.error);
 
     // ── Scroll Reveal ───────────────────────────────
