@@ -8,7 +8,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400;1,600&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
 
   <!-- SortableJS for drag-and-drop -->
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
@@ -25,14 +25,16 @@
       theme: {
         extend: {
           colors: {
-            // All three read from CSS vars so they auto-flip in dark mode
             cream:    'rgb(var(--cream-rgb) / <alpha-value>)',
             ink:      'rgb(var(--ink-rgb) / <alpha-value>)',
             imperial: 'rgb(var(--imperial-rgb) / <alpha-value>)',
             surface:  'rgb(var(--surface-rgb) / <alpha-value>)',
+            indigo:   'rgb(var(--indigo-rgb) / <alpha-value>)',
+            gold:     'rgb(var(--gold-rgb) / <alpha-value>)',
           },
           fontFamily: {
-            display: ['Playfair Display', 'serif'],
+            display: ['Cinzel', 'Playfair Display', 'serif'],
+            serif:   ['Playfair Display', 'Georgia', 'serif'],
             body:    ['Inter', 'sans-serif'],
           },
         },
@@ -43,46 +45,52 @@
   <style>
     /* ── CSS Color Variables ──────────────────────── */
     :root {
-      --cream-rgb:           249 247 242;   /* #f9f7f2  warm cream        */
-      --ink-rgb:             26  26  26;    /* #1a1a1a  near-black         */
-      --imperial-rgb:        196 69  105;   /* #C44569  warm rose          */
-      --imperial-hover-rgb:  176 49  85;    /* #B03155  darker rose hover  */
-      --surface-rgb:         255 255 255;   /* white cards                 */
+      --cream-rgb:           250 248 255;   /* #faf8ff  pearl white          */
+      --ink-rgb:             10  8   26;    /* #0a081a  imperial ink deep    */
+      --imperial-rgb:        196 69  105;   /* #C44569  warm rose            */
+      --imperial-hover-rgb:  176 49  85;    /* #B03155  darker rose hover    */
+      --surface-rgb:         255 255 255;   /* white cards                   */
+      --indigo-rgb:          80  65  200;   /* #5041c8  rich indigo          */
+      --gold-rgb:            200 160 48;    /* #c8a030  imperial gold        */
 
-      /* ── Design system extension tokens (content-block) ── */
-      --rose-rgb:            210 60  180;   /* #d23cb4  magenta-rose accent */
+      /* ── Design system extension tokens ── */
+      --rose-rgb:            224 72  168;   /* #e048a8  vivid rose           */
       --bg-surface:          rgb(var(--surface-rgb));
       --border-subtle:       rgb(var(--imperial-rgb) / 0.12);
       --fg-1:                rgb(var(--ink-rgb));
       --fg-2:                rgb(var(--ink-rgb) / 0.70);
-      --fg-3:                rgb(var(--ink-rgb) / 0.55);
-      --font-display:        'Playfair Display', Georgia, serif;
+      --fg-3:                rgb(var(--ink-rgb) / 0.50);
+      --font-display:        'Cinzel', 'Playfair Display', Georgia, serif;
       --font-body:           'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono:           ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       --grad-imperial:       linear-gradient(135deg, rgb(var(--imperial-rgb)), rgb(var(--rose-rgb)));
-      --grad-divider:        linear-gradient(90deg, transparent, rgb(var(--imperial-rgb) / 0.6) 50%, transparent);
+      --grad-indigo:         linear-gradient(135deg, rgb(var(--indigo-rgb)), rgb(var(--imperial-rgb)));
+      --grad-divider:        linear-gradient(90deg, transparent, rgb(var(--imperial-rgb) / 0.55) 50%, transparent);
       --dur-base:            220ms;
       --dur-quick:           150ms;
       --ease-graceful:       cubic-bezier(0.22, 1, 0.36, 1);
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --cream-rgb:           24  12  17;   /* #180c11  deep dark rose     */
-        --ink-rgb:             245 228 234;  /* #f5e4ea  light rose-white   */
-        --imperial-rgb:        230 110 145;  /* #e66e91  lighter rose dark  */
-        --imperial-hover-rgb:  245 130 165;  /* #f582a5  lighter hover dark */
-        --surface-rgb:         42  20  28;   /* #2a141c  dark card surface  */
-        --rose-rgb:            240 110 200;  /* #f06ec8  lighter dark rose  */
+        --cream-rgb:           10  8   22;    /* #0a0816  imperial ink bg    */
+        --ink-rgb:             238 234 255;   /* #eeeaff  pale lavender text */
+        --imperial-rgb:        230 100 140;   /* #e6648c  brighter rose dark */
+        --imperial-hover-rgb:  245 125 160;   /* #f57da0  lighter hover dark */
+        --surface-rgb:         18  15  38;    /* #120f26  deep indigo card   */
+        --rose-rgb:            248 110 200;   /* #f86ec8  bright rose dark   */
+        --indigo-rgb:          120 105 240;   /* #7869f0  lighter indigo     */
+        --gold-rgb:            220 180 68;    /* #dcb444  brighter gold dark */
       }
     }
 
     /* ── Dark mode contrast fixes ─────────────────── */
     @media (prefers-color-scheme: dark) {
       .hp-feature-eyebrow { color: rgb(var(--imperial-rgb)); }
-      .award-chip-title   { color: rgb(var(--ink-rgb) / 0.9); }
-      .hp-program-desc    { color: rgb(var(--ink-rgb) / 0.78); }
-      .hp-feature-body    { color: rgb(var(--ink-rgb) / 0.80); }
-      .hp-value-body      { color: rgb(var(--ink-rgb) / 0.78); }
+      .award-chip-title   { color: rgb(var(--ink-rgb) / 0.92); }
+      .hp-program-desc    { color: rgb(var(--ink-rgb) / 0.80); }
+      .hp-feature-body    { color: rgb(var(--ink-rgb) / 0.82); }
+      .hp-value-body      { color: rgb(var(--ink-rgb) / 0.80); }
+      body { background: rgb(var(--cream-rgb)); }
     }
 
     /* ── Base ─────────────────────────────────────── */
@@ -101,14 +109,14 @@
       width: 420px; height: 420px;
       transform: translate(-50%, -50%);
       background:
-        radial-gradient(ellipse 35% 70% at 50% 15%, rgb(var(--imperial-rgb) / 0.045) 0%, transparent 70%),
-        radial-gradient(ellipse 35% 70% at 85% 30%, rgb(var(--imperial-rgb) / 0.04)  0%, transparent 70%),
-        radial-gradient(ellipse 35% 70% at 97% 60%, rgb(var(--imperial-rgb) / 0.035) 0%, transparent 70%),
-        radial-gradient(ellipse 35% 70% at 85% 85%, rgb(var(--imperial-rgb) / 0.04)  0%, transparent 70%),
-        radial-gradient(ellipse 35% 70% at 50% 97%, rgb(var(--imperial-rgb) / 0.045) 0%, transparent 70%),
-        radial-gradient(ellipse 35% 70% at 15% 85%, rgb(var(--imperial-rgb) / 0.04)  0%, transparent 70%),
-        radial-gradient(ellipse 35% 70% at 3%  60%, rgb(var(--imperial-rgb) / 0.035) 0%, transparent 70%),
-        radial-gradient(ellipse 35% 70% at 15% 30%, rgb(var(--imperial-rgb) / 0.04)  0%, transparent 70%);
+        radial-gradient(ellipse 35% 70% at 50% 15%, rgb(var(--indigo-rgb) / 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 85% 30%, rgb(var(--imperial-rgb) / 0.05)  0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 97% 60%, rgb(var(--indigo-rgb) / 0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 85% 85%, rgb(var(--imperial-rgb) / 0.05)  0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 50% 97%, rgb(var(--indigo-rgb) / 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 15% 85%, rgb(var(--imperial-rgb) / 0.05)  0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 3%  60%, rgb(var(--indigo-rgb) / 0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 35% 70% at 15% 30%, rgb(var(--imperial-rgb) / 0.05)  0%, transparent 70%);
       border-radius: 50%;
     }
     .lotus-bg::after {
@@ -171,14 +179,14 @@
     }
     #hero-est-text span {
       position: relative; z-index: 1;
-      background-image: linear-gradient(90deg, rgb(190,178,255) 0%, rgb(240,110,200) 60%, rgb(72,220,210) 100%);
+      background-image: linear-gradient(90deg, rgb(var(--indigo-rgb)) 0%, rgb(var(--imperial-rgb)) 45%, rgb(var(--rose-rgb)) 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
     .hero-banner h1 { position: relative; }
     .hero-banner h1::after {
       content: ''; display: block; width: 48px; height: 3px;
       margin: 14px auto 0; border-radius: 2px;
-      background: linear-gradient(90deg, rgb(139,128,248), rgb(210,60,180));
+      background: var(--grad-indigo);
     }
     .hero-banner::after {
       content: ''; position: absolute; inset: 0;
@@ -692,7 +700,7 @@
     /* Photo wrap */
     .hp-feature-photo-wrap {
       position: relative; padding: 0;
-      background: radial-gradient(ellipse 70% 70% at 40% 50%, rgba(255,210,230,0.55), transparent 65%), linear-gradient(135deg, #6e3aa5, #d23cb4);
+      background: radial-gradient(ellipse 70% 70% at 40% 50%, rgba(210,190,255,0.5), transparent 65%), linear-gradient(135deg, rgb(var(--ink-rgb)), rgb(var(--indigo-rgb)));
     }
     /* Decorative circles */
     .hp-deco-circle {
@@ -782,7 +790,7 @@
     }
     @media (prefers-color-scheme: dark) {
       .hp-value-card {
-        background: rgb(32 29 60);
+        background: rgb(20 16 44);
         border-color: rgb(var(--imperial-rgb) / 0.15);
         border-top-color: rgb(var(--imperial-rgb) / 0.45);
       }
@@ -923,20 +931,20 @@
         border-bottom-color: rgb(var(--imperial-rgb) / 0.14);
       }
       .hp-program-card {
-        background: rgb(36 33 68);
+        background: rgb(18 14 38);
         border-color: rgb(var(--imperial-rgb) / 0.2);
         box-shadow: none;
       }
       .hp-program-card:hover {
-        background: rgb(40 37 76);
+        background: rgb(24 18 50);
         border-color: rgb(var(--imperial-rgb) / 0.4);
         box-shadow: 0 12px 36px rgb(var(--imperial-rgb) / 0.18);
       }
     }
     /* hp-program-card per-card color accent */
     .hp-program-card:nth-child(3n + 1) {
-      border-top: 2px solid rgba(139, 128, 248, 0.6);
-      box-shadow: 0 0 0 1px rgba(139, 128, 248, 0.12), 0 4px 20px rgba(139, 128, 248, 0.08);
+      border-top: 2px solid rgb(var(--indigo-rgb) / 0.6);
+      box-shadow: 0 0 0 1px rgb(var(--indigo-rgb) / 0.12), 0 4px 20px rgb(var(--indigo-rgb) / 0.08);
     }
     .hp-program-card:nth-child(3n + 2) {
       border-top: 2px solid rgba(210, 60, 180, 0.6);
@@ -946,16 +954,16 @@
       border-top: 2px solid rgba(56, 178, 172, 0.6);
       box-shadow: 0 0 0 1px rgba(56, 178, 172, 0.12), 0 4px 20px rgba(56, 178, 172, 0.08);
     }
-    .hp-program-card:nth-child(3n + 1):hover { box-shadow: 0 0 0 1px rgba(139, 128, 248, 0.3), 0 12px 36px rgba(139, 128, 248, 0.18); }
+    .hp-program-card:nth-child(3n + 1):hover { box-shadow: 0 0 0 1px rgb(var(--indigo-rgb) / 0.3), 0 12px 36px rgb(var(--indigo-rgb) / 0.18); }
     .hp-program-card:nth-child(3n + 2):hover { box-shadow: 0 0 0 1px rgba(210, 60, 180, 0.3), 0 12px 36px rgba(210, 60, 180, 0.18); }
     .hp-program-card:nth-child(3n + 3):hover { box-shadow: 0 0 0 1px rgba(56, 178, 172, 0.3), 0 12px 36px rgba(56, 178, 172, 0.18); }
-    .hp-program-card:nth-child(3n + 1) .hp-program-name { color: rgb(190, 178, 255); }
-    .hp-program-card:nth-child(3n + 2) .hp-program-name { color: rgb(240, 110, 200); }
-    .hp-program-card:nth-child(3n + 3) .hp-program-name { color: rgb(72, 220, 210); }
+    .hp-program-card:nth-child(3n + 1) .hp-program-name { color: rgb(var(--indigo-rgb)); }
+    .hp-program-card:nth-child(3n + 2) .hp-program-name { color: rgb(var(--imperial-rgb)); }
+    .hp-program-card:nth-child(3n + 3) .hp-program-name { color: rgb(56, 210, 200); }
     @media (prefers-color-scheme: light) {
-      .hp-program-card:nth-child(3n + 1) .hp-program-name { color: rgb(91, 79, 207); }
-      .hp-program-card:nth-child(3n + 2) .hp-program-name { color: rgb(160, 50, 160); }
-      .hp-program-card:nth-child(3n + 3) .hp-program-name { color: rgb(38, 148, 143); }
+      .hp-program-card:nth-child(3n + 1) .hp-program-name { color: rgb(var(--indigo-rgb)); }
+      .hp-program-card:nth-child(3n + 2) .hp-program-name { color: rgb(var(--imperial-rgb)); }
+      .hp-program-card:nth-child(3n + 3) .hp-program-name { color: rgb(22, 148, 140); }
       .hp-program-card:nth-child(3n + 1),
       .hp-program-card:nth-child(3n + 2),
       .hp-program-card:nth-child(3n + 3) { box-shadow: none; }
