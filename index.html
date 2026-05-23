@@ -2502,24 +2502,6 @@
       </div>
     </section>
 
-    <!-- ── Programs & Classes ─────────────────────────── -->
-    <section class="hp-programs-section">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="hp-programs-header reveal">
-          <p id="programs-eyebrow-el" class="prog-header-edit uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Programs &amp; Classes</p>
-          <h2 id="programs-title-el" class="prog-header-edit hp-programs-heading">Our Programs</h2>
-          <p id="programs-sub-el" class="prog-header-edit hp-programs-sub">Award-winning instruction in dance, language, STEM, and music.</p>
-        </div>
-        <div id="home-programs-grid" class="hp-programs-grid reveal-group">
-          <!-- Populated by renderHomePrograms() -->
-        </div>
-        <div class="hp-programs-cta-wrap reveal">
-          <button id="home-midpage-cta" class="btn-imperial px-8 py-3 text-sm font-semibold tracking-wide">Book a Free Trial Class</button>
-          <p class="hp-programs-cta-note">Questions before enrolling? We can help you pick the right starting program.</p>
-        </div>
-      </div>
-    </section>
-
     <!-- ── Mid-page CTA ─────────────────────────────────── -->
     <section class="hp-midpage-cta-section">
       <div class="max-w-2xl mx-auto px-4 text-center reveal">
@@ -4574,10 +4556,8 @@
         initGallerySortable();
         initHomeAboutSortable();
         initHomeValuesSortable();
-        initHomeProgramsSortable();
         renderTestimonials();
       }
-      if (currentView === 'home') initProgramsHeaderEdit();
 
       // Refresh program edit controls when toggling on programs page
       if (currentView === 'programs') _applyProgramEditMode();
@@ -7720,7 +7700,6 @@
             await updateProgramItem(progId, { icon_url: iconUrl });
             await renderAdminPrograms();
             if (btn) { const panel = document.getElementById('prog-panel-' + progId); if (panel) panel.classList.remove('view-hidden'); }
-            if (currentView === 'home') await renderHomePrograms();
           } catch (err) { alert('Upload failed: ' + err.message); }
         });
       });
@@ -7734,7 +7713,6 @@
           await renderAdminPrograms();
           const panel = document.getElementById('prog-panel-' + progId);
           if (panel) panel.classList.remove('view-hidden');
-          if (currentView === 'home') await renderHomePrograms();
         });
       });
 
@@ -8917,12 +8895,9 @@
     renderHomeFaq().catch(console.error);
     renderHomeAboutFeatures().catch(console.error);
     renderHomeValuesCards().catch(console.error);
-    renderHomePrograms().catch(console.error);
-    loadProgramsHeaderText().catch(console.error);
     populateProgramsDropdown().catch(console.error);
     renderTestimonials().catch(console.error);
     fetchContactInfo().then(renderFooterSocial).catch(console.error);
-    initProgramsHeaderEdit();
 
     // ── Scroll Reveal ───────────────────────────────
     const revealObserver = new IntersectionObserver(
