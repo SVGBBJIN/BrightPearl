@@ -1,5 +1,6 @@
 import { session, supabase } from './state.js';
 import { showView } from './auth.js';
+import { t } from './i18n.js';
 
     //  PARENT PORTAL
     // ════════════════════════════════════════════════
@@ -11,7 +12,7 @@ import { showView } from './auth.js';
       const $empty   = document.getElementById('portal-no-registrations');
       if ($welcome) $welcome.textContent = email;
 
-      $list.innerHTML = '<p class="text-ink/40 text-sm py-4">Loading…</p>';
+      $list.innerHTML = `<p class="text-ink/40 text-sm py-4">${t('portal.loading')}</p>`;
       $empty.classList.add('view-hidden');
 
       const { data: regs, error } = await supabase
@@ -21,7 +22,7 @@ import { showView } from './auth.js';
         .order('created_at', { ascending: false });
 
       if (error) {
-        $list.innerHTML = '<p class="text-imperial text-sm py-4">Could not load registrations.</p>';
+        $list.innerHTML = `<p class="text-imperial text-sm py-4">${t('portal.loadError')}</p>`;
         return;
       }
       if (!regs || regs.length === 0) {
@@ -36,9 +37,9 @@ import { showView } from './auth.js';
         return 'bg-amber-100 text-amber-700 border-amber-200';
       };
       const statusLabel = s => {
-        if (s === 'approved') return 'Approved';
-        if (s === 'rejected') return 'Not Approved';
-        return 'Pending';
+        if (s === 'approved') return t('portal.status.approved');
+        if (s === 'rejected') return t('portal.status.notApproved');
+        return t('portal.status.pending');
       };
 
       $list.innerHTML = regs.map(r => `
@@ -54,3 +55,12 @@ import { showView } from './auth.js';
     }
 
     // ════════════════════════════════════════════════
+// Re-render on language toggle so status labels and loading/empty text update.
+// Guarded: only re-render when the parent portal is the active, logged-in view —
+// renderParentPortal() redirects to the admin view when there is no session, which
+// would be an unwanted side effect of simply flipping the language toggle.
+document.addEventListener('bp:langchange', () => {
+  if (session && !document.getElementById('parent-view')?.classList.contains('view-hidden')) {
+    renderParentPortal();
+  }
+});

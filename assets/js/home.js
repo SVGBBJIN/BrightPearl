@@ -6,6 +6,7 @@ import { renderAdminAbout } from './admin.js';
 import { openLightbox } from './lightbox.js';
 import { esc, getYouTubeId, isVideoUrl, sanitizeHtml, showFormatToolbar } from './utils.js';
 import { initReveal } from './main.js';
+import { t } from './i18n.js';
 
     //  RENDER — HOME
     // ════════════════════════════════════════════════
@@ -98,7 +99,7 @@ import { initReveal } from './main.js';
       const $grid  = document.getElementById('gallery-grid');
       if (!$grid) return;
       if (!photos.length) {
-        $grid.innerHTML = `<div class="hp-gallery-empty">Photos coming soon</div>`;
+        $grid.innerHTML = `<div class="hp-gallery-empty">${t('home.gallery.comingSoon')}</div>`;
         return;
       }
       const displayed = photos.slice(0, 3);
@@ -107,15 +108,15 @@ import { initReveal } from './main.js';
         const isLarge = i === 0;
         const mediaHtml = ytId
           ? `<div class="yt-thumb-wrap" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
-               <img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="lazy" />
+               <img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" alt="${esc(p.caption||t('common.video'))}" loading="lazy" />
                <div class="yt-play-overlay"></div>
              </div>`
-          : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
+          : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||t('common.galleryPhoto'))}" loading="lazy" />`;
         return `<div class="hp-gallery-photo${isLarge ? ' large' : ''}" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
           ${mediaHtml}
           ${p.caption ? `<div class="hp-gallery-photo-cap">${esc(p.caption)}</div>` : ''}
         </div>`;
-      }).join('') || `<div class="hp-gallery-empty">Photos coming soon</div>`;
+      }).join('') || `<div class="hp-gallery-empty">${t('home.gallery.comingSoon')}</div>`;
       $grid.querySelectorAll('.hp-gallery-photo').forEach(card => {
         card.addEventListener('click', () => {
           openLightbox(card.dataset.lburl, card.dataset.lbcap || '');
@@ -159,13 +160,13 @@ import { initReveal } from './main.js';
       const ci   = await fetchContactInfo();
       const $card = document.getElementById('contact-info-card');
       $card.innerHTML = `
-        <h3 class="font-display text-xl text-ink mb-3">Contact &amp; Enrollment Help</h3>
+        <h3 class="font-display text-xl text-ink mb-3">${t('home.contactCard.heading')}</h3>
         <p class="text-sm text-ink/60 mb-4">${esc(ci.helper_text)}</p>
         <div class="space-y-2 text-sm">
-          ${ci.phone    ? `<p><span class="font-medium text-ink">Phone:</span> <a href="tel:${esc(ci.phone)}" class="hover:text-imperial transition-colors">${esc(ci.phone)}</a></p>` : ''}
-          ${ci.email    ? `<p><span class="font-medium text-ink">Email:</span> <a href="mailto:${esc(ci.email)}" class="hover:text-imperial transition-colors">${esc(ci.email)}</a></p>` : ''}
-          ${ci.location ? `<p><span class="font-medium text-ink">Address:</span> ${esc(ci.location)}</p>` : ''}
-          ${ci.wechat   ? `<p><span class="font-medium text-ink">WeChat:</span> ${esc(ci.wechat)}</p>` : ''}
+          ${ci.phone    ? `<p><span class="font-medium text-ink">${t('common.phone')}</span> <a href="tel:${esc(ci.phone)}" class="hover:text-imperial transition-colors">${esc(ci.phone)}</a></p>` : ''}
+          ${ci.email    ? `<p><span class="font-medium text-ink">${t('common.email')}</span> <a href="mailto:${esc(ci.email)}" class="hover:text-imperial transition-colors">${esc(ci.email)}</a></p>` : ''}
+          ${ci.location ? `<p><span class="font-medium text-ink">${t('common.address')}</span> ${esc(ci.location)}</p>` : ''}
+          ${ci.wechat   ? `<p><span class="font-medium text-ink">${t('common.wechat')}</span> ${esc(ci.wechat)}</p>` : ''}
         </div>
         ${(ci.facebook || ci.youtube) ? `
         <div class="flex gap-3 mt-4">
@@ -195,7 +196,7 @@ import { initReveal } from './main.js';
       const items = await fetchFaqData();
       const $card  = document.getElementById('faq-card');
       $card.innerHTML = `
-        <h3 class="font-display text-xl text-ink mb-3">Quick FAQ</h3>
+        <h3 class="font-display text-xl text-ink mb-3">${t('home.faqCard.heading')}</h3>
         <div class="space-y-3 text-sm text-ink/65">
           ${items.map(item => `
             <div>
@@ -706,3 +707,9 @@ import { initReveal } from './main.js';
     }
 
     // ════════════════════════════════════════════════
+// Re-render static labels inside already-fetched dynamic sections on language toggle.
+document.addEventListener('bp:langchange', () => {
+  renderHomeGallery();
+  renderHomeContactInfo();
+  renderHomeFaq();
+});

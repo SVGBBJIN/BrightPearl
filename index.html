@@ -42,20 +42,21 @@
         <span class="font-display text-lg sm:text-xl text-ink tracking-wide">Bright Pearl <span class="text-imperial">Academy</span></span>
       </button>
       <div class="nav-scroll-items">
-        <button id="nav-home"         class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Home</button>
-        <button id="nav-about"        class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap" style="display:none">About</button>
-        <button id="nav-concert"      class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Concert</button>
+        <button id="nav-home"         class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap" data-i18n="nav.home">Home</button>
+        <button id="nav-about"        class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap" style="display:none" data-i18n="nav.about">About</button>
+        <button id="nav-concert"      class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap" data-i18n="nav.concert">Concert</button>
         <button id="nav-programs"     class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap flex items-center gap-1">
-          Programs
+          <span data-i18n="nav.programs">Programs</span>
           <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
         </button>
-        <button id="nav-faculty"      class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Faculty</button>
-        <button id="nav-gallery-page" class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Gallery</button>
-        <button id="nav-register"     class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">Registration</button>
-        <button id="nav-login"         class="btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap" title="Parent &amp; Student Portal" aria-label="Parent &amp; Student Portal">Student Portal</button>
-        <button id="nav-portal"        class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">My Portal</button>
-        <button id="nav-admin"         class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Admin</button>
-        <button id="nav-logout"        class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap">Logout</button>
+        <button id="nav-faculty"      class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap" data-i18n="nav.faculty">Faculty</button>
+        <button id="nav-gallery-page" class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap" data-i18n="nav.gallery">Gallery</button>
+        <button id="nav-register"     class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap" data-i18n="nav.register">Registration</button>
+        <button id="nav-login"         class="btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap" title="Parent &amp; Student Portal" aria-label="Parent &amp; Student Portal" data-i18n="nav.login" data-i18n-title="nav.login.title" data-i18n-aria-label="nav.login.title">Student Portal</button>
+        <button id="nav-portal"        class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap" data-i18n="nav.portal">My Portal</button>
+        <button id="nav-admin"         class="view-hidden btn-outline px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap" data-i18n="nav.admin">Admin</button>
+        <button id="nav-logout"        class="view-hidden btn-imperial px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap" data-i18n="nav.logout">Logout</button>
+        <button id="nav-lang-toggle" class="px-2.5 py-1.5 rounded text-sm font-medium text-ink hover:text-imperial transition-colors whitespace-nowrap">中文</button>
       </div>
       <!-- Hamburger button — visible only on mobile -->
       <button id="nav-hamburger" class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-ink hover:text-imperial transition-colors shrink-0" aria-label="Open menu">
@@ -72,18 +73,20 @@
   <!-- ═══ Mobile Navigation Drawer ═══ -->
   <div id="mobile-nav-drawer" class="mobile-drawer" aria-hidden="true">
     <div class="mobile-drawer-inner">
-      <button id="mob-nav-home"         class="mobile-nav-item">Home</button>
-      <button id="mob-nav-concert"      class="mobile-nav-item">Concert</button>
-      <button id="mob-nav-programs-hdr" class="mobile-nav-item mobile-nav-section-hdr" disabled>Programs</button>
+      <button id="mob-nav-home"         class="mobile-nav-item" data-i18n="nav.home">Home</button>
+      <button id="mob-nav-concert"      class="mobile-nav-item" data-i18n="nav.concert">Concert</button>
+      <button id="mob-nav-programs-hdr" class="mobile-nav-item mobile-nav-section-hdr" disabled data-i18n="nav.programs">Programs</button>
       <div id="mob-programs-list" class="mobile-programs-list"></div>
-      <button id="mob-nav-faculty"      class="mobile-nav-item">Faculty</button>
-      <button id="mob-nav-gallery"      class="mobile-nav-item">Gallery</button>
-      <button id="mob-nav-register"     class="mobile-nav-item mobile-nav-highlight">Registration</button>
+      <button id="mob-nav-faculty"      class="mobile-nav-item" data-i18n="nav.faculty">Faculty</button>
+      <button id="mob-nav-gallery"      class="mobile-nav-item" data-i18n="nav.gallery">Gallery</button>
+      <button id="mob-nav-register"     class="mobile-nav-item mobile-nav-highlight" data-i18n="nav.register">Registration</button>
       <div class="mobile-drawer-divider"></div>
-      <button id="mob-nav-login"         class="mobile-nav-item" title="Parent &amp; Student Portal" aria-label="Parent &amp; Student Portal">Student Portal</button>
-      <button id="mob-nav-portal"        class="mobile-nav-item view-hidden">My Portal</button>
-      <button id="mob-nav-admin"         class="mobile-nav-item view-hidden">Admin</button>
-      <button id="mob-nav-logout"        class="mobile-nav-item view-hidden">Logout</button>
+      <button id="mob-nav-login"         class="mobile-nav-item" title="Parent &amp; Student Portal" aria-label="Parent &amp; Student Portal" data-i18n="nav.login" data-i18n-title="nav.login.title" data-i18n-aria-label="nav.login.title">Student Portal</button>
+      <button id="mob-nav-portal"        class="mobile-nav-item view-hidden" data-i18n="nav.portal">My Portal</button>
+      <button id="mob-nav-admin"         class="mobile-nav-item view-hidden" data-i18n="nav.admin">Admin</button>
+      <button id="mob-nav-logout"        class="mobile-nav-item view-hidden" data-i18n="nav.logout">Logout</button>
+      <div class="mobile-drawer-divider"></div>
+      <button id="mob-nav-lang-toggle" class="mobile-nav-item">中文</button>
     </div>
   </div>
   <div id="mobile-nav-backdrop" class="mobile-drawer-backdrop"></div>
@@ -215,15 +218,15 @@
         <div class="hero-glass">
           <p id="hero-est-text" class="uppercase tracking-[0.08em] text-xs font-semibold mb-3"><span>Est. 2009</span></p>
           <h1 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight mb-3">
-            Where Tradition Meets<br/><em>Graceful Expression</em>
+            <span data-i18n="hero.title.line1">Where Tradition Meets</span><br/><em data-i18n="hero.title.line2">Graceful Expression</em>
           </h1>
           <div class="hero-rule"></div>
-          <p class="hero-sub text-xs sm:text-sm leading-relaxed mb-5 max-w-md mx-auto">
+          <p class="hero-sub text-xs sm:text-sm leading-relaxed mb-5 max-w-md mx-auto" data-i18n="hero.subtitle">
             Bright Pearl Academy nurtures the art of Chinese dance, cultivating discipline, cultural pride, and artistic excellence in every student.
           </p>
           <div class="flex items-center justify-center gap-4 flex-wrap">
-            <button id="hero-cta-register" class="btn-imperial px-7 py-3 text-sm font-semibold tracking-wide">Enroll Now</button>
-            <button id="hero-cta-about"    class="btn-outline px-7 py-3 text-sm font-semibold tracking-wide">Our Story</button>
+            <button id="hero-cta-register" class="btn-imperial px-7 py-3 text-sm font-semibold tracking-wide" data-i18n="hero.cta.register">Enroll Now</button>
+            <button id="hero-cta-about"    class="btn-outline px-7 py-3 text-sm font-semibold tracking-wide" data-i18n="hero.cta.about">Our Story</button>
           </div>
         </div>
       </div>
@@ -231,11 +234,11 @@
 
     <!-- Awards — slim horizontal strip -->
     <section id="section-awards" class="awards-strip-section">
-      <span class="awards-strip-label">Awards &amp; Honors</span>
+      <span class="awards-strip-label" data-i18n="home.awards.label">Awards &amp; Honors</span>
       <div class="awards-strip-track">
         <div id="awards-list"></div>
       </div>
-      <p id="awards-empty" class="view-hidden text-ink/40 italic text-xs py-1">No awards to display yet.</p>
+      <p id="awards-empty" class="view-hidden text-ink/40 italic text-xs py-1" data-i18n="home.awards.empty">No awards to display yet.</p>
     </section>
 
     <!-- ── Our Story feature blocks (about sections merged) ── -->
@@ -248,9 +251,9 @@
     <!-- ── Core Values strip ─────────────────────────── -->
     <section class="hp-values-section">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Our Values</p>
-        <h2 class="hp-values-heading reveal">What We Believe In</h2>
-        <p class="hp-values-sub">The principles that shape every lesson, performance, and student journey.</p>
+        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3" data-i18n="home.values.eyebrow">Our Values</p>
+        <h2 class="hp-values-heading reveal" data-i18n="home.values.heading">What We Believe In</h2>
+        <p class="hp-values-sub" data-i18n="home.values.sub">The principles that shape every lesson, performance, and student journey.</p>
         <div id="hp-values-grid" class="hp-values-grid reveal-group is-visible">
           <!-- Populated by renderHomeValuesCards() -->
         </div>
@@ -269,8 +272,8 @@
           <!-- Populated by renderHomePrograms() -->
         </div>
         <div class="hp-programs-cta-wrap reveal">
-          <button id="home-midpage-cta" class="btn-imperial px-8 py-3 text-sm font-semibold tracking-wide">Book a Free Trial Class</button>
-          <p class="hp-programs-cta-note">Questions before enrolling? We can help you pick the right starting program.</p>
+          <button id="home-midpage-cta" class="btn-imperial px-8 py-3 text-sm font-semibold tracking-wide" data-i18n="home.programs.cta">Book a Free Trial Class</button>
+          <p class="hp-programs-cta-note" data-i18n="home.programs.ctaNote">Questions before enrolling? We can help you pick the right starting program.</p>
         </div>
       </div>
     </section>
@@ -279,48 +282,48 @@
     <section class="hp-achievements-section py-16 sm:py-20 border-t border-imperial/10">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12 reveal">
-          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Student Success</p>
-          <h2 class="font-display text-3xl sm:text-4xl text-ink mb-4">Our Students Achieve</h2>
-          <p class="max-w-2xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed">
+          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3" data-i18n="home.achieve.eyebrow">Student Success</p>
+          <h2 class="font-display text-3xl sm:text-4xl text-ink mb-4" data-i18n="home.achieve.heading">Our Students Achieve</h2>
+          <p class="max-w-2xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed" data-i18n="home.achieve.sub">
             Students have earned awards in speech, visual arts, STEM, and dance. Many have advanced to top private high schools and leading colleges.
           </p>
         </div>
         <div class="cb-banner reveal" style="margin-bottom: 28px;">
           <div class="cb-photo recital"></div>
           <div class="cb-banner-headline">
-            <p class="cb-eyebrow">Inside Bright Pearl</p>
-            <h3>From the studio to the <em>Symphony Hall</em>.</h3>
+            <p class="cb-eyebrow" data-i18n="home.banner.eyebrow">Inside Bright Pearl</p>
+            <h3><span data-i18n="home.banner.title.pre">From the studio to the</span> <em data-i18n="home.banner.title.em">Symphony Hall</em>.</h3>
           </div>
-          <div class="cb-photo-label" style="top:40px;right:40px;left:auto;bottom:auto;"><span class="dot"></span>Spring Recital 2025</div>
+          <div class="cb-photo-label" style="top:40px;right:40px;left:auto;bottom:auto;"><span class="dot"></span><span data-i18n="home.banner.photoLabel">Spring Recital 2025</span></div>
           <div class="cb-banner-stats">
-            <div class="cb-banner-stat"><div class="num">15+</div><div class="lbl">Years of Excellence</div><div class="note">Founded 2009 in West Newton, MA</div></div>
-            <div class="cb-banner-stat"><div class="num">320+</div><div class="lbl">Active Students</div><div class="note">Across all programs, ages 4–adult</div></div>
-            <div class="cb-banner-stat"><div class="num">42</div><div class="lbl">Award Honors</div><div class="note">Speech, visual arts, STEM &amp; dance</div></div>
-            <div class="cb-banner-stat"><div class="num">5</div><div class="lbl">Programs Offered</div><div class="note">Dance, Mandarin, STEM, Adult Dance &amp; Camps</div></div>
+            <div class="cb-banner-stat"><div class="num">15+</div><div class="lbl" data-i18n="home.stat1.lbl">Years of Excellence</div><div class="note" data-i18n="home.stat1.note">Founded 2009 in West Newton, MA</div></div>
+            <div class="cb-banner-stat"><div class="num">320+</div><div class="lbl" data-i18n="home.stat2.lbl">Active Students</div><div class="note" data-i18n="home.stat2.note">Across all programs, ages 4–adult</div></div>
+            <div class="cb-banner-stat"><div class="num">42</div><div class="lbl" data-i18n="home.stat3.lbl">Award Honors</div><div class="note" data-i18n="home.stat3.note">Speech, visual arts, STEM &amp; dance</div></div>
+            <div class="cb-banner-stat"><div class="num">5</div><div class="lbl" data-i18n="home.stat4.lbl">Programs Offered</div><div class="note" data-i18n="home.stat4.note">Dance, Mandarin, STEM, Adult Dance &amp; Camps</div></div>
           </div>
         </div>
         <div class="cb-grid reveal-group" style="margin-bottom: 36px;">
           <div class="content-block" data-tone="gold" style="grid-column: span 6;">
             <div class="cb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div>
-            <p class="cb-eyebrow">2024 Honor</p>
-            <h3 class="cb-title" style="font-size:22px;">Boston Cultural Arts Award</h3>
-            <p class="cb-body" style="margin:0;">Recognized for excellence in preserving and teaching Chinese classical dance.</p>
+            <p class="cb-eyebrow" data-i18n="home.award2024.eyebrow">2024 Honor</p>
+            <h3 class="cb-title" style="font-size:22px;" data-i18n="home.award2024.title">Boston Cultural Arts Award</h3>
+            <p class="cb-body" style="margin:0;" data-i18n="home.award2024.body">Recognized for excellence in preserving and teaching Chinese classical dance.</p>
           </div>
           <div class="content-block" data-tone="ink" style="grid-column: span 6;">
-            <p class="cb-eyebrow">By the Numbers</p>
+            <p class="cb-eyebrow" data-i18n="home.stat98.eyebrow">By the Numbers</p>
             <div class="cb-stat">98%</div>
-            <h3 class="cb-title" style="font-size:20px;">Top-school placement rate</h3>
-            <p class="cb-body" style="margin:0;">Graduates advance to leading private schools and colleges nationwide.</p>
+            <h3 class="cb-title" style="font-size:20px;" data-i18n="home.stat98.title">Top-school placement rate</h3>
+            <p class="cb-body" style="margin:0;" data-i18n="home.stat98.body">Graduates advance to leading private schools and colleges nationwide.</p>
           </div>
         </div>
         <div class="reveal-fade" style="margin-top:36px;">
           <div class="hp-tm-section-header">
-            <p class="cb-eyebrow">What Parents Say</p>
-            <h3>Voices from our community</h3>
+            <p class="cb-eyebrow" data-i18n="home.tm.eyebrow">What Parents Say</p>
+            <h3 data-i18n="home.tm.heading">Voices from our community</h3>
           </div>
           <div id="testimonials-section">
             <div id="testimonials-grid" class="hp-tm-grid reveal-group"></div>
-            <p id="testimonials-empty" class="view-hidden text-ink/40 italic py-4 text-sm text-center">No testimonials yet.</p>
+            <p id="testimonials-empty" class="view-hidden text-ink/40 italic py-4 text-sm text-center" data-i18n="home.tm.empty">No testimonials yet.</p>
           </div>
         </div>
       </div>
@@ -330,6 +333,39 @@
       <div class="grid lg:grid-cols-2 gap-6">
         <div id="contact-info-card" class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6"></div>
         <div id="faq-card" class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6"></div>
+      </div>
+    </section>
+
+    <!-- Quick contact / inquiry form -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 max-w-2xl mx-auto">
+        <h3 class="font-display text-xl text-ink mb-1" data-i18n="contactForm.heading">Ask a Quick Question</h3>
+        <p class="text-sm text-ink/60 mb-5" data-i18n="contactForm.sub">Not ready to enroll yet? Send us a quick message and we'll get back to you.</p>
+
+        <div id="quick-contact-success" class="view-hidden text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-3 mb-4" data-i18n="contactForm.success">Thanks! Your message has been sent — we'll get back to you soon.</div>
+        <div id="quick-contact-error" class="view-hidden text-sm text-imperial bg-imperial/5 border border-imperial/20 rounded-lg px-4 py-3 mb-4" data-i18n="contactForm.error">Something went wrong sending your message. Please email us directly at brightpearlacademy@gmail.com.</div>
+
+        <form id="quick-contact-form" class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="qc-name" class="block text-xs font-medium text-ink/70 mb-1.5" data-i18n="contactForm.name">Name</label>
+              <input id="qc-name" name="name" type="text" required data-i18n-placeholder="contactForm.name.placeholder" placeholder="Your name"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
+            </div>
+            <div>
+              <label for="qc-email" class="block text-xs font-medium text-ink/70 mb-1.5" data-i18n="contactForm.email">Email</label>
+              <input id="qc-email" name="email" type="email" required data-i18n-placeholder="contactForm.email.placeholder" placeholder="you@email.com"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
+            </div>
+          </div>
+          <div>
+            <label for="qc-message" class="block text-xs font-medium text-ink/70 mb-1.5" data-i18n="contactForm.message">Message</label>
+            <textarea id="qc-message" name="message" rows="4" required data-i18n-placeholder="contactForm.message.placeholder" placeholder="How can we help?"
+              class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20"></textarea>
+          </div>
+          <p id="quick-contact-field-error" class="view-hidden text-imperial text-sm"></p>
+          <button type="submit" id="quick-contact-submit" class="btn-imperial px-8 py-2.5 rounded-lg text-sm font-medium min-w-[160px]" data-i18n="contactForm.submit">Send Message</button>
+        </form>
       </div>
     </section>
 
@@ -348,7 +384,7 @@
 
           <!-- Contact -->
           <div class="space-y-1.5 text-sm text-ink/60">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Contact</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3" data-i18n="footer.contact">Contact</p>
             <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
             <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
             <p>61 Chestnut St, West Newton, MA 02465</p>
@@ -357,19 +393,19 @@
 
           <!-- Navigation -->
           <div>
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Navigate</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3" data-i18n="footer.navigate">Navigate</p>
             <nav class="flex flex-col gap-2 text-sm text-ink/60" aria-label="Footer navigation">
-              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-home').click()">Home</button>
-              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-programs').click()">Programs</button>
-              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-faculty').click()">Faculty</button>
-              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-gallery-page').click()">Gallery</button>
-              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-register').click()">Registration</button>
+              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-home').click()" data-i18n="nav.home">Home</button>
+              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-programs').click()" data-i18n="nav.programs">Programs</button>
+              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-faculty').click()" data-i18n="nav.faculty">Faculty</button>
+              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-gallery-page').click()" data-i18n="nav.gallery">Gallery</button>
+              <button class="text-left hover:text-imperial transition-colors" onclick="document.getElementById('nav-register').click()" data-i18n="nav.register">Registration</button>
             </nav>
           </div>
 
           <!-- Follow Us -->
           <div>
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3" data-i18n="footer.followUs">Follow Us</p>
             <div class="flex gap-4 footer-social-links"></div>
           </div>
 
@@ -377,9 +413,9 @@
 
         <!-- Copyright -->
         <div class="border-t border-imperial/10 pt-5 text-center text-ink/40 text-xs">
-          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &copy; 2026 <span data-i18n="footer.rights">Bright Pearl Academy. All rights reserved.</span>
           &nbsp;&middot;&nbsp;
-          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+          <button class="footer-tos-link hover:text-imperial transition-colors" data-i18n="footer.tos">Terms of Service</button>
         </div>
       </div>
     </footer>
@@ -392,9 +428,9 @@
 
     <!-- Header -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
-      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Who We Are</p>
-      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4">Our Story</h2>
-      <p class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed">
+      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3" data-i18n="about.eyebrow">Who We Are</p>
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4" data-i18n="about.heading">Our Story</h2>
+      <p class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed" data-i18n="about.sub">
         A decade of artistry, culture, and community — rooted in tradition, reaching for excellence.
       </p>
       <div class="ink-divider mt-8"></div>
@@ -402,28 +438,28 @@
 
     <!-- About Sections -->
     <div class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 space-y-6" id="about-sections-container"></div>
-    <p id="about-sections-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Our story is coming soon — check back shortly.</p>
+    <p id="about-sections-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4" data-i18n="about.sections.empty">Our story is coming soon — check back shortly.</p>
 
     <div class="ink-divider"></div>
 
     <!-- PDF Downloads -->
     <section id="section-pdfs" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2">Downloads &amp; Resources</h2>
-      <p class="text-center text-ink/50 text-sm mb-10">Schedules, forms, and academy documents</p>
+      <h2 class="font-display text-2xl sm:text-3xl text-ink text-center mb-2" data-i18n="about.pdfs.heading">Downloads &amp; Resources</h2>
+      <p class="text-center text-ink/50 text-sm mb-10" data-i18n="about.pdfs.sub">Schedules, forms, and academy documents</p>
       <div id="pdf-grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
-      <p id="pdf-empty" class="view-hidden text-center text-ink/40 italic py-8">No documents available yet.</p>
+      <p id="pdf-empty" class="view-hidden text-center text-ink/40 italic py-8" data-i18n="about.pdfs.empty">No documents available yet.</p>
     </section>
 
     <!-- Join Our Team -->
     <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
       <div class="bg-surface/65 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 text-center reveal">
-        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Careers</p>
-        <h3 class="font-display text-2xl text-ink mb-3">Join Our Team</h3>
-        <p class="text-ink/60 text-sm leading-relaxed mb-5">
+        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3" data-i18n="about.careers.eyebrow">Careers</p>
+        <h3 class="font-display text-2xl text-ink mb-3" data-i18n="about.careers.heading">Join Our Team</h3>
+        <p class="text-ink/60 text-sm leading-relaxed mb-5" data-i18n="about.careers.body">
           We are always looking for passionate, qualified instructors and staff who share our commitment to arts education and cultural enrichment. If you are interested in teaching dance, Mandarin, STEM, or another discipline, we'd love to hear from you.
         </p>
         <p class="text-ink/60 text-sm mb-5">
-          Send your résumé and a brief introduction to:<br />
+          <span data-i18n="about.careers.sendTo">Send your résumé and a brief introduction to:</span><br />
           <a href="mailto:brightpearlacademy@gmail.com" class="text-imperial hover:underline font-medium">brightpearlacademy@gmail.com</a>
         </p>
       </div>
@@ -434,21 +470,21 @@
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid sm:grid-cols-2 gap-6 pb-6">
           <div class="space-y-1 text-sm text-ink/60">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2" data-i18n="footer.contact">Contact</p>
             <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
             <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
             <p>61 Chestnut St, West Newton, MA 02465</p>
             <p>WeChat: J3477495715</p>
           </div>
           <div class="sm:text-right">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3" data-i18n="footer.followUs">Follow Us</p>
               <div class="flex sm:justify-end gap-4 footer-social-links"></div>
           </div>
         </div>
         <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
-          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &copy; 2026 <span data-i18n="footer.rights">Bright Pearl Academy. All rights reserved.</span>
           &nbsp;&middot;&nbsp;
-          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+          <button class="footer-tos-link hover:text-imperial transition-colors" data-i18n="footer.tos">Terms of Service</button>
         </div>
       </div>
     </footer>
@@ -461,8 +497,8 @@
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
 
       <div class="text-center mb-10 reveal">
-        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Join Us</p>
-        <h2 class="font-display text-3xl sm:text-4xl text-ink mb-3">Enroll at Bright Pearl</h2>
+        <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3" data-i18n="reg.eyebrow">Join Us</p>
+        <h2 class="font-display text-3xl sm:text-4xl text-ink mb-3" data-i18n="reg.heading">Enroll at Bright Pearl</h2>
         <div class="ink-divider mt-6"></div>
       </div>
 
@@ -470,12 +506,12 @@
       <div id="reg-step-indicator" class="flex items-center justify-center gap-3 mb-10">
         <div id="step-1-dot" class="flex items-center gap-2 transition-opacity">
           <div class="w-7 h-7 rounded-full bg-imperial text-cream flex items-center justify-center text-xs font-semibold">1</div>
-          <span class="text-sm font-medium text-ink hidden sm:inline">Your Details</span>
+          <span class="text-sm font-medium text-ink hidden sm:inline" data-i18n="reg.step1.label">Your Details</span>
         </div>
         <div class="w-10 sm:w-16 h-px bg-imperial/25"></div>
         <div id="step-2-dot" class="flex items-center gap-2 opacity-35 transition-opacity">
           <div id="step-2-num" class="w-7 h-7 rounded-full border-2 border-imperial/40 text-ink/40 flex items-center justify-center text-xs font-semibold">2</div>
-          <span class="text-sm font-medium text-ink/40 hidden sm:inline">Payment</span>
+          <span class="text-sm font-medium text-ink/40 hidden sm:inline" data-i18n="reg.step2.label">Payment</span>
         </div>
       </div>
 
@@ -484,26 +520,26 @@
         <div class="w-16 h-16 rounded-full bg-imperial/10 flex items-center justify-center mx-auto mb-5">
           <svg class="w-7 h-7 text-imperial" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
         </div>
-        <h2 class="font-display text-2xl text-ink mb-2">You're All Set!</h2>
-        <p class="text-ink/55 text-sm mb-2">Payment submitted. We'll verify and confirm your enrollment within 1–2 business days.</p>
-        <p class="text-ink/40 text-xs mb-6">Check your email for updates.</p>
-        <button id="reg-another" class="btn-outline px-6 py-2.5 rounded-lg text-sm font-medium">Submit Another</button>
+        <h2 class="font-display text-2xl text-ink mb-2" data-i18n="reg.success.heading">You're All Set!</h2>
+        <p class="text-ink/55 text-sm mb-2" data-i18n="reg.success.body">Payment submitted. We'll verify and confirm your enrollment within 1–2 business days.</p>
+        <p class="text-ink/40 text-xs mb-6" data-i18n="reg.success.note">Check your email for updates.</p>
+        <button id="reg-another" class="btn-outline px-6 py-2.5 rounded-lg text-sm font-medium" data-i18n="reg.success.another">Submit Another</button>
       </div>
 
       <!-- Step 2: Payment -->
       <div id="reg-payment-step" class="view-hidden space-y-6">
         <div class="text-center mb-2">
-          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-2">Step 2 of 2</p>
-          <h2 class="font-display text-2xl sm:text-3xl text-ink mb-2">Complete Your Payment</h2>
-          <p class="text-ink/55 text-sm max-w-sm mx-auto">Your spot has been reserved. Send the enrollment fee using the method below.</p>
+          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-2" data-i18n="reg.payment.eyebrow">Step 2 of 2</p>
+          <h2 class="font-display text-2xl sm:text-3xl text-ink mb-2" data-i18n="reg.payment.heading">Complete Your Payment</h2>
+          <p class="text-ink/55 text-sm max-w-sm mx-auto" data-i18n="reg.payment.sub">Your spot has been reserved. Send the enrollment fee using the method below.</p>
         </div>
         <!-- Payment content injected by JS -->
         <div id="reg-payment-content" class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8 space-y-5"></div>
         <div class="flex flex-col items-center gap-3">
-          <button id="reg-payment-sent-btn" class="btn-imperial px-10 py-3 rounded-lg text-sm font-medium min-w-[220px]">
+          <button id="reg-payment-sent-btn" class="btn-imperial px-10 py-3 rounded-lg text-sm font-medium min-w-[220px]" data-i18n="reg.payment.sentBtn">
             I Have Sent the Payment
           </button>
-          <p class="text-ink/35 text-xs text-center max-w-xs">We'll verify your payment and confirm enrollment within 1–2 business days.</p>
+          <p class="text-ink/35 text-xs text-center max-w-xs" data-i18n="reg.payment.note">We'll verify your payment and confirm enrollment within 1–2 business days.</p>
         </div>
       </div>
 
@@ -511,16 +547,16 @@
         <!-- Student Info -->
         <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
           <h3 class="font-display text-lg text-ink mb-5 flex items-center gap-2">
-            <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Student Information
+            <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span><span data-i18n="reg.section.student">Student Information</span>
           </h3>
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
-              <label for="reg-student-name" class="block text-xs font-medium text-ink/70 mb-1.5">Student Full Name <span class="text-imperial">*</span></label>
-              <input id="reg-student-name" type="text" required placeholder="e.g. Lin Mei"
+              <label for="reg-student-name" class="block text-xs font-medium text-ink/70 mb-1.5"><span data-i18n="reg.field.studentName">Student Full Name</span> <span class="text-imperial">*</span></label>
+              <input id="reg-student-name" type="text" required placeholder="e.g. Lin Mei" data-i18n-placeholder="reg.field.studentName.placeholder"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
             </div>
             <div>
-              <label for="reg-dob" class="block text-xs font-medium text-ink/70 mb-1.5">Date of Birth</label>
+              <label for="reg-dob" class="block text-xs font-medium text-ink/70 mb-1.5" data-i18n="reg.field.dob">Date of Birth</label>
               <input id="reg-dob" type="date"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
             </div>
@@ -530,21 +566,21 @@
         <!-- Parent / Contact -->
         <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
           <h3 class="font-display text-lg text-ink mb-5 flex items-center gap-2">
-            <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Parent / Guardian
+            <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span><span data-i18n="reg.section.parent">Parent / Guardian</span>
           </h3>
           <div class="grid sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
-              <label for="reg-parent-name" class="block text-xs font-medium text-ink/70 mb-1.5">Parent / Guardian Name <span class="text-imperial">*</span></label>
-              <input id="reg-parent-name" type="text" required placeholder="e.g. Zhang Wei"
+              <label for="reg-parent-name" class="block text-xs font-medium text-ink/70 mb-1.5"><span data-i18n="reg.field.parentName">Parent / Guardian Name</span> <span class="text-imperial">*</span></label>
+              <input id="reg-parent-name" type="text" required placeholder="e.g. Zhang Wei" data-i18n-placeholder="reg.field.parentName.placeholder"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
             </div>
             <div>
-              <label for="reg-email" class="block text-xs font-medium text-ink/70 mb-1.5">Email <span class="text-imperial">*</span></label>
+              <label for="reg-email" class="block text-xs font-medium text-ink/70 mb-1.5"><span data-i18n="reg.field.email">Email</span> <span class="text-imperial">*</span></label>
               <input id="reg-email" type="email" required placeholder="contact@email.com"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
             </div>
             <div>
-              <label for="reg-phone" class="block text-xs font-medium text-ink/70 mb-1.5">Phone Number <span class="text-imperial">*</span></label>
+              <label for="reg-phone" class="block text-xs font-medium text-ink/70 mb-1.5"><span data-i18n="reg.field.phone">Phone Number</span> <span class="text-imperial">*</span></label>
               <input id="reg-phone" type="tel" required placeholder="(555) 000-0000"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20" />
             </div>
@@ -554,28 +590,28 @@
         <!-- Class & Experience -->
         <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-6 sm:p-8">
           <h3 class="font-display text-lg text-ink mb-5 flex items-center gap-2">
-            <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>Class Preference
+            <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span><span data-i18n="reg.section.class">Class Preference</span>
           </h3>
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
-              <label for="reg-class" class="block text-xs font-medium text-ink/70 mb-1.5">Interested Class</label>
+              <label for="reg-class" class="block text-xs font-medium text-ink/70 mb-1.5" data-i18n="reg.field.class">Interested Class</label>
               <select id="reg-class" class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20 appearance-none">
-                <option value="">— Select a class —</option>
+                <option value="" data-i18n="reg.field.class.select">— Select a class —</option>
               </select>
             </div>
             <div>
-              <label for="reg-experience" class="block text-xs font-medium text-ink/70 mb-1.5">Prior Dance Experience</label>
+              <label for="reg-experience" class="block text-xs font-medium text-ink/70 mb-1.5" data-i18n="reg.field.experience">Prior Dance Experience</label>
               <select id="reg-experience" class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20 appearance-none">
-                <option value="">— Select level —</option>
-                <option value="none">No experience</option>
-                <option value="beginner">Beginner (0–1 yr)</option>
-                <option value="intermediate">Intermediate (2–4 yrs)</option>
-                <option value="advanced">Advanced (5+ yrs)</option>
+                <option value="" data-i18n="reg.field.experience.select">— Select level —</option>
+                <option value="none" data-i18n="reg.field.experience.none">No experience</option>
+                <option value="beginner" data-i18n="reg.field.experience.beginner">Beginner (0–1 yr)</option>
+                <option value="intermediate" data-i18n="reg.field.experience.intermediate">Intermediate (2–4 yrs)</option>
+                <option value="advanced" data-i18n="reg.field.experience.advanced">Advanced (5+ yrs)</option>
               </select>
             </div>
             <div class="sm:col-span-2">
-              <label for="reg-notes" class="block text-xs font-medium text-ink/70 mb-1.5">Additional Notes</label>
-              <textarea id="reg-notes" rows="3" placeholder="Any health considerations, schedule preferences, or questions…"
+              <label for="reg-notes" class="block text-xs font-medium text-ink/70 mb-1.5" data-i18n="reg.field.notes">Additional Notes</label>
+              <textarea id="reg-notes" rows="3" placeholder="Any health considerations, schedule preferences, or questions…" data-i18n-placeholder="reg.field.notes.placeholder"
                 class="w-full px-3.5 py-2.5 rounded-lg border border-imperial/15 bg-cream text-ink text-sm focus:outline-none focus:border-imperial focus:ring-1 focus:ring-imperial/20 resize-none"></textarea>
             </div>
           </div>
@@ -583,17 +619,17 @@
 
         <p id="reg-error" class="view-hidden text-imperial text-sm text-center"></p>
         <div class="flex justify-center">
-          <button type="submit" id="reg-submit" class="btn-imperial px-10 py-3 rounded-lg text-sm font-medium min-w-[180px]">Submit Application</button>
+          <button type="submit" id="reg-submit" class="btn-imperial px-10 py-3 rounded-lg text-sm font-medium min-w-[180px]" data-i18n="reg.submit">Submit Application</button>
         </div>
         <div class="bg-surface/60 backdrop-blur rounded-xl border border-imperial/10 p-5 text-sm text-ink/65">
-          <h4 class="font-display text-base text-ink mb-2">What happens next?</h4>
+          <h4 class="font-display text-base text-ink mb-2" data-i18n="reg.next.heading">What happens next?</h4>
           <ul class="space-y-1.5 list-disc pl-5">
-            <li>We review your application within 1&ndash;2 business days.</li>
-            <li>You’ll receive a confirmation email with class placement details.</li>
-            <li>Our team will contact you if we need any additional information.</li>
+            <li data-i18n="reg.next.item1">We review your application within 1&ndash;2 business days.</li>
+            <li data-i18n="reg.next.item2">You’ll receive a confirmation email with class placement details.</li>
+            <li data-i18n="reg.next.item3">Our team will contact you if we need any additional information.</li>
           </ul>
         </div>
-        <p class="text-center text-ink/35 text-xs">After submitting, you'll be guided through a quick payment step to secure your spot.</p>
+        <p class="text-center text-ink/35 text-xs" data-i18n="reg.next.footnote">After submitting, you'll be guided through a quick payment step to secure your spot.</p>
       </form>
     </div>
   </main>
@@ -603,30 +639,30 @@
   <!-- ═══════════════════════════════════════════════ -->
   <main id="tos-view" class="view-hidden relative z-10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
-      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Legal</p>
+      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3" data-i18n="tos.eyebrow">Legal</p>
       <h2 id="tos-page-title" class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4">Terms of Service</h2>
       <p id="tos-page-subtitle" class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed">Please review these terms before using our services.</p>
       <div class="ink-divider mt-8"></div>
     </div>
     <div id="tos-content-container" class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 space-y-6"></div>
-    <p id="tos-content-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Terms content is coming soon.</p>
+    <p id="tos-content-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4" data-i18n="tos.content.empty">Terms content is coming soon.</p>
     <footer class="border-t border-imperial/10 mt-6">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid sm:grid-cols-2 gap-6 pb-6">
           <div class="space-y-1 text-sm text-ink/60">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2" data-i18n="footer.contact">Contact</p>
             <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
             <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
             <p>61 Chestnut St, West Newton, MA 02465</p>
             <p>WeChat: J3477495715</p>
           </div>
           <div class="sm:text-right">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3" data-i18n="footer.followUs">Follow Us</p>
               <div class="flex sm:justify-end gap-4 footer-social-links"></div>
           </div>
         </div>
         <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
-          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &copy; 2026 <span data-i18n="footer.rights">Bright Pearl Academy. All rights reserved.</span>
         </div>
       </div>
     </footer>
@@ -640,12 +676,12 @@
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
         <div>
-          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-1">My Account</p>
-          <h2 class="font-display text-2xl sm:text-3xl text-ink">My Portal</h2>
+          <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-1" data-i18n="portal.eyebrow">My Account</p>
+          <h2 class="font-display text-2xl sm:text-3xl text-ink" data-i18n="portal.heading">My Portal</h2>
           <p id="portal-welcome" class="text-ink/50 text-sm mt-1"></p>
         </div>
         <button onclick="showView('register')"
-          class="btn-imperial px-4 py-2 rounded-lg text-sm font-medium self-start sm:self-auto">
+          class="btn-imperial px-4 py-2 rounded-lg text-sm font-medium self-start sm:self-auto" data-i18n="portal.registerCta">
           + Register for a Program
         </button>
       </div>
@@ -654,11 +690,11 @@
       <div class="mb-10">
         <h3 class="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <span class="w-1 h-5 bg-imperial rounded-full inline-block"></span>
-          My Registrations
+          <span data-i18n="portal.myRegistrations">My Registrations</span>
         </h3>
         <div id="portal-registrations-list" class="space-y-3"></div>
         <p id="portal-no-registrations" class="view-hidden text-center text-ink/40 italic py-10">
-          No registrations found. <button onclick="showView('register')" class="text-imperial hover:underline">Register for a program</button> to get started.
+          <span data-i18n="portal.noRegistrations">No registrations found.</span> <button onclick="showView('register')" class="text-imperial hover:underline" data-i18n="portal.registerLink">Register for a program</button> <span data-i18n="portal.toGetStarted">to get started.</span>
         </p>
       </div>
     </div>
@@ -667,21 +703,21 @@
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid sm:grid-cols-2 gap-6 pb-6">
           <div class="space-y-1 text-sm text-ink/60">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2" data-i18n="footer.contact">Contact</p>
             <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
             <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
             <p>61 Chestnut St, West Newton, MA 02465</p>
             <p>WeChat: J3477495715</p>
           </div>
           <div class="sm:text-right">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3" data-i18n="footer.followUs">Follow Us</p>
               <div class="flex sm:justify-end gap-4 footer-social-links"></div>
           </div>
         </div>
         <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
-          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &copy; 2026 <span data-i18n="footer.rights">Bright Pearl Academy. All rights reserved.</span>
           &nbsp;&middot;&nbsp;
-          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+          <button class="footer-tos-link hover:text-imperial transition-colors" data-i18n="footer.tos">Terms of Service</button>
         </div>
       </div>
     </footer>
@@ -1358,9 +1394,9 @@
   <!-- ═══════════════════════════════════════════════ -->
   <main id="faculty-view" class="view-hidden relative z-10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center reveal">
-      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Our Team</p>
-      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4">Faculty</h2>
-      <p class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed">
+      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3" data-i18n="faculty.eyebrow">Our Team</p>
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4" data-i18n="faculty.heading">Faculty</h2>
+      <p class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed" data-i18n="faculty.sub">
         Meet the dedicated artists and educators who bring Bright Pearl Academy to life.
       </p>
       <div class="ink-divider mt-8"></div>
@@ -1369,26 +1405,26 @@
       <div id="faculty-category-grid" class="faculty-cat-grid reveal-group"></div>
     </div>
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24" id="faculty-sections-container"></div>
-    <p id="faculty-list-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Faculty profiles coming soon.</p>
+    <p id="faculty-list-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4" data-i18n="faculty.empty">Faculty profiles coming soon.</p>
     <footer class="border-t border-imperial/10 mt-8">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid sm:grid-cols-2 gap-6 pb-6">
           <div class="space-y-1 text-sm text-ink/60">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2" data-i18n="footer.contact">Contact</p>
             <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
             <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
             <p>61 Chestnut St, West Newton, MA 02465</p>
             <p>WeChat: J3477495715</p>
           </div>
           <div class="sm:text-right">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3" data-i18n="footer.followUs">Follow Us</p>
               <div class="flex sm:justify-end gap-4 footer-social-links"></div>
           </div>
         </div>
         <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
-          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &copy; 2026 <span data-i18n="footer.rights">Bright Pearl Academy. All rights reserved.</span>
           &nbsp;&middot;&nbsp;
-          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+          <button class="footer-tos-link hover:text-imperial transition-colors" data-i18n="footer.tos">Terms of Service</button>
         </div>
       </div>
     </footer>
@@ -1399,34 +1435,34 @@
   <!-- ═══════════════════════════════════════════════ -->
   <main id="concert-view" class="view-hidden relative z-10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center reveal">
-      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Performances</p>
-      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4">Concert</h2>
-      <p class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed">
+      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3" data-i18n="concert.eyebrow">Performances</p>
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4" data-i18n="concert.heading">Concert</h2>
+      <p class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed" data-i18n="concert.sub">
         Join us for our upcoming performances and events.
       </p>
       <div class="ink-divider mt-8"></div>
     </div>
     <div class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 space-y-6" id="concert-sections-container"></div>
-    <p id="concert-sections-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Concert information coming soon — check back shortly.</p>
+    <p id="concert-sections-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4" data-i18n="concert.empty">Concert information coming soon — check back shortly.</p>
     <footer class="border-t border-imperial/10 mt-6">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid sm:grid-cols-2 gap-6 pb-6">
           <div class="space-y-1 text-sm text-ink/60">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2" data-i18n="footer.contact">Contact</p>
             <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
             <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
             <p>61 Chestnut St, West Newton, MA 02465</p>
             <p>WeChat: J3477495715</p>
           </div>
           <div class="sm:text-right">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3" data-i18n="footer.followUs">Follow Us</p>
               <div class="flex sm:justify-end gap-4 footer-social-links"></div>
           </div>
         </div>
         <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
-          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &copy; 2026 <span data-i18n="footer.rights">Bright Pearl Academy. All rights reserved.</span>
           &nbsp;&middot;&nbsp;
-          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+          <button class="footer-tos-link hover:text-imperial transition-colors" data-i18n="footer.tos">Terms of Service</button>
         </div>
       </div>
     </footer>
@@ -1437,32 +1473,32 @@
   <!-- ═══════════════════════════════════════════════ -->
   <main id="programs-view" class="view-hidden relative z-10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center reveal">
-      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Programs</p>
+      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3" data-i18n="programs.eyebrow">Programs</p>
       <h2 id="program-page-title" class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4">Program</h2>
       <p id="program-page-desc" class="max-w-2xl mx-auto text-ink/60 text-sm sm:text-base leading-relaxed"></p>
       <div class="ink-divider mt-8"></div>
     </div>
     <div class="max-w-6xl mx-auto px-4 sm:px-6 pb-16" id="program-content-container"></div>
-    <p id="program-content-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4">Content for this program is coming soon.</p>
+    <p id="program-content-empty" class="view-hidden text-center text-ink/40 italic py-8 max-w-md mx-auto px-4" data-i18n="programs.contentEmpty">Content for this program is coming soon.</p>
     <footer class="border-t border-imperial/10 mt-6">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid sm:grid-cols-2 gap-6 pb-6">
           <div class="space-y-1 text-sm text-ink/60">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2" data-i18n="footer.contact">Contact</p>
             <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
             <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
             <p>61 Chestnut St, West Newton, MA 02465</p>
             <p>WeChat: J3477495715</p>
           </div>
           <div class="sm:text-right">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3" data-i18n="footer.followUs">Follow Us</p>
               <div class="flex sm:justify-end gap-4 footer-social-links"></div>
           </div>
         </div>
         <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
-          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &copy; 2026 <span data-i18n="footer.rights">Bright Pearl Academy. All rights reserved.</span>
           &nbsp;&middot;&nbsp;
-          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+          <button class="footer-tos-link hover:text-imperial transition-colors" data-i18n="footer.tos">Terms of Service</button>
         </div>
       </div>
     </footer>
@@ -1473,34 +1509,34 @@
   <!-- ═══════════════════════════════════════════════ -->
   <main id="gallery-page-view" class="view-hidden relative z-10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 text-center reveal">
-      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3">Moments</p>
-      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4">Gallery</h2>
-      <p class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed">Performances, rehearsals, and academy life.</p>
+      <p class="uppercase tracking-[0.3em] text-imperial/70 text-xs font-medium mb-3" data-i18n="gallery.eyebrow">Moments</p>
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-ink mb-4" data-i18n="gallery.heading">Gallery</h2>
+      <p class="max-w-xl mx-auto text-ink/55 text-sm sm:text-base leading-relaxed" data-i18n="gallery.sub">Performances, rehearsals, and academy life.</p>
       <div class="ink-divider mt-8"></div>
     </div>
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
       <div id="gallery-page-grid" class="reveal-group"></div>
-      <p id="gallery-page-empty" class="view-hidden text-center text-ink/40 italic py-8">No photos yet.</p>
+      <p id="gallery-page-empty" class="view-hidden text-center text-ink/40 italic py-8" data-i18n="gallery.empty">No photos yet.</p>
     </div>
     <footer class="border-t border-imperial/10">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid sm:grid-cols-2 gap-6 pb-6">
           <div class="space-y-1 text-sm text-ink/60">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2">Contact</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-2" data-i18n="footer.contact">Contact</p>
             <p><a href="tel:617-971-8866" class="hover:text-imperial transition-colors">617-971-8866</a></p>
             <p><a href="mailto:brightpearlacademy@gmail.com" class="hover:text-imperial transition-colors">brightpearlacademy@gmail.com</a></p>
             <p>61 Chestnut St, West Newton, MA 02465</p>
             <p>WeChat: J3477495715</p>
           </div>
           <div class="sm:text-right">
-            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3">Follow Us</p>
+            <p class="font-semibold text-ink text-xs uppercase tracking-widest mb-3" data-i18n="footer.followUs">Follow Us</p>
               <div class="flex sm:justify-end gap-4 footer-social-links"></div>
           </div>
         </div>
         <div class="border-t border-imperial/10 pt-4 text-center text-ink/40 text-xs">
-          &copy; 2026 Bright Pearl Academy. All rights reserved.
+          &copy; 2026 <span data-i18n="footer.rights">Bright Pearl Academy. All rights reserved.</span>
           &nbsp;&middot;&nbsp;
-          <button class="footer-tos-link hover:text-imperial transition-colors">Terms of Service</button>
+          <button class="footer-tos-link hover:text-imperial transition-colors" data-i18n="footer.tos">Terms of Service</button>
         </div>
       </div>
     </footer>

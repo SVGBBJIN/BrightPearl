@@ -6,6 +6,7 @@ import { fetchContactInfo, renderHomeFaq, renderHomeValuesCards, renderSkeletonC
 import { renderAdminAbout } from './admin.js';
 import { esc, getYouTubeId, isVideoUrl, sanitizeHtml, showFormatToolbar } from './utils.js';
 import { initReveal } from './main.js';
+import { t } from './i18n.js';
 
     //  HOMEPAGE — Programs & Classes grid
     // ════════════════════════════════════════════════
@@ -44,7 +45,7 @@ import { initReveal } from './main.js';
       if (!$grid) return;
       const programs = await fetchPrograms();
       if (!programs.length) {
-        $grid.innerHTML = '<p class="text-ink/40 text-sm italic text-center py-4">Programs coming soon.</p>';
+        $grid.innerHTML = `<p class="text-ink/40 text-sm italic text-center py-4">${t('programs.home.empty')}</p>`;
         return;
       }
 
@@ -66,12 +67,12 @@ import { initReveal } from './main.js';
               <div class="drag-handle" title="Drag to reorder">${SVG_DRAG}</div>
               <button class="prog-edit-btn" data-prog-id="${esc(p.id)}" title="Edit card">${SVG_PENCIL}</button>
             </div>
-            <p class="cb-eyebrow">Program</p>
+            <p class="cb-eyebrow">${t('programs.card.eyebrow')}</p>
             <h3 class="hp-program-name prog-name-el" data-prog-id="${esc(p.id)}">${esc(p.name)}</h3>
             <p class="hp-program-desc prog-desc-el" data-prog-id="${esc(p.id)}">${esc(p.description || '')}</p>
             <div class="hp-program-btns">
-              <button class="hp-program-btn-learn" data-slug="${esc(p.slug)}">Learn More</button>
-              <button class="hp-program-btn-enroll">Enroll Now</button>
+              <button class="hp-program-btn-learn" data-slug="${esc(p.slug)}">${t('programs.card.learnMore')}</button>
+              <button class="hp-program-btn-enroll">${t('programs.card.enrollNow')}</button>
             </div>
           </div>
         </div>`).join('') + `
@@ -573,8 +574,8 @@ import { initReveal } from './main.js';
         </div>`;
       }).join('');
       const nav = images.length > 1 ? `
-        <button class="carousel-btn carousel-prev" aria-label="Previous">${_SVG_PREV}</button>
-        <button class="carousel-btn carousel-next" aria-label="Next">${_SVG_NEXT}</button>` : '';
+        <button class="carousel-btn carousel-prev" aria-label="${t('common.previous')}">${_SVG_PREV}</button>
+        <button class="carousel-btn carousel-next" aria-label="${t('common.next')}">${_SVG_NEXT}</button>` : '';
       const dots = images.length > 1 ? `
         <div class="carousel-dots">${images.map((_, i) =>
           `<button class="carousel-dot${i === 0 ? ' active' : ''}" data-idx="${i}"></button>`).join('')}
@@ -932,9 +933,14 @@ import { initReveal } from './main.js';
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
             </svg>
-            Download PDF
+            ${t('about.pdfs.download')}
           </a>
         </div>`).join('');
     }
 
     // ════════════════════════════════════════════════
+// Re-render static labels inside already-fetched dynamic sections on language toggle.
+document.addEventListener('bp:langchange', () => {
+  renderHomePrograms();
+  renderAboutPdfs();
+});

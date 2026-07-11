@@ -8,6 +8,7 @@ import { renderAdminConcert, renderAdminGallery, renderAdminTosSettings } from '
 import { openLightbox } from './lightbox.js';
 import { esc, getYouTubeId, sanitizeHtml, showFormatToolbar } from './utils.js';
 import { initReveal } from './main.js';
+import { t } from './i18n.js';
 
     //  RENDER — FACULTY / CONCERT / PROGRAMS / GALLERY PAGE
     // ════════════════════════════════════════════════
@@ -31,8 +32,8 @@ import { initReveal } from './main.js';
       const ALL_CATS = [
         {
           key: 'Dance',
-          label: 'Dance Faculty',
-          desc: 'Classical & contemporary movement',
+          label: t('faculty.cat.dance.title'),
+          desc: t('faculty.cat.dance.desc'),
           grad: 'linear-gradient(145deg,#7f1d1d 0%,#b91c1c 45%,#ef4444 100%)',
           icon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:64px;height:64px;opacity:0.55">
             <circle cx="32" cy="14" r="7" fill="white"/>
@@ -43,8 +44,8 @@ import { initReveal } from './main.js';
         },
         {
           key: 'Chinese / Mandarin',
-          label: 'Chinese / Mandarin Faculty',
-          desc: 'Language & cultural immersion',
+          label: t('faculty.cat.mandarin.title'),
+          desc: t('faculty.cat.mandarin.desc'),
           grad: 'linear-gradient(145deg,#92400e 0%,#b45309 45%,#f59e0b 100%)',
           icon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:64px;height:64px;opacity:0.55">
             <rect x="12" y="12" width="40" height="6" rx="3" fill="white"/>
@@ -55,8 +56,8 @@ import { initReveal } from './main.js';
         },
         {
           key: 'STEM / Coding',
-          label: 'STEM / Coding Faculty',
-          desc: 'Science, technology & mathematics',
+          label: t('faculty.cat.stem.title'),
+          desc: t('faculty.cat.stem.desc'),
           grad: 'linear-gradient(145deg,#1e3a8a 0%,#1d4ed8 45%,#60a5fa 100%)',
           icon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:64px;height:64px;opacity:0.55">
             <rect x="8" y="14" width="48" height="32" rx="5" stroke="white" stroke-width="3"/>
@@ -87,9 +88,9 @@ import { initReveal } from './main.js';
               <p style="font-size:0.75rem;color:rgb(var(--ink-rgb)/0.5);margin-bottom:0.85rem;">${esc(cat.desc)}</p>
               ${count > 0
                 ? `<a href="#${sectionId}" class="faculty-cat-btn" onclick="document.getElementById('${sectionId}')?.scrollIntoView({behavior:'smooth',block:'start'});return false;">
-                    Meet the Instructors →
+                    ${t('faculty.cat.meetInstructors')}
                   </a>`
-                : `<span style="font-size:0.75rem;color:rgb(var(--ink-rgb)/0.35);font-style:italic;">Profiles coming soon</span>`}
+                : `<span style="font-size:0.75rem;color:rgb(var(--ink-rgb)/0.35);font-style:italic;">${t('faculty.cat.profilesComingSoon')}</span>`}
             </div>
           </div>`;
       }).join('');
@@ -108,7 +109,7 @@ import { initReveal } from './main.js';
           <div class="faculty-group-section" id="${sectionId}">
             <div class="faculty-group-header">
               <h3>${esc(cat.label)}</h3>
-              <span class="group-count">${group.length} instructor${group.length !== 1 ? 's' : ''}</span>
+              <span class="group-count">${group.length} ${t(group.length !== 1 ? 'faculty.cat.instructors' : 'faculty.cat.instructor')}</span>
             </div>
             ${group.map(m => `
               <div class="editable-section faculty-card" data-section-id="${m.id}">
@@ -385,7 +386,7 @@ import { initReveal } from './main.js';
       const programs = await fetchPrograms();
       const program  = slug ? programs.find(p => p.slug === slug) : programs[0];
       if (!program) {
-        $title.textContent = 'Program'; $desc.textContent = '';
+        $title.textContent = t('program.detail.fallbackTitle'); $desc.textContent = '';
         $title.dataset.programId = ''; $desc.dataset.programId = '';
         $container.innerHTML = ''; $empty.classList.remove('view-hidden'); return;
       }
@@ -434,7 +435,7 @@ import { initReveal } from './main.js';
             <div class="section-toolbar">${tbHTMLp}</div>
             <button class="prog-accordion-trigger" data-accordion-id="${esc(s.id)}" type="button">
               <div class="prog-accordion-label">
-                <span class="prog-accordion-eyebrow">Section ${idx + 1}</span>
+                <span class="prog-accordion-eyebrow">${t('program.detail.sectionPrefix')} ${idx + 1}${t('program.detail.sectionSuffix')}</span>
                 <span class="prog-accordion-title-text editable-title" data-field="title" data-id="${esc(s.id)}">${esc(s.title)}</span>
               </div>
               <svg class="prog-accordion-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8l5 5 5-5"/></svg>
@@ -657,15 +658,15 @@ import { initReveal } from './main.js';
 
       $grid.innerHTML = `
         <div class="gallery-page-controls">
-          <button type="button" data-gallery-page-prev ${pageStart <= 0 ? 'disabled' : ''}>← Newer</button>
-          <span class="gallery-page-status">${pageStart + 1}–${Math.min(pageStart + page.length, photos.length)} of ${photos.length}</span>
-          <button type="button" data-gallery-page-next ${pageStart + PAGE_SIZE >= photos.length ? 'disabled' : ''}>Older →</button>
+          <button type="button" data-gallery-page-prev ${pageStart <= 0 ? 'disabled' : ''}>${t('gallery.pagination.newer')}</button>
+          <span class="gallery-page-status">${pageStart + 1}–${Math.min(pageStart + page.length, photos.length)} ${t('gallery.pagination.of')} ${photos.length}</span>
+          <button type="button" data-gallery-page-next ${pageStart + PAGE_SIZE >= photos.length ? 'disabled' : ''}>${t('gallery.pagination.older')}</button>
         </div>
         ${page.map(p => {
           const ytId = getYouTubeId(p.image_url);
           const mediaEl = ytId
-            ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(p.caption||'Video')}" loading="lazy" /><div class="yt-play-overlay"></div></div>`
-            : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||'Gallery photo')}" loading="lazy" />`;
+            ? `<div class="yt-thumb-wrap"><img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="${esc(p.caption||t('common.video'))}" loading="lazy" /><div class="yt-play-overlay"></div></div>`
+            : `<img src="${esc(p.image_url)}" alt="${esc(p.caption||t('common.galleryPhoto'))}" loading="lazy" />`;
           return `
           <div class="gallery-card" data-photo-id="${esc(p.id)}" data-lburl="${esc(p.image_url)}" data-lbcap="${esc(p.caption||'')}">
             <button class="gallery-card-delete-btn" data-del-id="${esc(p.id)}" data-del-url="${esc(p.image_url)}" title="Delete photo">${SVG_TRASH}</button>
@@ -774,7 +775,7 @@ import { initReveal } from './main.js';
       const $container = document.getElementById('tos-content-container');
       const $empty = document.getElementById('tos-content-empty');
       renderSkeletonCards('tos-content-container', 3);
-      $title.textContent = tos.title || 'Terms of Service';
+      $title.textContent = tos.title || t('tos.title.default');
       $subtitle.textContent = tos.subtitle || '';
       const sections = Array.isArray(tos.sections) ? tos.sections.sort((a,b) => (a.display_order||0)-(b.display_order||0)) : [];
       if (!sections.length) {
@@ -844,7 +845,7 @@ import { initReveal } from './main.js';
       const $dropdown = document.getElementById('programs-dropdown');
       const $mobList  = document.getElementById('mob-programs-list');
       if (!programs.length) {
-        $dropdown.innerHTML = '<span class="programs-dropdown-item opacity-50 cursor-default">No programs added yet</span>';
+        $dropdown.innerHTML = `<span class="programs-dropdown-item opacity-50 cursor-default">${t('programs.dropdown.empty')}</span>`;
         if ($mobList) $mobList.innerHTML = '';
         return;
       }
@@ -872,3 +873,12 @@ import { initReveal } from './main.js';
     }
 
     // ════════════════════════════════════════════════
+// Re-render static labels inside already-fetched dynamic sections on language toggle.
+document.addEventListener('bp:langchange', () => {
+  renderFacultyPage();
+  renderConcertPage();
+  renderProgramPage(currentProgram);
+  renderGalleryPage();
+  renderTosPage();
+  populateProgramsDropdown();
+});
