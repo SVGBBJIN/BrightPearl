@@ -218,6 +218,20 @@ export const EN = {
   'payment.qrAlt': 'Payment QR Code',
   'payment.recording': 'Recording…',
   'payment.sentBtn': 'I Have Sent the Payment',
+
+  // Quick contact / inquiry form
+  'contactForm.heading': 'Ask a Quick Question',
+  'contactForm.sub': "Not ready to enroll yet? Send us a quick message and we'll get back to you.",
+  'contactForm.name': 'Name',
+  'contactForm.name.placeholder': 'Your name',
+  'contactForm.email': 'Email',
+  'contactForm.email.placeholder': 'you@email.com',
+  'contactForm.message': 'Message',
+  'contactForm.message.placeholder': 'How can we help?',
+  'contactForm.submit': 'Send Message',
+  'contactForm.sending': 'Sending…',
+  'contactForm.success': "Thanks! Your message has been sent — we'll get back to you soon.",
+  'contactForm.error': 'Something went wrong sending your message. Please email us directly at brightpearlacademy@gmail.com.',
 };
 
 export const ZH = {
@@ -432,6 +446,20 @@ export const ZH = {
   'payment.qrAlt': '支付二维码',
   'payment.recording': '记录中…',
   'payment.sentBtn': '我已完成付款',
+
+  // Quick contact / inquiry form
+  'contactForm.heading': '快速留言咨询',
+  'contactForm.sub': '还没准备好报名？给我们留言，我们会尽快与您联系。',
+  'contactForm.name': '姓名',
+  'contactForm.name.placeholder': '您的姓名',
+  'contactForm.email': '电子邮箱',
+  'contactForm.email.placeholder': 'you@email.com',
+  'contactForm.message': '留言内容',
+  'contactForm.message.placeholder': '请告诉我们您想咨询的问题',
+  'contactForm.submit': '发送留言',
+  'contactForm.sending': '发送中…',
+  'contactForm.success': '感谢您的留言！我们会尽快与您联系。',
+  'contactForm.error': '留言发送失败，请直接发邮件至 brightpearlacademy@gmail.com 与我们联系。',
 };
 
 const STORAGE_KEY = 'bp_lang';

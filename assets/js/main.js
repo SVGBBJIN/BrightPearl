@@ -5,6 +5,7 @@ import { fetchContactInfo, renderFooterSocial, renderHeroContent, renderHeroPhot
 import { initProgramsHeaderEdit, loadProgramsHeaderText, renderHomePrograms, renderTestimonials } from './programs.js';
 import { populateProgramsDropdown } from './gallery.js';
 import { getLang, initI18n, setLang } from './i18n.js';
+import { initQuickContactForm } from './contact-form.js';
 
     // ── i18n: apply static translations before anything paints ──
     initI18n();
@@ -149,6 +150,7 @@ import { getLang, initI18n, setLang } from './i18n.js';
     renderTestimonials().catch(console.error);
     initProgramsHeaderEdit();
     fetchContactInfo().then(renderFooterSocial).catch(console.error);
+    initQuickContactForm();
 
     // ── Scroll Reveal ───────────────────────────────
     const revealObserver = new IntersectionObserver(
