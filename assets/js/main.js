@@ -4,6 +4,25 @@ import { fetchSetting, saveSetting } from './data.js';
 import { fetchContactInfo, renderFooterSocial, renderHeroContent, renderHeroPhoto, renderHomeAboutFeatures, renderHomeAwards, renderHomeContactInfo, renderHomeFaq, renderHomeGallery, renderHomeValuesCards } from './home.js';
 import { initProgramsHeaderEdit, loadProgramsHeaderText, renderHomePrograms, renderTestimonials } from './programs.js';
 import { populateProgramsDropdown } from './gallery.js';
+import { getLang, initI18n, setLang } from './i18n.js';
+
+    // ── i18n: apply static translations before anything paints ──
+    initI18n();
+
+    function updateLangToggleLabel() {
+      const label = getLang() === 'zh' ? 'EN' : '中文';
+      const $nav = document.getElementById('nav-lang-toggle');
+      const $mob = document.getElementById('mob-nav-lang-toggle');
+      if ($nav) $nav.textContent = label;
+      if ($mob) $mob.textContent = label;
+    }
+    updateLangToggleLabel();
+    document.addEventListener('bp:langchange', updateLangToggleLabel);
+    [document.getElementById('nav-lang-toggle'), document.getElementById('mob-nav-lang-toggle')].forEach($btn => {
+      $btn?.addEventListener('click', () => {
+        setLang(getLang() === 'zh' ? 'en' : 'zh');
+      });
+    });
 
 
     // ── Seed default content if DB is empty ────────

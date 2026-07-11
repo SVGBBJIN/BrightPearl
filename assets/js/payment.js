@@ -1,6 +1,7 @@
 import { supabase } from './state.js';
 import { updateRegStatus } from './data.js';
 import { esc } from './utils.js';
+import { t } from './i18n.js';
 
     //  PAYMENT — DATA + RENDER
     // ════════════════════════════════════════════════
@@ -55,7 +56,7 @@ import { esc } from './utils.js';
             ${icon}
           </div>
           <div>
-            <p class="text-xs font-medium text-ink/50 uppercase tracking-wider">Payment Method</p>
+            <p class="text-xs font-medium text-ink/50 uppercase tracking-wider">${t('payment.methodLabel')}</p>
             <p class="font-display text-lg text-ink leading-tight">${esc(setting.method_name)}
               <span class="text-base text-ink/60 font-normal font-body">— ${esc(setting.handle)}</span>
             </p>
@@ -69,16 +70,16 @@ import { esc } from './utils.js';
         <a href="${esc(deepLink)}" target="_blank" rel="noopener noreferrer"
           class="btn-imperial w-full flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-medium">
           ${icon}
-          Open ${esc(setting.method_name)} — ${esc(setting.handle)}
+          ${t('payment.openPrefix')} ${esc(setting.method_name)} — ${esc(setting.handle)}
         </a>` : `
         <div class="bg-imperial/5 rounded-lg p-4 text-center">
-          <p class="font-medium text-ink text-sm">Handle / Number</p>
+          <p class="font-medium text-ink text-sm">${t('payment.handleLabel')}</p>
           <p class="text-imperial font-semibold text-lg mt-1">${esc(setting.handle)}</p>
         </div>`}
         ${setting.qr_code_url ? `
         <div class="text-center pt-2">
-          <p class="text-xs text-ink/45 mb-3 uppercase tracking-wider">Or scan the QR code</p>
-          <img src="${esc(setting.qr_code_url)}" alt="Payment QR Code"
+          <p class="text-xs text-ink/45 mb-3 uppercase tracking-wider">${t('payment.scanQr')}</p>
+          <img src="${esc(setting.qr_code_url)}" alt="${t('payment.qrAlt')}"
             class="mx-auto max-w-[180px] rounded-xl border border-imperial/10 shadow-sm" />
         </div>` : ''}`;
 
@@ -87,13 +88,13 @@ import { esc } from './utils.js';
       const newBtn = $sentBtn.cloneNode(true); // remove old listeners
       $sentBtn.parentNode.replaceChild(newBtn, $sentBtn);
       newBtn.addEventListener('click', async () => {
-        newBtn.disabled = true; newBtn.textContent = 'Recording…';
+        newBtn.disabled = true; newBtn.textContent = t('payment.recording');
         try {
           await updateRegStatus(regId, 'awaiting_verification');
           document.getElementById('reg-payment-step').classList.add('view-hidden');
           document.getElementById('reg-success').classList.remove('view-hidden');
           window.scrollTo({ top: 0, behavior: 'smooth' });
-        } catch (err) { console.error(err); newBtn.disabled = false; newBtn.textContent = 'I Have Sent the Payment'; }
+        } catch (err) { console.error(err); newBtn.disabled = false; newBtn.textContent = t('payment.sentBtn'); }
       });
     }
 
