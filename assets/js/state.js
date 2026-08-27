@@ -1,9 +1,12 @@
 
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-    const SUPABASE_URL      = 'https://vsjlvkivsvrjplkscgrz.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzamx2a2l2c3ZyanBsa3NjZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MTAyNzcsImV4cCI6MjA4Nzk4NjI3N30.x3M7efiCkyuJakCsytKxdZp7RnDGdtJDKQZzM5WdaUo';
-    export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // ── Backend ────────────────────────────────────
+    // This app previously ran against a live Supabase project. It has
+    // since been disconnected — see SUPABASE_SCHEMA.md at the repo root
+    // for the full schema/table/bucket reference that used to live there.
+    // `supabase` below is now a local, localStorage-backed stub that
+    // implements the same call shapes this codebase uses, so the app
+    // keeps working for local development without any network backend.
+    export { supabase } from './local-store.js';
 
     // ── State ──────────────────────────────────────
     export let currentView  = 'home';

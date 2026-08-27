@@ -1,6 +1,6 @@
 # Bright Pearl Academy — Admin & Edit Mode Guide
 
-All site content is managed through two interfaces: the **Admin Dashboard** (accessible after logging in as an admin) and **Edit Mode** (toggled on the live page for in-place editing). Both interfaces write to the same Supabase backend.
+All site content is managed through two interfaces: the **Admin Dashboard** (accessible after logging in as an admin) and **Edit Mode** (toggled on the live page for in-place editing). Both interfaces write to the same backend — previously Supabase, now a local `localStorage`-backed stub (`assets/js/local-store.js`) after disconnecting; see [`SUPABASE_SCHEMA.md`](./SUPABASE_SCHEMA.md) for the schema this app used to run against.
 
 ---
 
@@ -40,7 +40,7 @@ All site content is managed through two interfaces: the **Admin Dashboard** (acc
 **Edit Mode (on-page)**
 - No on-page edit controls; use the Admin Dashboard
 
-**Storage:** Supabase `awards` table — `id, title, year, description, created_at`
+**Storage:** `awards` table (local stub) — `id, title, year, description, created_at`
 
 ---
 
@@ -113,7 +113,7 @@ All site content is managed through two interfaces: the **Admin Dashboard** (acc
 
 **Edit Mode (on-page)**
 - Each section block has a `.section-toolbar` (top-right):
-  - **≡ Drag** — reorder sections; saved to Supabase on drop
+  - **≡ Drag** — reorder sections; saved to local storage on drop
   - **✏ Edit** — enables contentEditable for the eyebrow label, heading, and body; a rich-text format toolbar appears; click **Save Changes** to commit
   - **🖼 Image** — opens a file picker to add or replace the section photo
   - **▶ Video** — prompts for a YouTube URL to embed
@@ -121,7 +121,7 @@ All site content is managed through two interfaces: the **Admin Dashboard** (acc
 - Hover over a section photo → camera overlay to replace it directly
 - A **"+ Add Section"** row at the bottom of the list is visible only in edit mode
 
-**Storage:** Supabase `about_sections` table — `id, title, body, eyebrow, image_url, display_order, created_at`
+**Storage:** `about_sections` table (local stub) — `id, title, body, eyebrow, image_url, display_order, created_at`
 
 ---
 
@@ -143,7 +143,7 @@ All site content is managed through two interfaces: the **Admin Dashboard** (acc
 - Same controls as homepage strip
 - Reordering supported via drag handles (`galleryPageSortable`)
 
-**Storage:** Supabase `gallery` table — `id, image_url, caption, created_at` + Supabase Storage bucket `gallery/`
+**Storage:** `gallery` table (local stub) — `id, image_url, caption, created_at` + local storage bucket `gallery/`
 
 ---
 
@@ -251,7 +251,7 @@ All site content is managed through two interfaces: the **Admin Dashboard** (acc
 **Edit Mode (on-page)**
 - No on-page edit controls; use the Admin Dashboard
 
-**Storage:** Supabase `pdfs` table — `id, title, description, pdf_url, display_order, created_at` + Supabase Storage bucket `pdfs/`
+**Storage:** `pdfs` table (local stub) — `id, title, description, pdf_url, display_order, created_at` + local storage bucket `pdfs/`
 
 ---
 
@@ -265,7 +265,7 @@ All site content is managed through two interfaces: the **Admin Dashboard** (acc
 **Edit Mode (on-page)**
 - No on-page edit controls; use the Admin Dashboard
 
-**Storage:** Supabase `classes` table — `id, name, schedule_time, level, description, created_at`
+**Storage:** `classes` table (local stub) — `id, name, schedule_time, level, description, created_at`
 
 ---
 
@@ -279,7 +279,7 @@ All site content is managed through two interfaces: the **Admin Dashboard** (acc
 **Edit Mode (on-page)**
 - Not applicable; registrations are submitted by site visitors
 
-**Storage:** Supabase `registrations` table — `id, student_name, dob, parent_name, email, phone, class_id, experience, notes, status, created_at`
+**Storage:** `registrations` table (local stub) — `id, student_name, dob, parent_name, email, phone, class_id, experience, notes, status, created_at`
 
 ---
 
@@ -295,7 +295,7 @@ All site content is managed through two interfaces: the **Admin Dashboard** (acc
 | **Camera overlay** | Appears on hover over photos; click to replace the image |
 | **"+ Add …" row** | Appears at the bottom of each editable grid/list; click to add a new item |
 | **Icon picker** | Click a value card's icon to open an 8-icon selector |
-| **Save Changes** | Commits contentEditable text to Supabase |
+| **Save Changes** | Commits contentEditable text to local storage |
 
 ## Quick Reference: Edit Mode by Page
 

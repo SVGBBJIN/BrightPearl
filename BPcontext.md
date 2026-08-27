@@ -33,9 +33,9 @@
 |---------|-----------|-------|
 | Frontend CSS | Tailwind CSS Play CDN | No build; `darkMode: 'media'` |
 | Frontend JS | Vanilla ES Modules | Single `<script type="module">` block |
-| Backend / DB | Supabase (PostgreSQL) | Hosted, BaaS |
-| Auth | Supabase Auth | Email+password only |
-| File Storage | Supabase Storage | Public buckets |
+| Backend / DB | Local stub (`assets/js/local-store.js`) | **Disconnected from Supabase**; `localStorage`-backed, schema documented in `SUPABASE_SCHEMA.md` |
+| Auth | Local stub (email+password) | Emulates Supabase Auth's API shape against `localStorage` |
+| File Storage | Local stub (`localStorage` data URIs) | Emulates Supabase Storage's `upload`/`getPublicUrl`/`remove` API |
 | AI Chat | Groq API | `llama-3.3-70b-versatile` |
 | Drag-and-Drop | SortableJS v1.15.6 | CDN |
 | Fonts | Google Fonts | Playfair Display + Inter |
@@ -103,88 +103,18 @@ Views are `<main>` elements toggled by `showView(viewName)` via the `.view-hidde
 
 ---
 
-## 6. Database Schema (Supabase / PostgreSQL)
+## 6. Database Schema (formerly Supabase / PostgreSQL — now disconnected)
 
-### `awards`
-```
-id uuid PK | title text | year text | description text | created_at
-```
-RLS: public SELECT, authenticated ALL
+**This app no longer talks to Supabase.** `assets/js/state.js` exports a local, `localStorage`-backed stub (`assets/js/local-store.js`) with the same call shapes (`.from()`, `.storage`, `.auth`) so the rest of the codebase is unchanged.
 
-### `classes`
-```
-id uuid PK | name text | schedule_time text | level text | description text | created_at
-```
-RLS: public SELECT, authenticated ALL. Referenced by `registrations.class_id`.
-
-### `registrations`
-```
-id uuid PK
-student_name text | parent_name text | email text | phone text
-date_of_birth date
-class_id uuid FK→classes | class_name text
-experience_level text  -- none | beginner | intermediate | advanced
-notes text
-status text            -- pending | awaiting_verification | confirmed | cancelled
-created_at
-```
-RLS: public INSERT, authenticated SELECT/UPDATE/DELETE
-
-### `payment_settings`
-```
-id uuid PK | method_name text (Venmo|Zelle|Cash|Check) | handle text
-instructions text | qr_code_url text | is_active boolean | created_at
-```
-RLS: public SELECT, authenticated ALL.
-Default seed: Venmo / `BrightPearlAcademy`
-
-### `about_sections`
-```
-id uuid PK | title text | body text | display_order int | created_at
-```
-RLS: public SELECT, authenticated ALL.
-Seeds: "Our Mission", "Our Teaching Philosophy", "The Academy Today"
-
-### `pdfs`
-```
-id uuid PK | title text | description text | file_url text | file_name text
-display_order int | created_at
-```
-RLS: public SELECT, authenticated ALL
-
-### `site_settings` (key-value JSON store)
-```
-id uuid PK | key text UNIQUE | value jsonb
-```
-RLS: public SELECT, authenticated ALL.
-
-**Known keys and their shapes:**
-
-| Key | Value Shape | Used By |
-|-----|-------------|---------|
-| `hero_image` | `{ url: string }` | Home hero banner |
-| `faculty_data` | `{ faculty: [{ name, bio, photo_url, category }] }` | Faculty page |
-| `programs_data` | `{ programs: [{ title, description, image_url, details }] }` | Programs page |
-| `concert_data` | `{ sections: [{ title, body, display_order }] }` | Concert page |
-| `tos_data` | `{ sections: [{ title, body, display_order }] }` | Terms page |
-| `contact_info` | `{ email, phone, address, hours }` | Contact section |
-| `faq_data` | `{ faqs: [{ question, answer }] }` | FAQ section |
-
-`fetchSetting(key)` / `saveSetting(key, value)` are the generic helpers for this table.
-
-### Storage Buckets
-
-| Bucket | Public | Max Size | MIME Types |
-|--------|:------:|----------|------------|
-| `gallery` | Yes | 5 MB | image/jpeg, png, webp, gif |
-| `pdfs` | Yes | 20 MB | application/pdf |
+The full table-by-table schema (`awards`, `classes`, `registrations`, `payment_settings`, `about_sections`, `pdfs`, `site_settings` and its known keys, and the `gallery`/`pdfs` storage buckets) — reverse-engineered from this codebase's query calls — is documented in **[`SUPABASE_SCHEMA.md`](./SUPABASE_SCHEMA.md)** at the repo root. Treat that file as the single source of truth for schema going forward; it also carries notes on what wasn't recoverable from code (RLS policies were configured in the Supabase dashboard and aren't tracked anywhere in this repo).
 
 ---
 
 ## 7. Authentication & Session
 
-- **Provider:** Supabase Auth (email + password)
-- **Admin credential:** `admin@brightpearl.academy` / `admin`
+- **Provider:** Local stub emulating Supabase Auth's API (email + password), backed by `localStorage` — see `assets/js/local-store.js`
+- **Admin credential:** `admin@brightpearl.academy` / `admin123` (seeded locally on first load)
 - **Startup:** `supabase.auth.getSession()` called on page load; result stored in `session`
 - **Lifecycle:** `supabase.auth.onAuthStateChange()` monitors changes throughout session
 - **Guard:** Admin view checks `session !== null`; redirects to login form if null
@@ -333,14 +263,12 @@ let tourActive = false;        // Site tour animation state
 
 | Item | Value |
 |------|-------|
-| Supabase Project ID | `vsjlvkivsvrjplkscgrz` |
-| Supabase URL | `https://vsjlvkivsvrjplkscgrz.supabase.co` |
-| Supabase Anon Key | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzamx2a2l2c3ZyanBsa3NjZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MTAyNzcsImV4cCI6MjA4Nzk4NjI3N30.x3M7efiCkyuJakCsytKxdZp7RnDGdtJDKQZzM5WdaUo` |
+| Backend | **Disconnected from Supabase.** `assets/js/state.js` now exports a `localStorage`-backed stub (`assets/js/local-store.js`) instead of a live Supabase client. See `SUPABASE_SCHEMA.md` for the full schema that used to live in Supabase project `vsjlvkivsvrjplkscgrz`. |
 | Groq API Key | `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` |
-| Admin Login | `admin@brightpearl.academy` / `admin` |
+| Admin Login (local stub) | `admin@brightpearl.academy` / `admin123` (seeded on first load — see `local-store.js`) |
 | Groq Model | `llama-3.3-70b-versatile` |
 
-> These credentials are embedded in `index.html`. The Supabase anon key is intentionally public (Row Level Security enforces access control). The Groq key is client-side; rotate if exposed.
+> The Groq key is client-side; rotate if exposed. Supabase credentials have been removed from the codebase — they are no longer valid connection info for this app.
 
 ---
 
@@ -360,8 +288,8 @@ let tourActive = false;        // Site tour animation state
 ## 16. Working Notes
 
 - **Single-file constraint:** All changes go into `index.html`. Keep CSS in the `<style>` block, JS in the `<script type="module">` block.
-- **No imports from disk.** All dependencies load from CDN (Tailwind Play CDN, jsDelivr for Supabase, SortableJS CDN).
+- **No imports from disk except the local backend stub.** UI dependencies load from CDN (Tailwind Play CDN, SortableJS CDN); `assets/js/local-store.js` is the one on-disk module and replaces the old Supabase CDN import.
 - **XSS safety:** Always use `esc()` when inserting user-supplied strings into `innerHTML`.
-- **RLS:** Unauthenticated users can SELECT public data and INSERT registrations. All mutations require `session !== null`.
+- **Access control:** No backend enforces this anymore (local stub has no RLS equivalent) — the UI itself gates admin-only actions behind `session !== null` and `session.user.email === ADMIN_EMAIL`.
 - **Dark mode:** Use CSS custom properties (`--X-rgb`) and Tailwind tokens (`bg-cream`, `text-ink`) — never hardcode hex colors in new UI.
 - **Edit mode guard:** Wrap all inline CMS controls in `${editMode ? '...' : ''}` template literal checks.

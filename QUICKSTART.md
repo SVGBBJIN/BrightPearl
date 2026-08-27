@@ -1,7 +1,9 @@
 # Bright Pearl Academy — Project Quickstart
 
 ## Overview
-A single-file SPA (`index.html`) for a Chinese dance school. Built with Tailwind CSS Play CDN, Vanilla JS ES Modules, and Supabase as the backend. No build step — open the file in a browser or serve it statically.
+A single-file SPA (`index.html`) for a Chinese dance school. Built with Tailwind CSS Play CDN and Vanilla JS ES Modules. No build step — open the file in a browser or serve it statically.
+
+**Backend:** Previously Supabase; now **disconnected**. `assets/js/local-store.js` provides a `localStorage`-backed stub with the same API shape, so the app still runs standalone with no server. See `SUPABASE_SCHEMA.md` for the schema this app used to run against.
 
 **Live file:** `/Users/jeremy/Desktop/BrightPearl/index.html`
 **Dev server:** Python3 HTTP server on port 3000 — copy file to `/tmp/bright-pearl-serve/` then use `preview_start "BrightPearl"`
@@ -14,20 +16,18 @@ cp /Users/jeremy/Desktop/BrightPearl/index.html /tmp/bright-pearl-serve/index.ht
 
 ---
 
-## Supabase Project
+## Backend (formerly Supabase — now disconnected)
 | Key | Value |
 |-----|-------|
-| Project ID | `vsjlvkivsvrjplkscgrz` |
-| Project name | BrightPearlBackend |
-| URL | `https://vsjlvkivsvrjplkscgrz.supabase.co` |
-| Anon key | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzamx2a2l2c3ZyanBsa3NjZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MTAyNzcsImV4cCI6MjA4Nzk4NjI3N30.x3M7efiCkyuJakCsytKxdZp7RnDGdtJDKQZzM5WdaUo` |
-| Admin login | `admin@brightpearl.academy` / `admin` |
+| Status | Disconnected. The former project (`BrightPearlBackend`, ref `vsjlvkivsvrjplkscgrz`) is no longer wired into the app; its schema is preserved in `SUPABASE_SCHEMA.md`. |
+| Current backend | `assets/js/local-store.js` — `localStorage`-backed stub, same call shapes as `supabase-js` |
+| Admin login (local) | `admin@brightpearl.academy` / `admin123` (seeded on first load) |
 
 ---
 
 ## Tech Stack
 - **CSS framework:** Tailwind CSS Play CDN (no build) with `darkMode: 'media'`
-- **Backend:** Supabase JS CDN (`@supabase/supabase-js` via jsDelivr ESM)
+- **Backend:** Local stub (`assets/js/local-store.js`), `localStorage`-backed — no network backend
 - **AI chat:** Groq API (`llama-3.3-70b-versatile`) — Pearl assistant widget
 - **Fonts:** Playfair Display (display/headings), Inter (body)
 - **No framework** — pure ES modules in a single `<script type="module">` block
@@ -87,56 +87,9 @@ The SPA has **4 views** toggled by `showView(viewName)`. Each is a `<main>` with
 
 ---
 
-## Database Schema (Supabase / PostgreSQL)
+## Database Schema (formerly Supabase / PostgreSQL — now disconnected)
 
-### `awards`
-```
-id uuid PK | title text | year text | description text | created_at
-```
-RLS: public SELECT, authenticated ALL
-
-### `classes`
-```
-id uuid PK | name text | schedule_time text | level text | description text | created_at
-```
-RLS: public SELECT, authenticated ALL. Referenced by `registrations.class_id`.
-
-### `registrations`
-```
-id uuid PK | student_name text | parent_name text | email text | phone text
-date_of_birth date | class_id uuid FK→classes | class_name text
-experience_level text (none|beginner|intermediate|advanced)
-notes text | status text (pending|awaiting_verification|confirmed|cancelled) | created_at
-```
-RLS: public INSERT, authenticated SELECT/UPDATE/DELETE
-
-### `payment_settings`
-```
-id uuid PK | method_name text (Venmo|Zelle|Cash|Check) | handle text
-instructions text | qr_code_url text | is_active boolean | created_at
-```
-RLS: public SELECT, authenticated ALL
-**Seeded default:** Venmo / `BrightPearlAcademy`
-
-### `about_sections`
-```
-id uuid PK | title text | body text | display_order int | created_at
-```
-RLS: public SELECT, authenticated ALL
-**Seeded with 3 entries:** Our Mission, Our Teaching Philosophy, The Academy Today
-
-### `pdfs`
-```
-id uuid PK | title text | description text | file_url text | file_name text
-display_order int | created_at
-```
-RLS: public SELECT, authenticated ALL
-
-### Storage Buckets
-| Bucket | Public | Max size | MIME types |
-|--------|--------|----------|------------|
-| `gallery` | Yes | 5 MB | image/jpeg, png, webp, gif |
-| `pdfs` | Yes | 20 MB | application/pdf |
+The tables below (`awards`, `classes`, `registrations`, `payment_settings`, `about_sections`, `pdfs`, `site_settings`) and the `gallery`/`pdfs` storage buckets are no longer live — they describe the local stub's data shapes, which mirror what the real Supabase project used to hold. Full column-by-column reference: **[`SUPABASE_SCHEMA.md`](./SUPABASE_SCHEMA.md)**.
 
 ---
 
@@ -162,7 +115,7 @@ RLS: public SELECT, authenticated ALL
 3. **Awards** — add/delete awards shown on home page
 4. **Classes** — add/delete classes (used in registration dropdown)
 5. **About Page Sections** — add/delete content sections shown on About page
-6. **PDF Downloads** — drag-and-drop PDF upload to Supabase storage; shown on About page
+6. **PDF Downloads** — drag-and-drop PDF upload to the local storage stub; shown on About page
 7. **Gallery Photos** — drag-and-drop image upload; shown in home gallery with lightbox
 8. **Registrations** — full table with status dropdown (all statuses)
 

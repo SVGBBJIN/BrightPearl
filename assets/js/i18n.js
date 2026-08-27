@@ -2,8 +2,8 @@
 //  i18n.js — English / Simplified Chinese translations
 //  for static UI chrome only. Admin-entered content
 //  (class names, bios, testimonials, about/TOS bodies,
-//  awards, etc.) lives in Supabase and is never touched
-//  here.
+//  awards, etc.) lives in the local data store (see
+//  assets/js/local-store.js) and is never touched here.
 // ════════════════════════════════════════════════
 
 export const EN = {
